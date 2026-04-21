@@ -2,9 +2,70 @@
 
 > Document de référence pour comparer les besoins du front (site vitrine) avec ce qui existe côté back (`cabinet-rimbault-admin`).
 >
-> Pour chaque route : **méthode, path, paramètres attendus, réponse attendue, page(s) du front qui consomme(nt), statut côté admin (à confirmer)**.
+> Pour chaque route : **méthode, path, paramètres attendus, réponse attendue, page(s) du front qui consomme(nt), statut côté admin**.
 >
 > **Objectif** : lister ce qui existe, ce qui manque, ce qui est à ajuster côté admin avant la mise en ligne.
+
+## État des lieux — audit du 2026-04-21
+
+Repo admin audité : `/Users/lucasrimbault/Desktop/dev/cr/cabinet-rimbault-admin`.
+
+**Synthèse** :
+- ✅ **6 endpoints publics existent** (`/properties`, `/properties/sale`, `/properties/rent`, `/properties/recent`, `/properties/[reference]`, `POST /evaluation`) — auth par header `X-API-Key`.
+- ✅ **Modèle Prisma riche** : champs `condition`, `isExclusive`, `isFurnished`, `copro.*` (nbLots, charges, procédure), `energy.annualEnergyCostMin/Max` **déjà présents**. Plusieurs gaps supposés initialement n'en sont finalement pas.
+- ⚠ **Filtres de recherche pauvres** : les champs existent en base mais ne sont pas exposés comme query params. L'essentiel du travail côté admin est de brancher des filtres supplémentaires, pas de modifier le schéma.
+- ⚠ **`POST /evaluation` déphasé** : schéma plat côté admin vs schéma imbriqué rédigé initialement dans ce doc. À aligner (voir §2.6).
+- ❌ **`POST /contact` absent** — bloque les formulaires `/contact` et fiche bien.
+- ❌ **Format d'erreur non standardisé** côté admin : `{ success: false, error: "string" }` au lieu de `{ error: { code, message, fields } }`.
+- ❌ **Pas de rate limiting** sur les endpoints publics.
+- ❌ **Pas de webhook de revalidation** admin → vitrine.
+
+**Fichiers clés côté admin** :
+- Routes : `src/app/api/public/`
+- Auth : `src/lib/api-public-auth.ts` (middleware `withPublicApiAuth`)
+- Helpers : `src/lib/api-public-helpers.ts` (sanitization, include, where clause visibilité)
+- Schéma : `prisma/schema.prisma`
+
+---
+
+## Principes d'évolution — ne pas casser l'admin
+
+⚠ **L'API publique partage le schéma Prisma avec le back-office admin**. Toute évolution doit être pensée pour **ne pas casser** :
+- Les consommateurs existants de l'API publique (autres intégrations éventuelles, notamment portails immo).
+- L'UI admin qui lit/écrit les mêmes modèles Prisma.
+- Les données existantes en base.
+
+### Matrice de risque
+
+| Tag | Signification | Exemples |
+|---|---|---|
+| ✅ **SAFE (additif)** | Ajout qui n'impacte aucun code existant | Nouvel endpoint, nouveau champ optionnel en sortie, nouveau query param optionnel, nouvelle valeur d'enum **acceptée en entrée** sans l'imposer |
+| ⚠ **CAREFUL** | Changement non-bloquant mais à coordonner | Changement de valeur par défaut, changement de tri implicite, ajout d'un rate limit généreux, déprécation documentée |
+| 🔴 **BREAKING** | Casse un consumer si appliqué tel quel | Renommer un param/champ, typer strictement un champ libre, ajouter un champ requis sans défaut, changer la forme d'une réponse, supprimer un endpoint |
+
+### Règles d'or pour cette API
+
+1. **Préférer ajouter plutôt que modifier**. Si besoin d'un nouveau comportement, créer un nouveau param ou un nouvel endpoint plutôt que changer l'existant.
+2. **Ne jamais changer la sémantique d'un param existant** (ex. `bedrooms` en `=` vs `>=`).
+3. **Ne jamais supprimer un champ de réponse** sans passer par une phase de déprécation (warning dans la doc + garder le champ rempli un temps).
+4. **Nouveaux champs optionnels only** : pas de nouveau champ requis sur `POST /evaluation` sauf s'il remplace un existant **avec valeur par défaut** côté admin pour rétro-compat.
+5. **Nouveaux enums** : si on convertit un champ String en enum, garder le champ String, ajouter un champ enum parallèle (`honorairesType` String → ajouter `honorairesCharge` enum).
+6. **Multi-valeurs** : la bascule `searchParams.get('city')` → `searchParams.getAll('city')` est rétro-compatible (retourne `[singleValue]` si un seul, `[]` si absent). **Safe si bien testée**.
+
+### Zones à ne pas toucher
+
+Les éléments suivants sont **consommés par la vitrine existante** (déjà codée) ou par l'admin lui-même. Toute modification = risque de régression :
+
+| Élément | Raison |
+|---|---|
+| Sémantique de `searchParams.get('bedrooms')` (`>=` filter) | Utilisé par `listSaleProperties`, `listRentProperties`, `searchProperties` côté vitrine. Renommer en `minBedrooms` = breaking. Alternative : ajouter `minBedrooms` comme alias et documenter. |
+| Valeur `honorairesType` typée String libre | Données existantes probablement pas normalisées. Convertir en enum casse les données et l'UI admin qui écrit ce champ. |
+| Format de réponse `{ success, count, total, offset, limit, filters, data }` | Tous les wrappers vitrine s'attendent à cette forme. |
+| Format d'erreur `{ success: false, error: "string" }` | Parsé tel quel par la vitrine. Changer = breaking. Alternative : enrichir avec champs optionnels sans retirer `error`. |
+| Comportement par défaut de `/properties/recent` (tri, limit) | Déjà utilisé par la home vitrine. |
+| Endpoints `/properties/sale` et `/properties/rent` | Wrappés dans `src/lib/api/properties.ts` (`listSaleProperties`, `listRentProperties`). Peuvent être dépréciés à terme mais **pas supprimés** tant que la vitrine les utilise. |
+| Visibilité implicite de `/properties` (statuts `DISPONIBLE`, `SOUS_OFFRE`, `SOUS_COMPROMIS`) | Si on change le comportement par défaut, la vitrine affiche soudainement des biens qu'elle n'attend pas (ou inversement). Rendre l'opt-in explicite via **nouveau** param `status` sans toucher au comportement par défaut. |
+| Clé de cache Next.js vitrine (tags `properties`, `property:<ref>`) | Ne pas renommer les endpoints. |
 
 ---
 
@@ -100,187 +161,234 @@ Alternative rejetée : valeur CSV (`propertyType=APPARTEMENT,MAISON`) — plus a
 - Bloc home "Biens récemment vendus/loués" (filtre `status`)
 - Fiche bien — biens similaires (si pas d'endpoint dédié)
 
-**Query params attendus** (union de ce qui est codé actuellement + gaps wireframes) :
+**Query params — audit côté admin** (source : `src/app/api/public/properties/route.ts` côté admin) :
 
-| Param | Type | Multi | Obligatoire | Statut |
+| Param | Type | Multi | Statut admin | Action |
 |---|---|---|---|---|
-| `transactionType` | `VENTE` \| `LOCATION` \| `VIAGER` \| `LOCATION_SAISONNIERE` | Non | Non | ✅ existe |
-| `propertyType` | enum `PropertyType` | **Oui** | Non | ❓ multi à vérifier |
-| `city` | string | **Oui** | Non | ❓ multi à vérifier |
-| `postalCode` | string | Oui | Non | ✅ existe |
-| `minPrice` / `maxPrice` | number | Non | Non | ✅ existe |
-| `minSurface` / `maxSurface` | number | Non | Non | ✅ existe |
-| `minRooms` | number | Non | Non | 🆕 **à ajouter** (actuellement seulement `bedrooms`) |
-| `bedrooms` | number | Non | Non | ✅ existe (à renommer `minBedrooms` ?) |
-| `minFloor` | number | Non | Non | 🆕 **à ajouter** |
-| `dpe` | enum `EnergyClass` | **Oui** | Non | 🆕 **à ajouter** |
-| `hideEnergyFG` | boolean | Non | Non | 🆕 **à ajouter** (filtre loi Climat sur `/louer`) |
-| `hasBalcony` | boolean | Non | Non | 🆕 **à ajouter** |
-| `hasTerrace` | boolean | Non | Non | 🆕 **à ajouter** |
-| `hasGarden` | boolean | Non | Non | 🆕 **à ajouter** |
-| `isExclusive` | boolean | Non | Non | 🆕 **à ajouter** (pour `/acheter`) |
-| `isFurnished` | boolean | Non | Non | 🆕 **à ajouter** (pour `/louer`) |
-| `condition` | `NEW_RENOVATED` \| `GOOD` \| `TO_REFRESH` \| `TO_RENOVATE` | Non | Non | 🆕 **à ajouter** (état général) |
-| `status` | enum `PropertyStatus` | Oui | Non | 🆕 **à ajouter** (pour bloc "Biens vendus" home) |
-| `isPublished` | boolean | Non | Non (default `true`) | ❓ à confirmer (jamais exposer `isPublished=false` au public) |
-| `sortBy` | `date` \| `price_asc` \| `price_desc` \| `rent_asc` \| `rent_desc` \| `surface_asc` \| `surface_desc` | Non | Non | ⚠ **à étendre** (actuellement seulement `date`, `price_asc`, `price_desc`) |
-| `limit` | number (default `12`, max `50`) | Non | Non | ✅ existe |
-| `offset` | number (default `0`) | Non | Non | ✅ existe |
+| `transactionType` | `VENTE` \| `LOCATION` \| `VIAGER` \| `LOCATION_SAISONNIERE` | Non | ✅ existe | — |
+| `propertyType` | enum `PropertyType` | Non | ✅ existe mais **mono-valeur** | ⚠ ajouter support multi (répétition de param) |
+| `city` | string | Non | ✅ (match insensitive contains) | ⚠ ajouter support multi |
+| `postalCode` | string | Non | ✅ (match exact) | — |
+| `minPrice` / `maxPrice` | number | Non | ✅ existe | — |
+| `minSurface` / `maxSurface` | number | Non | ✅ existe | — |
+| `bedrooms` | number (min) | Non | ✅ existe (sémantique `>=`) | ⚠ renommer `minBedrooms` pour lever l'ambiguïté |
+| `minRooms` | number | Non | ❌ absent | 🆕 **à ajouter** |
+| `minFloor` | number | Non | ❌ absent | 🆕 **à ajouter** |
+| `dpe` | enum `EnergyClass` | **Oui** | ❌ absent | 🆕 **à ajouter** (multi) |
+| `hideEnergyFG` | boolean | Non | ❌ absent | 🆕 **à ajouter** — équivalent `dpe=A&dpe=B&...&dpe=E` |
+| `hasBalcony` | boolean | Non | ❌ absent | 🆕 **à ajouter** (champ existe en base : `amenities.hasBalcony`) |
+| `hasTerrace` | boolean | Non | ❌ absent | 🆕 **à ajouter** (idem) |
+| `hasGarden` | boolean | Non | ❌ absent | 🆕 **à ajouter** (idem) |
+| `isExclusive` | boolean | Non | ❌ absent comme filtre (champ présent en réponse) | 🆕 **à ajouter** comme filtre |
+| `isFurnished` | boolean | Non | ❌ absent (champ en base : `amenities.isFurnished`) | 🆕 **à ajouter** |
+| `condition` | enum `PropertyCondition` | Non | ❌ absent (champ en base) | 🆕 **à ajouter** |
+| `status` | enum `PropertyStatus` | Oui | ❌ absent (filtre implicite seulement) | 🆕 **à ajouter** — bloque le bloc home "Biens vendus" |
+| `sortBy` | voir ci-dessous | Non | ✅ `date`, `price_asc`, `price_desc` | ⚠ ajouter `rent_asc`, `rent_desc`, `surface_asc`, `surface_desc` |
+| `limit` | number | Non | ✅ default `50`, max `100` | — (à confirmer avec le front qui attendait default `12`) |
+| `offset` | number | Non | ✅ default `0` | — |
 
-**Réponse attendue** : `ApiListResponse<Property>` (cf. §1).
+**⚠ Valeurs de `condition` : enum FR côté admin** (Prisma), pas EN comme initialement supposé :
+`NEUF | TRES_BON_ETAT | BON_ETAT | A_RAFRAICHIR | A_RENOVER | A_RESTAURER` (6 valeurs).
 
-**Contraintes** :
-- Par défaut, ne retourner **que les biens publiés** (`isPublished = true`).
-- Par défaut, exclure les statuts `ARCHIVE` et `BROUILLON`.
-- Les biens `VENDU` / `LOUE` doivent être retournables **uniquement si** explicitement demandés via `status=VENDU` ou `status=LOUE` (pour le bloc home "Biens vendus").
+**Réponse confirmée** (admin route.ts:114-132) :
+
+```json
+{
+  "success": true,
+  "count": 12,
+  "total": 47,
+  "offset": 0,
+  "limit": 12,
+  "filters": { "transactionType": "VENTE", "…": "…" },
+  "data": [ /* Property[] sanitized */ ]
+}
+```
+
+**Contraintes confirmées côté admin** :
+- Par défaut, filtre implicite : `isPublished = true` + `status ∈ [DISPONIBLE, SOUS_OFFRE, SOUS_COMPROMIS]` via `getPublicPropertiesWhere()`.
+- `ARCHIVE` et `BROUILLON` toujours exclus.
+- `VENDU` / `LOUE` **actuellement jamais retournés** — nécessite l'ajout du filtre `status` explicite côté admin pour le bloc home "Biens vendus".
+- Sanitization : `internalNotes`, `userId`, `user` retirés de la réponse.
+- Images : **5 premières** par bien, triées par `order`.
 
 ---
 
 ### 2.2 — `GET /api/public/properties/sale` — Liste biens à la vente
 
-**Statut** : ✅ existe (consommé par `listSaleProperties`).
+**Statut admin** : ✅ existe. Raccourci vers `transactionType=VENTE`.
 
-**Usage front** : raccourci vers `properties?transactionType=VENTE`.
+**Query params admin** : `postalCode`, `city`, `limit` (max 100). Tri figé `createdAt DESC`.
 
-**Question** : est-ce que cet endpoint est toujours utile, ou peut-on le déprécier au profit du `/properties` générique ? Côté vitrine on peut s'en passer. Garder si utilisé par ailleurs (portail externe ?).
+**⚠ Réponse différente du `/properties`** : **pas de `total`, `offset`, `limit`** dans la réponse (seulement `success`, `count`, `filters`, `data`).
 
-**Query params** : `postalCode`, `city`, `limit` (cf. `ListFilters`). Minimaliste par rapport à `/properties`.
+**Décision recommandée** : **déprécier** au profit de `/properties?transactionType=VENTE`. Le front n'a pas besoin des deux, et la version générique offre les filtres étendus.
 
 ---
 
 ### 2.3 — `GET /api/public/properties/rent` — Liste biens à la location
 
-**Statut** : ✅ existe. Mêmes remarques que 2.2 — versionner ou déprécier au profit de `/properties?transactionType=LOCATION`.
+**Statut admin** : ✅ existe. Mêmes remarques que 2.2.
+
+**Décision recommandée** : idem — déprécier au profit de `/properties?transactionType=LOCATION`.
 
 ---
 
 ### 2.4 — `GET /api/public/properties/recent` — Biens récents
 
-**Statut** : ✅ existe.
+**Statut admin** : ✅ existe.
 
 **Usage front** : bloc "Biens à la une" sur la home (section 2).
 
-**Query params** : `limit` (default `6`).
+**Query params admin** : `limit` (default **5**, max **20**). ⚠ Le front wireframe affiche 6 biens — soit ajuster le wireframe à 5/8, soit augmenter la default admin.
 
-**Contraintes** :
-- Tri implicite par `publishedAt DESC` (ou `createdAt DESC` à défaut).
-- Mix vente + location accepté — tri global chronologique.
-- Exclure statuts `VENDU`, `LOUE`, `ARCHIVE`, `BROUILLON`.
+**Tri admin** : `createdAt DESC` (⚠ pas `publishedAt`). À confirmer que c'est le comportement voulu ; `publishedAt DESC` serait plus pertinent (un bien créé en brouillon puis publié tard ressort mal avec `createdAt`).
 
-**Réponse** : `ApiListResponse<Property>`.
+**Filtres implicites admin** : exclut `ARCHIVE` et `BROUILLON` (cohérent).
+
+**Réponse admin** (sans pagination) :
+
+```json
+{
+  "success": true,
+  "count": 5,
+  "data": [ /* Property[] */ ]
+}
+```
 
 ---
 
 ### 2.5 — `GET /api/public/properties/[reference]` — Détail d'un bien
 
-**Statut** : ✅ existe (consommé par `getPropertyByReference`).
+**Statut admin** : ✅ existe (consommé par `getPropertyByReference`).
 
 **Usage front** : `/bien/[reference]` — la page la plus critique SEO.
 
 **Path params** :
 - `reference` : string URL-encodée.
 
-**Réponse** : `ApiItemResponse<Property>`.
+**Visibilité admin confirmée** : 404 si non trouvé, `!isPublished`, ou `status ∉ [DISPONIBLE, SOUS_OFFRE, SOUS_COMPROMIS]`.
 
-**404 attendu** si bien inexistant, archivé, ou non publié.
+**Side effect** : incrémente `viewCount` en async non bloquant.
 
-**⚠ Champs attendus mais absents du type `Property` actuel** :
+**Réponse succès** : `{ success: true, data: Property }`.
 
-| Champ | Besoin front | Statut |
+**Réponse 404** :
+
+```json
+{
+  "success": false,
+  "error": "Bien non trouvé" | "Bien non disponible"
+}
+```
+
+**Inclus dans la réponse détail** (vs liste) : `documents`, `rooms_details`, `proximities`.
+
+**⚠ Champs — audit côté admin** :
+
+| Champ front | Présent admin ? | Source |
 |---|---|---|
-| `copropriete.nbLots` | Section "Caractéristiques" — obligatoire ALUR pour vente | 🆕 **à ajouter au schéma Property** |
-| `copropriete.chargesAnnuelles` | Idem | 🆕 **à ajouter** |
-| `copropriete.procedureEnCours` | Idem | 🆕 **à ajouter** |
-| `energy.depensesAnnuellesMin` / `Max` | Section DPE — mention obligatoire du coût estimé | 🆕 **à ajouter** (actuellement uniquement `energyClass` et `energyValue`) |
-| `energy.dateReferenceEnergie` | Section DPE — mention obligatoire | 🆕 **à ajouter** |
-| `finance.honorairesCharge` | Section Honoraires fiche bien — qui paie (`ACQUEREUR` \| `VENDEUR` \| `PARTAGE`) | ❓ à confirmer (existe peut-être sous un autre nom) |
-| `finance.loyer` (distinct de `charges`) | Card `/louer` — loyer hors charges affiché séparément | ❓ à vérifier : actuellement `price` + `charges` (chargesIncluses bool). Préciser si `price` = loyer CC ou HC |
-| `isFurnished` | Card `/louer` + filtre | 🆕 **à ajouter** |
-| `condition` | Filtre "à rénover / bon état / neuf" `/acheter` | 🆕 **à ajouter** |
-| `publishedAt` | Fiche bien — "Mis en ligne le [date]" | ✅ existe |
-| `availableFrom` | Pertinent location (disponible à partir du) | 🆕 **à ajouter** (optionnel MVP, confort +) |
+| `copro.coprLots` (nb lots copropriété) | ✅ existe | Prisma `PropertyCopro` |
+| `copro.coprCharges` (charges annuelles) | ✅ existe | idem |
+| `copro.coprProcedure` (procédure en cours) | ✅ existe | idem |
+| `copro.isInCopro`, `coprChargesDetails`, `coprSyndic`, `lotNumber`, `tantieme` | ✅ existe (bonus) | idem |
+| `energy.annualEnergyCostMin` / `Max` | ✅ existe | `PropertyEnergy` |
+| `energy.dateReferenceEnergie` | ❌ absent | à ajouter — obligation arrêté 2021 |
+| `energy.dpeDate` | ✅ existe (peut servir de fallback pour `dateReferenceEnergie`) | `PropertyEnergy` |
+| `finance.honorairesCharge` (enum `ACQUEREUR` \| `VENDEUR` \| `PARTAGE`) | ⚠ partiel : champ `honorairesType` existe mais typé **String libre** | à convertir en enum |
+| `finance.loyer` distinct de `charges` | ⚠ ambigu : `finance.price` + `finance.charges` + `finance.chargesIncluses` bool. | **À documenter** : `price` pour LOCATION = loyer CC ou HC selon `chargesIncluses` ? |
+| `isFurnished` | ✅ existe dans `amenities` (pas à la racine) | `PropertyAmenities.isFurnished` |
+| `condition` | ✅ existe à la racine Property | enum `PropertyCondition` |
+| `isExclusive` | ✅ existe à la racine Property | — |
+| `publishedAt` | ✅ existe | — |
+| `availableFrom` | ✅ existe (bonus) | à confirmer type (date ?) |
 
-**Champs pour la carte de localisation approximative (cercle 500 m)** :
-- `location.latitude` / `location.longitude` : ✅ existent. Ces coordonnées sont-elles celles de l'adresse exacte ou déjà "floutées" côté back ? **À clarifier** — l'approximation côté vitrine sera un cercle de 500 m autour de ces coordonnées, donc **il est préférable que le back livre les coordonnées exactes** (privacy gérée par le rendu vitrine).
+**Coordonnées GPS** : `location.latitude` / `longitude` existent, type `Float?`. **Probablement coordonnées exactes** (non floutées côté back). **À confirmer** avec la team admin — si exactes, parfait pour faire l'approximation cercle 500 m côté vitrine.
 
 ---
 
 ### 2.6 — `POST /api/public/evaluation` — Soumission estimation
 
-**Statut** : ✅ prévu (CDC §2). **Non wrappé côté vitrine** pour le moment.
+**Statut admin** : ✅ existe (`src/app/api/public/evaluation/route.ts`). **Non wrappé côté vitrine** pour le moment.
 
 **Usage front** : `/estimation` — soumission à l'étape 2.
 
-**Body attendu** (schéma Zod côté vitrine, à aligner côté admin) :
+#### Schéma actuel côté admin (source de vérité)
 
-```jsonc
-{
-  "property": {
-    "address": "12 rue Victor Hugo",
-    "city": "Boulogne-Billancourt",       // optionnel si déduit de l'address
-    "postalCode": "92100",                 // optionnel
-    "type": "APPARTEMENT",                 // enum PropertyType
-    "surface": 75,                         // number (m²)
-    "rooms": 3,                            // number
-    "floor": 3,                            // number | null (si appartement)
-    "constructionYear": 1975,              // number | null
-    "exterior": ["BALCONY"],               // array<"BALCONY"|"TERRACE"|"GARDEN"|"NONE">
-    "condition": "GOOD"                    // "NEW_RENOVATED"|"GOOD"|"TO_REFRESH"|"TO_RENOVATE"
-  },
-  "project": {
-    "intent": "SELL",                      // "SELL"|"RENT_OUT"|"EXPLORATION"
-    "timeframe": "3_TO_6_MONTHS"           // "UNDER_3_MONTHS"|"3_TO_6_MONTHS"|"6_TO_12_MONTHS"|"LATER_OR_UNDECIDED"
-  },
-  "contact": {
-    "firstName": "Jean",
-    "lastName": "Dupont",
-    "phone": "+33612345678",
-    "email": "jean.dupont@example.com",
-    "message": "texte libre optionnel"     // max 300 caractères
-  },
-  "consent": {
-    "rgpd": true                           // obligatoire, rejeter si false
-  },
-  "meta": {
-    "source": "vitrine",                   // origine du lead
-    "userAgent": "...",                    // optionnel
-    "referer": "https://..."               // optionnel
-  }
-}
-```
+Structure **plate**, validation partielle. Champs attendus dans le body :
 
-**Réponse succès** (`200` ou `201`) :
+| Champ | Type | Requis admin | Validation |
+|---|---|---|---|
+| `propertyType` | string | ✅ | libre (pas enum) |
+| `postalCode` | string | ✅ | regex `^\d{5}$` |
+| `address` | string | — | libre |
+| `surface` | number | — | libre |
+| `levels` | number | — | libre |
+| `rooms` | number | — | libre |
+| `bedrooms` | number | — | libre |
+| `bathrooms` | number | — | libre |
+| `constructionYear` | number | — | libre |
+| `renovations` | string | — | libre |
+| `hasGarage` / `hasParking` | boolean | — | — |
+| `hasPool` / `hasGarden` / `hasBalcony` / `hasTerrace` | boolean | — | — |
+| `situation` | string | — | mappé : `achat` → `ACHAT`, `vente` → `VENTE`, `renseignement` → `RENSEIGNEMENT` |
+| `firstName` | string | ✅ | libre |
+| `lastName` | string | ✅ | libre |
+| `email` | string | ✅ | regex email standard |
+| `phone` | string | — | libre |
+
+**Réponse succès (201)** :
 
 ```json
 {
   "success": true,
-  "data": {
-    "id": "evaluation_abc123",
-    "receivedAt": "2026-04-21T10:42:00Z"
-  }
+  "message": "Votre demande d'estimation a été enregistrée avec succès",
+  "data": { "id": "evaluation_...", "createdAt": "2026-04-21T..." }
 }
 ```
 
-**Réponse erreur** (`422`) :
+**Réponse erreur (400/422)** :
 
 ```json
 {
   "success": false,
-  "error": {
-    "code": "VALIDATION_ERROR",
-    "message": "Invalid fields",
-    "fields": {
-      "contact.email": "Invalid email format",
-      "consent.rgpd": "Consent is required"
-    }
-  }
+  "error": "Le champ X est requis",
+  "details": "..."  // en dev uniquement
 }
 ```
 
-**Contraintes côté admin** :
-- Déclenchement d'une **notification agent** (email ou Slack — à définir opérationnellement).
-- **Logging** du lead avec conservation ≤ 3 ans (conformité RGPD, cf. `agent-checklist.md` §11).
-- **Anti-spam** : rate limit par IP, honeypot, reCAPTCHA v3 (au choix côté admin).
+#### Décalages vs besoins front (wireframes `/estimation`)
+
+| Besoin front (wireframes) | Admin | Action |
+|---|---|---|
+| Structure **imbriquée** (`property`, `project`, `contact`, `consent`, `meta`) | **Plate** | 2 options (voir ci-dessous) |
+| `condition` (état général, 6 valeurs enum FR) | ❌ absent | 🆕 ajouter côté admin |
+| `exterior` (multi-check Balcon/Terrasse/Jardin) | ✅ équivalent : `hasBalcony`, `hasTerrace`, `hasGarden` (flat) | — |
+| `project.timeframe` (délai envisagé) | ❌ absent | 🆕 ajouter côté admin |
+| `project.intent` (vendre / louer / idée) | ⚠ existe via `situation` mais 3 valeurs qui ne correspondent pas (`ACHAT`, `VENTE`, `RENSEIGNEMENT`). Le front distingue "vendre" vs "mettre en location" — `situation` ne porte pas cette nuance. | 🆕 élargir l'enum côté admin ou introduire champ `intent` distinct |
+| `contact.message` (texte libre optionnel) | ❌ absent | 🆕 ajouter côté admin |
+| `consent.rgpd` (obligatoire) | ❌ absent — **bloquant RGPD** | 🆕 ajouter et rejeter si `false` |
+| `meta.source`, `meta.userAgent`, `meta.referer` | ❌ absent | 🆕 ajouter côté admin (attribution / debug) |
+| Format erreur `{ error: { code, fields } }` | ⚠ `{ error: "string" }` | à standardiser |
+
+#### Alignement recommandé
+
+**Option A** — aligner l'admin sur le contrat imbriqué proposé au §2.6 initial (body imbriqué).
+- ✅ propre côté front (Zod structuré).
+- ❌ casse les clients existants (s'il y en a).
+
+**Option B** — garder la structure plate côté admin, aligner le front dessus (mapping Zod).
+- ✅ pas de breaking change.
+- ❌ perte de structure, le front fait du mapping.
+- 🆕 quand même ajouter les champs manquants : `condition`, `timeframe`, `intent` élargi, `message`, `rgpd` consent.
+
+**Recommandation** : **Option B** (pragmatique) + ajouts obligatoires côté admin. Éviter un refactoring cosmétique alors que la vitrine n'est pas encore en prod.
+
+#### Contraintes côté admin à vérifier
+
+- [ ] **Notification agent** post-submit (email / Slack) : câblée ou pas ?
+- [ ] **Logging** du lead avec conservation ≤ 3 ans (RGPD).
+- [ ] **Anti-spam** : rate limit par IP, honeypot, ou reCAPTCHA v3.
+- [ ] **Rate limiting** général (absent à l'audit).
 
 ---
 
@@ -447,78 +555,188 @@ Pas d'endpoint admin supplémentaire nécessaire. Juste augmenter la `limit` max
 
 ---
 
-## 5. Récapitulatif des gaps
+## 5. Récapitulatif des gaps (post-audit, **annoté par risque**)
 
-### 🆕 Nouveaux endpoints à créer côté admin
+### 5.1 — Nouveaux endpoints à créer (tous ✅ SAFE)
 
-| # | Endpoint | Criticité |
+Les endpoints qui n'existent pas ne peuvent rien casser — création pure.
+
+| # | Endpoint | Risque | Criticité front | Détails |
+|---|---|---|---|---|
+| 1 | `POST /api/public/contact` | ✅ SAFE | **🔴 Bloquant** | Schéma détaillé §3.1. Aucun impact admin. Notification agent à prévoir (email / Slack). |
+| 2 | `GET /api/public/properties/[reference]/similar` | ✅ SAFE | 🟡 Contournable | Schéma §3.2. Contournable côté front avec `/properties?...`, mais duplication de logique. |
+| 3 | `POST /api/revalidate` côté **vitrine** (pas admin) | ✅ SAFE | 🟢 Non bloquant | Webhook entrant côté vitrine, l'admin envoie juste un POST. Fallback `revalidate: 60` suffit pour MVP. |
+
+### 5.2 — Extensions `GET /properties` (majoritairement ✅ SAFE si bien faites)
+
+Les nouveaux filtres sont des query params **optionnels** avec default = pas de filtre. Aucune modification du comportement existant.
+
+| Évolution | Risque | Implémentation non-breaking |
 |---|---|---|
-| 1 | `POST /api/public/contact` | **Haute** — sans ça, formulaires `/contact` et fiche bien non fonctionnels |
-| 2 | `GET /api/public/properties/[reference]/similar` | Moyenne — contournable côté front |
-| 3 | `POST /api/revalidate` (côté vitrine, webhook depuis admin) | Moyenne — améliore la fraîcheur, contournable avec `revalidate: 60` |
+| Ajouter filtres `status[]`, `minRooms`, `minFloor`, `dpe[]`, `hasBalcony`, `hasTerrace`, `hasGarden`, `isExclusive`, `isFurnished`, `condition` | ✅ SAFE | Nouveaux params optionnels. Si absents, comportement identique à aujourd'hui. |
+| Ajouter filtre `hideEnergyFG` | ✅ SAFE | Boolean optionnel. Équivaut à `dpe=A&dpe=B&...&dpe=E`. Pur sucre syntaxique côté admin. |
+| Ajouter tris `rent_asc/desc`, `surface_asc/desc` | ✅ SAFE | Nouvelles valeurs acceptées dans `sortBy`. Les valeurs existantes (`date`, `price_asc`, `price_desc`) restent valides. |
+| Supporter multi-valeurs (`propertyType`, `city`, `dpe`, `status`) | ⚠ CAREFUL | Migration `.get('city')` → `.getAll('city')` **rétro-compatible** si bien faite (une valeur unique retourne `[value]`). **Tester**. Alternative : syntaxe CSV (`city=A,B`) sans toucher `.get()`. |
+| Filtre `status` autorisant `VENDU`/`LOUE` | ⚠ CAREFUL | Actuellement filtré via `getPublicPropertiesWhere()`. Ne pas modifier le comportement par défaut (garder exclusion implicite). **Ajouter** `status` en override explicite uniquement via query param. |
+| ~~Renommer `bedrooms` en `minBedrooms`~~ | 🔴 BREAKING | **À éviter**. Alternative : **garder `bedrooms`**, ajouter `minBedrooms` comme alias, documenter que les deux fonctionnent à l'identique, privilégier `minBedrooms` pour les nouveaux clients. |
 
-### ⚠ Endpoints existants à étendre
+### 5.3 — `POST /evaluation` : ajouter sans restructurer
 
-| Endpoint | Évolution | Criticité |
+**Ne pas** restructurer en body imbriqué (casse les clients existants). Garder la structure plate et **ajouter des champs optionnels**.
+
+| Évolution | Risque | Implémentation |
 |---|---|---|
-| `GET /properties` | Ajouter filtres : `status`, `minRooms`, `minFloor`, `dpe[]`, `hideEnergyFG`, `hasBalcony/Terrace/Garden`, `isExclusive`, `isFurnished`, `condition` | **Haute** — sans ça, les filtres wireframes sont amputés |
-| `GET /properties` | Ajouter tri : `rent_asc`, `rent_desc`, `surface_asc`, `surface_desc` | Haute — `/louer` affiche des loyers, tri prix ne suffit pas |
-| `GET /properties` | Supporter multi-valeurs (`propertyType`, `city`, `dpe`) par répétition de param | Haute |
-| `POST /evaluation` | Aligner body avec schéma §2.6 | Haute |
+| Ajouter `condition` (enum FR) optionnel | ✅ SAFE | Nouveau champ optionnel. |
+| Ajouter `timeframe` optionnel | ✅ SAFE | Nouveau champ optionnel. |
+| Ajouter `message` (texte libre) optionnel | ✅ SAFE | Nouveau champ optionnel. |
+| Ajouter `source`, `userAgent`, `referer` optionnels | ✅ SAFE | Nouveaux champs. |
+| Élargir `situation` pour distinguer vente / location / renseignement | ⚠ CAREFUL | Les valeurs admin actuelles (`achat`, `vente`, `renseignement`) couvrent partiellement. **Option non-breaking** : ajouter un nouveau champ `intent` (`SELL`, `RENT_OUT`, `EXPLORATION`) sans modifier `situation`. Conserver les deux. |
+| Ajouter `rgpd` consent | 🔴 BREAKING si requis | **Option recommandée** : ajouter le champ **optionnel** côté admin (pour ne pas casser), puis **rendre obligatoire côté vitrine** (Zod validation front). L'admin reçoit toujours `rgpd: true` depuis la vitrine. Un ancien client qui ne l'envoie pas continue de passer. |
 
-### 🆕 Champs à ajouter sur le schéma `Property`
+### 5.4 — `GET /properties/recent` : ne pas toucher le défaut
 
-| Champ | Raison |
+| Évolution | Risque | Décision |
+|---|---|---|
+| ~~Passer tri `createdAt DESC` → `publishedAt DESC`~~ | 🔴 BREAKING | Ne pas modifier le comportement par défaut. Alternative : ajouter `sortBy=published` optionnel si besoin. **Pour le MVP** : ajuster le wireframe vitrine à 5 biens et accepter le tri `createdAt`. |
+
+### 5.5 — Format d'erreur : enrichir plutôt que remplacer
+
+| Évolution | Risque | Implémentation |
+|---|---|---|
+| ~~Standardiser `{ error: { code, message, fields } }`~~ | 🔴 BREAKING | **Garder `{ success: false, error: "string" }`** en forme minimale. **Ajouter** des champs optionnels : `{ success: false, error: "string", code?: string, fields?: { … } }`. Le front vitrine lit `error` en priorité, et peut exploiter `code`/`fields` s'ils sont présents. |
+
+### 5.6 — Champs Prisma à ajouter (⚠ migration à prévoir)
+
+| Champ | Risque | Implémentation |
+|---|---|---|
+| `PropertyEnergy.dateReferenceEnergie` (Date?) | ✅ SAFE | Ajout d'un champ optionnel. Ancien `dpeDate` conservé. Migration Prisma simple (`prisma migrate dev`). Pas d'impact sur l'admin UI tant qu'il n'y a pas de formulaire à éditer dessus. |
+| `PropertyFinance.honorairesCharge` (enum `HonorairesCharge`) | ✅ SAFE | **Ne pas modifier `honorairesType` (String)**. Ajouter un **nouveau champ** `honorairesCharge` en enum à valeurs `ACQUEREUR`, `VENDEUR`, `PARTAGE`. Laisser les deux cohabiter pendant une phase de transition. L'UI admin peut être mise à jour progressivement pour écrire les deux. |
+
+### 5.7 — Rate limiting
+
+| Évolution | Risque | Implémentation |
+|---|---|---|
+| Ajouter rate limiting sur endpoints publics | ⚠ CAREFUL | Limites **généreuses** au lancement (ex. 300 req/min/IP). Logger les dépassements avant d'appliquer des limites strictes. Whitelister l'IP du serveur vitrine (les Server Components font tous les appels depuis la même IP). |
+
+### 5.8 — Endpoints `/properties/sale` et `/properties/rent`
+
+| Évolution | Risque | Décision |
+|---|---|---|
+| ~~Supprimer~~ | 🔴 BREAKING | **Ne pas supprimer** — la vitrine les wrappe (`listSaleProperties`, `listRentProperties`). |
+| Déprécier via doc uniquement | ✅ SAFE | Ajouter un warning dans la doc admin qu'ils sont redondants avec `/properties?transactionType=…`. La vitrine pourra migrer à son rythme (changement purement interne côté vitrine). |
+
+### 5.9 — Ce qu'il ne faut PAS faire
+
+**Liste explicite des non-actions** — à référencer dans toute review admin future :
+
+| ❌ À ne pas faire | Pourquoi |
 |---|---|
-| `copropriete.nbLots`, `chargesAnnuelles`, `procedureEnCours` | Obligation ALUR vente |
-| `energy.depensesAnnuellesMin/Max`, `dateReferenceEnergie` | Obligation DPE (arrêté 2021) |
-| `finance.honorairesCharge` (enum `ACQUEREUR` \| `VENDEUR` \| `PARTAGE`) | Obligation Hoguet |
-| `finance.loyer` et `finance.charges` distincts (pour LOCATION) | UX card `/louer` + conformité ALUR |
-| `isFurnished` (boolean, pour LOCATION) | Filtre + card |
-| `condition` (enum) | Filtre état général |
-| `availableFrom` (date, optionnel) | Location — disponibilité future |
+| Renommer un query param existant (`bedrooms`, `sortBy`, etc.) | Casse la vitrine déployée |
+| Supprimer un endpoint listé dans §2 | Idem |
+| Changer la forme d'une réponse (retirer ou renommer un champ `data`, `count`, `total`, `filters`, etc.) | Idem |
+| Ajouter un champ **requis** sur `POST /evaluation` | Casse tout POST qui n'a pas le nouveau champ |
+| Typer un champ String libre existant en enum strict | Les données existantes non normalisées deviennent invalides |
+| Changer la sémantique d'un filtre (ex. `bedrooms` passant de `>=` à `=`) | Résultats silencieusement différents |
+| Changer la visibilité par défaut (retourner `VENDU`/`LOUE` sans opt-in) | La vitrine affiche des biens non attendus |
 
-### ❓ Questions à poser à l'équipe admin
+### 5.10 — Questions à lever avec l'équipe admin
 
-1. Le filtrage multi-valeurs (`propertyType`, `city`, `dpe`) est-il supporté ? Si oui, syntaxe (répétition vs CSV) ?
-2. Le champ `bedrooms` dans `SearchFilters` est-il un minimum ou une égalité ? Renommer en `minBedrooms` pour clarifier.
-3. `finance.price` en `LOCATION` : est-ce le loyer CC ou HC ? Documenter et rendre explicite.
-4. La notification agent post-`evaluation` est-elle déjà câblée (email / Slack) ? Quel canal ?
-5. Rate limiting : existe-t-il sur les endpoints publics ? Si non, prévoir avant mise en ligne.
-6. `publishedAt` vs `createdAt` : lequel utiliser pour trier "Plus récents" ? Impact visible sur `/properties/recent` et `/acheter?sort=date`.
-7. Les coordonnées GPS (`latitude`, `longitude`) sont-elles celles de l'adresse exacte ou déjà floutées ? Si exactes : **parfait** (le floutage se fait côté vitrine via un cercle 500 m).
-8. Les endpoints `/properties/sale` et `/properties/rent` sont-ils conservés ? Si oui, les étendre avec les mêmes filtres que `/properties`. Sinon, les déprécier.
+Ces questions sont des éclaircissements de doc, elles ne nécessitent **pas** forcément un changement de code :
+
+1. **`finance.price` en `LOCATION`** : loyer CC ou HC ? Comment se combine avec `charges` et `chargesIncluses` ? → à documenter dans le schéma Prisma (commentaire sur le champ).
+2. **Coordonnées GPS** : exactes ou déjà floutées ? → documenter dans Prisma. Idéalement exactes (floutage côté vitrine via cercle 500 m).
+3. **Notification agent post-`POST /evaluation`** : câblée ou à brancher ? Via quel canal (email, Slack) ?
+4. **Dashboard admin des leads `evaluation`** : existe ? Si non, prévoir la même vue pour les futurs leads `contact` (§3.1) pour uniformiser la réception.
 
 ---
 
-## 6. Tableau synoptique front → back
+## 6. Plan d'implémentation recommandé (pour l'agent admin)
 
-| Page vitrine | Endpoint(s) admin | Statut |
+Ordonné par **ratio valeur / risque**. La vitrine peut avancer en parallèle en se basant sur les specs §2 et §3.
+
+### Phase A — Pure création (0 risque pour l'admin)
+
+1. **`POST /api/public/contact`** — nouvelle route, schéma §3.1.
+2. **`GET /api/public/properties/[reference]/similar`** — nouvelle route, schéma §3.2.
+3. **Ajout des champs Prisma optionnels** : `PropertyEnergy.dateReferenceEnergie`, `PropertyFinance.honorairesCharge` (enum). Migration Prisma standard.
+
+### Phase B — Extensions additives `GET /properties` (risque minimal)
+
+4. Ajouter les query params optionnels : `status[]`, `minRooms`, `minFloor`, `dpe[]`, `hideEnergyFG`, `hasBalcony`, `hasTerrace`, `hasGarden`, `isExclusive`, `isFurnished`, `condition`.
+5. Ajouter les tris : `rent_asc`, `rent_desc`, `surface_asc`, `surface_desc`.
+6. Ajouter `minBedrooms` en **alias** de `bedrooms` (même comportement).
+7. Supporter le multi-valeurs via `.getAll()` pour `propertyType`, `city`, `dpe`, `status` (tester que single-value continue à fonctionner).
+
+**Contrainte** : le comportement par défaut (sans nouveaux params) doit rester **strictement identique** à aujourd'hui. Un snapshot test (ou un curl avant/après) sur `/properties` sans params suffit à s'en assurer.
+
+### Phase C — Extension `POST /evaluation` (additif only)
+
+8. Ajouter les champs optionnels : `condition`, `timeframe`, `message`, `intent`, `source`, `userAgent`, `referer`.
+9. Ajouter `rgpd` **optionnel** (type `boolean`). La vitrine force `true` via Zod ; côté admin, journaliser si absent pour tracer les clients non-conformes.
+
+### Phase D — Sécurité (avant mise en ligne vitrine)
+
+10. **Rate limiting** sur tous les endpoints publics. Limites larges (300/min/IP). Whitelister l'IP du serveur vitrine.
+11. **Anti-spam** sur `POST /evaluation` et futur `POST /contact` : honeypot + validation email stricte minimum. reCAPTCHA v3 si volume d'abus.
+
+### Phase E — Nice-to-have (après MVP)
+
+12. Webhook sortant `POST https://vitrine.example.com/api/revalidate` sur événements `property.published/updated/unpublished/sold/rented`.
+13. Standardisation progressive du format d'erreur (enrichissement, **pas** remplacement).
+14. Dashboard admin unifié leads (estimation + contact).
+
+### Phase F — Déprécation (optionnelle, après coordination avec la vitrine)
+
+15. Warnings dans la doc admin pour `/properties/sale` et `/properties/rent`. Migration vitrine planifiée → suppression coordonnée en phase 2.
+
+---
+
+## 7. Checklist de validation côté admin (avant chaque phase)
+
+À exécuter systématiquement pour s'assurer qu'aucune régression n'est introduite.
+
+- [ ] **Snapshot API `/properties` sans params** : réponse identique avant / après modif (diff JSON = ø).
+- [ ] **Snapshot API `/properties?transactionType=VENTE`** : identique.
+- [ ] **Snapshot API `/properties?bedrooms=3`** : identique (sémantique `>=` préservée).
+- [ ] **Snapshot API `/properties/recent`** : identique.
+- [ ] **Snapshot API `/properties/[reference]` pour un bien publié** : identique (sauf ajouts de champs optionnels qui seraient `null`/`undefined`).
+- [ ] **`POST /evaluation` avec le body actuel de la vitrine** (sans nouveaux champs) : continue de fonctionner et retourne `201`.
+- [ ] **Admin UI** : aucune régression visible sur la gestion des biens, des honoraires, des copropriétés.
+- [ ] **Migration Prisma** : appliquée en dev, puis en staging avec données réelles avant prod.
+- [ ] **Tests de charge léger** (50 req simultanées) pour vérifier que le rate limit ne bloque pas la vitrine.
+
+---
+
+## 8. Tableau synoptique front → back (post-audit)
+
+| Page vitrine | Endpoint(s) admin | Statut réel |
 |---|---|---|
-| Home — biens à la une | `GET /properties/recent?limit=6` | ✅ |
-| Home — biens vendus | `GET /properties?status=VENDU&status=LOUE&limit=6` | ⚠ nécessite filtre `status` |
-| Home — avis | Google Places (externe) | ❌ à intégrer |
-| Home — contact rapide | `POST /contact` | 🆕 à créer |
-| `/acheter` | `GET /properties?transactionType=VENTE&...filtres` | ⚠ extensions filtres |
-| `/louer` | `GET /properties?transactionType=LOCATION&...filtres` | ⚠ extensions filtres + tri loyer |
-| `/bien/[reference]` | `GET /properties/[reference]` | ✅ + champs à ajouter |
-| `/bien/[reference]` — similaires | `GET /properties/[reference]/similar?limit=3` | 🆕 à créer (ou dérivable) |
-| `/bien/[reference]` — demande visite | `POST /contact` | 🆕 à créer |
-| `/vendre` | aucun appel API | ✅ statique |
-| `/estimation` | `POST /evaluation` | ✅ prévu — wrappage côté vitrine à faire |
-| `/a-propos` — avis | Google Places | ❌ à intégrer |
-| `/contact` | `POST /contact` | 🆕 à créer |
-| `/honoraires` | aucun appel API | ✅ statique |
+| Home — biens à la une | `GET /properties/recent?limit=5` | ✅ fonctionne (ajuster wireframe à 5 ou augmenter default admin) |
+| Home — biens vendus | `GET /properties?status=VENDU&status=LOUE` | ❌ **bloqué** — filtre `status` inexistant (phase B) |
+| Home — avis | Google Places (externe) | ❌ non branché (hors admin) |
+| Home — contact rapide | `POST /contact` | ❌ **endpoint manquant** (phase A) |
+| `/acheter` | `GET /properties?transactionType=VENTE&…` | ⚠ base OK, **filtres amputés** (phase B) |
+| `/louer` | `GET /properties?transactionType=LOCATION&…` | ⚠ base OK, **filtres amputés + tri loyer manquant** (phase B) |
+| `/bien/[reference]` | `GET /properties/[reference]` | ✅ champs majoritairement présents, **2 ajouts Prisma** (phase A) |
+| `/bien/[reference]` — similaires | `GET /properties/[reference]/similar` | ❌ inexistant (phase A) |
+| `/bien/[reference]` — demande visite | `POST /contact` | ❌ **endpoint manquant** (phase A) |
+| `/vendre` | aucun | ✅ statique |
+| `/estimation` | `POST /evaluation` | ⚠ existe, champs optionnels à ajouter (phase C) |
+| `/a-propos` — avis | Google Places | ❌ non branché (hors admin) |
+| `/contact` | `POST /contact` | ❌ **endpoint manquant** (phase A) |
+| `/honoraires` | aucun | ✅ statique |
 | `/mentions-legales`, `/politique-de-confidentialite`, `/cookies` | aucun | ✅ statique |
-| 404 | `GET /properties/recent?limit=3` (optionnel pour suggestions) | ✅ |
-| `sitemap.xml` | `GET /properties?limit=500&isPublished=true` | ✅ (vérifier pagination) |
+| 404 | `GET /properties/recent?limit=3` (optionnel suggestions) | ✅ |
+| `sitemap.xml` | `GET /properties?limit=…&isPublished=true` | ✅ vérifier que la `limit` peut monter au-delà de 100, ou paginer |
 
 ---
 
-## 7. Prochaines étapes
+## 9. Prochaines étapes
 
 1. **Partager ce doc** avec la team admin (`cabinet-rimbault-admin`).
-2. Pour chaque ligne 🆕 / ⚠ : décision (créer / étendre / écarter) + estimation effort.
-3. Mettre à jour ce document avec le statut réel de chaque endpoint (`✅ confirmé`, `🔄 en cours`, `✅ livré`).
-4. Créer le wrapping côté vitrine (`src/lib/api/*.ts`) au fur et à mesure de la disponibilité.
-5. Prévoir un environnement de **staging admin** pour tester les endpoints avant la mise en ligne vitrine.
+2. Valider ensemble la **matrice de risque** et le **plan d'implémentation** (§5 et §6) — tout changement marqué 🔴 BREAKING doit être discuté avant action.
+3. Avancer dans l'ordre des phases A → F (§6). L'ordre a été pensé pour débloquer le front vitrine au plus vite sans toucher aux comportements existants.
+4. Mettre à jour ce document avec le statut réel de chaque item (`✅ livré`, `🔄 en cours`, `❌ refusé`).
+5. Créer le wrapping côté vitrine (`src/lib/api/*.ts`) au fur et à mesure des livraisons.
+6. Prévoir un environnement de **staging admin** pour tester les endpoints avant la mise en ligne vitrine.
+7. Exécuter la **checklist §7** après chaque PR côté admin.
