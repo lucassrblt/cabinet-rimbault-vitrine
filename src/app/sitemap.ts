@@ -12,7 +12,7 @@ const STATIC_ROUTES = [
   "/louer",
   "/vendre",
   "/estimation",
-  "/a-propos",
+  "/agence",
   "/contact",
   "/honoraires",
   "/mentions-legales",
