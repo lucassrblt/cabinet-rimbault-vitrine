@@ -34,8 +34,8 @@ export function ListingView({
     <div className="flex flex-col gap-6">
       <FilterBar mode={mode} filters={query} basePath={basePath} />
 
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 pb-3">
-        <p className="text-sm text-zinc-700">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-subtle pb-3">
+        <p className="text-sm text-body">
           <strong className="font-semibold">{total}</strong>{" "}
           {total > 1 ? "résultats" : "résultat"}
         </p>
@@ -67,6 +67,12 @@ export function ListingView({
           surfaceMin: query.surfaceMin,
           surfaceMax: query.surfaceMax,
           sort: query.sort,
+          meuble: query.meuble,
+          dpe: query.dpe,
+          balcon: query.balcon,
+          terrasse: query.terrasse,
+          jardin: query.jardin,
+          hideFG: query.hideFG,
         }}
       />
     </div>
@@ -81,8 +87,8 @@ function EmptyState({
   basePath: string;
 }) {
   return (
-    <div className="flex flex-col items-start gap-4 rounded border border-zinc-200 bg-zinc-50 p-6">
-      <p className="text-base font-medium text-zinc-900">
+    <div className="flex flex-col items-start gap-4 rounded-sm border border-subtle bg-page p-6">
+      <p className="text-base font-medium text-primary">
         Aucun bien ne correspond à vos critères.
       </p>
       <div className="flex flex-wrap gap-3">

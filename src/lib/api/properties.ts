@@ -1,4 +1,4 @@
-import { type ApiFetchOptions, apiFetch } from "./client";
+import { type ApiFetchOptions, apiFetch, type QueryValue } from "./client";
 import type {
   ApiItemResponse,
   ApiListResponse,
@@ -10,13 +10,15 @@ import type {
 const LIST_TAG = "properties";
 const propertyTag = (reference: string) => `property:${reference}`;
 
+type QueryRecord = Record<string, QueryValue>;
+
 export async function listSaleProperties(
   filters: ListFilters = {},
   options: ApiFetchOptions = {},
 ): Promise<ApiListResponse<Property>> {
   return apiFetch<ApiListResponse<Property>>(
     "/properties/sale",
-    filters as Record<string, string | number | undefined>,
+    filters as QueryRecord,
     { tags: [LIST_TAG, "properties:sale"], ...options },
   );
 }
@@ -27,7 +29,7 @@ export async function listRentProperties(
 ): Promise<ApiListResponse<Property>> {
   return apiFetch<ApiListResponse<Property>>(
     "/properties/rent",
-    filters as Record<string, string | number | undefined>,
+    filters as QueryRecord,
     { tags: [LIST_TAG, "properties:rent"], ...options },
   );
 }
@@ -49,7 +51,7 @@ export async function searchProperties(
 ): Promise<ApiListResponse<Property>> {
   return apiFetch<ApiListResponse<Property>>(
     "/properties",
-    filters as Record<string, string | number | undefined>,
+    filters as QueryRecord,
     { tags: [LIST_TAG], ...options },
   );
 }
@@ -72,6 +74,30 @@ export async function getPropertyByReference(
       (error as { status: number }).status === 404
     ) {
       return null;
+    }
+    throw error;
+  }
+}
+
+export async function getSimilarProperties(
+  reference: string,
+  limit = 3,
+  options: ApiFetchOptions = {},
+): Promise<Property[]> {
+  try {
+    const res = await apiFetch<ApiListResponse<Property>>(
+      `/properties/${encodeURIComponent(reference)}/similar`,
+      limit ? { limit } : undefined,
+      { tags: [propertyTag(reference), LIST_TAG], ...options },
+    );
+    return res.data ?? [];
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      "status" in error &&
+      (error as { status: number }).status === 404
+    ) {
+      return [];
     }
     throw error;
   }

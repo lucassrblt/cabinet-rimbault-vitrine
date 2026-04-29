@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ListingView } from "@/components/listings/ListingView";
 import { LinkButton } from "@/components/ui/Button";
-import { listSaleProperties } from "@/lib/api/properties";
+import { searchProperties } from "@/lib/api/properties";
+import type { Property } from "@/lib/api/types";
 import { COMMUNES, findCommuneBySlug } from "@/lib/config/communes";
 import {
-  filterProperties,
-  paginate,
+  pageFromQuery,
+  paginateServerSide,
   parseQuery,
-  sortProperties,
+  queryToSearchFilters,
 } from "@/lib/listing";
 
 interface SearchParams {
@@ -38,12 +39,16 @@ export default async function AcheterPage({
   const sp = await searchParams;
   const query = parseQuery(sp);
   const commune = query.commune ? findCommuneBySlug(query.commune) : null;
+  const page = pageFromQuery(query);
+  const filters = queryToSearchFilters(query, "VENTE", page);
 
-  let items: Awaited<ReturnType<typeof listSaleProperties>>["data"] = [];
+  let items: Property[] = [];
+  let total = 0;
   let errorMessage: string | undefined;
   try {
-    const res = await listSaleProperties({ limit: 200 });
-    items = (res.data ?? []).filter((p) => p.isPublished);
+    const res = await searchProperties(filters);
+    items = res.data ?? [];
+    total = res.total ?? items.length;
   } catch (err) {
     errorMessage =
       err instanceof Error
@@ -51,10 +56,7 @@ export default async function AcheterPage({
         : "Impossible de charger les biens à la vente.";
   }
 
-  const filtered = filterProperties(items, query);
-  const sorted = sortProperties(filtered, query.sort);
-  const page = Number(query.page ?? "1") || 1;
-  const pageData = paginate(sorted, page);
+  const pageData = paginateServerSide(total, page);
 
   const h1 = commune
     ? `Biens à vendre à ${commune.name}`
@@ -65,7 +67,7 @@ export default async function AcheterPage({
 
   return (
     <main className="flex flex-1 flex-col">
-      <div className="border-b border-zinc-200 bg-zinc-50/50">
+      <div className="border-b border-subtle bg-neutral-50/50">
         <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-10">
           <Breadcrumb
             items={[{ label: "Accueil", href: "/" }, { label: "Acheter" }]}
@@ -73,24 +75,24 @@ export default async function AcheterPage({
           <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
             {h1}
           </h1>
-          <p className="mt-2 text-base text-zinc-600">{lede}</p>
+          <p className="mt-2 text-base text-body">{lede}</p>
         </div>
       </div>
 
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-12">
         {errorMessage ? (
-          <div className="rounded border border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-700">
+          <div className="rounded-sm border border-subtle bg-page p-6 text-sm text-body">
             <p className="font-medium">
               Liste indisponible pour l&apos;instant.
             </p>
-            <p className="mt-1 text-zinc-600">{errorMessage}</p>
+            <p className="mt-1 text-body">{errorMessage}</p>
           </div>
         ) : (
           <ListingView
             mode="sale"
             basePath="/acheter"
             query={query}
-            items={pageData.items}
+            items={items}
             total={pageData.total}
             page={pageData.page}
             totalPages={pageData.totalPages}
@@ -106,12 +108,12 @@ export default async function AcheterPage({
 function SaleSeoBlock({ communeName }: { communeName?: string }) {
   const zone = communeName ?? "l'ouest parisien";
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50/50">
+    <section className="border-t border-subtle bg-neutral-50/50">
       <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-14">
         <h2 className="text-xl font-semibold tracking-tight md:text-2xl">
           Acheter un bien dans {zone}
         </h2>
-        <div className="mt-4 max-w-3xl space-y-3 text-sm text-zinc-700 md:text-base">
+        <div className="mt-4 max-w-3xl space-y-3 text-sm text-body md:text-base">
           <p>
             Acheter dans {zone} demande une connaissance fine du terrain : prix
             réels pratiqués, copropriétés, charges, travaux à anticiper,
@@ -125,8 +127,8 @@ function SaleSeoBlock({ communeName }: { communeName?: string }) {
             les informations de copropriété collectées en amont.
           </p>
         </div>
-        <div className="mt-6 flex flex-wrap gap-3 rounded border border-zinc-200 bg-white p-5">
-          <p className="basis-full text-base font-medium text-zinc-900">
+        <div className="mt-6 flex flex-wrap gap-3 rounded-sm border border-subtle bg-card p-5">
+          <p className="basis-full text-base font-medium text-primary">
             Vous ne trouvez pas le bien idéal ?
           </p>
           <LinkButton href="/contact">Me contacter</LinkButton>

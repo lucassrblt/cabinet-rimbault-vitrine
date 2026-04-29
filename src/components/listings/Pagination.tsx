@@ -84,10 +84,10 @@ function PageLink({
   active?: boolean;
 } & Omit<React.ComponentPropsWithoutRef<"a">, "children" | "href">) {
   const cls = cn(
-    "inline-flex h-9 min-w-9 items-center justify-center rounded border px-2 text-sm",
+    "inline-flex h-9 min-w-9 items-center justify-center rounded-sm border px-2 text-sm",
     active
-      ? "border-zinc-900 bg-zinc-900 text-white"
-      : "border-zinc-300 bg-white text-zinc-800 hover:border-zinc-900",
+      ? "border-strong bg-inverse text-white"
+      : "border-default bg-card text-primary hover:border-strong",
     disabled && "pointer-events-none opacity-40",
   );
   if (disabled) {

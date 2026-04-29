@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { submitVisitRequest } from "@/app/actions/leads";
 import { Button } from "@/components/ui/Button";
 import {
   Field,
@@ -27,10 +28,13 @@ const AVAIL_OPTIONS = [
 
 export function VisitRequestForm({ reference, isRental }: Props) {
   const [sent, setSent] = useState(false);
+  const [rootError, setRootError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<VisitFormInput>({
     resolver: zodResolver(visitFormSchema),
     defaultValues: {
@@ -44,19 +48,34 @@ export function VisitRequestForm({ reference, isRental }: Props) {
       message: "",
       rgpd: false,
       reference,
+      isRental,
+      website: "",
     },
   });
 
-  const onSubmit = handleSubmit(async () => {
-    await new Promise((r) => setTimeout(r, 400));
-    setSent(true);
+  const onSubmit = handleSubmit((values) => {
+    setRootError(null);
+    startTransition(async () => {
+      const res = await submitVisitRequest({ ...values, isRental });
+      if (res.ok) {
+        setSent(true);
+        return;
+      }
+      setRootError(res.error);
+      if (res.fields) {
+        for (const [path, message] of Object.entries(res.fields)) {
+          const field = path.split(".").pop() as keyof VisitFormInput;
+          setError(field, { type: "server", message });
+        }
+      }
+    });
   });
 
   if (sent) {
     return (
       <div
         role="status"
-        className="rounded border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
+        className="rounded-sm border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900"
       >
         Demande bien reçue pour le bien <strong>{reference}</strong>. Je vous
         recontacte sous 24 h pour convenir d&apos;un créneau.
@@ -67,6 +86,22 @@ export function VisitRequestForm({ reference, isRental }: Props) {
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
       <input type="hidden" {...register("reference")} />
+      <input
+        type="text"
+        autoComplete="off"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="hidden"
+        {...register("website")}
+      />
+      {rootError && (
+        <div
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+        >
+          {rootError}
+        </div>
+      )}
 
       <fieldset className="flex flex-col gap-2">
         <FieldLabel required>Votre profil</FieldLabel>
@@ -84,7 +119,7 @@ export function VisitRequestForm({ reference, isRental }: Props) {
           ).map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-2 rounded border border-zinc-200 px-3 py-1.5 text-sm hover:border-zinc-400"
+              className="flex items-center gap-2 rounded-sm border border-subtle px-3 py-1.5 text-sm hover:border-default"
             >
               <input
                 type="radio"
@@ -109,7 +144,7 @@ export function VisitRequestForm({ reference, isRental }: Props) {
             ].map((opt) => (
               <label
                 key={opt.value}
-                className="flex items-center gap-2 rounded border border-zinc-200 px-3 py-1.5 text-sm hover:border-zinc-400"
+                className="flex items-center gap-2 rounded-sm border border-subtle px-3 py-1.5 text-sm hover:border-default"
               >
                 <input
                   type="radio"
@@ -130,7 +165,7 @@ export function VisitRequestForm({ reference, isRental }: Props) {
           {AVAIL_OPTIONS.map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-2 rounded border border-zinc-200 px-3 py-1.5 text-sm hover:border-zinc-400"
+              className="flex items-center gap-2 rounded-sm border border-subtle px-3 py-1.5 text-sm hover:border-default"
             >
               <input
                 type="checkbox"
@@ -210,7 +245,7 @@ export function VisitRequestForm({ reference, isRental }: Props) {
         <TextareaInput id="vf-msg" rows={3} {...register("message")} />
       </Field>
 
-      <label className="flex gap-2 text-sm text-zinc-700">
+      <label className="flex gap-2 text-sm text-body">
         <input
           type="checkbox"
           className="mt-0.5 h-4 w-4"
@@ -233,8 +268,8 @@ export function VisitRequestForm({ reference, isRental }: Props) {
         </p>
       )}
 
-      <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Envoi…" : "Envoyer ma demande"}
+      <Button type="submit" disabled={isPending}>
+        {isPending ? "Envoi…" : "Envoyer ma demande"}
       </Button>
     </form>
   );

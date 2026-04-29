@@ -17,7 +17,7 @@ function MainImage({ property }: { property: Property }) {
     property.images.slice().sort((a, b) => a.order - b.order)[0];
   if (!main) {
     return (
-      <div className="flex h-full w-full items-center justify-center bg-zinc-100 text-zinc-400">
+      <div className="flex h-full w-full items-center justify-center bg-section text-muted">
         <ImageIcon className="h-8 w-8" aria-hidden="true" />
       </div>
     );
@@ -41,7 +41,7 @@ function CardShell({
   children: React.ReactNode;
 }) {
   const cls =
-    "group flex h-full flex-col overflow-hidden rounded border border-zinc-200 bg-white transition hover:border-zinc-900";
+    "group flex h-full flex-col overflow-hidden rounded-sm border border-subtle bg-card transition hover:border-strong";
   if (!href) return <div className={cls}>{children}</div>;
   return (
     <Link href={href} className={cls}>
@@ -59,25 +59,23 @@ export function SalePropertyCard({ property }: { property: Property }) {
 
   return (
     <CardShell href={`/bien/${property.reference}`}>
-      <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-section">
         <MainImage property={property} />
         <div className="absolute left-2 top-2">
           <PropertyBadgesList property={property} />
         </div>
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <p className="text-lg font-semibold tracking-tight text-zinc-900">
+        <p className="text-lg font-semibold tracking-tight text-primary">
           {formatPrice(price)}
         </p>
-        <p className="text-sm font-medium text-zinc-800">{city}</p>
-        <p className="text-sm text-zinc-600">
+        <p className="text-sm font-medium text-primary">{city}</p>
+        <p className="text-sm text-body">
           {formatPropertyType(property.propertyType)} · {formatSurface(surface)}
           {rooms != null && ` · ${rooms} pièce${rooms > 1 ? "s" : ""}`}
         </p>
         <div className="mt-auto flex items-center justify-between pt-1">
-          <span className="text-xs text-zinc-500">
-            Réf. {property.reference}
-          </span>
+          <span className="text-xs text-muted">Réf. {property.reference}</span>
           <EnergyBadge value={energy} />
         </div>
       </div>
@@ -97,7 +95,7 @@ export function RentPropertyCard({ property }: { property: Property }) {
 
   return (
     <CardShell href={`/bien/${property.reference}`}>
-      <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-section">
         <MainImage property={property} />
         <div className="absolute left-2 top-2">
           <PropertyBadgesList property={property} />
@@ -105,10 +103,10 @@ export function RentPropertyCard({ property }: { property: Property }) {
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div>
-          <p className="text-lg font-semibold tracking-tight text-zinc-900">
+          <p className="text-lg font-semibold tracking-tight text-primary">
             {formatRent(price)}
           </p>
-          <p className="text-xs text-zinc-500">
+          <p className="text-xs text-muted">
             {chargesIncluses
               ? "Charges comprises"
               : charges != null
@@ -116,19 +114,17 @@ export function RentPropertyCard({ property }: { property: Property }) {
                 : "Hors charges"}
           </p>
         </div>
-        <p className="text-sm font-medium text-zinc-800">{city}</p>
-        <p className="text-sm text-zinc-600">
+        <p className="text-sm font-medium text-primary">{city}</p>
+        <p className="text-sm text-body">
           {formatPropertyType(property.propertyType)} · {formatSurface(surface)}
           {rooms != null && ` · ${rooms} pièce${rooms > 1 ? "s" : ""}`}
         </p>
         <div className="mt-auto flex items-center justify-between pt-1">
-          <span className="text-xs text-zinc-500">
-            Réf. {property.reference}
-          </span>
+          <span className="text-xs text-muted">Réf. {property.reference}</span>
           <EnergyBadge value={energy} />
         </div>
         {isFG && (
-          <div className="mt-1 rounded border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-800">
+          <div className="mt-1 rounded-sm border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-800">
             {energy === "F"
               ? "⚠ Loi Climat : loyer gelé entre deux locataires"
               : "⚠ Loi Climat : restrictions de mise en location"}
@@ -148,15 +144,15 @@ export function SoldPropertyCard({ property }: { property: Property }) {
 
   return (
     <CardShell>
-      <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100">
+      <div className="relative aspect-[4/3] overflow-hidden bg-section">
         <MainImage property={property} />
         <div className="absolute left-2 top-2">
           <Badge tone="neutral">{label}</Badge>
         </div>
       </div>
       <div className="flex flex-col gap-1 p-4">
-        <p className="text-sm font-medium text-zinc-800">{city}</p>
-        <p className="text-sm text-zinc-600">
+        <p className="text-sm font-medium text-primary">{city}</p>
+        <p className="text-sm text-body">
           {formatPropertyType(property.propertyType)} · {formatSurface(surface)}
           {rooms != null && ` · ${rooms} pièce${rooms > 1 ? "s" : ""}`}
         </p>

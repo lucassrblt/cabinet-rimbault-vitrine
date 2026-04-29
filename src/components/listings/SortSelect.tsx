@@ -41,10 +41,10 @@ export function SortSelect({
   };
 
   return (
-    <label className="flex items-center gap-2 text-sm text-zinc-700">
+    <label className="flex items-center gap-2 text-sm text-body">
       <span>Trier par</span>
       <select
-        className="rounded border border-zinc-300 bg-white px-2 py-1 text-sm"
+        className="rounded-sm border border-default bg-card px-2 py-1 text-sm"
         value={value ?? "recent"}
         onChange={onChange}
       >

@@ -45,7 +45,7 @@ export function PropertyGallery({ images, title }: Props) {
 
   if (!hasImages) {
     return (
-      <div className="flex aspect-[16/10] w-full items-center justify-center rounded border border-zinc-200 bg-zinc-100 text-zinc-400">
+      <div className="flex aspect-[16/10] w-full items-center justify-center rounded-sm border border-subtle bg-section text-muted">
         <ImageIcon className="h-10 w-10" aria-hidden="true" />
       </div>
     );
@@ -59,7 +59,7 @@ export function PropertyGallery({ images, title }: Props) {
         <button
           type="button"
           onClick={() => setLightboxOpen(true)}
-          className="group relative aspect-[16/10] overflow-hidden rounded border border-zinc-200 bg-zinc-100"
+          className="group relative aspect-[16/10] overflow-hidden rounded-sm border border-subtle bg-section"
           aria-label="Agrandir les photos"
         >
           {/* biome-ignore lint/performance/noImgElement: remote image host not pre-configured */}
@@ -100,8 +100,8 @@ export function PropertyGallery({ images, title }: Props) {
                 setIndex(i);
               }}
               className={cn(
-                "relative aspect-[4/3] shrink-0 basis-24 overflow-hidden rounded border bg-zinc-100 md:basis-auto",
-                i === index ? "border-zinc-900" : "border-zinc-200",
+                "relative aspect-[4/3] shrink-0 basis-24 overflow-hidden rounded-sm border bg-section md:basis-auto",
+                i === index ? "border-strong" : "border-subtle",
               )}
               aria-label={`Afficher la photo ${i + 1}`}
             >
@@ -121,7 +121,7 @@ export function PropertyGallery({ images, title }: Props) {
                 e.stopPropagation();
                 setLightboxOpen(true);
               }}
-              className="flex aspect-[4/3] shrink-0 basis-24 items-center justify-center rounded border border-zinc-200 bg-white text-xs font-medium text-zinc-700 hover:border-zinc-900 md:basis-auto"
+              className="flex aspect-[4/3] shrink-0 basis-24 items-center justify-center rounded-sm border border-subtle bg-card text-xs font-medium text-body hover:border-strong md:basis-auto"
             >
               + {total - 4} photos
             </button>
@@ -144,7 +144,7 @@ export function PropertyGallery({ images, title }: Props) {
               type="button"
               aria-label="Fermer la galerie"
               onClick={() => setLightboxOpen(false)}
-              className="rounded p-1 hover:bg-white/10"
+              className="rounded-sm p-1 hover:bg-white/10"
             >
               <X className="h-6 w-6" aria-hidden="true" />
             </button>
@@ -192,7 +192,7 @@ function NavButton({
         direction === "prev" ? "left-3" : "right-3",
         dark
           ? "bg-white/10 text-white hover:bg-white/20"
-          : "bg-white/90 text-zinc-900 hover:bg-white",
+          : "bg-white/90 text-primary hover:bg-white",
       )}
     >
       <Icon className="h-5 w-5" aria-hidden="true" />
