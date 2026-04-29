@@ -81,3 +81,10 @@ export function formatStatusLabel(status: string): string {
   };
   return map[status] ?? status;
 }
+
+export function formatFloor(floor: number | null | undefined): string | null {
+  if (floor == null) return null;
+  if (floor === 0) return "RDC";
+  if (floor === 1) return "1er étage";
+  return `${floor}e étage`;
+}

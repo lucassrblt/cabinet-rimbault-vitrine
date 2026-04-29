@@ -31,7 +31,7 @@ export function AgenceHeroContent({
     <div className="relative z-10 mx-auto flex min-h-[calc(100vh-10rem)] w-full max-w-6xl flex-col justify-end px-4 pb-20 pt-14 md:px-6 md:pb-24">
       <motion.span
         {...reveal(0)}
-        className="absolute left-4 top-6 inline-block rounded-sm bg-primary px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white md:left-6 md:top-8 md:text-xs"
+        className="absolute left-4 top-6 inline-block rounded-sm bg-primary-600 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white md:left-6 md:top-8 md:text-xs"
       >
         {badgeLabel}
       </motion.span>
