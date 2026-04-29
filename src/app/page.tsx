@@ -150,7 +150,7 @@ function AgentSection() {
             </span>
           </div>
           <div>
-            <LinkButton href="/a-propos" variant="secondary" size="sm">
+            <LinkButton href="/agence" variant="secondary" size="sm">
               En savoir plus sur l&apos;agence
             </LinkButton>
           </div>

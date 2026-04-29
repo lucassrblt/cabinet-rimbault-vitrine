@@ -12,7 +12,7 @@ const navItems = [
   { href: "/acheter", label: "Acheter" },
   { href: "/louer", label: "Louer" },
   { href: "/vendre", label: "Vendre" },
-  { href: "/a-propos", label: "L'agence" },
+  { href: "/agence", label: "L'agence" },
 ];
 
 export function Header() {

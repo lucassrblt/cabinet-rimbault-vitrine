@@ -1,97 +1,93 @@
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import Link from "next/link";
 import { AGENT } from "@/lib/config/agent";
 
+const SERVICE_LINKS = [
+  { href: "/acheter", label: "Acheter" },
+  { href: "/louer", label: "Louer" },
+  { href: "/vendre", label: "Vendre" },
+  { href: "/estimation", label: "Estimation gratuite" },
+] as const;
+
+const AGENCE_LINKS = [
+  { href: "/agence", label: "L'agence" },
+  { href: "/agence#avis", label: "Avis clients" },
+  { href: "/honoraires", label: "Honoraires" },
+  { href: "/contact", label: "Contact" },
+] as const;
+
+const LEGAL_LINKS = [
+  { href: "/mentions-legales", label: "Mentions légales" },
+  { href: "/politique-de-confidentialite", label: "Confidentialité" },
+  { href: "/cookies", label: "Cookies" },
+] as const;
+
 export function Footer() {
   return (
-    <footer className="mt-16 border-t border-subtle bg-page">
-      <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-8 px-4 py-10 sm:grid-cols-2 md:px-6 lg:grid-cols-4">
-        <div>
-          <h3 className="text-sm font-semibold">Agence</h3>
-          <address className="mt-3 not-italic text-sm text-body">
-            <p>Cabinet Rimbault</p>
-            <p>
-              {AGENT.address.line1}, {AGENT.address.postalCode}{" "}
-              {AGENT.address.city}
+    <footer className="border-t border-neutral-200 bg-neutral-100">
+      <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-20">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <p className="font-serif text-xl font-semibold text-primary">
+              Cabinet Rimbault
             </p>
-            <p>
-              <a href={`tel:${AGENT.phoneE164}`}>{AGENT.phoneDisplay}</a>
+            <div className="mt-2 h-px w-10 bg-primary-600" />
+            <address className="mt-5 space-y-3 not-italic text-sm leading-relaxed text-body">
+              <p className="flex items-start gap-3">
+                <MapPin
+                  className="mt-0.5 h-4 w-4 shrink-0 text-primary-600"
+                  aria-hidden="true"
+                />
+                <span>
+                  {AGENT.address.line1}
+                  <br />
+                  {AGENT.address.postalCode} {AGENT.address.city}
+                </span>
+              </p>
+              <p className="flex items-center gap-3">
+                <Phone
+                  className="h-4 w-4 shrink-0 text-primary-600"
+                  aria-hidden="true"
+                />
+                <a
+                  href={`tel:${AGENT.phoneE164}`}
+                  className="transition-colors hover:text-primary"
+                >
+                  {AGENT.phoneDisplay}
+                </a>
+              </p>
+              <p className="flex items-center gap-3">
+                <Mail
+                  className="h-4 w-4 shrink-0 text-primary-600"
+                  aria-hidden="true"
+                />
+                <a
+                  href={`mailto:${AGENT.email}`}
+                  className="transition-colors hover:text-primary"
+                >
+                  {AGENT.email}
+                </a>
+              </p>
+            </address>
+            <p className="mt-4 text-xs text-muted">
+              {AGENT.hours.weekdays}
+              <br />
+              {AGENT.hours.saturday}
             </p>
-            <p>
-              <a href={`mailto:${AGENT.email}`}>{AGENT.email}</a>
-            </p>
-            <p>{AGENT.hours.weekdays}</p>
-            <p>{AGENT.hours.saturday}</p>
-          </address>
-          <p className="mt-3 text-sm text-muted">
-            Retrouvez-moi aussi sur les réseaux depuis la page{" "}
-            <Link href="/contact" className="underline underline-offset-2">
-              Contact
-            </Link>
-            .
-          </p>
-        </div>
+          </div>
 
-        <div>
-          <h3 className="text-sm font-semibold">Services</h3>
-          <ul className="mt-3 space-y-2 text-sm text-body">
-            <li>
-              <Link href="/acheter">Acheter</Link>
-            </li>
-            <li>
-              <Link href="/louer">Louer</Link>
-            </li>
-            <li>
-              <Link href="/vendre">Vendre</Link>
-            </li>
-            <li>
-              <Link href="/estimation">Estimation</Link>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold">L&apos;agence</h3>
-          <ul className="mt-3 space-y-2 text-sm text-body">
-            <li>
-              <Link href="/a-propos">À propos</Link>
-            </li>
-            <li>
-              <span className="text-muted">Secteurs (à venir)</span>
-            </li>
-            <li>
-              <Link href="/a-propos#avis">Avis clients</Link>
-            </li>
-            <li>
-              <Link href="/contact">Contact</Link>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 className="text-sm font-semibold">Légal</h3>
-          <ul className="mt-3 space-y-2 text-sm text-body">
-            <li>
-              <Link href="/mentions-legales">Mentions légales</Link>
-            </li>
-            <li>
-              <Link href="/politique-de-confidentialite">
-                Politique de confidentialité
-              </Link>
-            </li>
-            <li>
-              <Link href="/cookies">Cookies</Link>
-            </li>
-            <li>
-              <Link href="/honoraires">Honoraires</Link>
-            </li>
-          </ul>
+          <FooterNav title="Services" links={SERVICE_LINKS} />
+          <FooterNav title="L'agence" links={AGENCE_LINKS} />
+          <FooterNav title="Légal" links={LEGAL_LINKS} />
         </div>
       </div>
 
-      <div className="border-t border-subtle">
-        <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs text-muted md:px-6">
-          <p className="font-medium text-body">Informations légales</p>
-          <ul className="mt-2 space-y-1">
+      <div className="border-t border-neutral-200">
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">
+            Informations réglementaires
+          </p>
+          <ul className="mt-3 space-y-1 text-xs leading-relaxed text-muted">
             <li>
               {AGENT.legal.carteT} — {AGENT.legal.cci}
             </li>
@@ -101,16 +97,49 @@ export function Footer() {
             <li>Garant financier : {AGENT.legal.garant}</li>
             <li>{AGENT.legal.mediator}</li>
           </ul>
-          <p className="mt-3">
-            <Link href="/mentions-legales" className="underline">
-              Voir les mentions légales complètes
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <Link
+              href="/mentions-legales"
+              className="inline-flex items-center gap-1 text-xs text-muted transition-colors hover:text-primary"
+            >
+              Mentions légales complètes
+              <ArrowRight className="h-3 w-3" aria-hidden="true" />
             </Link>
-          </p>
-          <p className="mt-2 text-muted">
-            © {new Date().getFullYear()} Cabinet Rimbault. Tous droits réservés.
-          </p>
+            <p className="text-xs text-subtle">
+              © {new Date().getFullYear()} Cabinet Rimbault. Tous droits
+              réservés.
+            </p>
+          </div>
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterNav({
+  title,
+  links,
+}: {
+  title: string;
+  links: ReadonlyArray<{ href: string; label: string }>;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">
+        {title}
+      </p>
+      <ul className="mt-4 space-y-2.5">
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link
+              href={link.href}
+              className="text-sm text-body transition-colors hover:text-primary"
+            >
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
