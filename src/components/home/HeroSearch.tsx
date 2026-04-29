@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, ChevronDown } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { COMMUNES } from "@/lib/config/communes";
@@ -78,10 +78,10 @@ export function HeroSearch() {
               setBudget("");
             }}
             className={cn(
-              "px-8 py-4 text-sm font-semibold tracking-wide transition-colors duration-150",
+              "border-b-2 px-8 py-4 text-sm font-semibold tracking-wide transition-colors duration-150",
               mode === m
-                ? "bg-primary-600 text-on-primary"
-                : "bg-card text-body hover:bg-section",
+                ? "border-primary-500 text-primary-500"
+                : "border-transparent text-body hover:text-primary-500",
             )}
           >
             {m === "acheter" ? "Acheter" : "Louer"}
@@ -121,7 +121,7 @@ export function HeroSearch() {
             className="flex w-full items-center justify-center gap-2 rounded-sm bg-primary-600 px-8 py-4 text-sm font-semibold text-on-primary transition-colors duration-150 hover:bg-primary-700 md:w-auto"
           >
             Rechercher
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            <Search className="h-4 w-4" aria-hidden="true" />
           </button>
         </div>
       </div>

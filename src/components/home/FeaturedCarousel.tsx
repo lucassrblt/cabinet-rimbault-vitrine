@@ -7,9 +7,11 @@ import {
   Image as ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { getPropertyBadges } from "@/components/property/PropertyBadges";
+import { Badge } from "@/components/ui/Badge";
 import type { Property } from "@/lib/api/types";
-import { formatPrice, formatSurface } from "@/lib/utils";
+import { cn, formatPrice, formatSurface } from "@/lib/utils";
 
 function ImageSlider({ property }: { property: Property }) {
   const ordered = [...property.images].sort((a, b) => {
@@ -91,61 +93,175 @@ function ImageSlider({ property }: { property: Property }) {
   );
 }
 
+function formatFloor(floor: number | null | undefined): string | null {
+  if (floor == null) return null;
+  if (floor === 0) return "Rez-de-chaussée";
+  if (floor === 1) return "1er étage";
+  return `${floor}e étage`;
+}
+
+function buildAmenityLabels(amenities: Property["amenities"]): string[] {
+  if (!amenities) return [];
+  const labels: string[] = [];
+  if (amenities.hasTerrace) labels.push("Terrasse");
+  if (amenities.hasBalcony) labels.push("Balcon");
+  if (amenities.hasParking || amenities.hasGarage) labels.push("Parking");
+  if (amenities.hasCellar) labels.push("Cave");
+  if (amenities.hasGarden) labels.push("Jardin");
+  if (amenities.hasPool) labels.push("Piscine");
+  return labels;
+}
+
 export function FeaturedCarousel({ properties }: { properties: Property[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const idx = cardRefs.current.indexOf(entry.target as HTMLElement);
+            if (idx !== -1) setActiveIndex(idx);
+          }
+        }
+      },
+      { root: container, threshold: 0.6 },
+    );
+
+    for (const card of cardRefs.current) {
+      if (card) observer.observe(card);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollToCard = useCallback((index: number) => {
+    const card = cardRefs.current[index];
+    if (card) {
+      card.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "start",
+      });
+    }
+  }, []);
 
   return (
-    <div
-      ref={scrollRef}
-      className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto"
-    >
-      {properties.map((property) => {
-        const city = property.location?.city;
-        const neighborhood = property.location?.neighborhood;
-        const location = [city, neighborhood].filter(Boolean).join(" — ");
-        const surface = property.characteristics?.surface;
-        const rooms = property.characteristics?.rooms;
-        const bathrooms = property.characteristics?.bathrooms;
-        const price = property.finance?.price;
+    <div>
+      <div
+        ref={scrollRef}
+        className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto"
+      >
+        {properties.map((property, i) => {
+          const city = property.location?.city;
+          const neighborhood = property.location?.neighborhood;
+          const location = [city, neighborhood].filter(Boolean).join(" – ");
+          const surface = property.characteristics?.surface;
+          const rooms = property.characteristics?.rooms;
+          const floor = property.characteristics?.floor;
+          const price = property.finance?.price;
+          const amenityLabels = buildAmenityLabels(property.amenities);
+          const floorLabel = formatFloor(floor);
+          const badges = getPropertyBadges(property);
 
-        return (
-          <article
-            key={property.id}
-            data-card
-            className="w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-sm border border-subtle bg-card shadow-sm transition-shadow duration-200 hover:shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
-          >
-            <Link href={`/bien/${property.reference}`}>
-              <div className="aspect-[4/3] overflow-hidden bg-neutral-200">
-                <ImageSlider property={property} />
-              </div>
+          const hasAmenities = amenityLabels.length > 0;
 
-              <div className="flex flex-col gap-1.5 p-5">
-                {location && (
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted">
-                    {location}
-                  </p>
-                )}
-                <h3 className="text-base font-semibold text-primary">
-                  {property.title}
-                </h3>
-                <p className="text-sm text-body">
-                  {formatSurface(surface)}
-                  {rooms != null && ` · ${rooms} pièce${rooms > 1 ? "s" : ""}`}
-                  {bathrooms != null && ` · ${bathrooms} sdb`}
-                </p>
-                <div className="mt-1 flex items-center justify-between">
-                  <p className="text-lg font-semibold text-primary">
-                    {formatPrice(price)}
-                  </p>
-                  <span className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary-600 text-on-primary transition-colors duration-150 hover:bg-primary-700">
-                    <ArrowRight className="h-4 w-4" />
-                  </span>
+          const line1Parts: string[] = [];
+          if (rooms != null)
+            line1Parts.push(`${rooms} pièce${rooms > 1 ? "s" : ""}`);
+          if (hasAmenities) {
+            line1Parts.push(...amenityLabels);
+          } else {
+            if (surface != null) line1Parts.push(formatSurface(surface));
+            if (floorLabel) line1Parts.push(floorLabel);
+          }
+
+          const line2Parts: string[] = [];
+          if (hasAmenities) {
+            if (surface != null) line2Parts.push(formatSurface(surface));
+            if (floorLabel) line2Parts.push(floorLabel);
+          }
+
+          return (
+            <article
+              key={property.id}
+              ref={(el) => {
+                cardRefs.current[i] = el;
+              }}
+              data-card
+              className="w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-[10px] border border-subtle bg-card shadow-sm transition-shadow duration-200 hover:shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
+            >
+              <Link href={`/bien/${property.reference}`}>
+                <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
+                  <ImageSlider property={property} />
+                  {badges.length > 0 && (
+                    <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                      {badges.map((b) => (
+                        <Badge key={b.label} tone="neutral">
+                          {b.label.toUpperCase()}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </div>
-            </Link>
-          </article>
-        );
-      })}
+
+                <div className="flex flex-col gap-1.5 p-5">
+                  {location && (
+                    <p className="text-xs font-semibold uppercase tracking-wider text-primary-600">
+                      {location}
+                    </p>
+                  )}
+
+                  {line1Parts.length > 0 && (
+                    <p className="text-sm font-semibold text-primary">
+                      {line1Parts.join(" – ")}
+                    </p>
+                  )}
+
+                  {line2Parts.length > 0 && (
+                    <p className="text-xs text-muted">
+                      {line2Parts.join(" – ")}
+                    </p>
+                  )}
+
+                  <div className="mt-auto flex items-center justify-between pt-2">
+                    <p className="text-lg font-bold text-primary">
+                      {formatPrice(price)}
+                    </p>
+                    <span className="flex h-9 w-9 items-center justify-center rounded-none bg-primary-600 text-on-primary transition-colors duration-150 hover:bg-primary-700">
+                      <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            </article>
+          );
+        })}
+      </div>
+
+      {properties.length > 1 && (
+        <div className="mt-6 flex justify-center gap-2" aria-hidden="true">
+          {properties.map((p, i) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-label={`Aller au bien ${i + 1}`}
+              onClick={() => scrollToCard(i)}
+              className={cn(
+                "h-2 rounded-full transition-all duration-300",
+                i === activeIndex
+                  ? "w-6 bg-primary-600"
+                  : "w-2 bg-neutral-300 hover:bg-neutral-400",
+              )}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
