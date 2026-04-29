@@ -1,4 +1,13 @@
-import { ArrowRight, Mail, Phone, Star } from "lucide-react";
+import {
+  ArrowRight,
+  KeyRound,
+  Mail,
+  MapPin,
+  Phone,
+  ShieldCheck,
+  Star,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { QuickContactForm } from "@/components/forms/QuickContactForm";
@@ -23,11 +32,13 @@ export default async function Home() {
     <main className="flex flex-1 flex-col">
       <HeroSection />
       <FeaturedSection properties={featured} />
+      <ReassuranceSection />
       <ChiffresSection />
       <AgentSection />
       <ParcoursVendeurSection />
       <ReviewsSection />
       <QuickContactSection />
+      <EstimationCtaSection />
     </main>
   );
 }
@@ -77,22 +88,88 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
 
   return (
     <section className="bg-header">
-      <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-20 pt-12 md:px-8 md:pb-28 md:pt-16">
         <SectionHeader
-          eyebrow={<span className="text-primary">Notre sélection</span>}
+          eyebrow={<span className="text-primary-600">Notre sélection</span>}
           title="Nos coups de cœur dans votre quartier."
           action={
             <Link
               href="/acheter"
-              className="inline-flex items-center gap-2 rounded-sm border border-primary-600 px-5 py-2.5 text-sm font-semibold text-primary transition-colors duration-150 hover:bg-primary-600 hover:text-on-primary"
+              className="inline-flex items-center gap-2 border border-primary-600 bg-transparent px-4 py-2 text-sm font-medium text-primary-600 shadow-md transition-all duration-300 hover:bg-primary-600 hover:text-on-primary hover:shadow-lg"
             >
-              Voir tous les biens
-              <ArrowRight className="h-4 w-4" />
+              Voir tous nos biens
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           }
         />
         <div className="mt-10">
           <FeaturedCarousel properties={properties} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Réassurance — barre de confiance
+   ───────────────────────────────────────────── */
+
+const REASSURANCE_ITEMS = [
+  {
+    icon: ShieldCheck,
+    title: "14 ans d’expérience",
+    description: "Plus de 185 transactions menées à bien en Île-de-France.",
+  },
+  {
+    icon: Users,
+    title: "Accompagnement sur-mesure",
+    description:
+      "Sophie vous accompagne de A à Z, du premier appel à la signature.",
+  },
+  {
+    icon: MapPin,
+    title: "Ancrage local",
+    description:
+      "8 communes maîtrisées, rue par rue, copropriété par copropriété.",
+  },
+  {
+    icon: KeyRound,
+    title: "Service global",
+    description:
+      "Transaction, location, gestion : nous simplifions vos projets.",
+  },
+] as const;
+
+function ReassuranceSection() {
+  return (
+    <section className="bg-header">
+      <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
+        <div className="rounded-lg border border-neutral-200 bg-neutral-100/60">
+          <div className="grid grid-cols-2 md:grid-cols-4">
+            {REASSURANCE_ITEMS.map((item, i) => (
+              <ScrollReveal
+                key={item.title}
+                delay={i * 0.12}
+                className={`flex flex-col items-center px-6 py-10 text-center ${
+                  i < REASSURANCE_ITEMS.length - 1
+                    ? "border-r border-neutral-200"
+                    : ""
+                } ${i < 2 ? "border-b border-neutral-200 md:border-b-0" : ""}`}
+              >
+                <item.icon
+                  className="h-10 w-10 text-neutral-500"
+                  strokeWidth={1}
+                  aria-hidden="true"
+                />
+                <h3 className="mt-5 font-serif text-base font-semibold tracking-tight text-primary">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">
+                  {item.description}
+                </p>
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -422,6 +499,48 @@ function QuickContactSection() {
             </div>
           </ScrollReveal>
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Estimation CTA — bannière conversion
+   ───────────────────────────────────────────── */
+
+function EstimationCtaSection() {
+  return (
+    <section className="bg-neutral-900">
+      <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
+        <ScrollReveal>
+          <div className="overflow-hidden rounded-xl">
+            <div className="grid grid-cols-1 md:grid-cols-2">
+              <div className="flex flex-col justify-center bg-primary-600 px-8 py-12 md:px-12 md:py-16">
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">
+                  Vous avez un projet&nbsp;?
+                </p>
+                <h2 className="mt-4 font-serif text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">
+                  Estimez votre bien
+                  <br />
+                  en quelques minutes.
+                </h2>
+                <p className="mt-4 text-base text-primary-100">
+                  Une estimation fiable et gratuite par nos experts.
+                </p>
+                <div className="mt-8">
+                  <Link
+                    href="/estimation"
+                    className="inline-flex items-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-semibold text-primary-600 transition-colors hover:bg-neutral-100"
+                  >
+                    Estimer mon bien
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+              <div className="hidden min-h-[240px] bg-neutral-950 md:block" />
+            </div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
