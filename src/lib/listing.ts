@@ -1,4 +1,10 @@
-import type { Property } from "./api/types";
+import type {
+  EnergyClass,
+  PropertyType,
+  SearchFilters,
+  SortBy,
+  TransactionType,
+} from "./api/types";
 import { COMMUNES } from "./config/communes";
 
 export interface ListingQuery {
@@ -13,6 +19,10 @@ export interface ListingQuery {
   page?: string;
   meuble?: string;
   dpe?: string;
+  balcon?: string;
+  terrasse?: string;
+  jardin?: string;
+  hideFG?: string;
 }
 
 export const PER_PAGE = 12;
@@ -37,6 +47,10 @@ export function parseQuery(
     page: get("page"),
     meuble: get("meuble"),
     dpe: get("dpe"),
+    balcon: get("balcon"),
+    terrasse: get("terrasse"),
+    jardin: get("jardin"),
+    hideFG: get("hideFG"),
   };
 }
 
@@ -46,111 +60,88 @@ function num(v: string | undefined): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-export function filterProperties(
-  all: Property[],
+function bool(v: string | undefined): boolean | undefined {
+  if (v === "true" || v === "1") return true;
+  if (v === "false" || v === "0") return false;
+  return undefined;
+}
+
+const ENERGY_CLASSES: readonly EnergyClass[] = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "VIERGE",
+];
+
+const SORT_VALUES: readonly SortBy[] = [
+  "date",
+  "price_asc",
+  "price_desc",
+  "rent_asc",
+  "rent_desc",
+  "surface_asc",
+  "surface_desc",
+];
+
+export function mapSort(value: string | undefined): SortBy | undefined {
+  if (!value) return undefined;
+  return SORT_VALUES.find((s) => s === value);
+}
+
+export function pageFromQuery(query: ListingQuery): number {
+  const n = Number(query.page ?? "1");
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 1;
+}
+
+export function queryToSearchFilters(
   query: ListingQuery,
-): Property[] {
+  transactionType: TransactionType,
+  page: number,
+): SearchFilters {
   const commune = query.commune
     ? COMMUNES.find((c) => c.slug === query.commune)
     : null;
-  const pieces = num(query.pieces);
-  const budgetMin = num(query.budgetMin);
-  const budgetMax = num(query.budgetMax);
-  const surfaceMin = num(query.surfaceMin);
-  const surfaceMax = num(query.surfaceMax);
 
-  return all.filter((p) => {
-    if (query.type && p.propertyType !== query.type) return false;
-    if (commune) {
-      const city = p.location?.city?.toLowerCase() ?? "";
-      const pc = p.location?.postalCode ?? "";
-      if (city !== commune.name.toLowerCase() && pc !== commune.postalCode)
-        return false;
-    }
-    if (pieces != null && (p.characteristics?.rooms ?? 0) < pieces)
-      return false;
-    const price = p.finance?.price ?? 0;
-    if (budgetMin != null && price < budgetMin) return false;
-    if (budgetMax != null && price > budgetMax) return false;
-    const surface = p.characteristics?.surface ?? 0;
-    if (surfaceMin != null && surface < surfaceMin) return false;
-    if (surfaceMax != null && surface > surfaceMax) return false;
-    if (query.dpe && p.energy?.energyClass !== query.dpe) return false;
-    return true;
-  });
-}
+  const dpeRaw = query.dpe;
+  const dpe =
+    dpeRaw && ENERGY_CLASSES.includes(dpeRaw as EnergyClass)
+      ? ([dpeRaw as EnergyClass] as EnergyClass[])
+      : undefined;
 
-export function sortProperties(
-  list: Property[],
-  sort: string | undefined,
-): Property[] {
-  const out = [...list];
-  switch (sort) {
-    case "price_asc":
-    case "rent_asc":
-      out.sort((a, b) => (a.finance?.price ?? 0) - (b.finance?.price ?? 0));
-      break;
-    case "price_desc":
-    case "rent_desc":
-      out.sort((a, b) => (b.finance?.price ?? 0) - (a.finance?.price ?? 0));
-      break;
-    case "surface_asc":
-      out.sort(
-        (a, b) =>
-          (a.characteristics?.surface ?? 0) - (b.characteristics?.surface ?? 0),
-      );
-      break;
-    case "surface_desc":
-      out.sort(
-        (a, b) =>
-          (b.characteristics?.surface ?? 0) - (a.characteristics?.surface ?? 0),
-      );
-      break;
-    default:
-      out.sort((a, b) => {
-        const da = new Date(a.publishedAt ?? a.createdAt).getTime();
-        const db = new Date(b.publishedAt ?? b.createdAt).getTime();
-        return db - da;
-      });
-  }
-  return out;
-}
-
-export function paginate<T>(items: T[], page: number, perPage = PER_PAGE) {
-  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
-  const current = Math.min(Math.max(1, page), totalPages);
-  const start = (current - 1) * perPage;
-  return {
-    items: items.slice(start, start + perPage),
-    page: current,
-    totalPages,
-    total: items.length,
+  const filters: SearchFilters = {
+    transactionType,
+    propertyType: (query.type as PropertyType) || undefined,
+    postalCode: commune?.postalCode,
+    city: commune ? commune.name : undefined,
+    minPrice: num(query.budgetMin),
+    maxPrice: num(query.budgetMax),
+    minSurface: num(query.surfaceMin),
+    maxSurface: num(query.surfaceMax),
+    minRooms: num(query.pieces),
+    dpe,
+    hideEnergyFG: bool(query.hideFG),
+    hasBalcony: bool(query.balcon),
+    hasTerrace: bool(query.terrasse),
+    hasGarden: bool(query.jardin),
+    isFurnished: bool(query.meuble),
+    sortBy: mapSort(query.sort),
+    limit: PER_PAGE,
+    offset: (page - 1) * PER_PAGE,
   };
+
+  return filters;
 }
 
-export function findSimilar(
-  source: Property,
-  pool: Property[],
-  limit = 3,
-): Property[] {
-  const sameTx = pool.filter(
-    (p) =>
-      p.reference !== source.reference &&
-      p.transactionType === source.transactionType,
-  );
-  const scored = sameTx.map((p) => {
-    let score = 0;
-    if (p.location?.city && p.location.city === source.location?.city)
-      score += 3;
-    if (p.propertyType === source.propertyType) score += 2;
-    const a = p.finance?.price ?? 0;
-    const b = source.finance?.price ?? 0;
-    if (a && b) {
-      const diff = Math.abs(a - b) / b;
-      if (diff < 0.2) score += 1;
-    }
-    return { p, score };
-  });
-  scored.sort((x, y) => y.score - x.score);
-  return scored.slice(0, limit).map((x) => x.p);
+export function paginateServerSide(
+  total: number,
+  page: number,
+  perPage = PER_PAGE,
+) {
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const current = Math.min(Math.max(1, page), totalPages);
+  return { page: current, totalPages, total };
 }

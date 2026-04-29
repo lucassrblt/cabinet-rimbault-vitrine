@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default function VendrePage() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="border-b border-zinc-200 bg-zinc-50/50">
+      <section className="border-b border-subtle bg-neutral-50/50">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
           <Breadcrumb
             items={[{ label: "Accueil", href: "/" }, { label: "Vendre" }]}
@@ -28,7 +28,7 @@ export default function VendrePage() {
           <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-5xl">
             Vendre votre bien avec un accompagnement humain
           </h1>
-          <p className="mt-4 max-w-2xl text-base text-zinc-600 md:text-lg">
+          <p className="mt-4 max-w-2xl text-base text-body md:text-lg">
             Estimation gratuite, transparence sur la méthode, un seul
             interlocuteur du premier rendez-vous à la signature. Je défends
             votre intérêt, pas le mien.
@@ -42,7 +42,7 @@ export default function VendrePage() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200">
+      <section className="border-b border-subtle">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
           <SectionHeader
             title="Comment ça se passe, concrètement"
@@ -52,22 +52,22 @@ export default function VendrePage() {
             {SELLING_STEPS.map((s) => (
               <li
                 key={s.title}
-                className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-5"
+                className="flex flex-col gap-2 rounded-sm border border-subtle bg-card p-5"
               >
-                <p className="text-base font-semibold text-zinc-900">
+                <p className="text-base font-semibold text-primary">
                   {s.title}
                 </p>
-                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                <p className="text-xs font-medium uppercase tracking-wider text-muted">
                   {s.duration}
                 </p>
-                <p className="text-sm text-zinc-700">{s.role}</p>
+                <p className="text-sm text-body">{s.role}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-zinc-50/50">
+      <section className="border-b border-subtle bg-neutral-50/50">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
           <SectionHeader
             title="Ce que j'apporte à votre vente"
@@ -77,19 +77,19 @@ export default function VendrePage() {
             {AGENT_ENGAGEMENTS.map((e) => (
               <li
                 key={e.title}
-                className="rounded-xl border border-zinc-200 bg-white p-5"
+                className="rounded-sm border border-subtle bg-card p-5"
               >
-                <p className="text-base font-semibold text-zinc-900">
+                <p className="text-base font-semibold text-primary">
                   {e.title}
                 </p>
-                <p className="mt-2 text-sm text-zinc-700">{e.description}</p>
+                <p className="mt-2 text-sm text-body">{e.description}</p>
               </li>
             ))}
           </ul>
         </div>
       </section>
 
-      <section className="border-b border-zinc-200">
+      <section className="border-b border-subtle">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
           <SectionHeader
             title="Honoraires : tout est clair"
@@ -103,7 +103,7 @@ export default function VendrePage() {
         </div>
       </section>
 
-      <section className="border-b border-zinc-200 bg-zinc-50/50">
+      <section className="border-b border-subtle bg-neutral-50/50">
         <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
           <SectionHeader title="Questions fréquentes" />
           <div className="mt-6 max-w-3xl">
@@ -123,18 +123,18 @@ export default function VendrePage() {
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             Prêt à estimer votre bien ?
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-base text-zinc-600">
+          <p className="mx-auto mt-3 max-w-xl text-base text-body">
             L&apos;estimation est gratuite et sans engagement. Réponse
             personnalisée sous 24 à 48 h.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <LinkButton href="/estimation">Estimer mon bien</LinkButton>
           </div>
-          <p className="mt-8 text-sm text-zinc-600">
+          <p className="mt-8 text-sm text-body">
             Ou directement :{" "}
             <a
               href={`tel:${AGENT.phoneE164}`}
-              className="inline-flex items-center gap-1 font-medium text-zinc-900 underline underline-offset-4"
+              className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4"
             >
               <Phone className="h-4 w-4" aria-hidden="true" />{" "}
               {AGENT.phoneDisplay}
@@ -142,7 +142,7 @@ export default function VendrePage() {
             ·{" "}
             <a
               href={`mailto:${AGENT.email}`}
-              className="inline-flex items-center gap-1 font-medium text-zinc-900 underline underline-offset-4"
+              className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4"
             >
               <Mail className="h-4 w-4" aria-hidden="true" /> {AGENT.email}
             </a>

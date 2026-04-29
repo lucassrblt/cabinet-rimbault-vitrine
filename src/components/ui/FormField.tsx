@@ -8,7 +8,7 @@ import type {
 import { cn } from "@/lib/utils";
 
 const FIELD_BASE =
-  "block w-full rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:ring-offset-0";
+  "block w-full rounded-sm border border-default bg-card px-3 py-2 text-sm text-primary placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-focus focus:ring-offset-0";
 
 export function FieldLabel({
   children,
@@ -17,7 +17,7 @@ export function FieldLabel({
   htmlFor,
   ...rest
 }: LabelHTMLAttributes<HTMLLabelElement> & { required?: boolean }) {
-  const cls = cn("block text-sm font-medium text-zinc-800", className);
+  const cls = cn("block text-sm font-medium text-primary", className);
   const content = (
     <>
       {children}
@@ -48,7 +48,7 @@ export function FieldError({ message }: { message?: string }) {
 }
 
 export function FieldHint({ children }: { children: ReactNode }) {
-  return <p className="mt-1 text-xs text-zinc-500">{children}</p>;
+  return <p className="mt-1 text-xs text-muted">{children}</p>;
 }
 
 export type TextInputProps = InputHTMLAttributes<HTMLInputElement>;
@@ -75,7 +75,7 @@ export function SelectInput({
 }: SelectInputProps) {
   return (
     <select
-      className={cn(FIELD_BASE, "appearance-none bg-white pr-8", className)}
+      className={cn(FIELD_BASE, "appearance-none bg-card pr-8", className)}
       {...rest}
     >
       {children}

@@ -18,6 +18,10 @@ export interface ListingFilters {
   page?: string;
   meuble?: string;
   dpe?: string;
+  balcon?: string;
+  terrasse?: string;
+  jardin?: string;
+  hideFG?: string;
 }
 
 const SALE_TYPES = [
@@ -71,6 +75,17 @@ const RENT_BUDGETS_MIN = ["", "500", "1000", "1500", "2000", "3000"];
 const RENT_BUDGETS_MAX = ["", "1000", "1500", "2000", "3000", "5000"];
 
 const SURFACES = ["", "30", "50", "70", "90", "120", "150", "200"];
+
+const DPE_OPTIONS = [
+  { value: "", label: "DPE — tous" },
+  { value: "A", label: "A" },
+  { value: "B", label: "B" },
+  { value: "C", label: "C" },
+  { value: "D", label: "D" },
+  { value: "E", label: "E" },
+  { value: "F", label: "F" },
+  { value: "G", label: "G" },
+];
 
 function formatEuro(v: string): string {
   if (!v) return "—";
@@ -181,12 +196,83 @@ export function FilterBar({
           </SelectInput>
         </div>
       </div>
+
+      <div className="flex flex-wrap items-center gap-4 text-sm text-body">
+        <SelectInput
+          name="dpe"
+          defaultValue={filters.dpe ?? ""}
+          aria-label="DPE"
+          className="w-auto"
+        >
+          {DPE_OPTIONS.map((o) => (
+            <option key={`dpe-${o.value}`} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </SelectInput>
+
+        <label className="inline-flex items-center gap-1.5">
+          <input
+            type="checkbox"
+            name="hideFG"
+            value="true"
+            defaultChecked={filters.hideFG === "true"}
+            className="h-4 w-4"
+          />
+          Masquer F / G
+        </label>
+
+        <label className="inline-flex items-center gap-1.5">
+          <input
+            type="checkbox"
+            name="balcon"
+            value="true"
+            defaultChecked={filters.balcon === "true"}
+            className="h-4 w-4"
+          />
+          Balcon
+        </label>
+        <label className="inline-flex items-center gap-1.5">
+          <input
+            type="checkbox"
+            name="terrasse"
+            value="true"
+            defaultChecked={filters.terrasse === "true"}
+            className="h-4 w-4"
+          />
+          Terrasse
+        </label>
+        <label className="inline-flex items-center gap-1.5">
+          <input
+            type="checkbox"
+            name="jardin"
+            value="true"
+            defaultChecked={filters.jardin === "true"}
+            className="h-4 w-4"
+          />
+          Jardin
+        </label>
+
+        {mode === "rent" && (
+          <label className="inline-flex items-center gap-1.5">
+            <input
+              type="checkbox"
+              name="meuble"
+              value="true"
+              defaultChecked={filters.meuble === "true"}
+              className="h-4 w-4"
+            />
+            Meublé
+          </label>
+        )}
+      </div>
+
       {filters.sort && <input type="hidden" name="sort" value={filters.sort} />}
 
       <div className="flex flex-wrap items-center gap-3">
         <button
           type="submit"
-          className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-sm bg-primary-600 px-4 py-2 text-sm font-medium text-on-primary hover:bg-primary-700"
         >
           Appliquer
         </button>
@@ -212,7 +298,11 @@ function hasActive(filters: ListingFilters): boolean {
       filters.surfaceMin ||
       filters.surfaceMax ||
       filters.meuble ||
-      filters.dpe,
+      filters.dpe ||
+      filters.balcon ||
+      filters.terrasse ||
+      filters.jardin ||
+      filters.hideFG,
   );
 }
 
@@ -250,6 +340,12 @@ function ActiveChips({
     chips.push({ key: "surfaceMax", label: `≤ ${filters.surfaceMax} m²` });
   if (filters.meuble === "true") chips.push({ key: "meuble", label: "Meublé" });
   if (filters.dpe) chips.push({ key: "dpe", label: `DPE ${filters.dpe}` });
+  if (filters.balcon === "true") chips.push({ key: "balcon", label: "Balcon" });
+  if (filters.terrasse === "true")
+    chips.push({ key: "terrasse", label: "Terrasse" });
+  if (filters.jardin === "true") chips.push({ key: "jardin", label: "Jardin" });
+  if (filters.hideFG === "true")
+    chips.push({ key: "hideFG", label: "Sans F/G" });
 
   if (chips.length === 0) return null;
 
@@ -265,7 +361,7 @@ function ActiveChips({
           <Link
             key={chip.key}
             href={href}
-            className="inline-flex items-center gap-1 rounded-full border border-zinc-300 bg-white px-3 py-1 text-xs text-zinc-800 hover:border-zinc-900"
+            className="inline-flex items-center gap-1 rounded-full border border-default bg-card px-3 py-1 text-xs text-primary hover:border-strong"
           >
             {chip.label}
             <X className="h-3 w-3" aria-hidden="true" />

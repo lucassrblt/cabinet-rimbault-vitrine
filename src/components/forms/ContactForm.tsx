@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { submitContactLead } from "@/app/actions/leads";
 import { Button } from "@/components/ui/Button";
 import {
   Field,
@@ -23,42 +24,61 @@ const SUBJECTS: { value: ContactInput["subject"]; label: string }[] = [
 
 export function ContactForm({
   defaultSubject,
+  defaultReference,
 }: {
   defaultSubject?: ContactInput["subject"];
+  defaultReference?: string;
 }) {
   const [sent, setSent] = useState(false);
+  const [rootError, setRootError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<ContactInput>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       subject: defaultSubject ?? "vente",
-      reference: "",
+      reference: defaultReference ?? "",
       firstName: "",
       lastName: "",
       phone: "",
       email: "",
       message: "",
       rgpd: false,
+      website: "",
     },
   });
 
   const subject = watch("subject");
   const showReference = subject === "vente" || subject === "location";
 
-  const onSubmit = handleSubmit(async () => {
-    await new Promise((r) => setTimeout(r, 400));
-    setSent(true);
+  const onSubmit = handleSubmit((values) => {
+    setRootError(null);
+    startTransition(async () => {
+      const res = await submitContactLead(values);
+      if (res.ok) {
+        setSent(true);
+        return;
+      }
+      setRootError(res.error);
+      if (res.fields) {
+        for (const [path, message] of Object.entries(res.fields)) {
+          const field = path.split(".").pop() as keyof ContactInput;
+          setError(field, { type: "server", message });
+        }
+      }
+    });
   });
 
   if (sent) {
     return (
       <div
         role="status"
-        className="rounded border border-emerald-200 bg-emerald-50 p-6 text-emerald-900"
+        className="rounded-sm border border-emerald-200 bg-emerald-50 p-6 text-emerald-900"
       >
         <p className="text-lg font-semibold">Message reçu</p>
         <p className="mt-1 text-sm">Je vous réponds sous 24 h ouvrées.</p>
@@ -68,13 +88,29 @@ export function ContactForm({
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
+      <input
+        type="text"
+        autoComplete="off"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="hidden"
+        {...register("website")}
+      />
+      {rootError && (
+        <div
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+        >
+          {rootError}
+        </div>
+      )}
       <fieldset className="flex flex-col gap-2">
         <FieldLabel required>Sujet de votre demande</FieldLabel>
         <div className="grid grid-cols-1 gap-1.5">
           {SUBJECTS.map((s) => (
             <label
               key={s.value}
-              className="flex cursor-pointer items-center gap-2 rounded border border-zinc-200 px-3 py-2 text-sm hover:border-zinc-400"
+              className="flex cursor-pointer items-center gap-2 rounded-sm border border-subtle px-3 py-2 text-sm hover:border-default"
             >
               <input
                 type="radio"
@@ -170,7 +206,7 @@ export function ContactForm({
         <TextareaInput id="ct-msg" rows={5} {...register("message")} />
       </Field>
 
-      <label className="flex gap-2 text-sm text-zinc-700">
+      <label className="flex gap-2 text-sm text-body">
         <input
           type="checkbox"
           className="mt-0.5 h-4 w-4"
@@ -194,8 +230,8 @@ export function ContactForm({
       )}
 
       <div>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Envoi…" : "Envoyer"}
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Envoi…" : "Envoyer"}
         </Button>
       </div>
     </form>

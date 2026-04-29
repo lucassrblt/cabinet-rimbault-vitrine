@@ -17,12 +17,18 @@ export default function ConfidentialitePage() {
         { label: "Confidentialité" },
       ]}
     >
-      <section className="space-y-6 text-sm text-zinc-700">
+      <section className="space-y-6 text-sm text-body">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">
             Responsable de traitement
           </h2>
-          <p className="mt-3">Identité et coordonnées — à renseigner.</p>
+          <p className="mt-3">
+            Sophie Rimbault — Cabinet Rimbault
+            <br />
+            14 rue du Marché, 92100 Boulogne-Billancourt
+            <br />
+            Email : contact@cabinet-rimbault.fr — Tél. : 06 12 34 56 78
+          </p>
         </div>
         <div>
           <h2 className="text-xl font-semibold tracking-tight">
@@ -56,8 +62,8 @@ export default function ConfidentialitePage() {
           <p className="mt-3">
             Droit d&apos;accès, de rectification, d&apos;effacement,
             d&apos;opposition et de portabilité. Exercez-les par email à
-            l&apos;adresse à renseigner. En cas de litige, vous pouvez saisir la
-            CNIL.
+            l&apos;adresse contact@cabinet-rimbault.fr. En cas de litige, vous
+            pouvez saisir la CNIL.
           </p>
         </div>
       </section>

@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const frenchPhoneRegex = /^(?:\+33|0)[1-9](?:[\s.-]?\d{2}){4}$/;
+export const postalCodeRegex = /^\d{5}$/;
 
 export const phoneSchema = z
   .string()
@@ -13,12 +14,16 @@ export const rgpdConsentSchema = z.boolean().refine((v) => v === true, {
 
 export const nameSchema = z.string().min(2, "Minimum 2 caractères").max(60);
 export const emailSchema = z.email("Email invalide");
+export const postalCodeSchema = z
+  .string()
+  .regex(postalCodeRegex, "Code postal invalide (5 chiffres)");
 
 export const quickContactSchema = z.object({
   name: nameSchema,
   phone: phoneSchema,
   message: z.string().min(5, "Merci de préciser votre message").max(500),
   rgpd: rgpdConsentSchema,
+  website: z.string().max(0).optional(),
 });
 export type QuickContactInput = z.infer<typeof quickContactSchema>;
 
@@ -31,6 +36,7 @@ export const contactSchema = z.object({
   email: emailSchema,
   message: z.string().min(5, "Merci de préciser votre message").max(500),
   rgpd: rgpdConsentSchema,
+  website: z.string().max(0).optional(),
 });
 export type ContactInput = z.infer<typeof contactSchema>;
 
@@ -45,11 +51,14 @@ export const visitFormSchema = z.object({
   message: z.string().max(500).optional(),
   rgpd: rgpdConsentSchema,
   reference: z.string(),
+  isRental: z.boolean(),
+  website: z.string().max(0).optional(),
 });
 export type VisitFormInput = z.infer<typeof visitFormSchema>;
 
 export const estimationStep1Schema = z.object({
   address: z.string().min(3, "Adresse requise").max(200),
+  postalCode: postalCodeSchema,
   type: z.enum(["appartement", "maison", "terrain", "autre"]),
   surface: z
     .string()
@@ -75,5 +84,6 @@ export const estimationStep2Schema = z.object({
   email: emailSchema,
   message: z.string().max(300).optional(),
   rgpd: rgpdConsentSchema,
+  website: z.string().max(0).optional(),
 });
 export type EstimationStep2 = z.infer<typeof estimationStep2Schema>;

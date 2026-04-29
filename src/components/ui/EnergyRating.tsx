@@ -6,8 +6,8 @@ const LETTERS: EnergyClass[] = ["A", "B", "C", "D", "E", "F", "G"];
 const COLORS: Record<Exclude<EnergyClass, "VIERGE">, string> = {
   A: "bg-emerald-600 text-white",
   B: "bg-emerald-500 text-white",
-  C: "bg-lime-500 text-zinc-900",
-  D: "bg-yellow-400 text-zinc-900",
+  C: "bg-lime-500 text-primary",
+  D: "bg-yellow-400 text-primary",
   E: "bg-orange-400 text-white",
   F: "bg-orange-600 text-white",
   G: "bg-red-600 text-white",
@@ -22,7 +22,7 @@ export function EnergyBadge({
 }) {
   if (!value || value === "VIERGE") {
     return (
-      <span className="inline-flex items-center rounded border border-zinc-200 px-2 py-0.5 text-xs text-zinc-500">
+      <span className="inline-flex items-center rounded-sm border border-subtle px-2 py-0.5 text-xs text-muted">
         DPE —
       </span>
     );
@@ -30,7 +30,7 @@ export function EnergyBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center justify-center rounded font-semibold",
+        "inline-flex items-center justify-center rounded-sm font-semibold",
         COLORS[value as Exclude<EnergyClass, "VIERGE">],
         size === "md" ? "h-7 w-7 text-sm" : "h-5 px-1.5 text-xs",
       )}
@@ -56,7 +56,7 @@ export function EnergyScale({
   const activeLetter = value && value !== "VIERGE" ? value : null;
   return (
     <div>
-      <p className="text-sm font-semibold text-zinc-900">{label}</p>
+      <p className="text-sm font-semibold text-primary">{label}</p>
       <ul className="mt-2 flex flex-col gap-0.5">
         {LETTERS.map((letter) => {
           if (letter === "VIERGE") return null;
@@ -66,7 +66,7 @@ export function EnergyScale({
             <li
               key={l}
               className={cn(
-                "flex items-center justify-between rounded px-3 py-1 text-sm font-medium",
+                "flex items-center justify-between rounded-sm px-3 py-1 text-sm font-medium",
                 COLORS[l],
                 !isActive && "opacity-40",
               )}

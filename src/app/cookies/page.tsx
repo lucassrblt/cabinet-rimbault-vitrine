@@ -14,7 +14,7 @@ export default function CookiesPage() {
       title="Cookies"
       breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Cookies" }]}
     >
-      <section className="space-y-6 text-sm text-zinc-700">
+      <section className="space-y-6 text-sm text-body">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">
             Qu&apos;est-ce qu&apos;un cookie

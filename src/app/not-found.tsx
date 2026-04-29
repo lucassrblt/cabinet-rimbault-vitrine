@@ -9,7 +9,7 @@ export default function NotFound() {
       <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
         Cette page n&apos;existe pas (ou plus)
       </h1>
-      <p className="mt-3 max-w-xl text-base text-zinc-600">
+      <p className="mt-3 max-w-xl text-base text-body">
         Le bien que vous cherchiez a peut-être été vendu ou loué. Voici quelques
         pistes pour continuer votre recherche.
       </p>
@@ -19,7 +19,7 @@ export default function NotFound() {
       </div>
 
       <div className="mt-8">
-        <p className="text-sm font-medium text-zinc-900">
+        <p className="text-sm font-medium text-primary">
           Ou accédez directement à :
         </p>
         <div className="mt-3 flex flex-wrap gap-3">
@@ -38,11 +38,11 @@ export default function NotFound() {
         </div>
       </div>
 
-      <p className="mt-10 text-sm text-zinc-600">
+      <p className="mt-10 text-sm text-body">
         Besoin d&apos;aide ?{" "}
         <a
           href={`tel:${AGENT.phoneE164}`}
-          className="inline-flex items-center gap-1 font-medium text-zinc-900 underline underline-offset-4"
+          className="inline-flex items-center gap-1 font-medium text-primary underline underline-offset-4"
         >
           <Phone className="h-4 w-4" aria-hidden="true" /> {AGENT.phoneDisplay}
         </a>

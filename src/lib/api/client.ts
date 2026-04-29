@@ -1,5 +1,12 @@
 import "server-only";
 
+export type QueryValue =
+  | string
+  | number
+  | boolean
+  | undefined
+  | Array<string | number>;
+
 export interface ApiFetchOptions {
   revalidate?: number | false;
   tags?: string[];
@@ -17,20 +24,28 @@ function getConfig(): { baseUrl: string; apiKey: string } {
   return { baseUrl, apiKey };
 }
 
+function appendQuery(url: URL, query: Record<string, QueryValue>) {
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined || value === "") continue;
+    if (Array.isArray(value)) {
+      for (const v of value) {
+        if (v === undefined || v === "") continue;
+        url.searchParams.append(key, String(v));
+      }
+    } else {
+      url.searchParams.set(key, String(value));
+    }
+  }
+}
+
 export async function apiFetch<T>(
   path: string,
-  query?: Record<string, string | number | undefined>,
+  query?: Record<string, QueryValue>,
   options: ApiFetchOptions = {},
 ): Promise<T> {
   const { baseUrl, apiKey } = getConfig();
   const url = new URL(`${baseUrl}${path}`);
-  if (query) {
-    for (const [key, value] of Object.entries(query)) {
-      if (value !== undefined && value !== "") {
-        url.searchParams.set(key, String(value));
-      }
-    }
-  }
+  if (query) appendQuery(url, query);
 
   const { revalidate = 60, tags } = options;
 
@@ -54,6 +69,80 @@ export async function apiFetch<T>(
   }
 
   return res.json() as Promise<T>;
+}
+
+export interface ApiPostResult<T> {
+  ok: boolean;
+  status: number;
+  data: T | null;
+  error: string | null;
+  code?: string;
+  fields?: Record<string, string>;
+}
+
+export async function apiPost<T>(
+  path: string,
+  body: unknown,
+): Promise<ApiPostResult<T>> {
+  const { baseUrl, apiKey } = getConfig();
+  const url = new URL(`${baseUrl}${path}`);
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "X-API-Key": apiKey,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+      cache: "no-store",
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      status: 0,
+      data: null,
+      error:
+        err instanceof Error
+          ? err.message
+          : "Erreur réseau — impossible de joindre le serveur.",
+    };
+  }
+
+  let json: unknown = null;
+  try {
+    json = await res.json();
+  } catch {
+    // ignore parse error — body may be empty on some errors
+  }
+
+  const payload = (json ?? {}) as {
+    success?: boolean;
+    data?: T;
+    error?: string;
+    code?: string;
+    fields?: Record<string, string>;
+  };
+
+  if (!res.ok || payload.success === false) {
+    return {
+      ok: false,
+      status: res.status,
+      data: payload.data ?? null,
+      error: payload.error ?? `Erreur ${res.status}`,
+      code: payload.code,
+      fields: payload.fields,
+    };
+  }
+
+  return {
+    ok: true,
+    status: res.status,
+    data: payload.data ?? null,
+    error: null,
+  };
 }
 
 export class ApiError extends Error {

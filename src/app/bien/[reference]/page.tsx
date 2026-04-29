@@ -10,12 +10,10 @@ import { LinkButton } from "@/components/ui/Button";
 import { EnergyScale } from "@/components/ui/EnergyRating";
 import {
   getPropertyByReference,
-  listRentProperties,
-  listSaleProperties,
+  getSimilarProperties,
 } from "@/lib/api/properties";
-import type { Property } from "@/lib/api/types";
+import type { HonorairesCharge, Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
-import { findSimilar } from "@/lib/listing";
 import {
   formatDate,
   formatPrice,
@@ -81,10 +79,10 @@ export default async function PropertyPage({
   const charges = property.finance?.charges;
   const chargesIncluses = property.finance?.chargesIncluses;
   const depot = property.finance?.depot;
-  const honorairesType = property.finance?.honorairesType;
+  const honorairesLabel = honorairesChargeLabel(property.finance);
   const energy = property.energy;
 
-  const similar = await loadSimilar(property, isRental);
+  const similar = await loadSimilar(property.reference);
 
   const typeLabel = formatPropertyType(property.propertyType);
   const title = `${typeLabel}${rooms != null ? ` de ${rooms} pièces` : ""}${city ? ` à ${city}` : ""}`;
@@ -121,7 +119,7 @@ export default async function PropertyPage({
         <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
           {title}
         </h1>
-        <p className="mt-1 text-sm text-zinc-600">
+        <p className="mt-1 text-sm text-body">
           Référence {property.reference}
           {property.publishedAt
             ? ` · Mis en ligne le ${formatDate(property.publishedAt)}`
@@ -130,20 +128,20 @@ export default async function PropertyPage({
 
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
           <div>
-            <div className="rounded-xl border border-zinc-200 bg-zinc-50/50 p-5">
+            <div className="rounded-sm border border-subtle bg-neutral-50/50 p-5">
               {isRental ? (
                 <div>
-                  <p className="text-3xl font-semibold tracking-tight text-zinc-900">
+                  <p className="text-3xl font-semibold tracking-tight text-primary">
                     {formatRent(price)}
                   </p>
-                  <p className="mt-1 text-sm text-zinc-600">
+                  <p className="mt-1 text-sm text-body">
                     {chargesIncluses
                       ? "Charges comprises"
                       : charges != null
                         ? `Hors charges — ${charges} € / mois de charges`
                         : "Hors charges"}
                   </p>
-                  <p className="mt-1 text-sm text-zinc-600">
+                  <p className="mt-1 text-sm text-body">
                     {depot != null
                       ? `Dépôt de garantie : ${formatPrice(depot)}`
                       : "Dépôt de garantie : voir conditions"}
@@ -151,12 +149,12 @@ export default async function PropertyPage({
                 </div>
               ) : (
                 <div>
-                  <p className="text-3xl font-semibold tracking-tight text-zinc-900">
+                  <p className="text-3xl font-semibold tracking-tight text-primary">
                     {formatPrice(price)}
                   </p>
-                  <p className="mt-1 text-sm text-zinc-600">
-                    {honorairesType
-                      ? `Honoraires inclus — charge ${honorairesType.toLowerCase()}`
+                  <p className="mt-1 text-sm text-body">
+                    {honorairesLabel
+                      ? `Honoraires inclus — charge ${honorairesLabel}`
                       : "Honoraires inclus"}
                   </p>
                 </div>
@@ -185,25 +183,25 @@ export default async function PropertyPage({
             </ul>
           </div>
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <div className="rounded-sm border border-subtle bg-card p-5">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
               Contact direct
             </p>
-            <p className="mt-2 text-base font-semibold text-zinc-900">
+            <p className="mt-2 text-base font-semibold text-primary">
               {AGENT.fullName}
             </p>
-            <p className="text-xs text-zinc-500">{AGENT.title}</p>
+            <p className="text-xs text-muted">{AGENT.title}</p>
             <div className="mt-4 flex flex-col gap-2">
               <a
                 href={`tel:${AGENT.phoneE164}`}
-                className="inline-flex items-center gap-2 rounded bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
+                className="inline-flex items-center gap-2 rounded-sm bg-primary-600 px-3 py-2 text-sm font-medium text-on-primary hover:bg-primary-700"
               >
                 <Phone className="h-4 w-4" aria-hidden="true" />
                 Appeler
               </a>
               <a
                 href={`mailto:${AGENT.email}?subject=Bien ${property.reference}`}
-                className="inline-flex items-center gap-2 rounded border border-zinc-300 px-3 py-2 text-sm font-medium"
+                className="inline-flex items-center gap-2 rounded-sm border border-default px-3 py-2 text-sm font-medium"
               >
                 <Mail className="h-4 w-4" aria-hidden="true" />
                 Email
@@ -213,16 +211,18 @@ export default async function PropertyPage({
         </div>
       </section>
 
-      <section className="border-t border-zinc-200">
+      <section className="border-t border-subtle">
         <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
           <h2 className="text-2xl font-semibold tracking-tight">Description</h2>
-          <div className="mt-4 max-w-3xl whitespace-pre-wrap text-sm text-zinc-800 md:text-base">
+          <div className="mt-4 max-w-3xl whitespace-pre-wrap text-sm text-primary md:text-base">
             {property.description}
           </div>
         </div>
       </section>
 
       <CharacteristicsSection property={property} isRental={isRental} />
+
+      {property.copro?.isInCopro && <CoproSection property={property} />}
 
       {energy && (energy.energyClass || energy.gesClass) && (
         <EnergySection property={property} />
@@ -231,6 +231,10 @@ export default async function PropertyPage({
       <HonorairesSection property={property} isRental={isRental} />
 
       <LocationSection property={property} />
+
+      {property.documents && property.documents.length > 0 && (
+        <DocumentsSection property={property} />
+      )}
 
       <VisitFormSection reference={property.reference} isRental={isRental} />
 
@@ -245,7 +249,7 @@ export default async function PropertyPage({
 
 function StatPill({ children }: { children: React.ReactNode }) {
   return (
-    <li className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-3 py-1 text-sm text-zinc-800">
+    <li className="inline-flex items-center rounded-full border border-subtle bg-card px-3 py-1 text-sm text-primary">
       {children}
     </li>
   );
@@ -318,10 +322,12 @@ function CharacteristicsSection({
       rows: financial,
     });
 
-  if (groups.length === 0) return null;
+  const roomsDetails = property.rooms_details ?? [];
+
+  if (groups.length === 0 && roomsDetails.length === 0) return null;
 
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50/50">
+    <section className="border-t border-subtle bg-neutral-50/50">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
         <h2 className="text-2xl font-semibold tracking-tight">
           Caractéristiques
@@ -330,25 +336,136 @@ function CharacteristicsSection({
           {groups.map((g) => (
             <div
               key={g.title}
-              className="rounded border border-zinc-200 bg-white p-5"
+              className="rounded-sm border border-subtle bg-card p-5"
             >
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
+              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
                 {g.title}
               </h3>
               <dl className="mt-3 grid grid-cols-1 gap-1.5 text-sm">
                 {g.rows.map(([k, v]) => (
                   <div
                     key={k}
-                    className="flex items-center justify-between gap-4 border-b border-zinc-100 pb-1.5 last:border-none"
+                    className="flex items-center justify-between gap-4 border-b border-subtle pb-1.5 last:border-none"
                   >
-                    <dt className="text-zinc-600">{k}</dt>
-                    <dd className="font-medium text-zinc-900">{v}</dd>
+                    <dt className="text-body">{k}</dt>
+                    <dd className="font-medium text-primary">{v}</dd>
                   </div>
                 ))}
               </dl>
             </div>
           ))}
         </div>
+
+        {roomsDetails.length > 0 && (
+          <div className="mt-6 rounded-sm border border-subtle bg-card p-5">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
+              Pièces
+            </h3>
+            <ul className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+              {roomsDetails.map((r) => (
+                <li
+                  key={r.id}
+                  className="flex items-start justify-between gap-4 border-b border-subtle pb-1.5 last:border-none"
+                >
+                  <div>
+                    <p className="font-medium text-primary">{r.name}</p>
+                    {r.description && (
+                      <p className="text-xs text-body">{r.description}</p>
+                    )}
+                  </div>
+                  <div className="text-xs text-body">
+                    {r.surface != null ? `${r.surface} m²` : ""}
+                    {r.floor != null ? ` · étage ${r.floor}` : ""}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function CoproSection({ property }: { property: Property }) {
+  const c = property.copro;
+  if (!c) return null;
+  const rows: [string, string][] = [];
+  if (c.coprLots != null) rows.push(["Nombre de lots", String(c.coprLots)]);
+  if (c.coprCharges != null)
+    rows.push(["Charges annuelles", `${formatPrice(c.coprCharges)} / an`]);
+  if (c.lotNumber) rows.push(["Numéro de lot", c.lotNumber]);
+  if (c.tantieme != null) rows.push(["Tantièmes", `${c.tantieme} / 10 000`]);
+  if (c.coprSyndic) rows.push(["Syndic", c.coprSyndic]);
+  if (c.coprChargesDetails)
+    rows.push(["Détail des charges", c.coprChargesDetails]);
+
+  return (
+    <section className="border-t border-subtle">
+      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
+        <h2 className="text-2xl font-semibold tracking-tight">Copropriété</h2>
+        <p className="mt-2 max-w-2xl text-sm text-body">
+          Informations Alur — transparence sur la copropriété dans laquelle se
+          situe le bien.
+        </p>
+        {rows.length > 0 && (
+          <dl className="mt-6 grid max-w-3xl grid-cols-1 gap-1.5 rounded-sm border border-subtle bg-card p-5 text-sm">
+            {rows.map(([k, v]) => (
+              <div
+                key={k}
+                className="flex items-start justify-between gap-4 border-b border-subtle pb-1.5 last:border-none"
+              >
+                <dt className="text-body">{k}</dt>
+                <dd className="text-right font-medium text-primary">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        {c.coprProcedure && (
+          <div className="mt-4 max-w-3xl rounded-sm border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <strong className="font-semibold">
+              Procédure en cours sur la copropriété
+            </strong>{" "}
+            — les informations détaillées vous seront communiquées lors de la
+            visite.
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function DocumentsSection({ property }: { property: Property }) {
+  const docs = property.documents ?? [];
+  if (docs.length === 0) return null;
+  return (
+    <section className="border-t border-subtle bg-neutral-50/50">
+      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Documents à télécharger
+        </h2>
+        <ul className="mt-6 grid max-w-3xl grid-cols-1 gap-2 text-sm">
+          {docs.map((d) => (
+            <li
+              key={d.id}
+              className="rounded-sm border border-subtle bg-card px-4 py-3"
+            >
+              <a
+                href={d.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-primary underline underline-offset-2"
+              >
+                {d.label ?? d.type ?? "Document"}
+              </a>
+              {d.type && (
+                <span className="ml-2 text-xs uppercase text-muted">
+                  {d.type}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
@@ -360,8 +477,11 @@ function EnergySection({ property }: { property: Property }) {
   const isRentalFG =
     property.transactionType === "LOCATION" &&
     (e.energyClass === "F" || e.energyClass === "G");
+  const referenceDate = e.dateReferenceEnergie ?? e.dpeDate;
+  const costMin = e.annualEnergyCostMin;
+  const costMax = e.annualEnergyCostMax;
   return (
-    <section className="border-t border-zinc-200">
+    <section className="border-t border-subtle">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
         <h2 className="text-2xl font-semibold tracking-tight">
           Performance énergétique
@@ -380,8 +500,28 @@ function EnergySection({ property }: { property: Property }) {
             numericValue={e.gesValue}
           />
         </div>
+        <dl className="mt-6 grid max-w-3xl grid-cols-1 gap-2 text-sm text-body sm:grid-cols-2">
+          {referenceDate && (
+            <div className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-3 py-2">
+              <dt className="text-body">Date de référence énergie</dt>
+              <dd className="font-medium text-primary">
+                {formatDate(referenceDate)}
+              </dd>
+            </div>
+          )}
+          {(costMin != null || costMax != null) && (
+            <div className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-3 py-2">
+              <dt className="text-body">Coût annuel estimé</dt>
+              <dd className="font-medium text-primary">
+                {costMin != null && costMax != null
+                  ? `Entre ${formatPrice(costMin)} et ${formatPrice(costMax)}`
+                  : formatPrice(costMin ?? costMax ?? 0)}
+              </dd>
+            </div>
+          )}
+        </dl>
         {isRentalFG && (
-          <div className="mt-6 max-w-3xl rounded border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+          <div className="mt-6 max-w-3xl rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-900">
             <strong className="font-semibold">
               Loi Climat &amp; Résilience :
             </strong>{" "}
@@ -395,6 +535,20 @@ function EnergySection({ property }: { property: Property }) {
   );
 }
 
+const HONORAIRES_CHARGE_LABEL: Record<HonorairesCharge, string> = {
+  ACQUEREUR: "acquéreur",
+  VENDEUR: "vendeur",
+  PARTAGE: "partagée acquéreur/vendeur",
+};
+
+function honorairesChargeLabel(f: Property["finance"]): string | null {
+  if (!f) return null;
+  if (f.honorairesCharge)
+    return HONORAIRES_CHARGE_LABEL[f.honorairesCharge] ?? null;
+  if (f.honorairesType) return f.honorairesType.toLowerCase();
+  return null;
+}
+
 function HonorairesSection({
   property,
   isRental,
@@ -404,10 +558,10 @@ function HonorairesSection({
 }) {
   const f = property.finance;
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50/50">
+    <section className="border-t border-subtle bg-neutral-50/50">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
         <h2 className="text-2xl font-semibold tracking-tight">Honoraires</h2>
-        <div className="mt-4 max-w-2xl text-sm text-zinc-800">
+        <div className="mt-4 max-w-2xl text-sm text-primary">
           {isRental ? (
             <p>
               Honoraires à la charge du locataire : dans la limite des plafonds
@@ -415,9 +569,12 @@ function HonorairesSection({
             </p>
           ) : (
             <p>
-              {f?.honorairesType
-                ? `Charge ${f.honorairesType.toLowerCase()}`
-                : "Honoraires inclus dans le prix affiché"}
+              {(() => {
+                const label = honorairesChargeLabel(f);
+                return label
+                  ? `Charge ${label}`
+                  : "Honoraires inclus dans le prix affiché";
+              })()}
               {f?.honorairesPct != null ? ` — ${f.honorairesPct} % TTC` : ""}
               {f?.honoraires != null
                 ? ` (soit ${formatPrice(f.honoraires)} TTC)`
@@ -439,15 +596,16 @@ function HonorairesSection({
 function LocationSection({ property }: { property: Property }) {
   const loc = property.location;
   if (!loc) return null;
+  const proximities = property.proximities ?? [];
   return (
-    <section className="border-t border-zinc-200">
+    <section className="border-t border-subtle">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
         <h2 className="text-2xl font-semibold tracking-tight">Localisation</h2>
-        <p className="mt-2 text-sm text-zinc-600">
+        <p className="mt-2 text-sm text-body">
           Secteur {loc.city}
           {loc.neighborhood ? ` — quartier ${loc.neighborhood}` : ""}
         </p>
-        <div className="mt-6 aspect-[16/9] w-full overflow-hidden rounded border border-zinc-200 bg-zinc-100">
+        <div className="mt-6 aspect-[16/9] w-full overflow-hidden rounded-sm border border-subtle bg-section">
           <div className="relative h-full w-full">
             <div
               className="absolute inset-0"
@@ -457,7 +615,7 @@ function LocationSection({ property }: { property: Property }) {
               }}
               aria-hidden="true"
             />
-            <div className="absolute inset-0 flex items-center justify-center text-zinc-500">
+            <div className="absolute inset-0 flex items-center justify-center text-muted">
               <div className="flex flex-col items-center gap-2 text-center">
                 <MapPin className="h-8 w-8" aria-hidden="true" />
                 <p className="text-sm">
@@ -468,11 +626,40 @@ function LocationSection({ property }: { property: Property }) {
             </div>
           </div>
         </div>
-        <p className="mt-3 text-xs text-zinc-500">
+        <p className="mt-3 text-xs text-muted">
           Localisation approximative (rayon d&apos;environ 500 m).
           L&apos;adresse exacte vous est communiquée lors de la prise de
           contact.
         </p>
+        {proximities.length > 0 && (
+          <div className="mt-8 max-w-3xl">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
+              À proximité
+            </h3>
+            <ul className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+              {proximities.map((p) => (
+                <li
+                  key={p.id}
+                  className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-3 py-2 text-sm"
+                >
+                  <div>
+                    <p className="font-medium text-primary">{p.name}</p>
+                    {p.category && (
+                      <p className="text-xs text-muted">{p.category}</p>
+                    )}
+                  </div>
+                  {p.distance != null && (
+                    <span className="text-xs text-body">
+                      {p.distance < 1000
+                        ? `${p.distance} m`
+                        : `${(p.distance / 1000).toFixed(1)} km`}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -486,40 +673,40 @@ function VisitFormSection({
   isRental: boolean;
 }) {
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50/50">
+    <section className="border-t border-subtle bg-neutral-50/50">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
         <h2 className="text-2xl font-semibold tracking-tight">
           Ce bien vous intéresse ?
         </h2>
-        <p className="mt-2 max-w-2xl text-sm text-zinc-600">
+        <p className="mt-2 max-w-2xl text-sm text-body">
           Remplissez le formulaire ci-dessous — je vous recontacte sous 24 h
           ouvrées pour convenir d&apos;un créneau de visite.
         </p>
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[280px_1fr]">
-          <div className="rounded-xl border border-zinc-200 bg-white p-5">
-            <p className="text-sm font-semibold text-zinc-900">
+          <div className="rounded-sm border border-subtle bg-card p-5">
+            <p className="text-sm font-semibold text-primary">
               {AGENT.fullName}
             </p>
-            <p className="text-xs text-zinc-500">{AGENT.title}</p>
+            <p className="text-xs text-muted">{AGENT.title}</p>
             <div className="mt-4 flex flex-col gap-2">
               <a
                 href={`tel:${AGENT.phoneE164}`}
-                className="inline-flex items-center gap-2 rounded bg-zinc-900 px-3 py-2 text-sm font-medium text-white"
+                className="inline-flex items-center gap-2 rounded-sm bg-primary-600 px-3 py-2 text-sm font-medium text-on-primary hover:bg-primary-700"
               >
                 <Phone className="h-4 w-4" aria-hidden="true" /> Appeler
               </a>
               <a
                 href={`mailto:${AGENT.email}?subject=Bien ${reference}`}
-                className="inline-flex items-center gap-2 rounded border border-zinc-300 px-3 py-2 text-sm font-medium"
+                className="inline-flex items-center gap-2 rounded-sm border border-default px-3 py-2 text-sm font-medium"
               >
                 <Mail className="h-4 w-4" aria-hidden="true" /> Email
               </a>
             </div>
-            <p className="mt-4 text-xs text-zinc-500">
+            <p className="mt-4 text-xs text-muted">
               Référence du bien : <strong>{reference}</strong>
             </p>
           </div>
-          <div className="rounded-xl border border-zinc-200 bg-white p-5">
+          <div className="rounded-sm border border-subtle bg-card p-5">
             <VisitRequestForm reference={reference} isRental={isRental} />
           </div>
         </div>
@@ -536,7 +723,7 @@ function SimilarSection({
   isRental: boolean;
 }) {
   return (
-    <section className="border-t border-zinc-200">
+    <section className="border-t border-subtle">
       <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
         <h2 className="text-2xl font-semibold tracking-tight">
           Autres biens qui pourraient vous plaire
@@ -566,8 +753,8 @@ function SimilarSection({
 
 function LegalStrip() {
   return (
-    <section className="border-t border-zinc-200 bg-zinc-50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs text-zinc-600 md:px-6">
+    <section className="border-t border-subtle bg-page">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs text-body md:px-6">
         <p>
           Cabinet Rimbault · {AGENT.legal.carteT} · {AGENT.legal.cci} ·{" "}
           {AGENT.legal.garant} · {AGENT.legal.mediator}
@@ -582,16 +769,9 @@ function LegalStrip() {
   );
 }
 
-async function loadSimilar(
-  source: Property,
-  isRental: boolean,
-): Promise<Property[]> {
+async function loadSimilar(reference: string): Promise<Property[]> {
   try {
-    const res = isRental
-      ? await listRentProperties({ limit: 100 })
-      : await listSaleProperties({ limit: 100 });
-    const pool = (res.data ?? []).filter((p) => p.isPublished);
-    return findSimilar(source, pool, 3);
+    return await getSimilarProperties(reference, 3);
   } catch {
     return [];
   }

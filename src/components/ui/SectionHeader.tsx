@@ -31,14 +31,14 @@ export function SectionHeader({
       <div className="flex w-full items-end justify-between gap-4">
         <div className={cn(align === "center" && "w-full")}>
           {eyebrow && (
-            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted">
               {eyebrow}
             </p>
           )}
           <Heading
             id={id}
             className={cn(
-              "text-2xl font-semibold tracking-tight text-zinc-900 md:text-3xl",
+              "text-2xl font-semibold tracking-tight text-primary md:text-3xl",
               Heading === "h1" && "text-3xl md:text-4xl",
             )}
           >
@@ -47,7 +47,7 @@ export function SectionHeader({
         </div>
         {action && <div className="hidden md:block">{action}</div>}
       </div>
-      {lede && <p className="max-w-2xl text-base text-zinc-600">{lede}</p>}
+      {lede && <p className="max-w-2xl text-base text-body">{lede}</p>}
       {action && <div className="md:hidden">{action}</div>}
     </div>
   );

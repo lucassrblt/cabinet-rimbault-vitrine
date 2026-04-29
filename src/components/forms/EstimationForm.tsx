@@ -3,8 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { submitEvaluation } from "@/app/actions/leads";
 import { Button, LinkButton } from "@/components/ui/Button";
 import {
   Field,
@@ -26,6 +27,7 @@ type Step = 1 | 2 | "done";
 export function EstimationForm() {
   const [step, setStep] = useState<Step>(1);
   const [step1Data, setStep1Data] = useState<EstimationStep1 | null>(null);
+  const [leadId, setLeadId] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col gap-6">
@@ -39,16 +41,17 @@ export function EstimationForm() {
           }}
         />
       )}
-      {step === 2 && (
+      {step === 2 && step1Data && (
         <Step2
+          step1={step1Data}
           onBack={() => setStep(1)}
-          onSubmit={async () => {
-            await new Promise((r) => setTimeout(r, 500));
+          onDone={(id) => {
+            setLeadId(id);
             setStep("done");
           }}
         />
       )}
-      {step === "done" && <Confirmation />}
+      {step === "done" && <Confirmation leadId={leadId} />}
     </div>
   );
 }
@@ -59,20 +62,20 @@ function Progress({ step }: { step: 1 | 2 }) {
       <div
         className={
           step >= 1
-            ? "h-2 w-8 rounded-full bg-zinc-900"
-            : "h-2 w-8 rounded-full bg-zinc-200"
+            ? "h-2 w-8 rounded-full bg-inverse"
+            : "h-2 w-8 rounded-full bg-neutral-200"
         }
       />
       <div
         className={
           step >= 2
-            ? "h-2 w-8 rounded-full bg-zinc-900"
-            : "h-2 w-8 rounded-full bg-zinc-200"
+            ? "h-2 w-8 rounded-full bg-inverse"
+            : "h-2 w-8 rounded-full bg-neutral-200"
         }
       />
-      <p className="text-sm font-medium text-zinc-700">
+      <p className="text-sm font-medium text-body">
         Étape {step} / 2 —{" "}
-        <span className="text-zinc-500">
+        <span className="text-muted">
           {step === 1 ? "Votre bien" : "Votre projet"}
         </span>
       </p>
@@ -96,6 +99,7 @@ function Step1({
     resolver: zodResolver(estimationStep1Schema),
     defaultValues: initial ?? {
       address: "",
+      postalCode: "",
       type: "appartement",
       surface: "",
       rooms: "",
@@ -124,6 +128,21 @@ function Step1({
         />
       </Field>
 
+      <Field
+        label="Code postal"
+        required
+        htmlFor="es-postal"
+        error={errors.postalCode?.message}
+      >
+        <TextInput
+          id="es-postal"
+          inputMode="numeric"
+          autoComplete="postal-code"
+          maxLength={5}
+          {...register("postalCode")}
+        />
+      </Field>
+
       <fieldset className="flex flex-col gap-2">
         <FieldLabel required>Type de bien</FieldLabel>
         <div className="flex flex-wrap gap-2">
@@ -135,7 +154,7 @@ function Step1({
           ].map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-2 rounded border border-zinc-200 px-3 py-1.5 text-sm hover:border-zinc-400"
+              className="flex items-center gap-2 rounded-sm border border-subtle px-3 py-1.5 text-sm hover:border-default"
             >
               <input
                 type="radio"
@@ -221,7 +240,7 @@ function Step1({
           ].map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-2 rounded border border-zinc-200 px-3 py-1.5 text-sm hover:border-zinc-400"
+              className="flex items-center gap-2 rounded-sm border border-subtle px-3 py-1.5 text-sm hover:border-default"
             >
               <input
                 type="checkbox"
@@ -246,7 +265,7 @@ function Step1({
           ].map((opt) => (
             <label
               key={opt.value}
-              className="flex items-center gap-2 rounded border border-zinc-200 px-3 py-1.5 text-sm hover:border-zinc-400"
+              className="flex items-center gap-2 rounded-sm border border-subtle px-3 py-1.5 text-sm hover:border-default"
             >
               <input
                 type="radio"
@@ -268,16 +287,21 @@ function Step1({
 }
 
 function Step2({
+  step1,
   onBack,
-  onSubmit,
+  onDone,
 }: {
+  step1: EstimationStep1;
   onBack: () => void;
-  onSubmit: () => Promise<void>;
+  onDone: (id: string) => void;
 }) {
+  const [rootError, setRootError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setError,
+    formState: { errors },
   } = useForm<EstimationStep2>({
     resolver: zodResolver(estimationStep2Schema),
     defaultValues: {
@@ -289,15 +313,46 @@ function Step2({
       email: "",
       message: "",
       rgpd: false,
+      website: "",
     },
   });
 
-  const submit = handleSubmit(async () => {
-    await onSubmit();
+  const submit = handleSubmit((values) => {
+    setRootError(null);
+    startTransition(async () => {
+      const res = await submitEvaluation({ step1, step2: values });
+      if (res.ok) {
+        onDone(res.id);
+        return;
+      }
+      setRootError(res.error);
+      if (res.fields) {
+        for (const [path, message] of Object.entries(res.fields)) {
+          const field = path.split(".").pop() as keyof EstimationStep2;
+          setError(field, { type: "server", message });
+        }
+      }
+    });
   });
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+      <input
+        type="text"
+        autoComplete="off"
+        tabIndex={-1}
+        aria-hidden="true"
+        className="hidden"
+        {...register("website")}
+      />
+      {rootError && (
+        <div
+          role="alert"
+          className="rounded-sm border border-red-200 bg-red-50 p-3 text-sm text-red-800"
+        >
+          {rootError}
+        </div>
+      )}
       <fieldset className="flex flex-col gap-2">
         <FieldLabel required>Quelle est votre intention ?</FieldLabel>
         <div className="grid grid-cols-1 gap-1.5">
@@ -311,7 +366,7 @@ function Step2({
           ].map((opt) => (
             <label
               key={opt.value}
-              className="flex cursor-pointer items-center gap-2 rounded border border-zinc-200 px-3 py-2 text-sm hover:border-zinc-400"
+              className="flex cursor-pointer items-center gap-2 rounded-sm border border-subtle px-3 py-2 text-sm hover:border-default"
             >
               <input
                 type="radio"
@@ -336,7 +391,7 @@ function Step2({
           ].map((opt) => (
             <label
               key={opt.value}
-              className="flex cursor-pointer items-center gap-2 rounded border border-zinc-200 px-3 py-2 text-sm hover:border-zinc-400"
+              className="flex cursor-pointer items-center gap-2 rounded-sm border border-subtle px-3 py-2 text-sm hover:border-default"
             >
               <input
                 type="radio"
@@ -411,7 +466,7 @@ function Step2({
         <TextareaInput id="es2-msg" rows={3} {...register("message")} />
       </Field>
 
-      <label className="flex gap-2 text-sm text-zinc-700">
+      <label className="flex gap-2 text-sm text-body">
         <input
           type="checkbox"
           className="mt-0.5 h-4 w-4"
@@ -438,17 +493,20 @@ function Step2({
         <Button type="button" variant="secondary" onClick={onBack}>
           ← Retour
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Envoi…" : "Envoyer ma demande"}
+        <Button type="submit" disabled={isPending}>
+          {isPending ? "Envoi…" : "Envoyer ma demande"}
         </Button>
       </div>
     </form>
   );
 }
 
-function Confirmation() {
+function Confirmation({ leadId }: { leadId: string | null }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded border border-emerald-200 bg-emerald-50 p-8 text-center text-emerald-900">
+    <div
+      data-lead-id={leadId ?? undefined}
+      className="flex flex-col items-center gap-4 rounded-sm border border-emerald-200 bg-emerald-50 p-8 text-center text-emerald-900"
+    >
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-600 text-white">
         <Check className="h-6 w-6" aria-hidden="true" />
       </div>

@@ -1,26 +1,298 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ═══════════════════════════════════════════════════════════
+   * COULEURS — Proposition B « Agence de quartier »
+   * ═══════════════════════════════════════════════════════════ */
+
+  /* Primaire — rouge grenat profond */
+  --color-primary-50: #faf2f2;
+  --color-primary-100: #f2d5d6;
+  --color-primary-200: #e0a3a5;
+  --color-primary-300: #c96b6e;
+  --color-primary-400: #a93a3e;
+  --color-primary-500: #8a1419;
+  --color-primary-600: #720110;
+  --color-primary-700: #5a010c;
+  --color-primary-800: #420108;
+  --color-primary-900: #2c0105;
+  --color-primary-950: #180003;
+
+  /* Secondaire — vert ardoise (signature différenciante) */
+  --color-secondary-50: #f2f5f3;
+  --color-secondary-100: #dee7e1;
+  --color-secondary-200: #bfd0c6;
+  --color-secondary-300: #91a99a;
+  --color-secondary-400: #6a8675;
+  --color-secondary-500: #4e6b5a;
+  --color-secondary-600: #3d5547;
+  --color-secondary-700: #304539;
+  --color-secondary-800: #22322a;
+  --color-secondary-900: #1a2820;
+  --color-secondary-950: #0c1510;
+
+  /* Neutres — gris ciment (chaud neutre) */
+  --color-neutral-50: #f9f9f8;
+  --color-neutral-100: #f1f0ed;
+  --color-neutral-200: #e2e0db;
+  --color-neutral-300: #c6c3bc;
+  --color-neutral-400: #908d85;
+  --color-neutral-500: #5f5d58;
+  --color-neutral-600: #44423e;
+  --color-neutral-700: #2e2d2a;
+  --color-neutral-800: #1c1b19;
+  --color-neutral-900: #101010;
+  --color-neutral-950: #050504;
+
+  /* Accents sémantiques */
+  --color-success: #4e6b5a;
+  --color-success-bg: #f2f5f3;
+  --color-warning: #c9930e;
+  --color-warning-bg: #fcf5e5;
+  --color-error: #720110;
+  --color-error-bg: #fcf3f3;
+  --color-info: #3d5a73;
+  --color-info-bg: #eef3f8;
+
+  /* DPE (barème officiel A-G) */
+  --color-dpe-a: #2a7a3a;
+  --color-dpe-b: #52a44a;
+  --color-dpe-c: #c4d74f;
+  --color-dpe-d: #f5e04c;
+  --color-dpe-e: #f2b636;
+  --color-dpe-f: #ea7b2c;
+  --color-dpe-g: #d73527;
+
+  /* Surfaces */
+  --color-bg-page: #f9f9f8;
+  --color-bg-card: #ffffff;
+  --color-bg-header: #f9f7f2;
+  --color-bg-section: #f1f0ed;
+  --color-bg-accent: #1c1b19;
+  --color-bg-inverse: #1c1b19;
+  --color-bg-overlay: rgba(28, 27, 25, 0.6);
+
+  /* Texte sémantique */
+  --color-text-primary: #1c1b19;
+  --color-text-body: #2e2d2a;
+  --color-text-muted: #5f5d58;
+  --color-text-subtle: #908d85;
+  --color-text-on-primary: #f9f9f8;
+  --color-text-on-inverse: #f1f0ed;
+  --color-text-link: #720110;
+  --color-text-link-hover: #5a010c;
+
+  /* Bordures */
+  --color-border-subtle: #e2e0db;
+  --color-border-default: #c6c3bc;
+  --color-border-strong: #1c1b19;
+  --color-border-focus: #720110;
+
+  /* ═══════════════════════════════════════════════════════════
+   * TYPOGRAPHIE
+   * — --font-fraunces et --font-manrope sont injectées par
+   *   next/font depuis layout.tsx (className sur <html>).
+   * ═══════════════════════════════════════════════════════════ */
+
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Échelle (base 16px, ratio 1.2) */
+  --text-caption: 0.75rem; /* 12 */
+  --text-sm: 0.875rem; /* 14 */
+  --text-base: 1rem; /* 16 */
+  --text-lg: 1.125rem; /* 18 */
+  --text-xl: 1.333rem; /* 21 */
+  --text-2xl: 1.728rem; /* 28 — h4 */
+  --text-3xl: 2.074rem; /* 33 — h3 */
+  --text-4xl: 2.488rem; /* 40 — h2 */
+  --text-5xl: 2.986rem; /* 48 — h1 */
+  --text-display: 3.583rem; /* 57 — hero */
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+
+  --tracking-tight: -0.025em;
+  --tracking-snug: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+
+  /* ═══════════════════════════════════════════════════════════
+   * SPACING / RADIUS / ELEVATION
+   * ═══════════════════════════════════════════════════════════ */
+
+  /* Radius — sharp. Un seul choix global (3px). */
+  --radius-none: 0px;
+  --radius-sm: 3px;
+  --radius-md: 3px;
+  --radius-lg: 3px;
+
+  /* Shadows — subtiles layered */
+  --shadow-sm: 0 1px 2px rgba(28, 27, 25, 0.04),
+    0 1px 1px rgba(28, 27, 25, 0.06);
+  --shadow-md: 0 4px 12px rgba(28, 27, 25, 0.06),
+    0 2px 4px rgba(28, 27, 25, 0.04);
+  --shadow-lg: 0 16px 32px rgba(28, 27, 25, 0.08),
+    0 4px 8px rgba(28, 27, 25, 0.04);
+  --shadow-focus: 0 0 0 3px rgba(114, 1, 16, 0.18);
+
+  /* Motion */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 400ms;
+
+  /* Z-index */
+  --z-header: 40;
+  --z-mobile-bar: 45;
+  --z-dropdown: 50;
+  --z-modal: 60;
+  --z-toast: 70;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ═════════════════════════════════════════════════════════════
+ * BASE STYLES
+ * ═════════════════════════════════════════════════════════════ */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  font-family: var(--font-sans);
+  color: var(--color-text-body);
+  background: var(--color-bg-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
 }
+
+
+::selection {
+  background: var(--color-primary-600);
+  color: var(--color-text-on-primary);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+/* ═════════════════════════════════════════════════════════════
+ * UTILITIES SÉMANTIQUES
+ * — Raccourcis sur les tokens --color-bg-*, --color-text-*, --color-border-*.
+ *   Permet `bg-page`, `text-primary`, `border-subtle`… plutôt que
+ *   les noms doublés que Tailwind v4 génèrerait (`bg-bg-page` etc.).
+ * ═════════════════════════════════════════════════════════════ */
+
+@utility bg-page {
+  background-color: var(--color-bg-page);
+}
+@utility bg-card {
+  background-color: var(--color-bg-card);
+}
+@utility bg-header {
+  background-color: var(--color-bg-header);
+}
+@utility bg-section {
+  background-color: var(--color-bg-section);
+}
+@utility bg-inverse {
+  background-color: var(--color-bg-inverse);
+}
+@utility bg-accent {
+  background-color: var(--color-bg-accent);
+}
+@utility bg-overlay {
+  background-color: var(--color-bg-overlay);
+}
+
+@utility text-primary {
+  color: var(--color-text-primary);
+}
+@utility text-body {
+  color: var(--color-text-body);
+}
+@utility text-muted {
+  color: var(--color-text-muted);
+}
+@utility text-subtle {
+  color: var(--color-text-subtle);
+}
+@utility text-on-primary {
+  color: var(--color-text-on-primary);
+}
+@utility text-on-inverse {
+  color: var(--color-text-on-inverse);
+}
+@utility text-link {
+  color: var(--color-text-link);
+}
+@utility text-link-hover {
+  color: var(--color-text-link-hover);
+}
+
+@utility border-subtle {
+  border-color: var(--color-border-subtle);
+}
+@utility border-default {
+  border-color: var(--color-border-default);
+}
+@utility border-strong {
+  border-color: var(--color-border-strong);
+}
+@utility border-focus {
+  border-color: var(--color-border-focus);
+}
+
+@utility divide-subtle {
+  & > :not(:last-child) {
+    border-color: var(--color-border-subtle);
+  }
+}
+
+@utility ring-focus {
+  --tw-ring-color: var(--color-border-focus);
+}
+
+/* ═════════════════════════════════════════════════════════════
+ * NAV LINK — animated underline
+ * ═════════════════════════════════════════════════════════════ */
+
+.nav-link {
+  position: relative;
+  padding-bottom: 4px;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: var(--color-primary-600);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+

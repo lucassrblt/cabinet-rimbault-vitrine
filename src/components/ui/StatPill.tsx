@@ -10,10 +10,10 @@ export function StatPill({
   icon?: ReactNode;
 }) {
   return (
-    <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-800">
-      {icon && <span className="text-zinc-500">{icon}</span>}
+    <div className="inline-flex items-center gap-2 rounded-full border border-subtle bg-card px-3 py-1.5 text-sm text-primary">
+      {icon && <span className="text-muted">{icon}</span>}
       <span className="font-semibold">{value}</span>
-      <span className="text-zinc-500">{label}</span>
+      <span className="text-muted">{label}</span>
     </div>
   );
 }
@@ -26,11 +26,11 @@ export function StatBlock({
   label: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded border border-zinc-200 p-5 text-center">
-      <span className="text-3xl font-semibold tracking-tight text-zinc-900">
+    <div className="flex flex-col items-center justify-center rounded-sm border border-subtle p-5 text-center">
+      <span className="text-3xl font-semibold tracking-tight text-primary">
         {value}
       </span>
-      <span className="mt-1 text-sm text-zinc-600">{label}</span>
+      <span className="mt-1 text-sm text-body">{label}</span>
     </div>
   );
 }

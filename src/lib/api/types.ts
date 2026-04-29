@@ -32,6 +32,16 @@ export type PropertyStatus =
 
 export type EnergyClass = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "VIERGE";
 
+export type PropertyCondition =
+  | "NEUF"
+  | "TRES_BON_ETAT"
+  | "BON_ETAT"
+  | "A_RAFRAICHIR"
+  | "A_RENOVER"
+  | "A_RESTAURER";
+
+export type HonorairesCharge = "ACQUEREUR" | "VENDEUR" | "PARTAGE";
+
 export type ImageCategory =
   | "GENERAL"
   | "FACADE"
@@ -70,6 +80,7 @@ export interface PropertyFinance {
   honoraires: number | null;
   honorairesType: string | null;
   honorairesPct: number | null;
+  honorairesCharge: HonorairesCharge | null;
   depot: number | null;
   taxeFonciere: number | null;
 }
@@ -104,6 +115,7 @@ export interface PropertyAmenities {
   hasGarage: boolean;
   hasElevator: boolean;
   hasCellar: boolean;
+  isFurnished: boolean;
 }
 
 export interface PropertyEnergy {
@@ -111,6 +123,43 @@ export interface PropertyEnergy {
   energyValue: number | null;
   gesClass: EnergyClass | null;
   gesValue: number | null;
+  dpeDate: string | null;
+  dateReferenceEnergie: string | null;
+  annualEnergyCostMin: number | null;
+  annualEnergyCostMax: number | null;
+}
+
+export interface PropertyCopro {
+  isInCopro: boolean;
+  coprLots: number | null;
+  coprCharges: number | null;
+  coprChargesDetails: string | null;
+  coprProcedure: boolean | null;
+  coprSyndic: string | null;
+  lotNumber: string | null;
+  tantieme: number | null;
+}
+
+export interface PropertyDocument {
+  id: string;
+  url: string;
+  label: string | null;
+  type: string | null;
+}
+
+export interface PropertyRoomDetail {
+  id: string;
+  name: string;
+  surface: number | null;
+  floor: number | null;
+  description: string | null;
+}
+
+export interface PropertyProximity {
+  id: string;
+  name: string;
+  category: string | null;
+  distance: number | null;
 }
 
 export interface Property {
@@ -125,6 +174,8 @@ export interface Property {
   isPublished: boolean;
   isFeatured: boolean;
   isExclusive: boolean;
+  condition: PropertyCondition | null;
+  availableFrom: string | null;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -134,7 +185,11 @@ export interface Property {
   characteristics: PropertyCharacteristics | null;
   amenities: PropertyAmenities | null;
   energy: PropertyEnergy | null;
+  copro: PropertyCopro | null;
   images: PropertyImage[];
+  documents?: PropertyDocument[];
+  rooms_details?: PropertyRoomDetail[];
+  proximities?: PropertyProximity[];
 }
 
 export interface ApiListResponse<T> {
@@ -152,17 +207,38 @@ export interface ApiItemResponse<T> {
   data: T;
 }
 
+export type SortBy =
+  | "date"
+  | "price_asc"
+  | "price_desc"
+  | "rent_asc"
+  | "rent_desc"
+  | "surface_asc"
+  | "surface_desc";
+
 export interface SearchFilters {
   postalCode?: string;
-  city?: string;
+  city?: string | string[];
   transactionType?: TransactionType;
-  propertyType?: PropertyType;
+  propertyType?: PropertyType | PropertyType[];
+  status?: PropertyStatus | PropertyStatus[];
   minPrice?: number;
   maxPrice?: number;
   minSurface?: number;
   maxSurface?: number;
   bedrooms?: number;
-  sortBy?: "date" | "price_asc" | "price_desc";
+  minBedrooms?: number;
+  minRooms?: number;
+  minFloor?: number;
+  dpe?: EnergyClass | EnergyClass[];
+  hideEnergyFG?: boolean;
+  hasBalcony?: boolean;
+  hasTerrace?: boolean;
+  hasGarden?: boolean;
+  isExclusive?: boolean;
+  isFurnished?: boolean;
+  condition?: PropertyCondition;
+  sortBy?: SortBy;
   limit?: number;
   offset?: number;
 }

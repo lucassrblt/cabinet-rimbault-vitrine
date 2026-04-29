@@ -19,9 +19,7 @@ export function PageShell({
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
           {title}
         </h1>
-        {lede && (
-          <p className="mt-3 max-w-2xl text-base text-zinc-600">{lede}</p>
-        )}
+        {lede && <p className="mt-3 max-w-2xl text-base text-body">{lede}</p>}
       </header>
       {children}
     </main>

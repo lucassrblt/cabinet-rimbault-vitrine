@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const items: { href: string; label: string }[] = [
+  { href: "/", label: "Accueil" },
   { href: "/acheter", label: "Acheter" },
   { href: "/louer", label: "Louer" },
   { href: "/vendre", label: "Vendre" },
   { href: "/a-propos", label: "L'agence" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export function MobileMenu() {
@@ -42,7 +42,7 @@ export function MobileMenu() {
           role="dialog"
           aria-modal="true"
           aria-label="Menu"
-          className="fixed inset-0 z-50 flex flex-col bg-white p-6"
+          className="fixed inset-0 z-50 flex flex-col bg-card p-6"
         >
           <div className="flex items-center justify-between">
             <span className="text-lg font-semibold">Menu</span>
@@ -68,7 +68,7 @@ export function MobileMenu() {
             <Link
               href="/estimation"
               onClick={() => setOpen(false)}
-              className="mt-4 rounded border border-zinc-900 bg-zinc-900 px-4 py-2 text-center text-base font-medium text-white"
+              className="mt-4 rounded-sm bg-primary-600 px-4 py-2 text-center text-base font-medium text-on-primary hover:bg-primary-700"
             >
               Estimer mon bien
             </Link>
