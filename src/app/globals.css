@@ -296,3 +296,30 @@ body {
   }
 }
 
+/* ═════════════════════════════════════════════════════════════
+ * RANGE SLIDER — dual-thumb styling
+ * ═════════════════════════════════════════════════════════════ */
+
+.range-thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary-600);
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(28, 27, 25, 0.2);
+  cursor: pointer;
+}
+
+.range-thumb::-moz-range-thumb {
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary-600);
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(28, 27, 25, 0.2);
+  cursor: pointer;
+}
+

@@ -368,7 +368,7 @@ const CONTACT_ITEMS = [
 
 function NousTrouverSection() {
   return (
-    <section className="bg-inverse">
+    <section className="bg-neutral-700">
       <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
         <ScrollReveal>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-400">
@@ -443,7 +443,7 @@ function NousTrouverSection() {
 
 function CTASection() {
   return (
-    <section className="bg-page">
+    <section className="bg-neutral-100">
       <div className="mx-auto w-full max-w-6xl px-4 py-20 text-center md:px-6 md:py-28">
         <ScrollReveal>
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">

@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { AlertCtaSection } from "@/components/listings/AlertCtaSection";
+import { ListingHero } from "@/components/listings/ListingHero";
+import { ListingReassurance } from "@/components/listings/ListingReassurance";
+import { ListingSearchBar } from "@/components/listings/ListingSearchBar";
 import { ListingView } from "@/components/listings/ListingView";
 import { LinkButton } from "@/components/ui/Button";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
-import { COMMUNES, findCommuneBySlug } from "@/lib/config/communes";
+import { findCommuneBySlug } from "@/lib/config/communes";
 import {
   pageFromQuery,
   paginateServerSide,
@@ -58,48 +61,49 @@ export default async function LouerPage({
 
   const pageData = paginateServerSide(total, page);
 
-  const h1 = commune
-    ? `Biens à louer à ${commune.name}`
-    : "Biens à louer en Île-de-France";
-  const lede = commune
-    ? `${pageData.total} logement${pageData.total > 1 ? "s" : ""} disponible${pageData.total > 1 ? "s" : ""} à la location à ${commune.name}.`
-    : `${pageData.total} logement${pageData.total > 1 ? "s" : ""} disponible${pageData.total > 1 ? "s" : ""} sur ${COMMUNES.length} communes couvertes.`;
-
   return (
     <main className="flex flex-1 flex-col">
-      <div className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6 md:py-10">
-          <Breadcrumb
-            items={[{ label: "Accueil", href: "/" }, { label: "Louer" }]}
-          />
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-            {h1}
-          </h1>
-          <p className="mt-2 text-base text-body">{lede}</p>
-        </div>
-      </div>
+      <ListingHero
+        badge="Louer"
+        title="Votre futur chez-vous, en toute confiance."
+        subtitle="Appartements et maisons à louer en Île-de-France — sélectionnés et vérifiés par nos soins."
+        image="/hero-agence.jpg"
+      />
 
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-12">
-        {errorMessage ? (
+      <ListingSearchBar
+        mode="rent"
+        basePath="/louer"
+        defaultValues={{
+          commune: query.commune,
+          type: query.type,
+          budgetMax: query.budgetMax,
+          pieces: query.pieces,
+        }}
+      />
+
+      {errorMessage ? (
+        <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-12">
           <div className="rounded-sm border border-subtle bg-page p-6 text-sm text-body">
             <p className="font-medium">
               Liste indisponible pour l&apos;instant.
             </p>
             <p className="mt-1 text-body">{errorMessage}</p>
           </div>
-        ) : (
-          <ListingView
-            mode="rent"
-            basePath="/louer"
-            query={query}
-            items={items}
-            total={pageData.total}
-            page={pageData.page}
-            totalPages={pageData.totalPages}
-          />
-        )}
-      </div>
+        </div>
+      ) : (
+        <ListingView
+          mode="rent"
+          basePath="/louer"
+          query={query}
+          items={items}
+          total={pageData.total}
+          page={pageData.page}
+          totalPages={pageData.totalPages}
+        />
+      )}
 
+      <ListingReassurance mode="rent" />
+      <AlertCtaSection />
       <TenantFileSection />
       <RentSeoBlock communeName={commune?.name} />
     </main>
