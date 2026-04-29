@@ -1,30 +1,93 @@
 "use client";
 
-import { ArrowRight, Image as ImageIcon } from "lucide-react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+} from "lucide-react";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Property } from "@/lib/api/types";
 import { formatPrice, formatSurface } from "@/lib/utils";
 
-function MainImage({ property }: { property: Property }) {
-  const main =
-    property.images.find((img) => img.isMain) ??
-    property.images.slice().sort((a, b) => a.order - b.order)[0];
-  if (!main) {
+function ImageSlider({ property }: { property: Property }) {
+  const ordered = [...property.images].sort((a, b) => {
+    if (a.isMain !== b.isMain) return a.isMain ? -1 : 1;
+    return a.order - b.order;
+  });
+
+  const [index, setIndex] = useState(0);
+  const total = ordered.length;
+
+  if (total === 0) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-neutral-200 text-muted">
         <ImageIcon className="h-8 w-8" aria-hidden="true" />
       </div>
     );
   }
+
   return (
-    // biome-ignore lint/performance/noImgElement: remote image host not pre-configured at MVP
-    <img
-      src={main.url}
-      alt={main.alt ?? property.title}
-      className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-      loading="lazy"
-    />
+    <div className="group/slider relative h-full w-full overflow-hidden">
+      <div
+        className="flex h-full transition-transform duration-400 ease-out"
+        style={{ transform: `translateX(-${index * 100}%)` }}
+      >
+        {ordered.map((img, i) => (
+          // biome-ignore lint/performance/noImgElement: remote image host not pre-configured at MVP
+          <img
+            key={img.id}
+            src={img.url}
+            alt={img.alt ?? property.title}
+            className="h-full w-full flex-shrink-0 object-cover"
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        ))}
+      </div>
+
+      {total > 1 && (
+        <>
+          <button
+            type="button"
+            aria-label="Photo précédente"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIndex((i) => (i - 1 + total) % total);
+            }}
+            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-1.5 text-neutral-800 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-110 group-hover/slider:opacity-100"
+          >
+            <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          </button>
+
+          <button
+            type="button"
+            aria-label="Photo suivante"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIndex((i) => (i + 1) % total);
+            }}
+            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-1.5 text-neutral-800 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-white hover:scale-110 group-hover/slider:opacity-100"
+          >
+            <ChevronRight className="h-4 w-4" aria-hidden="true" />
+          </button>
+
+          <div
+            className="absolute bottom-2.5 left-1/2 flex -translate-x-1/2 gap-1.5"
+            aria-hidden="true"
+          >
+            {ordered.map((img, i) => (
+              <span
+                key={img.id}
+                className={`rounded-full transition-all duration-300 ${i === index ? "h-1.5 w-3 bg-white" : "h-1.5 w-1.5 bg-white/50"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -53,7 +116,7 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
           >
             <Link href={`/bien/${property.reference}`}>
               <div className="aspect-[4/3] overflow-hidden bg-neutral-200">
-                <MainImage property={property} />
+                <ImageSlider property={property} />
               </div>
 
               <div className="flex flex-col gap-1.5 p-5">
