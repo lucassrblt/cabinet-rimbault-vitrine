@@ -1,27 +1,30 @@
 import { ArrowRight, Mail, MapPin, Phone, Star } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { QuickContactForm } from "@/components/forms/QuickContactForm";
+import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
+import { HeroContent } from "@/components/home/HeroContent";
 import { HeroSearch } from "@/components/home/HeroSearch";
-import {
-  AutoPropertyCard,
-  SoldPropertyCard,
-} from "@/components/property/PropertyCard";
+import { SoldPropertyCard } from "@/components/property/PropertyCard";
 import { LinkButton } from "@/components/ui/Button";
 import { Rating } from "@/components/ui/Rating";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { listRecentProperties } from "@/lib/api/properties";
+import { listRecentProperties, searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
 import { COMMUNES } from "@/lib/config/communes";
 import { REVIEWS } from "@/lib/config/reviews";
 
 export default async function Home() {
-  const { recent, sold, errorMessage } = await loadHomeData();
+  const [sold, featured] = await Promise.all([
+    loadSoldProperties(),
+    loadFeaturedProperties(),
+  ]);
 
   return (
     <main className="flex flex-1 flex-col">
       <HeroSection />
-      <FeaturedSection properties={recent} error={errorMessage} />
+      <FeaturedSection properties={featured} />
       <AgentSection />
       <SectorsSection />
       <SoldSection properties={sold} />
@@ -32,108 +35,74 @@ export default async function Home() {
   );
 }
 
-async function loadHomeData() {
+async function loadFeaturedProperties(): Promise<Property[]> {
   try {
-    const res = await listRecentProperties(20);
-    const all = res.data ?? [];
-    const published = all.filter((p) => p.isPublished);
-    const active = published.filter(
-      (p) =>
-        p.status === "DISPONIBLE" ||
-        p.status === "SOUS_OFFRE" ||
-        p.status === "SOUS_COMPROMIS",
-    );
-    const sold = published.filter(
-      (p) => p.status === "VENDU" || p.status === "LOUE",
-    );
-    return {
-      recent: active.slice(0, 6),
-      sold: sold.slice(0, 4),
-      errorMessage: undefined as string | undefined,
-    };
-  } catch (err) {
-    const message =
-      err instanceof Error
-        ? err.message
-        : "Erreur inconnue lors du chargement.";
-    return { recent: [], sold: [], errorMessage: message };
+    const res = await listRecentProperties(5);
+    return res.data ?? [];
+  } catch {
+    return [];
+  }
+}
+
+async function loadSoldProperties(): Promise<Property[]> {
+  try {
+    const res = await searchProperties({
+      status: ["VENDU", "LOUE"],
+      limit: 4,
+    });
+    return res.data ?? [];
+  } catch {
+    return [];
   }
 }
 
 function HeroSection() {
   return (
-    <section className="border-b border-zinc-200 bg-zinc-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-20">
-        <div className="max-w-3xl">
-          <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 md:text-5xl">
-            Agence immobilière indépendante en Île-de-France
-          </h1>
-          <p className="mt-4 max-w-xl text-base text-zinc-600 md:text-lg">
-            {AGENT.fullName}, {AGENT.stats.years} ans d&apos;expérience,{" "}
-            {AGENT.stats.communesCount} communes couvertes. Un interlocuteur
-            unique, de l&apos;estimation à la signature.
-          </p>
-        </div>
-        <div className="mt-8 max-w-3xl">
-          <HeroSearch />
-        </div>
-        <div className="mt-4">
-          <Link
-            href="/estimation"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-900 underline underline-offset-4"
-          >
-            Estimer mon bien
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
-        </div>
+    <section className="relative bg-header pb-12 md:pb-14">
+      {/* Hero image area */}
+      <div className="relative overflow-hidden">
+        <Image
+          src="/hero-home.jpg"
+          alt="Intérieur d'un appartement parisien lumineux"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+
+        <HeroContent years={AGENT.stats.years} />
+      </div>
+
+      {/* Search bar — flottante, 50% sur l'image / 50% en dehors */}
+      <div className="relative z-20 mx-auto -mt-14 w-full max-w-5xl px-4 md:-mt-16 md:px-8">
+        <HeroSearch />
       </div>
     </section>
   );
 }
 
-function FeaturedSection({
-  properties,
-  error,
-}: {
-  properties: Property[];
-  error?: string;
-}) {
+function FeaturedSection({ properties }: { properties: Property[] }) {
+  if (properties.length === 0) return null;
+
   return (
-    <section className="border-b border-zinc-200">
-      <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-16">
+    <section className="bg-header">
+      <div className="mx-auto w-full max-w-7xl px-4 py-12 md:px-8 md:py-16">
         <SectionHeader
-          title="Sélection du moment"
-          lede="Les biens récemment mis en ligne, à la vente et à la location."
+          eyebrow={<span className="text-primary">Notre sélection</span>}
+          title="Nos coups de cœur dans votre quartier."
+          action={
+            <Link
+              href="/acheter"
+              className="inline-flex items-center gap-2 rounded-sm border border-primary-600 px-5 py-2.5 text-sm font-semibold text-primary transition-colors duration-150 hover:bg-primary-600 hover:text-on-primary"
+            >
+              Voir tous les biens
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          }
         />
-        <div className="mt-8">
-          {error ? (
-            <div className="rounded border border-zinc-200 bg-zinc-50 p-6 text-sm text-zinc-700">
-              <p className="font-medium">
-                Biens indisponibles pour l&apos;instant.
-              </p>
-              <p className="mt-1 text-zinc-600">{error}</p>
-            </div>
-          ) : properties.length === 0 ? (
-            <p className="text-sm text-zinc-600">
-              Aucun bien publié pour le moment.
-            </p>
-          ) : (
-            <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {properties.map((p) => (
-                <li key={p.id}>
-                  <AutoPropertyCard property={p} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <LinkButton href="/acheter" variant="secondary">
-            Voir tous les biens à vendre
-          </LinkButton>
-          <LinkButton href="/louer" variant="secondary">
-            Voir tous les biens à louer
-          </LinkButton>
+        <div className="mt-10">
+          <FeaturedCarousel properties={properties} />
         </div>
       </div>
     </section>
@@ -142,42 +111,42 @@ function FeaturedSection({
 
 function AgentSection() {
   return (
-    <section className="border-b border-zinc-200 bg-zinc-50/50">
+    <section className="border-b border-subtle bg-neutral-50/50">
       <div className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-10 px-4 py-14 md:grid-cols-[240px_1fr] md:px-6 md:py-16">
-        <div className="aspect-[3/4] w-full overflow-hidden rounded-xl bg-zinc-200">
-          <div className="flex h-full items-center justify-center text-zinc-400">
+        <div className="aspect-[3/4] w-full overflow-hidden rounded-sm bg-neutral-200">
+          <div className="flex h-full items-center justify-center text-muted">
             Portrait
           </div>
         </div>
         <div className="flex flex-col justify-center gap-4">
-          <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <p className="text-xs font-medium uppercase tracking-wider text-muted">
             Votre interlocuteur
           </p>
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             {AGENT.fullName}
           </h2>
-          <p className="text-sm text-zinc-600">{AGENT.title}</p>
-          <p className="max-w-xl text-base text-zinc-700">
+          <p className="text-sm text-body">{AGENT.title}</p>
+          <p className="max-w-xl text-base text-body">
             J&apos;accompagne vendeurs, acheteurs et locataires sur un périmètre
             resserré que je connais de rue en rue. Mon métier : estimer juste,
             défendre votre intérêt, et vous faire gagner du temps.
           </p>
           <div className="flex flex-wrap gap-4 text-sm">
             <span>
-              <strong className="text-zinc-900">{AGENT.stats.years}</strong>{" "}
-              <span className="text-zinc-600">ans d&apos;expérience</span>
+              <strong className="text-primary">{AGENT.stats.years}</strong>{" "}
+              <span className="text-body">ans d&apos;expérience</span>
             </span>
             <span>
-              <strong className="text-zinc-900">
+              <strong className="text-primary">
                 {AGENT.stats.communesCount}
               </strong>{" "}
-              <span className="text-zinc-600">communes couvertes</span>
+              <span className="text-body">communes couvertes</span>
             </span>
             <span>
-              <strong className="text-zinc-900">
+              <strong className="text-primary">
                 {AGENT.stats.transactions}+
               </strong>{" "}
-              <span className="text-zinc-600">transactions réalisées</span>
+              <span className="text-body">transactions réalisées</span>
             </span>
           </div>
           <div>
@@ -193,7 +162,7 @@ function AgentSection() {
 
 function SectorsSection() {
   return (
-    <section className="border-b border-zinc-200">
+    <section className="border-b border-subtle">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-16">
         <SectionHeader
           title="Les communes où j'interviens"
@@ -204,19 +173,13 @@ function SectorsSection() {
             <li key={c.slug}>
               <Link
                 href={`/acheter?commune=${c.slug}`}
-                className="flex items-center justify-between rounded border border-zinc-200 bg-white px-3 py-3 text-sm font-medium text-zinc-800 hover:border-zinc-900"
+                className="flex items-center justify-between rounded-sm border border-subtle bg-card px-3 py-3 text-sm font-medium text-primary hover:border-strong"
               >
                 <span className="flex items-center gap-2">
-                  <MapPin
-                    className="h-4 w-4 text-zinc-400"
-                    aria-hidden="true"
-                  />
+                  <MapPin className="h-4 w-4 text-muted" aria-hidden="true" />
                   {c.name}
                 </span>
-                <ArrowRight
-                  className="h-4 w-4 text-zinc-400"
-                  aria-hidden="true"
-                />
+                <ArrowRight className="h-4 w-4 text-muted" aria-hidden="true" />
               </Link>
             </li>
           ))}
@@ -229,7 +192,7 @@ function SectorsSection() {
 function SoldSection({ properties }: { properties: Property[] }) {
   if (properties.length < 4) return null;
   return (
-    <section className="border-b border-zinc-200 bg-zinc-50/50">
+    <section className="border-b border-subtle bg-neutral-50/50">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-16">
         <SectionHeader
           title="Mes dernières transactions"
@@ -249,13 +212,13 @@ function SoldSection({ properties }: { properties: Property[] }) {
 
 function SellerPathSection() {
   return (
-    <section className="border-b border-zinc-200 bg-zinc-900 text-white">
+    <section className="border-b border-subtle bg-inverse text-white">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-16">
         <div className="max-w-2xl">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             Vous envisagez de vendre ?
           </h2>
-          <p className="mt-3 text-zinc-300">
+          <p className="mt-3 text-subtle">
             Estimation gratuite, analyse sérieuse du marché local,
             accompagnement de bout en bout. Réponse personnalisée sous 24 à 48
             h.
@@ -263,13 +226,13 @@ function SellerPathSection() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/estimation"
-              className="inline-flex items-center gap-2 rounded bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100"
+              className="inline-flex items-center gap-2 rounded-sm bg-card px-4 py-2 text-sm font-medium text-primary hover:bg-section"
             >
               Estimer mon bien
             </Link>
             <Link
               href="/vendre"
-              className="inline-flex items-center gap-2 rounded border border-zinc-700 px-4 py-2 text-sm font-medium text-white hover:border-white"
+              className="inline-flex items-center gap-2 rounded-sm border border-neutral-700 px-4 py-2 text-sm font-medium text-white hover:border-white"
             >
               En savoir plus
             </Link>
@@ -286,17 +249,17 @@ function ReviewsSection() {
   const avg = REVIEWS.reduce((s, r) => s + r.rating, 0) / REVIEWS.length || 0;
 
   return (
-    <section className="border-b border-zinc-200">
+    <section className="border-b border-subtle">
       <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-16">
         <SectionHeader
           title="Ce que disent mes clients"
           lede={
             <span className="inline-flex items-center gap-1.5">
               <Rating value={avg} />
-              <span className="text-sm font-medium text-zinc-900">
+              <span className="text-sm font-medium text-primary">
                 {avg.toFixed(1)} / 5
               </span>
-              <span className="text-sm text-zinc-600">
+              <span className="text-sm text-body">
                 sur Google — {REVIEWS.length} avis
               </span>
             </span>
@@ -306,11 +269,11 @@ function ReviewsSection() {
           {selected.map((r) => (
             <li
               key={r.id}
-              className="flex flex-col gap-3 rounded border border-zinc-200 bg-white p-5"
+              className="flex flex-col gap-3 rounded-sm border border-subtle bg-card p-5"
             >
               <Rating value={r.rating} />
-              <p className="text-sm italic text-zinc-700">« {r.excerpt} »</p>
-              <p className="text-xs text-zinc-500">
+              <p className="text-sm italic text-body">« {r.excerpt} »</p>
+              <p className="text-xs text-muted">
                 — {r.author}
                 {r.commune && `, ${r.commune}`} · {r.date}
               </p>
@@ -342,27 +305,27 @@ function QuickContactSection() {
           lede="Un coup de fil ou un message — je vous réponds sous 24 h ouvrées."
         />
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-[320px_1fr]">
-          <div className="flex flex-col justify-center rounded-xl border border-zinc-200 bg-zinc-50 p-6">
-            <Phone className="h-6 w-6 text-zinc-500" aria-hidden="true" />
+          <div className="flex flex-col justify-center rounded-sm border border-subtle bg-page p-6">
+            <Phone className="h-6 w-6 text-muted" aria-hidden="true" />
             <a
               href={`tel:${AGENT.phoneE164}`}
-              className="mt-3 text-2xl font-semibold tracking-tight text-zinc-900 underline-offset-4 hover:underline"
+              className="mt-3 text-2xl font-semibold tracking-tight text-primary underline-offset-4 hover:underline"
             >
               {AGENT.phoneDisplay}
             </a>
-            <p className="mt-1 text-sm text-zinc-600">
+            <p className="mt-1 text-sm text-body">
               Du lundi au samedi — réponse rapide.
             </p>
             <a
               href={`mailto:${AGENT.email}`}
-              className="mt-3 inline-flex items-center gap-2 text-sm text-zinc-700 underline underline-offset-4"
+              className="mt-3 inline-flex items-center gap-2 text-sm text-body underline underline-offset-4"
             >
               <Mail className="h-4 w-4" aria-hidden="true" /> {AGENT.email}
             </a>
           </div>
           <div>
             <QuickContactForm />
-            <p className="mt-4 text-sm text-zinc-600">
+            <p className="mt-4 text-sm text-body">
               <Link href="/contact" className="underline underline-offset-4">
                 Coordonnées complètes &amp; horaires
               </Link>
