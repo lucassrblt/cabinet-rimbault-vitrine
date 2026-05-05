@@ -3,7 +3,9 @@ import { Fraunces, Manrope } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
+import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { Providers } from "./providers";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -40,14 +42,16 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${fraunces.variable} ${manrope.variable} h-full antialiased`}
+      className={`${fraunces.variable} ${manrope.variable} lenis lenis-scrolling lenis-smooth h-full antialiased`}
     >
       <body className="flex min-h-full flex-col pt-20 pb-14 md:pb-0">
         <Providers>
-          <Header />
-          <div className="flex flex-1 flex-col">{children}</div>
-          <Footer />
-          <MobileBottomBar />
+          <SmoothScroll>
+            <Header />
+            <div className="flex flex-1 flex-col">{children}</div>
+            <Footer />
+            <MobileBottomBar />
+          </SmoothScroll>
         </Providers>
       </body>
     </html>
