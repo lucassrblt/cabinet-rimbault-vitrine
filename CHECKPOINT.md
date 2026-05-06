@@ -78,12 +78,32 @@
 
 ---
 
+## §9 — Centralisation infos agent (`src/lib/config/agent.ts`)
+
+- [x] Nom agent : Sophie (placeholder) → Xavier Rimbault (vérifié).
+- [x] Adresse : Boulogne-Billancourt (faux) → 117 Bd Voltaire, 92600 Asnières-sur-Seine (vérifié annuaire-entreprises).
+- [x] SIRET : `923 456 789 00012` (faux) → `511 484 586 00025` (vérifié).
+- [x] RCS : `Nanterre B 923 456 789` (faux) → `Nanterre B 511 484 586` (vérifié).
+- [x] Ajout champs légaux : `siren`, `legalForm` (SAS), `capital` (4 000 €), `naf` (68.31Z), `insurance`.
+- [x] Horaires : Lun-Ven 9h-19h → Lun-Sam 9h-19h (vérifié Mappy) + rendu conditionnel samedi dans Footer/Contact/Agence.
+- [x] Transports : adaptés pour Asnières (ligne 13 Gabriel Péri).
+- [x] Communes : recentrées autour d'Asnières (Gennevilliers, Colombes, Courbevoie, Bois-Colombes, Clichy, Levallois, Neuilly).
+- [x] Reviews : noms (Sophie→Xavier) et communes mis à jour.
+- [x] Bio : réécriture avec nom et localisation corrects.
+- [x] Mentions légales et politique de confidentialité : refactorisées pour utiliser `AGENT.*` au lieu de valeurs hardcodées.
+- [x] Toutes les mentions "Île-de-France" remplacées par `AGENT.address.city` (hero, metadata, acheter, louer, vendre).
+- [x] `layout.tsx` : `metadata` statique → `generateMetadata()` pour résoudre le ReferenceError.
+- [ ] **TODO** : téléphone, email (à confirmer), WhatsApp, Instagram, LinkedIn, Google Business URL.
+- [ ] **TODO** : carte T, garant financier, médiateur, assurance RCP.
+- [ ] **TODO** : stats réelles (transactions, avis, note Google).
+
 ## Journal
 
 - **2026-04-22** — initialisation du checkpoint, plan lu, tâches créées.
 - **2026-04-22** — §0.1/§0.2/§1/§2/§3/§4/§5/§8.2/§8.3 livrés en une passe. Typecheck et lint verts.
 - **2026-04-22** — choix notable : QuickContactForm conserve son seul champ "nom+phone+message" ; l'email requis par l'API admin est renseigné par un placeholder calculé depuis le téléphone (`<digits>@noemail.placeholder`). À arbitrer côté admin si ça ne passe pas la validation anti-spam future.
 - **2026-04-22** — reporté en phase 2 : webhook `/api/revalidate` (§0.3, §8.1), bloc "biens suggérés" sur 404 (§7), carte OSM réelle sur fiche bien (§3.8). Pour le MVP : revalidate 60 s suffit.
+- **2026-05-06** — §9 livré (PR #11) : centralisation infos agent, données réelles (nom, adresse, SIRET/RCS vérifiés), suppression de tous les placeholders Boulogne/Sophie, refactorisation pages légales vers `AGENT.*`.
 
 ## Environnement
 
