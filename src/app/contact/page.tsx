@@ -154,7 +154,7 @@ export default async function ContactPage({
                 </p>
                 <ul className="mt-1 text-sm text-primary">
                   <li>{AGENT.hours.weekdays}</li>
-                  <li>{AGENT.hours.saturday}</li>
+                  {AGENT.hours.saturday && <li>{AGENT.hours.saturday}</li>}
                 </ul>
               </div>
               <div>

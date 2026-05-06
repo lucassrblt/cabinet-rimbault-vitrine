@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { AGENT } from "@/lib/config/agent";
 
 export function HeroContent({ years }: { years: number }) {
   return (
@@ -13,7 +14,7 @@ export function HeroContent({ years }: { years: number }) {
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="inline-block w-fit rounded-sm bg-primary-600 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-on-primary"
       >
-        Agence immobilière en Île-de-France
+        Agence immobilière à {AGENT.address.city}
       </motion.p>
 
       <motion.h1
@@ -33,7 +34,8 @@ export function HeroContent({ years }: { years: number }) {
         transition={{ duration: 0.7, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
         className="mt-5 max-w-lg text-base leading-relaxed text-white/75 md:text-lg"
       >
-        Cabinet indépendant en Île-de-France, nous accompagnons depuis {years}{" "}
+        Cabinet indépendant à {AGENT.address.city}, nous accompagnons depuis{" "}
+        {years}
         ans les habitants dans leurs projets d&apos;achat, de vente, de
         location, d&apos;estimation et de gestion.
       </motion.p>

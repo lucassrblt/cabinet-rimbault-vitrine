@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell";
+import { AGENT } from "@/lib/config/agent";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -23,11 +24,12 @@ export default function ConfidentialitePage() {
             Responsable de traitement
           </h2>
           <p className="mt-3">
-            Sophie Rimbault — Cabinet Rimbault
+            {AGENT.fullName} — Cabinet Rimbault
             <br />
-            14 rue du Marché, 92100 Boulogne-Billancourt
+            {AGENT.address.line1}, {AGENT.address.postalCode}{" "}
+            {AGENT.address.city}
             <br />
-            Email : contact@cabinet-rimbault.fr — Tél. : 06 12 34 56 78
+            Email : {AGENT.email} — Tél. : {AGENT.phoneDisplay}
           </p>
         </div>
         <div>
@@ -62,8 +64,8 @@ export default function ConfidentialitePage() {
           <p className="mt-3">
             Droit d&apos;accès, de rectification, d&apos;effacement,
             d&apos;opposition et de portabilité. Exercez-les par email à
-            l&apos;adresse contact@cabinet-rimbault.fr. En cas de litige, vous
-            pouvez saisir la CNIL.
+            l&apos;adresse {AGENT.email}. En cas de litige, vous pouvez saisir
+            la CNIL.
           </p>
         </div>
       </section>

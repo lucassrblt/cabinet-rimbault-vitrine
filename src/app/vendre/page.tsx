@@ -13,8 +13,7 @@ import {
 
 export const metadata: Metadata = {
   title: "Vendre votre bien",
-  description:
-    "Méthode, étapes, engagements et FAQ. Un agent immobilier indépendant pour accompagner votre vente en Île-de-France.",
+  description: `Méthode, étapes, engagements et FAQ. Un ${AGENT.title} pour accompagner votre vente à ${AGENT.address.city}.`,
 };
 
 export default function VendrePage() {

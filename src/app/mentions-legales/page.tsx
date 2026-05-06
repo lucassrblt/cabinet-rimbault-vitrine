@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell";
+import { AGENT } from "@/lib/config/agent";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -21,17 +22,17 @@ export default function MentionsLegalesPage() {
           Éditeur du site
         </h2>
         <p className="mt-3">
-          Cabinet Rimbault — EI Sophie Rimbault
+          Cabinet Rimbault — {AGENT.legal.legalForm} {AGENT.fullName}
           <br />
-          14 rue du Marché, 92100 Boulogne-Billancourt
+          {AGENT.address.line1}, {AGENT.address.postalCode} {AGENT.address.city}
           <br />
-          Téléphone : 06 12 34 56 78
+          Téléphone : {AGENT.phoneDisplay}
           <br />
-          Email : contact@cabinet-rimbault.fr
+          Email : {AGENT.email}
           <br />
-          SIRET : 923 456 789 00012 — RCS Nanterre B 923 456 789
+          {AGENT.legal.siret} — {AGENT.legal.rcs}
           <br />
-          Directrice de la publication : Sophie Rimbault
+          Directeur de la publication : {AGENT.fullName}
         </p>
       </section>
 
@@ -40,16 +41,12 @@ export default function MentionsLegalesPage() {
           Activité réglementée
         </h2>
         <p className="mt-3">
-          Carte professionnelle Transaction n° CPI 9201 2024 000 012 345,
-          délivrée par la CCI Hauts-de-Seine.
+          {AGENT.legal.carteT}, délivrée par la {AGENT.legal.cci}.
         </p>
+        <p className="mt-2">Garant financier : {AGENT.legal.garant}.</p>
         <p className="mt-2">
-          Garant financier : CEGC — Caisse d&apos;Épargne, 16 rue de Wagram,
-          75017 Paris — garantie 110 000 €.
-        </p>
-        <p className="mt-2">
-          Assurance responsabilité civile professionnelle : MMA IARD, contrat n°
-          147 923 456.
+          Assurance responsabilité civile professionnelle :{" "}
+          {AGENT.legal.insurance}.
         </p>
         <p className="mt-2">
           Ne détient aucun fonds, effet ou valeur. Ne reçoit aucun mandat de
@@ -71,10 +68,7 @@ export default function MentionsLegalesPage() {
         <h2 id="mediateur" className="text-xl font-semibold tracking-tight">
           Médiateur de la consommation
         </h2>
-        <p className="mt-3">
-          CNPM Médiation Consommation — 27 avenue de la Libération, 42400
-          Saint-Chamond — www.cnpm-mediation-consommation.eu
-        </p>
+        <p className="mt-3">{AGENT.legal.mediator}</p>
       </section>
 
       <section aria-labelledby="propriete" className="mt-8 text-sm text-body">

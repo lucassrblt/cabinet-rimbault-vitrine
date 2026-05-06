@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { AGENT } from "@/lib/config/agent";
 import { Providers } from "./providers";
 import "lenis/dist/lenis.css";
 import "./globals.css";
@@ -21,18 +22,19 @@ const manrope = Manrope({
   variable: "--font-manrope",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Cabinet Rimbault — Agent immobilier en Île-de-France",
-    template: "%s | Cabinet Rimbault",
-  },
-  description:
-    "Cabinet Rimbault — Agent immobilier indépendant en Île-de-France. Vente, location, estimation et accompagnement personnalisé.",
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+export function generateMetadata(): Metadata {
+  return {
+    title: {
+      default: `Cabinet Rimbault — Agent immobilier à ${AGENT.address.city}`,
+      template: "%s | Cabinet Rimbault",
+    },
+    description: `Cabinet Rimbault — ${AGENT.title} à ${AGENT.address.city}. Vente, location, estimation et accompagnement personnalisé.`,
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default function RootLayout({
   children,

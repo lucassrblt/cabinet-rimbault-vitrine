@@ -7,6 +7,7 @@ import { ListingView } from "@/components/listings/ListingView";
 import { LinkButton } from "@/components/ui/Button";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
+import { AGENT } from "@/lib/config/agent";
 import { findCommuneBySlug } from "@/lib/config/communes";
 import {
   pageFromQuery,
@@ -27,7 +28,7 @@ export async function generateMetadata({
   const sp = await searchParams;
   const communeSlug = typeof sp.commune === "string" ? sp.commune : undefined;
   const commune = communeSlug ? findCommuneBySlug(communeSlug) : null;
-  const where = commune ? ` à ${commune.name}` : " en Île-de-France";
+  const where = commune ? ` à ${commune.name}` : ` à ${AGENT.address.city}`;
   return {
     title: `Biens à vendre${where}`,
     description: `Appartements, maisons et biens à vendre${where} — sélection du Cabinet Rimbault.`,
@@ -66,7 +67,7 @@ export default async function AcheterPage({
       <ListingHero
         badge="Acheter"
         title="Trouvez le bien qui vous ressemble."
-        subtitle="Maisons, appartements, biens d'exception : notre sélection en Île-de-France et ses environs."
+        subtitle={`Maisons, appartements, biens d'exception : notre sélection à ${AGENT.address.city} et ses environs.`}
         image="/hero-agence.jpg"
       />
 

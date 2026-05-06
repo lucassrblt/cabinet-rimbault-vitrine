@@ -359,8 +359,12 @@ const CONTACT_ITEMS = [
     content: (
       <>
         {AGENT.hours.weekdays}
-        <br />
-        {AGENT.hours.saturday}
+        {AGENT.hours.saturday && (
+          <>
+            <br />
+            {AGENT.hours.saturday}
+          </>
+        )}
       </>
     ),
   },
