@@ -1,10 +1,11 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { VisitRequestForm } from "@/components/forms/VisitRequestForm";
+import { PropertyContactForm } from "@/components/forms/PropertyContactForm";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { PropertyBadgesList } from "@/components/property/PropertyBadges";
 import { SalePropertyCard } from "@/components/property/PropertyCard";
+import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
 import { PropertyGallery } from "@/components/property/PropertyGallery";
 import { LinkButton } from "@/components/ui/Button";
 import { EnergyScale } from "@/components/ui/EnergyRating";
@@ -70,25 +71,24 @@ export default async function PropertyPage({
 
   const isRental = property.transactionType === "LOCATION";
   const city = property.location?.city ?? "";
+  const neighborhood = property.location?.neighborhood ?? "";
   const rooms = property.characteristics?.rooms;
   const bedrooms = property.characteristics?.bedrooms;
   const surface = property.characteristics?.surface;
   const floor = property.characteristics?.floor;
   const totalFloors = property.characteristics?.totalFloors;
-  const price = property.finance?.price;
-  const charges = property.finance?.charges;
-  const chargesIncluses = property.finance?.chargesIncluses;
-  const depot = property.finance?.depot;
-  const honorairesLabel = honorairesChargeLabel(property.finance);
+  const amenities = property.amenities;
   const energy = property.energy;
 
   const similar = await loadSimilar(property.reference);
 
   const typeLabel = formatPropertyType(property.propertyType);
-  const title = `${typeLabel}${rooms != null ? ` de ${rooms} pièces` : ""}${city ? ` à ${city}` : ""}`;
+  const title = `${typeLabel}${rooms != null ? ` ${rooms} pièces` : ""}${city ? ` à ${city}` : ""}`;
+  const subline = [neighborhood, city].filter(Boolean).join(" · ");
 
   return (
-    <main className="flex flex-1 flex-col">
+    <main className="flex flex-1 flex-col bg-page">
+      {/* Breadcrumb */}
       <div className="mx-auto w-full max-w-6xl px-4 pt-6 md:px-6 md:pt-8">
         <Breadcrumb
           items={[
@@ -110,116 +110,118 @@ export default async function PropertyPage({
         />
       </div>
 
-      <section className="mx-auto w-full max-w-6xl px-4 pt-6 md:px-6">
-        <PropertyGallery images={property.images} title={title} />
-      </section>
+      {/* HERO — gallery (left) + sticky contact card (right) */}
+      <section className="mx-auto w-full max-w-6xl px-4 pt-6 pb-12 md:px-6 md:pt-8 md:pb-16">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
+          {/* LEFT — gallery + title + stats + description */}
+          <div className="flex flex-col gap-8 min-w-0">
+            <PropertyGallery images={property.images} title={title} />
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6">
-        <PropertyBadgesList property={property} />
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-          {title}
-        </h1>
-        <p className="mt-1 text-sm text-body">
-          Référence {property.reference}
-          {property.publishedAt
-            ? ` · Mis en ligne le ${formatDate(property.publishedAt)}`
-            : ""}
-        </p>
+            <header className="flex flex-col gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center gap-2 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-px w-6 bg-primary-600"
+                  />
+                  {isRental ? "À louer" : "À vendre"}
+                </span>
+                <PropertyBadgesList property={property} />
+              </div>
 
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[1fr_320px]">
-          <div>
-            <div className="rounded-sm border border-subtle bg-neutral-50/50 p-5">
-              {isRental ? (
-                <div>
-                  <p className="text-3xl font-semibold tracking-tight text-primary">
-                    {formatRent(price)}
-                  </p>
-                  <p className="mt-1 text-sm text-body">
-                    {chargesIncluses
-                      ? "Charges comprises"
-                      : charges != null
-                        ? `Hors charges — ${charges} € / mois de charges`
-                        : "Hors charges"}
-                  </p>
-                  <p className="mt-1 text-sm text-body">
-                    {depot != null
-                      ? `Dépôt de garantie : ${formatPrice(depot)}`
-                      : "Dépôt de garantie : voir conditions"}
-                  </p>
-                </div>
-              ) : (
-                <div>
-                  <p className="text-3xl font-semibold tracking-tight text-primary">
-                    {formatPrice(price)}
-                  </p>
-                  <p className="mt-1 text-sm text-body">
-                    {honorairesLabel
-                      ? `Honoraires inclus — charge ${honorairesLabel}`
-                      : "Honoraires inclus"}
-                  </p>
-                </div>
-              )}
-            </div>
+              <h1 className="font-serif text-3xl leading-[1.05] tracking-tight text-primary md:text-[2.5rem] lg:text-5xl">
+                {title}
+              </h1>
 
-            <ul className="mt-4 flex flex-wrap gap-2">
-              {surface != null && <StatPill>{formatSurface(surface)}</StatPill>}
-              {rooms != null && (
-                <StatPill>
-                  {rooms} pièce{rooms > 1 ? "s" : ""}
-                </StatPill>
+              {subline && (
+                <p className="flex items-center gap-2 text-sm text-body">
+                  <MapPin
+                    className="h-3.5 w-3.5 text-primary-600"
+                    aria-hidden="true"
+                  />
+                  {subline}
+                </p>
               )}
-              {bedrooms != null && bedrooms > 0 && (
-                <StatPill>{bedrooms} ch.</StatPill>
-              )}
-              {floor != null && (
-                <StatPill>
-                  Étage {floor}
-                  {totalFloors != null ? ` / ${totalFloors}` : ""}
-                </StatPill>
-              )}
-              {energy?.energyClass && (
-                <StatPill>DPE {energy.energyClass}</StatPill>
-              )}
-            </ul>
+
+              <p className="text-xs uppercase tracking-[0.12em] text-subtle">
+                Réf.&nbsp;
+                <span className="text-muted">{property.reference}</span>
+                {property.publishedAt
+                  ? ` · Mis en ligne le ${formatDate(property.publishedAt)}`
+                  : ""}
+              </p>
+
+              <ul className="-mx-1 mt-1 flex flex-wrap gap-2">
+                {surface != null && (
+                  <Pill>
+                    <span className="font-semibold text-primary">
+                      {surface}
+                    </span>
+                    <span className="text-muted">m²</span>
+                  </Pill>
+                )}
+                {rooms != null && (
+                  <Pill>
+                    <span className="font-semibold text-primary">{rooms}</span>
+                    <span className="text-muted">
+                      pièce{rooms > 1 ? "s" : ""}
+                    </span>
+                  </Pill>
+                )}
+                {bedrooms != null && bedrooms > 0 && (
+                  <Pill>
+                    <span className="font-semibold text-primary">
+                      {bedrooms}
+                    </span>
+                    <span className="text-muted">ch.</span>
+                  </Pill>
+                )}
+                {amenities?.hasBalcony && <Pill muted>Balcon</Pill>}
+                {amenities?.hasTerrace && <Pill muted>Terrasse</Pill>}
+                {amenities?.hasGarden && <Pill muted>Jardin</Pill>}
+                {amenities?.hasElevator && <Pill muted>Ascenseur</Pill>}
+                {amenities?.hasParking && <Pill muted>Parking</Pill>}
+                {floor != null && (
+                  <Pill>
+                    <span className="text-muted">étage</span>
+                    <span className="font-semibold text-primary">
+                      {floor}
+                      {totalFloors != null ? `/${totalFloors}` : ""}
+                    </span>
+                  </Pill>
+                )}
+                {energy?.energyClass && (
+                  <Pill>
+                    <span className="text-muted">DPE</span>
+                    <span className="font-semibold text-primary">
+                      {energy.energyClass}
+                    </span>
+                  </Pill>
+                )}
+              </ul>
+            </header>
+
+            {/* Description — editorial body */}
+            <article className="flex flex-col gap-3">
+              <SectionEyebrow label="Description" />
+              <div className="max-w-3xl whitespace-pre-wrap text-[0.95rem] leading-[1.7] text-body md:text-base">
+                {property.description}
+              </div>
+            </article>
           </div>
 
-          <div className="rounded-sm border border-subtle bg-card p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted">
-              Contact direct
-            </p>
-            <p className="mt-2 text-base font-semibold text-primary">
-              {AGENT.fullName}
-            </p>
-            <p className="text-xs text-muted">{AGENT.title}</p>
-            <div className="mt-4 flex flex-col gap-2">
-              <a
-                href={`tel:${AGENT.phoneE164}`}
-                className="inline-flex items-center gap-2 rounded-sm bg-primary-600 px-3 py-2 text-sm font-medium text-on-primary hover:bg-primary-700"
-              >
-                <Phone className="h-4 w-4" aria-hidden="true" />
-                Appeler
-              </a>
-              <a
-                href={`mailto:${AGENT.email}?subject=Bien ${property.reference}`}
-                className="inline-flex items-center gap-2 rounded-sm border border-default px-3 py-2 text-sm font-medium"
-              >
-                <Mail className="h-4 w-4" aria-hidden="true" />
-                Email
-              </a>
-            </div>
-          </div>
+          {/* RIGHT — sticky aside (price + form) */}
+          <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
+            <PriceCard property={property} isRental={isRental} />
+            <PropertyContactForm
+              reference={property.reference}
+              isRental={isRental}
+            />
+          </aside>
         </div>
       </section>
 
-      <section className="border-t border-subtle">
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-          <h2 className="text-2xl font-semibold tracking-tight">Description</h2>
-          <div className="mt-4 max-w-3xl whitespace-pre-wrap text-sm text-primary md:text-base">
-            {property.description}
-          </div>
-        </div>
-      </section>
-
+      {/* Full-width sections below */}
       <CharacteristicsSection property={property} isRental={isRental} />
 
       {property.copro?.isInCopro && <CoproSection property={property} />}
@@ -236,24 +238,141 @@ export default async function PropertyPage({
         <DocumentsSection property={property} />
       )}
 
-      <VisitFormSection reference={property.reference} isRental={isRental} />
-
       {similar.length > 0 && (
         <SimilarSection similar={similar} isRental={isRental} />
       )}
+
+      <PropertyEstimationCTA />
 
       <LegalStrip />
     </main>
   );
 }
 
-function StatPill({ children }: { children: React.ReactNode }) {
+/* ─────────────────────────── Inline UI helpers ─────────────────────────── */
+
+function Pill({
+  children,
+  muted,
+}: {
+  children: React.ReactNode;
+  muted?: boolean;
+}) {
   return (
-    <li className="inline-flex items-center rounded-full border border-subtle bg-card px-3 py-1 text-sm text-primary">
+    <li
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors ${
+        muted
+          ? "border-subtle bg-card text-body"
+          : "border-subtle bg-card text-primary"
+      }`}
+    >
       {children}
     </li>
   );
 }
+
+function SectionEyebrow({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-2 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">
+      <span
+        aria-hidden="true"
+        className="inline-block h-px w-6 bg-primary-600"
+      />
+      {label}
+    </span>
+  );
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  description,
+}: {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+}) {
+  return (
+    <header className="flex flex-col gap-3">
+      {eyebrow && <SectionEyebrow label={eyebrow} />}
+      <h2 className="font-serif text-2xl leading-[1.1] tracking-tight text-primary md:text-3xl">
+        {title}
+      </h2>
+      {description && (
+        <p className="max-w-2xl text-sm leading-relaxed text-body">
+          {description}
+        </p>
+      )}
+    </header>
+  );
+}
+
+/* ─────────────────────────── Price card (sidebar header) ─────────────────────────── */
+
+function PriceCard({
+  property,
+  isRental,
+}: {
+  property: Property;
+  isRental: boolean;
+}) {
+  const f = property.finance;
+  const price = f?.price;
+  const charges = f?.charges;
+  const chargesIncluses = f?.chargesIncluses;
+  const depot = f?.depot;
+  const pricePerMeter = f?.pricePerMeter;
+  const honorairesLabel = honorairesChargeLabel(f);
+
+  return (
+    <div className="overflow-hidden rounded-sm border border-subtle bg-card shadow-[0_4px_12px_rgba(28,27,25,0.06),0_2px_4px_rgba(28,27,25,0.04)]">
+      <div className="px-6 pt-5 pb-6">
+        <p className="text-[0.68rem] font-medium uppercase tracking-[0.18em] text-subtle">
+          {isRental ? "Loyer mensuel" : "Prix de vente"}
+        </p>
+        <p className="mt-2 font-serif text-[2.25rem] leading-[1] tracking-tight text-primary md:text-[2.5rem]">
+          {isRental ? formatRent(price) : formatPrice(price)}
+        </p>
+
+        <div className="mt-4 flex flex-col gap-1.5 text-xs leading-relaxed text-body">
+          {isRental ? (
+            <>
+              <p>
+                {chargesIncluses
+                  ? "Charges comprises."
+                  : charges != null
+                    ? `Hors charges — ${charges} € / mois.`
+                    : "Hors charges."}
+              </p>
+              {depot != null && (
+                <p>
+                  <span className="text-muted">Dépôt de garantie&nbsp;:</span>{" "}
+                  {formatPrice(depot)}
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              <p>
+                {honorairesLabel
+                  ? `Honoraires inclus — charge ${honorairesLabel}.`
+                  : "Honoraires inclus."}
+              </p>
+              {pricePerMeter != null && (
+                <p>
+                  <span className="text-muted">Soit&nbsp;</span>
+                  {Math.round(pricePerMeter)} €/m²
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────── Sections (full-width) ─────────────────────────── */
 
 function CharacteristicsSection({
   property,
@@ -327,28 +446,30 @@ function CharacteristicsSection({
   if (groups.length === 0 && roomsDetails.length === 0) return null;
 
   return (
-    <section className="border-t border-subtle bg-neutral-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Caractéristiques
-        </h2>
-        <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
+    <section className="border-t border-subtle bg-section/60">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading
+          eyebrow="Détails"
+          title="Caractéristiques du bien"
+          description="Tout ce qu'il faut savoir avant la visite — surface, pièces, équipements, charges."
+        />
+        <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2">
           {groups.map((g) => (
             <div
               key={g.title}
-              className="rounded-sm border border-subtle bg-card p-5"
+              className="rounded-sm border border-subtle bg-card p-6 shadow-[0_1px_2px_rgba(28,27,25,0.04)]"
             >
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
+              <h3 className="text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">
                 {g.title}
               </h3>
-              <dl className="mt-3 grid grid-cols-1 gap-1.5 text-sm">
+              <dl className="mt-4 grid grid-cols-1 gap-2 text-sm">
                 {g.rows.map(([k, v]) => (
                   <div
                     key={k}
-                    className="flex items-center justify-between gap-4 border-b border-subtle pb-1.5 last:border-none"
+                    className="flex items-baseline justify-between gap-4 border-b border-dotted border-subtle pb-2 last:border-none last:pb-0"
                   >
                     <dt className="text-body">{k}</dt>
-                    <dd className="font-medium text-primary">{v}</dd>
+                    <dd className="text-right font-medium text-primary">{v}</dd>
                   </div>
                 ))}
               </dl>
@@ -357,15 +478,15 @@ function CharacteristicsSection({
         </div>
 
         {roomsDetails.length > 0 && (
-          <div className="mt-6 rounded-sm border border-subtle bg-card p-5">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
-              Pièces
+          <div className="mt-6 rounded-sm border border-subtle bg-card p-6">
+            <h3 className="text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">
+              Pièces principales
             </h3>
-            <ul className="mt-3 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
+            <ul className="mt-4 grid grid-cols-1 gap-2 text-sm sm:grid-cols-2">
               {roomsDetails.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-start justify-between gap-4 border-b border-subtle pb-1.5 last:border-none"
+                  className="flex items-start justify-between gap-4 border-b border-dotted border-subtle pb-2 last:border-none last:pb-0"
                 >
                   <div>
                     <p className="font-medium text-primary">{r.name}</p>
@@ -402,18 +523,18 @@ function CoproSection({ property }: { property: Property }) {
 
   return (
     <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">Copropriété</h2>
-        <p className="mt-2 max-w-2xl text-sm text-body">
-          Informations Alur — transparence sur la copropriété dans laquelle se
-          situe le bien.
-        </p>
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading
+          eyebrow="Loi Alur"
+          title="Copropriété"
+          description="Transparence sur la copropriété dans laquelle se situe le bien."
+        />
         {rows.length > 0 && (
-          <dl className="mt-6 grid max-w-3xl grid-cols-1 gap-1.5 rounded-sm border border-subtle bg-card p-5 text-sm">
+          <dl className="mt-8 grid max-w-3xl grid-cols-1 gap-2 rounded-sm border border-subtle bg-card p-6 text-sm">
             {rows.map(([k, v]) => (
               <div
                 key={k}
-                className="flex items-start justify-between gap-4 border-b border-subtle pb-1.5 last:border-none"
+                className="flex items-start justify-between gap-4 border-b border-dotted border-subtle pb-2 last:border-none last:pb-0"
               >
                 <dt className="text-body">{k}</dt>
                 <dd className="text-right font-medium text-primary">{v}</dd>
@@ -422,7 +543,7 @@ function CoproSection({ property }: { property: Property }) {
           </dl>
         )}
         {c.coprProcedure && (
-          <div className="mt-4 max-w-3xl rounded-sm border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          <div className="mt-6 max-w-3xl rounded-sm border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
             <strong className="font-semibold">
               Procédure en cours sur la copropriété
             </strong>{" "}
@@ -439,27 +560,25 @@ function DocumentsSection({ property }: { property: Property }) {
   const docs = property.documents ?? [];
   if (docs.length === 0) return null;
   return (
-    <section className="border-t border-subtle bg-neutral-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Documents à télécharger
-        </h2>
-        <ul className="mt-6 grid max-w-3xl grid-cols-1 gap-2 text-sm">
+    <section className="border-t border-subtle bg-section/60">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading eyebrow="Annexes" title="Documents à télécharger" />
+        <ul className="mt-8 grid max-w-3xl grid-cols-1 gap-2 text-sm">
           {docs.map((d) => (
             <li
               key={d.id}
-              className="rounded-sm border border-subtle bg-card px-4 py-3"
+              className="rounded-sm border border-subtle bg-card px-4 py-3 transition-colors hover:border-default"
             >
               <a
                 href={d.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-primary underline underline-offset-2"
+                className="font-medium text-primary underline underline-offset-2 hover:text-link-hover"
               >
                 {d.label ?? d.type ?? "Document"}
               </a>
               {d.type && (
-                <span className="ml-2 text-xs uppercase text-muted">
+                <span className="ml-2 text-[0.68rem] uppercase tracking-[0.12em] text-subtle">
                   {d.type}
                 </span>
               )}
@@ -482,11 +601,9 @@ function EnergySection({ property }: { property: Property }) {
   const costMax = e.annualEnergyCostMax;
   return (
     <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Performance énergétique
-        </h2>
-        <div className="mt-6 grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading eyebrow="Diagnostic" title="Performance énergétique" />
+        <div className="mt-8 grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
           <EnergyScale
             value={e.energyClass}
             label="DPE"
@@ -500,9 +617,9 @@ function EnergySection({ property }: { property: Property }) {
             numericValue={e.gesValue}
           />
         </div>
-        <dl className="mt-6 grid max-w-3xl grid-cols-1 gap-2 text-sm text-body sm:grid-cols-2">
+        <dl className="mt-6 grid max-w-3xl grid-cols-1 gap-2 text-sm sm:grid-cols-2">
           {referenceDate && (
-            <div className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-3 py-2">
+            <div className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-4 py-3">
               <dt className="text-body">Date de référence énergie</dt>
               <dd className="font-medium text-primary">
                 {formatDate(referenceDate)}
@@ -510,11 +627,11 @@ function EnergySection({ property }: { property: Property }) {
             </div>
           )}
           {(costMin != null || costMax != null) && (
-            <div className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-3 py-2">
+            <div className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-4 py-3">
               <dt className="text-body">Coût annuel estimé</dt>
               <dd className="font-medium text-primary">
                 {costMin != null && costMax != null
-                  ? `Entre ${formatPrice(costMin)} et ${formatPrice(costMax)}`
+                  ? `${formatPrice(costMin)} – ${formatPrice(costMax)}`
                   : formatPrice(costMin ?? costMax ?? 0)}
               </dd>
             </div>
@@ -523,11 +640,11 @@ function EnergySection({ property }: { property: Property }) {
         {isRentalFG && (
           <div className="mt-6 max-w-3xl rounded-sm border border-red-200 bg-red-50 p-4 text-sm text-red-900">
             <strong className="font-semibold">
-              Loi Climat &amp; Résilience :
+              Loi Climat &amp; Résilience&nbsp;:
             </strong>{" "}
             ce logement est classé {e.energyClass}. Le loyer ne peut pas être
             réévalué entre deux locataires et la mise en location de ce type de
-            bien fait l&apos;objet d&apos;interdictions progressives.
+            bien fait l&rsquo;objet d&rsquo;interdictions progressives.
           </div>
         )}
       </div>
@@ -558,14 +675,14 @@ function HonorairesSection({
 }) {
   const f = property.finance;
   return (
-    <section className="border-t border-subtle bg-neutral-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">Honoraires</h2>
-        <div className="mt-4 max-w-2xl text-sm text-primary">
+    <section className="border-t border-subtle bg-section/60">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading eyebrow="Frais d'agence" title="Honoraires" />
+        <div className="mt-6 max-w-2xl text-sm leading-relaxed text-body">
           {isRental ? (
             <p>
-              Honoraires à la charge du locataire : dans la limite des plafonds
-              légaux de la loi ALUR (zone tendue).
+              Honoraires à la charge du locataire&nbsp;: dans la limite des
+              plafonds légaux de la loi ALUR (zone tendue).
             </p>
           ) : (
             <p>
@@ -583,7 +700,7 @@ function HonorairesSection({
             </p>
           )}
         </div>
-        <div className="mt-4">
+        <div className="mt-5">
           <LinkButton href="/honoraires" variant="secondary" size="sm">
             Consulter le barème complet
           </LinkButton>
@@ -599,25 +716,42 @@ function LocationSection({ property }: { property: Property }) {
   const proximities = property.proximities ?? [];
   return (
     <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">Localisation</h2>
-        <p className="mt-2 text-sm text-body">
-          Secteur {loc.city}
-          {loc.neighborhood ? ` — quartier ${loc.neighborhood}` : ""}
-        </p>
-        <div className="mt-6 aspect-[16/9] w-full overflow-hidden rounded-sm border border-subtle bg-section">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading
+          eyebrow="Emplacement"
+          title="Localisation"
+          description={`Secteur ${loc.city}${loc.neighborhood ? ` — quartier ${loc.neighborhood}` : ""}.`}
+        />
+        <div className="mt-8 aspect-[16/9] w-full overflow-hidden rounded-sm border border-subtle bg-section">
           <div className="relative h-full w-full">
             <div
               className="absolute inset-0"
               style={{
                 backgroundImage:
-                  "radial-gradient(circle at center, rgba(24,24,27,0.18) 0%, rgba(24,24,27,0.05) 40%, transparent 60%)",
+                  "radial-gradient(circle at center, rgba(114,1,16,0.10) 0%, rgba(28,27,25,0.05) 40%, transparent 60%)",
+              }}
+              aria-hidden="true"
+            />
+            <div
+              className="absolute inset-0 opacity-[0.04]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, rgba(28,27,25,1) 1px, transparent 1px), linear-gradient(to bottom, rgba(28,27,25,1) 1px, transparent 1px)",
+                backgroundSize: "32px 32px",
               }}
               aria-hidden="true"
             />
             <div className="absolute inset-0 flex items-center justify-center text-muted">
-              <div className="flex flex-col items-center gap-2 text-center">
-                <MapPin className="h-8 w-8" aria-hidden="true" />
+              <div className="flex flex-col items-center gap-3 text-center">
+                <span className="relative flex h-10 w-10 items-center justify-center">
+                  <span
+                    className="absolute inset-0 animate-ping rounded-full bg-primary-600/20"
+                    aria-hidden="true"
+                  />
+                  <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-primary-600 text-on-primary shadow-md">
+                    <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                </span>
                 <p className="text-sm">
                   Zone approximative — {loc.city}
                   {loc.postalCode ? ` (${loc.postalCode})` : ""}
@@ -627,20 +761,20 @@ function LocationSection({ property }: { property: Property }) {
           </div>
         </div>
         <p className="mt-3 text-xs text-muted">
-          Localisation approximative (rayon d&apos;environ 500 m).
-          L&apos;adresse exacte vous est communiquée lors de la prise de
+          Localisation approximative (rayon d&rsquo;environ 500&nbsp;m).
+          L&rsquo;adresse exacte vous est communiquée lors de la prise de
           contact.
         </p>
         {proximities.length > 0 && (
-          <div className="mt-8 max-w-3xl">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">
+          <div className="mt-10 max-w-3xl">
+            <h3 className="text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">
               À proximité
             </h3>
-            <ul className="mt-3 grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+            <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
               {proximities.map((p) => (
                 <li
                   key={p.id}
-                  className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-3 py-2 text-sm"
+                  className="flex items-center justify-between gap-4 rounded-sm border border-subtle bg-card px-4 py-3 text-sm"
                 >
                   <div>
                     <p className="font-medium text-primary">{p.name}</p>
@@ -665,56 +799,6 @@ function LocationSection({ property }: { property: Property }) {
   );
 }
 
-function VisitFormSection({
-  reference,
-  isRental,
-}: {
-  reference: string;
-  isRental: boolean;
-}) {
-  return (
-    <section className="border-t border-subtle bg-neutral-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Ce bien vous intéresse ?
-        </h2>
-        <p className="mt-2 max-w-2xl text-sm text-body">
-          Remplissez le formulaire ci-dessous — je vous recontacte sous 24 h
-          ouvrées pour convenir d&apos;un créneau de visite.
-        </p>
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[280px_1fr]">
-          <div className="rounded-sm border border-subtle bg-card p-5">
-            <p className="text-sm font-semibold text-primary">
-              {AGENT.fullName}
-            </p>
-            <p className="text-xs text-muted">{AGENT.title}</p>
-            <div className="mt-4 flex flex-col gap-2">
-              <a
-                href={`tel:${AGENT.phoneE164}`}
-                className="inline-flex items-center gap-2 rounded-sm bg-primary-600 px-3 py-2 text-sm font-medium text-on-primary hover:bg-primary-700"
-              >
-                <Phone className="h-4 w-4" aria-hidden="true" /> Appeler
-              </a>
-              <a
-                href={`mailto:${AGENT.email}?subject=Bien ${reference}`}
-                className="inline-flex items-center gap-2 rounded-sm border border-default px-3 py-2 text-sm font-medium"
-              >
-                <Mail className="h-4 w-4" aria-hidden="true" /> Email
-              </a>
-            </div>
-            <p className="mt-4 text-xs text-muted">
-              Référence du bien : <strong>{reference}</strong>
-            </p>
-          </div>
-          <div className="rounded-sm border border-subtle bg-card p-5">
-            <VisitRequestForm reference={reference} isRental={isRental} />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function SimilarSection({
   similar,
   isRental,
@@ -723,19 +807,20 @@ function SimilarSection({
   isRental: boolean;
 }) {
   return (
-    <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Autres biens qui pourraient vous plaire
-        </h2>
-        <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <section className="border-t border-subtle bg-section/60">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <SectionHeading
+          eyebrow="Sélection"
+          title="Autres biens qui pourraient vous plaire"
+        />
+        <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {similar.map((p) => (
             <li key={p.id}>
               <SalePropertyCard property={p} />
             </li>
           ))}
         </ul>
-        <div className="mt-6">
+        <div className="mt-8">
           <LinkButton
             href={isRental ? "/louer" : "/acheter"}
             variant="secondary"
@@ -754,7 +839,7 @@ function SimilarSection({
 function LegalStrip() {
   return (
     <section className="border-t border-subtle bg-page">
-      <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs text-body md:px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs leading-relaxed text-body md:px-6">
         <p>
           Cabinet Rimbault · {AGENT.legal.carteT} · {AGENT.legal.cci} ·{" "}
           {AGENT.legal.garant} · {AGENT.legal.mediator}
