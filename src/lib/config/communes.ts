@@ -6,29 +6,21 @@ export interface Commune {
 
 export const COMMUNES: Commune[] = [
   {
-    slug: "boulogne-billancourt",
-    name: "Boulogne-Billancourt",
-    postalCode: "92100",
+    slug: "asnieres-sur-seine",
+    name: "Asnières-sur-Seine",
+    postalCode: "92600",
   },
-  { slug: "neuilly-sur-seine", name: "Neuilly-sur-Seine", postalCode: "92200" },
-  {
-    slug: "issy-les-moulineaux",
-    name: "Issy-les-Moulineaux",
-    postalCode: "92130",
-  },
+  { slug: "gennevilliers", name: "Gennevilliers", postalCode: "92230" },
+  { slug: "colombes", name: "Colombes", postalCode: "92700" },
+  { slug: "courbevoie", name: "Courbevoie", postalCode: "92400" },
+  { slug: "bois-colombes", name: "Bois-Colombes", postalCode: "92270" },
+  { slug: "clichy", name: "Clichy", postalCode: "92110" },
   { slug: "levallois-perret", name: "Levallois-Perret", postalCode: "92300" },
-  { slug: "vincennes", name: "Vincennes", postalCode: "94300" },
-  {
-    slug: "saint-maur-des-fosses",
-    name: "Saint-Maur-des-Fossés",
-    postalCode: "94100",
-  },
-  { slug: "versailles", name: "Versailles", postalCode: "78000" },
-  { slug: "saint-cloud", name: "Saint-Cloud", postalCode: "92210" },
+  { slug: "neuilly-sur-seine", name: "Neuilly-sur-Seine", postalCode: "92200" },
 ];
 
 export const COMMUNES_COMMENT =
-  "Un périmètre resserré sur l'ouest parisien et quelques communes limitrophes, choisi pour sa cohérence : typologies de biens proches, accès rapide depuis Paris, marché dynamique et acheteurs qualifiés.";
+  "Un périmètre resserré sur le nord-ouest parisien et les communes limitrophes d'Asnières-sur-Seine, choisi pour sa cohérence : typologies de biens proches, accès rapide depuis Paris, marché dynamique et acheteurs qualifiés.";
 
 export function findCommuneBySlug(slug: string): Commune | undefined {
   return COMMUNES.find((c) => c.slug === slug);

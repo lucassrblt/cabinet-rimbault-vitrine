@@ -2,90 +2,60 @@
 
 **Priorité : 🔴 BLOQUANT**
 **Phase : Contenu client**
-**Statut : ⏳ En attente des infos**
+**Statut : 🟡 Partiellement livré — en attente des dernières infos**
 
 ---
 
-## Problème
+## Ce qui est fait (PR #11)
 
-Tout `src/lib/config/agent.ts` est rempli de données **placeholder fictives** :
-- Téléphone : `06 12 34 56 78` (faux)
-- Email : `contact@cabinet-rimbault.fr` (à confirmer)
-- Adresse : `14 rue du Marché, 92100 Boulogne-Billancourt` (fausse)
-- SIRET : `923 456 789 00012` (faux)
-- Carte T : `CPI 9201 2024 000 012 345` (fausse)
-- Garant, médiateur, RCS : placeholders
+- [x] Nom / prénom / raison sociale → Xavier Rimbault, CABINET RIMBAULT (SAS)
+- [x] Forme juridique → SAS (champ `legal.legalForm` ajouté)
+- [x] SIREN → 511 484 586 (vérifié annuaire-entreprises)
+- [x] SIRET → 511 484 586 00025 (vérifié)
+- [x] RCS → Nanterre B 511 484 586 (vérifié)
+- [x] Capital → 4 000 € (vérifié)
+- [x] NAF → 68.31Z (vérifié)
+- [x] Adresse professionnelle → 117 Boulevard Voltaire, 92600 Asnières-sur-Seine (vérifié)
+- [x] Horaires → Lundi–Samedi 9h–19h (vérifié Mappy)
+- [x] CCI émettrice → CCI Hauts-de-Seine (département 92)
+- [x] Communes couvertes → recentrées autour d'Asnières (8 communes)
+- [x] Reviews → noms et communes mis à jour (toujours fictifs)
+- [x] Bio → réécriture cohérente avec les vraies infos
+- [x] Mentions légales et politique de confidentialité → refactorisées sur `AGENT.*`
+- [x] Toutes les mentions "Île-de-France" → remplacées par ville du config
 
-Les avis dans `src/lib/config/reviews.ts` sont également fictifs (réalistes mais inventés).
+## Ce qui reste à collecter auprès de l'agent
 
-Ces données apparaissent dans :
-- Header / Footer / MobileBottomBar (téléphone)
-- Toutes les pages (footer réglementaire)
-- `/a-propos` (bio, engagements, stats)
-- `/mentions-legales` / `/politique-de-confidentialite` / `/cookies`
-- `/honoraires` (barème)
-- Fiche bien (contact direct)
-
-## Checklist §12 cahier des charges — à collecter auprès de l'agent
-
-- [ ] Nom / prénom / raison sociale exacte
-- [ ] Forme juridique (EI, EURL, SARL…) → absent de `agent.ts`
-- [ ] N° carte professionnelle **T** (transaction) + **G** (si gestion) + CCI émettrice
-- [ ] RCS + ville d'immatriculation + SIRET
-- [ ] Adresse professionnelle complète
-- [ ] Téléphone pro + email pro + horaires d'ouverture
-- [ ] Garant financier : nom + adresse (QBE, Galian, MMA…)
-- [ ] Médiateur consommation désigné (MCP, Medimmoconso…)
-- [ ] Liste complète des communes couvertes → `src/lib/config/communes.ts`
+- [ ] Téléphone pro (E.164 + format affichage)
+- [ ] Email pro (confirmer `contact@cabinet-rimbault.fr` ou autre)
+- [ ] N° carte professionnelle **T** (transaction) — format CPI
+- [ ] N° carte professionnelle **G** (si gestion)
+- [ ] Garant financier : nom + adresse + montant garantie (QBE, Galian, MMA…)
+- [ ] Médiateur consommation désigné (CNPM, Medimmoconso…)
+- [ ] Assurance RCP : compagnie + n° contrat
 - [ ] Handles Instagram / LinkedIn pro
-- [ ] Logo HD → `public/logo-cabinet-rimbault.png` existe (à valider qualité)
-- [ ] Portrait pro HD → placeholder dans le code, pas d'image réelle
-- [ ] Confirmation GBP actif (nb d'avis)
+- [ ] URL Google Business Profile
+- [ ] URL WhatsApp
 - [ ] Barème d'honoraires réels (vente + location)
+- [ ] Portrait pro HD → placeholder dans le code, pas d'image réelle
+- [ ] Logo HD → `public/logo-cabinet-rimbault.png` existe (à valider qualité)
+- [ ] Stats réelles : nb transactions, nb avis Google, note, taux de réussite mandat
+- [ ] Confirmation GBP actif (nb d'avis)
 
 ## Implémentation
 
-### 1. Mettre à jour `src/lib/config/agent.ts`
+Quand les infos seront fournies, il suffit de mettre à jour un seul fichier :
 
-Remplacer toutes les valeurs fictives. Ajouter le champ `formeJuridique` :
+**`src/lib/config/agent.ts`** — remplacer les valeurs `"TODO"` par les vraies données.
 
-```ts
-export const AGENT = {
-  // ...
-  legal: {
-    formeJuridique: "EI", // ou EURL, SARL...
-    carteT: "Carte professionnelle T n° ...",
-    carteG: "Carte professionnelle G n° ...", // si gestion
-    cci: "CCI ...",
-    garant: "...",
-    mediator: "...",
-    siret: "SIRET ...",
-    rcs: "RCS ...",
-  },
-} as const;
-```
-
-### 2. Mettre à jour `src/lib/config/communes.ts`
-
-Vérifier que la liste correspond aux vraies communes couvertes.
-
-### 3. Mettre à jour `src/lib/config/reviews.ts`
-
-Remplacer les avis fictifs par les vrais (ou par les vrais extraits Google, si GBP actif).
-
-### 4. Ajouter le portrait de l'agent
-
-Placer l'image dans `public/portrait-agent.jpg` (ou `.webp`).
-Remplacer le placeholder dans `src/app/page.tsx` → `AgentSection` et `src/app/a-propos/page.tsx`.
-Utiliser `next/image` avec `alt`, `width`, `height`.
-
-### 5. Vérifier le logo
-
-`public/logo-cabinet-rimbault.png` est présent — vérifier qu'il est utilisé dans `Header.tsx` via `next/image`.
-
-### 6. Vérifier `/honoraires`
-
-La page doit afficher le vrai barème. Actuellement : contenu générique à personnaliser.
+Les pages suivantes s'adapteront automatiquement (import `AGENT`) :
+- Footer, Header, MobileBottomBar
+- `/mentions-legales`, `/politique-de-confidentialite`
+- `/agence`, `/contact`, `/vendre`, `/honoraires`
+- Fiche bien (`/bien/[reference]`)
+- Hero homepage, metadata globale
+- Pages `/acheter`, `/louer`
+- Tous les formulaires
 
 ## Notes légales
 

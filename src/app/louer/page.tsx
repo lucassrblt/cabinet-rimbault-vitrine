@@ -7,6 +7,7 @@ import { ListingView } from "@/components/listings/ListingView";
 import { LinkButton } from "@/components/ui/Button";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
+import { AGENT } from "@/lib/config/agent";
 import { findCommuneBySlug } from "@/lib/config/communes";
 import {
   pageFromQuery,
@@ -27,7 +28,7 @@ export async function generateMetadata({
   const sp = await searchParams;
   const communeSlug = typeof sp.commune === "string" ? sp.commune : undefined;
   const commune = communeSlug ? findCommuneBySlug(communeSlug) : null;
-  const where = commune ? ` à ${commune.name}` : " en Île-de-France";
+  const where = commune ? ` à ${commune.name}` : ` à ${AGENT.address.city}`;
   return {
     title: `Biens à louer${where}`,
     description: `Appartements et maisons à louer${where} — location longue durée par le Cabinet Rimbault.`,
@@ -66,7 +67,7 @@ export default async function LouerPage({
       <ListingHero
         badge="Louer"
         title="Votre futur chez-vous, en toute confiance."
-        subtitle="Appartements et maisons à louer en Île-de-France — sélectionnés et vérifiés par nos soins."
+        subtitle={`Appartements et maisons à louer à ${AGENT.address.city} — sélectionnés et vérifiés par nos soins.`}
         image="/hero-agence.jpg"
       />
 
