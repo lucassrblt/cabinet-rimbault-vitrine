@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -32,10 +31,10 @@ export function NavigationLoader() {
           }}
         >
           {/*<Image
-            src="/logo-cabinet-rimbault.png"
+            src="/cr-logo.png"
             alt="Cabinet Rimbault"
-            width={280}
-            height={100}
+            width={600}
+            height={200}
             priority
             className="h-auto w-[200px] md:w-[280px]"
           />*/}

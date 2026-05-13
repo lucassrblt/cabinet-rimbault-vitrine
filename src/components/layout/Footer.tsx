@@ -1,4 +1,5 @@
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { AGENT } from "@/lib/config/agent";
 
@@ -28,10 +29,21 @@ export function Footer() {
       <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-20">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="font-serif text-xl font-semibold text-on-inverse">
-              Cabinet Rimbault
-            </p>
-            <div className="mt-2 h-px w-10 bg-primary-600" />
+            <Link
+              href="/"
+              aria-label="Cabinet Rimbault — Accueil"
+              className="group inline-block"
+            >
+              <Image
+                src="/cr-logo.png"
+                alt="Cabinet Rimbault"
+                width={600}
+                height={200}
+                sizes="180px"
+                className="h-14 w-auto brightness-0 invert opacity-95 transition-opacity duration-200 group-hover:opacity-100"
+              />
+            </Link>
+            <div className="mt-5 h-px w-10 bg-primary-600" />
             <address className="mt-5 space-y-3 not-italic text-sm leading-relaxed text-on-inverse">
               <p className="flex items-start gap-3">
                 <MapPin
@@ -104,10 +116,13 @@ export function Footer() {
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Link
               href="/mentions-legales"
-              className="inline-flex items-center gap-1 text-xs text-neutral-400 transition-colors hover:text-primary-300"
+              className="group inline-flex items-center gap-1 text-xs text-neutral-400 transition-colors hover:text-primary-300"
             >
               Mentions légales complètes
-              <ArrowRight className="h-3 w-3" aria-hidden="true" />
+              <ArrowRight
+                className="h-3 w-3 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
             </Link>
             <p className="text-xs text-neutral-500">
               © {new Date().getFullYear()} Cabinet Rimbault. Tous droits
@@ -137,7 +152,7 @@ function FooterNav({
           <li key={link.href}>
             <Link
               href={link.href}
-              className="text-sm text-neutral-300 transition-colors hover:text-primary-300"
+              className="inline-block text-sm text-neutral-300 transition-all duration-200 ease-out hover:translate-x-0.5 hover:text-primary-300"
             >
               {link.label}
             </Link>

@@ -38,7 +38,7 @@ async function loadFeaturedProperties(): Promise<Property[]> {
 
 function HeroSection() {
   return (
-    <section className="relative bg-header pb-12 md:pb-14">
+    <section className="relative -mt-20 bg-header pb-12 md:pb-14">
       <div className="relative overflow-hidden">
         <Image
           src="/hero-home.jpg"
@@ -48,7 +48,8 @@ function HeroSection() {
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/20" />
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent" />
         <HeroContent years={AGENT.stats.years} />
       </div>
 
@@ -75,10 +76,13 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
           action={
             <Link
               href="/acheter"
-              className="inline-flex items-center gap-2 border border-primary-600 bg-transparent px-4 py-2 text-sm font-medium text-primary-600 shadow-md transition-all duration-300 hover:bg-primary-600 hover:text-on-primary hover:shadow-lg"
+              className="group inline-flex items-center gap-2 rounded-lg border border-primary-600 bg-transparent px-5 py-2.5 text-sm font-medium text-primary-600 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-primary-600 hover:text-on-primary hover:shadow-md active:translate-y-0"
             >
               Voir tous nos biens
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
             </Link>
           }
         />
@@ -122,7 +126,7 @@ function ReassuranceSection() {
   return (
     <section className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
-        <div className="rounded-lg border border-neutral-200 bg-neutral-100/60">
+        <div className="rounded-lg border border-neutral-200/70 bg-neutral-100/60">
           <div className="grid grid-cols-2 md:grid-cols-4">
             {REASSURANCE_ITEMS.map((item, i) => (
               <ScrollReveal
@@ -135,8 +139,8 @@ function ReassuranceSection() {
                 } ${i < 2 ? "border-b border-neutral-200 md:border-b-0" : ""}`}
               >
                 <item.icon
-                  className="h-10 w-10 text-neutral-500"
-                  strokeWidth={1}
+                  className="h-10 w-10 text-primary-600"
+                  strokeWidth={1.25}
                   aria-hidden="true"
                 />
                 <h3 className="mt-5 font-serif text-base font-semibold tracking-tight text-primary">
@@ -160,10 +164,10 @@ function ReassuranceSection() {
 
 function EstimationCtaSection() {
   return (
-    <section className="bg-neutral-900">
+    <section className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
         <ScrollReveal>
-          <div className="overflow-hidden rounded-xl">
+          <div className="overflow-hidden rounded-lg shadow-lg">
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="flex flex-col justify-center bg-primary-600 px-8 py-12 md:px-12 md:py-16">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">
@@ -180,10 +184,10 @@ function EstimationCtaSection() {
                 <div className="mt-8">
                   <Link
                     href="/estimation"
-                    className="inline-flex items-center gap-2 rounded-sm bg-white px-5 py-2.5 text-sm font-semibold text-primary-600 transition-colors hover:bg-neutral-100"
+                    className="group inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-primary-600 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-md active:translate-y-0"
                   >
                     Estimer mon bien
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
                   </Link>
                 </div>
               </div>

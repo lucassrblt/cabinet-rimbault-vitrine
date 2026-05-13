@@ -75,6 +75,25 @@ export const estimationStep1Schema = z.object({
 });
 export type EstimationStep1 = z.infer<typeof estimationStep1Schema>;
 
+export const projectRequestSchema = z.object({
+  mode: z.enum(["sale", "rent"]),
+  commune: z.string().min(1, "Commune requise"),
+  propertyType: z.string().optional(),
+  budgetMax: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^\d+$/.test(v), { message: "Budget invalide" }),
+  piecesMin: z.string().optional(),
+  firstName: nameSchema,
+  lastName: nameSchema,
+  phone: phoneSchema,
+  email: emailSchema,
+  message: z.string().max(500).optional(),
+  rgpd: rgpdConsentSchema,
+  website: z.string().max(0).optional(),
+});
+export type ProjectRequestInput = z.infer<typeof projectRequestSchema>;
+
 export const estimationStep2Schema = z.object({
   intent: z.enum(["vendre", "louer", "renseigne"]),
   delay: z.enum(["3m", "3-6m", "6-12m", "plus-tard"]),

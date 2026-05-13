@@ -64,7 +64,7 @@ export function HeroSearch() {
   return (
     <form
       onSubmit={onSubmit}
-      className="overflow-hidden rounded-sm bg-card shadow-lg"
+      className="overflow-hidden rounded-lg bg-card shadow-xl"
     >
       <div className="flex border-b border-subtle">
         {(["acheter", "louer"] as const).map((m) => (
@@ -118,10 +118,13 @@ export function HeroSearch() {
         <div className="flex items-stretch p-4">
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-sm bg-primary-600 px-8 py-4 text-sm font-semibold text-on-primary transition-colors duration-150 hover:bg-primary-700 md:w-auto"
+            className="group flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-8 py-4 text-sm font-semibold text-on-primary shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0 active:duration-75 md:w-auto"
           >
             Rechercher
-            <Search className="h-4 w-4" aria-hidden="true" />
+            <Search
+              className="h-4 w-4 transition-transform duration-300 ease-out group-hover:scale-110"
+              aria-hidden="true"
+            />
           </button>
         </div>
       </div>

@@ -32,20 +32,22 @@ function ImageSlider({ property }: { property: Property }) {
 
   return (
     <div className="group/slider relative h-full w-full overflow-hidden">
-      <div
-        className="flex h-full transition-transform duration-400 ease-out"
-        style={{ transform: `translateX(-${index * 100}%)` }}
-      >
-        {ordered.map((img, i) => (
-          // biome-ignore lint/performance/noImgElement: remote image host not pre-configured at MVP
-          <img
-            key={img.id}
-            src={img.url}
-            alt={img.alt ?? property.title}
-            className="h-full w-full flex-shrink-0 object-cover"
-            loading={i === 0 ? "eager" : "lazy"}
-          />
-        ))}
+      <div className="h-full w-full transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:scale-[1.04]">
+        <div
+          className="flex h-full transition-transform duration-400 ease-out"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {ordered.map((img, i) => (
+            // biome-ignore lint/performance/noImgElement: remote image host not pre-configured at MVP
+            <img
+              key={img.id}
+              src={img.url}
+              alt={img.alt ?? property.title}
+              className="h-full w-full flex-shrink-0 object-cover"
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          ))}
+        </div>
       </div>
 
       {total > 1 && (
@@ -155,7 +157,7 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
     <div>
       <div
         ref={scrollRef}
-        className="scrollbar-hide flex snap-x snap-mandatory gap-5 overflow-x-auto"
+        className="scrollbar-hide -mx-2 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-visible px-2 py-4"
       >
         {properties.map((property, i) => {
           const city = property.location?.city;
@@ -169,23 +171,14 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
           const floorLabel = formatFloor(floor);
           const badges = getPropertyBadges(property);
 
-          const hasAmenities = amenityLabels.length > 0;
-
-          const line1Parts: string[] = [];
+          const descParts: string[] = [];
           if (rooms != null)
-            line1Parts.push(`${rooms} pièce${rooms > 1 ? "s" : ""}`);
-          if (hasAmenities) {
-            line1Parts.push(...amenityLabels);
-          } else {
-            if (surface != null) line1Parts.push(formatSurface(surface));
-            if (floorLabel) line1Parts.push(floorLabel);
-          }
+            descParts.push(`${rooms} pièce${rooms > 1 ? "s" : ""}`);
+          descParts.push(...amenityLabels.slice(0, 2));
 
-          const line2Parts: string[] = [];
-          if (hasAmenities) {
-            if (surface != null) line2Parts.push(formatSurface(surface));
-            if (floorLabel) line2Parts.push(floorLabel);
-          }
+          const metaParts: string[] = [];
+          if (surface != null) metaParts.push(formatSurface(surface));
+          if (floorLabel) metaParts.push(floorLabel);
 
           return (
             <article
@@ -194,7 +187,7 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
                 cardRefs.current[i] = el;
               }}
               data-card
-              className="w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-[10px] border border-subtle bg-card shadow-sm transition-shadow duration-200 hover:shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
+              className="group/card w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-lg border border-transparent bg-card shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
             >
               <Link href={`/bien/${property.reference}`}>
                 <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
@@ -210,31 +203,31 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
                   )}
                 </div>
 
-                <div className="flex flex-col gap-1.5 p-5">
+                <div className="flex flex-col gap-1 p-5">
                   {location && (
-                    <p className="text-xs font-semibold uppercase tracking-wider text-primary-600">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
                       {location}
                     </p>
                   )}
 
-                  {line1Parts.length > 0 && (
-                    <p className="text-sm font-semibold text-primary">
-                      {line1Parts.join(" – ")}
+                  {descParts.length > 0 && (
+                    <p className="mt-1 text-sm font-semibold text-primary">
+                      {descParts.join(" - ")}
                     </p>
                   )}
 
-                  {line2Parts.length > 0 && (
+                  {metaParts.length > 0 && (
                     <p className="text-xs text-muted">
-                      {line2Parts.join(" – ")}
+                      {metaParts.join(" • ")}
                     </p>
                   )}
 
-                  <div className="mt-auto flex items-center justify-between pt-2">
+                  <div className="mt-auto flex items-center justify-between pt-4">
                     <p className="text-lg font-bold text-primary">
                       {formatPrice(price)}
                     </p>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-none bg-primary-600 text-on-primary transition-colors duration-150 hover:bg-primary-700">
-                      <ArrowRight className="h-4 w-4" />
+                    <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-primary-600 text-on-primary transition-colors duration-200 group-hover/card:bg-primary-700">
+                      <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover/card:translate-x-0.5" />
                     </span>
                   </div>
                 </div>

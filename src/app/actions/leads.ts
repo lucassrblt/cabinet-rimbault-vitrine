@@ -12,6 +12,8 @@ import {
   postEvaluation,
   type VisitAvailability,
 } from "@/lib/api/leads";
+import { findCommuneBySlug } from "@/lib/config/communes";
+import { formatPropertyType } from "@/lib/utils";
 import {
   type ContactInput,
   contactSchema,
@@ -19,6 +21,8 @@ import {
   type EstimationStep2,
   estimationStep1Schema,
   estimationStep2Schema,
+  type ProjectRequestInput,
+  projectRequestSchema,
   type QuickContactInput,
   quickContactSchema,
   type VisitFormInput,
@@ -209,6 +213,66 @@ export async function submitQuickContact(
     },
     consent: { rgpd: data.rgpd },
     meta: await buildMeta("/"),
+  };
+  const res = await postContactLead(payload);
+  if (!res.ok || !res.data) {
+    return {
+      ok: false,
+      error: res.error ?? "Erreur lors de l'envoi.",
+      fields: res.fields,
+    };
+  }
+  return { ok: true, id: res.data.id };
+}
+
+export async function submitProjectRequest(
+  input: ProjectRequestInput,
+): Promise<ActionResult> {
+  if (honeypotTripped(input.website)) {
+    return { ok: true, id: "silent" };
+  }
+  const parsed = projectRequestSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: "Formulaire invalide",
+      fields: mapZodIssues(parsed.error.issues),
+    };
+  }
+  const data = parsed.data;
+  const isRent = data.mode === "rent";
+  const commune = findCommuneBySlug(data.commune);
+  const lines: string[] = [
+    `Recherche ${isRent ? "location" : "vente"} :`,
+    `• Commune : ${commune?.name ?? data.commune}`,
+  ];
+  if (data.propertyType) {
+    lines.push(`• Type : ${formatPropertyType(data.propertyType)}`);
+  }
+  if (data.budgetMax) {
+    const n = Number(data.budgetMax);
+    const label = isRent ? "Loyer max" : "Budget max";
+    lines.push(`• ${label} : ${n.toLocaleString("fr-FR")} €`);
+  }
+  if (data.piecesMin) {
+    lines.push(`• Pièces min : ${data.piecesMin}`);
+  }
+  if (data.message?.trim()) {
+    lines.push("", data.message.trim());
+  }
+
+  const basePath = isRent ? "/louer" : "/acheter";
+  const payload: ContactPayload = {
+    subject: isRent ? "BIEN_RENT" : "BIEN_SALE",
+    contact: {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phone: data.phone,
+      email: data.email,
+      message: lines.join("\n"),
+    },
+    consent: { rgpd: data.rgpd },
+    meta: await buildMeta(basePath),
   };
   const res = await postContactLead(payload);
   if (!res.ok || !res.data) {

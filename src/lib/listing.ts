@@ -77,6 +77,14 @@ const ENERGY_CLASSES: readonly EnergyClass[] = [
   "VIERGE",
 ];
 
+const DPE_ORDER: readonly EnergyClass[] = ["A", "B", "C", "D", "E", "F", "G"];
+
+function dpeMaxRange(letter: string): EnergyClass[] | undefined {
+  const idx = DPE_ORDER.indexOf(letter as EnergyClass);
+  if (idx < 0) return undefined;
+  return DPE_ORDER.slice(0, idx + 1) as EnergyClass[];
+}
+
 const SORT_VALUES: readonly SortBy[] = [
   "date",
   "price_asc",
@@ -107,10 +115,15 @@ export function queryToSearchFilters(
     : null;
 
   const dpeRaw = query.dpe;
-  const dpe =
-    dpeRaw && ENERGY_CLASSES.includes(dpeRaw as EnergyClass)
-      ? ([dpeRaw as EnergyClass] as EnergyClass[])
-      : undefined;
+  let dpe: EnergyClass[] | undefined;
+  if (dpeRaw) {
+    const range = dpeMaxRange(dpeRaw);
+    if (range) {
+      dpe = range;
+    } else if (ENERGY_CLASSES.includes(dpeRaw as EnergyClass)) {
+      dpe = [dpeRaw as EnergyClass];
+    }
+  }
 
   const filters: SearchFilters = {
     transactionType,

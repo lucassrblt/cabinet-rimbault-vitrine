@@ -3,6 +3,7 @@
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { MobileMenu } from "./MobileMenu";
 import { NavLinks } from "./NavLinks";
@@ -15,8 +16,12 @@ const navItems = [
   { href: "/agence", label: "L'agence" },
 ];
 
+const TRANSPARENT_THRESHOLD = 80;
+
 export function Header() {
+  const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
+  const [scrolledPastHero, setScrolledPastHero] = useState(false);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -26,13 +31,23 @@ export function Header() {
     } else {
       setHidden(false);
     }
+    setScrolledPastHero(latest > TRANSPARENT_THRESHOLD);
   });
+
+  const isHomepage = pathname === "/";
+  const isTransparent = isHomepage && !scrolledPastHero;
+
+  const tone: "dark" | "light" = isTransparent ? "light" : "dark";
 
   return (
     <motion.header
       animate={{ y: hidden ? "-100%" : "0%" }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="fixed top-0 left-0 right-0 z-40 border-b border-subtle bg-header"
+      className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${
+        isTransparent
+          ? "border-b border-transparent bg-transparent"
+          : "border-b border-subtle bg-header"
+      }`}
     >
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center px-4 md:px-8">
         <Link
@@ -41,12 +56,13 @@ export function Header() {
           aria-label="Cabinet Rimbault — Accueil"
         >
           <Image
-            src="/logo-cabinet-rimbault.png"
+            src={isTransparent ? "/cr-logo-white.png" : "/cr-logo.png"}
             alt="Cabinet Rimbault"
-            width={180}
-            height={60}
+            width={600}
+            height={200}
             priority
-            className="h-12 w-auto"
+            sizes="(min-width: 768px) 132px, 120px"
+            className="h-10 w-auto md:h-11"
           />
         </Link>
 
@@ -55,19 +71,19 @@ export function Header() {
             aria-label="Navigation principale"
             className="flex items-center gap-8"
           >
-            <NavLinks items={navItems} />
+            <NavLinks items={navItems} tone={tone} />
           </nav>
 
           <Link
             href="/estimation"
-            className="shrink-0 rounded-sm bg-primary-600 px-5 py-2.5 text-sm font-semibold text-on-primary transition-colors duration-150 hover:bg-primary-700"
+            className="shrink-0 rounded-lg bg-primary-600 px-5 py-2.5 text-sm font-semibold text-on-primary shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0 active:duration-75"
           >
             Estimer mon bien
           </Link>
         </div>
 
         <div className="flex flex-1 items-center justify-end md:hidden">
-          <MobileMenu />
+          <MobileMenu tone={tone} />
         </div>
       </div>
     </motion.header>

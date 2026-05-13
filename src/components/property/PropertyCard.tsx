@@ -1,16 +1,7 @@
-import {
-  ArrowUpDown,
-  Car,
-  Fence,
-  Heart,
-  Image as ImageIcon,
-  LayoutGrid,
-  Maximize2,
-  Shrub,
-  Warehouse,
-} from "lucide-react";
+import { ArrowRight, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
+import { EnergyBadge } from "@/components/ui/EnergyRating";
 import type { Property } from "@/lib/api/types";
 import {
   formatFloor,
@@ -37,7 +28,7 @@ function MainImage({ property }: { property: Property }) {
     <img
       src={main.url}
       alt={main.alt ?? property.title}
-      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+      className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
       loading="lazy"
     />
   );
@@ -51,7 +42,7 @@ function CardShell({
   children: React.ReactNode;
 }) {
   const cls =
-    "group flex h-full flex-col overflow-hidden rounded-sm border border-subtle bg-card transition-shadow duration-200 hover:shadow-md";
+    "group flex h-full flex-col overflow-hidden rounded-lg border border-transparent bg-card shadow-md";
   if (!href) return <div className={cls}>{children}</div>;
   return (
     <Link href={href} className={cls}>
@@ -65,7 +56,7 @@ function CityLine({ property }: { property: Property }) {
   const neighborhood = property.location?.neighborhood;
   if (!city) return null;
   return (
-    <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary-600">
+    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
       {city}
       {neighborhood && ` – ${neighborhood}`}
     </p>
@@ -75,67 +66,78 @@ function CityLine({ property }: { property: Property }) {
 function buildDescriptiveTitle(property: Property): string {
   const parts: string[] = [];
   const rooms = property.characteristics?.rooms;
-  const surface = property.characteristics?.surface;
-  const floor = property.characteristics?.floor;
 
   if (rooms != null) parts.push(`${rooms} pièce${rooms > 1 ? "s" : ""}`);
-  if (surface != null) parts.push(`${surface} m²`);
+
+  const features = getFeatureLabels(property);
+  for (const f of features.slice(0, 2)) parts.push(f);
+
+  if (parts.length === 0) {
+    parts.push(formatPropertyType(property.propertyType));
+  }
+
+  return parts.join(" - ");
+}
+
+function getFeatureLabels(property: Property): string[] {
+  const a = property.amenities;
+  if (!a) return [];
+  const list: string[] = [];
+  if (a.hasTerrace) list.push("Terrasse");
+  if (a.hasBalcony) list.push("Balcon");
+  if (a.hasGarden) list.push("Jardin");
+  if (a.hasParking || a.hasGarage)
+    list.push(a.hasGarage ? "Garage" : "Parking");
+  if (a.hasCellar) list.push("Cave");
+  return list;
+}
+
+function buildMetaLine(property: Property): string | null {
+  const surface = property.characteristics?.surface;
+  const floor = property.characteristics?.floor;
+  const parts: string[] = [];
+
+  if (surface != null) parts.push(formatSurface(surface));
 
   const floorLabel = formatFloor(floor);
   if (floorLabel && property.propertyType === "APPARTEMENT") {
     parts.push(floorLabel);
-  } else if (
-    property.propertyType === "MAISON" ||
-    property.propertyType === "VILLA"
-  ) {
-    parts.push("Maison");
-  } else {
-    const feature = getFirstFeatureLabel(property);
-    if (feature) parts.push(feature);
   }
 
-  return parts.join(" – ");
+  return parts.length > 0 ? parts.join(" • ") : null;
 }
 
-function getFirstFeatureLabel(property: Property): string | null {
-  const a = property.amenities;
-  if (!a) return null;
-  if (a.hasTerrace) return "Terrasse";
-  if (a.hasBalcony) return "Balcon";
-  if (a.hasGarden) return "Jardin";
-  if (a.hasParking) return "Parking";
-  if (a.hasElevator) return "Ascenseur";
-  if (a.hasCellar) return "Cave";
-  if (a.hasGarage) return "Garage";
-  return null;
+function EnergyOverlay({ property }: { property: Property }) {
+  const dpe = property.energy?.energyClass;
+  const ges = property.energy?.gesClass;
+  return (
+    <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded-lg bg-white/90 px-1.5 py-1 backdrop-blur-sm">
+      <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+        DPE
+      </span>
+      <EnergyBadge value={dpe} />
+      <span className="ml-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted">
+        GES
+      </span>
+      <EnergyBadge value={ges} />
+    </div>
+  );
 }
 
-type FeaturePill = { label: string; icon: React.ElementType };
-
-function getFeaturePills(property: Property): FeaturePill[] {
-  const pills: FeaturePill[] = [];
-  const rooms = property.characteristics?.rooms;
-  const surface = property.characteristics?.surface;
-
-  if (rooms != null)
-    pills.push({
-      label: `${rooms} pièce${rooms > 1 ? "s" : ""}`,
-      icon: LayoutGrid,
-    });
-  if (surface != null) pills.push({ label: `${surface} m²`, icon: Maximize2 });
-
-  const a = property.amenities;
-  if (a?.hasElevator) pills.push({ label: "Ascenseur", icon: ArrowUpDown });
-  else if (a?.hasParking) pills.push({ label: "Parking", icon: Car });
-  else if (a?.hasGarden) pills.push({ label: "Jardin", icon: Shrub });
-  else if (a?.hasCellar) pills.push({ label: "Cave", icon: Warehouse });
-  else if (a?.hasBalcony) pills.push({ label: "Balcon", icon: Fence });
-
-  return pills;
+function ActionChip() {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary-600 text-on-primary transition-colors duration-200 group-hover:bg-primary-700"
+    >
+      <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
+    </span>
+  );
 }
 
 export function SalePropertyCard({ property }: { property: Property }) {
   const price = property.finance?.price;
+  const meta = buildMetaLine(property);
 
   return (
     <CardShell href={`/bien/${property.reference}`}>
@@ -144,28 +146,19 @@ export function SalePropertyCard({ property }: { property: Property }) {
         <div className="absolute left-2.5 top-2.5">
           <PropertyBadgesList property={property} />
         </div>
-        <div className="absolute right-2.5 top-2.5">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-primary-600 shadow-sm backdrop-blur-sm">
-            <Heart className="h-4 w-4" aria-hidden="true" />
-          </span>
-        </div>
+        <EnergyOverlay property={property} />
       </div>
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
+      <div className="flex flex-1 flex-col gap-1 p-5">
         <CityLine property={property} />
-        <p className="text-sm text-body">{buildDescriptiveTitle(property)}</p>
-        <p className="text-lg font-bold tracking-tight text-primary">
-          {formatPrice(price)}
+        <p className="mt-1 text-sm font-semibold text-primary">
+          {buildDescriptiveTitle(property)}
         </p>
-        <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
-          {getFeaturePills(property).map((pill) => (
-            <span
-              key={pill.label}
-              className="inline-flex items-center gap-1 text-xs text-muted"
-            >
-              <pill.icon className="h-3.5 w-3.5" aria-hidden="true" />
-              {pill.label}
-            </span>
-          ))}
+        {meta && <p className="text-xs text-muted">{meta}</p>}
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+          <p className="text-lg font-bold tracking-tight text-primary">
+            {formatPrice(price)}
+          </p>
+          <ActionChip />
         </div>
       </div>
     </CardShell>
@@ -178,6 +171,7 @@ export function RentPropertyCard({ property }: { property: Property }) {
   const chargesIncluses = property.finance?.chargesIncluses;
   const energy = property.energy?.energyClass;
   const isFG = energy === "F" || energy === "G";
+  const meta = buildMetaLine(property);
 
   return (
     <CardShell href={`/bien/${property.reference}`}>
@@ -186,40 +180,31 @@ export function RentPropertyCard({ property }: { property: Property }) {
         <div className="absolute left-2.5 top-2.5">
           <PropertyBadgesList property={property} />
         </div>
-        <div className="absolute right-2.5 top-2.5">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-primary-600 shadow-sm backdrop-blur-sm">
-            <Heart className="h-4 w-4" aria-hidden="true" />
-          </span>
-        </div>
+        <EnergyOverlay property={property} />
       </div>
-      <div className="flex flex-1 flex-col gap-1.5 p-4">
+      <div className="flex flex-1 flex-col gap-1 p-5">
         <CityLine property={property} />
-        <p className="text-sm text-body">{buildDescriptiveTitle(property)}</p>
-        <div>
-          <p className="text-lg font-bold tracking-tight text-primary">
-            {formatRent(price)}
-          </p>
-          <p className="text-xs text-muted">
-            {chargesIncluses
-              ? "Charges comprises"
-              : charges != null
-                ? `+ ${charges} € de charges`
-                : "Hors charges"}
-          </p>
-        </div>
-        <div className="mt-auto flex flex-wrap items-center gap-2 pt-2">
-          {getFeaturePills(property).map((pill) => (
-            <span
-              key={pill.label}
-              className="inline-flex items-center gap-1 text-xs text-muted"
-            >
-              <pill.icon className="h-3.5 w-3.5" aria-hidden="true" />
-              {pill.label}
-            </span>
-          ))}
+        <p className="mt-1 text-sm font-semibold text-primary">
+          {buildDescriptiveTitle(property)}
+        </p>
+        {meta && <p className="text-xs text-muted">{meta}</p>}
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+          <div>
+            <p className="text-lg font-bold tracking-tight text-primary">
+              {formatRent(price)}
+            </p>
+            <p className="text-xs text-muted">
+              {chargesIncluses
+                ? "Charges comprises"
+                : charges != null
+                  ? `+ ${charges} € de charges`
+                  : "Hors charges"}
+            </p>
+          </div>
+          <ActionChip />
         </div>
         {isFG && (
-          <div className="mt-1 rounded-sm border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-800">
+          <div className="mt-1 rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-800">
             {energy === "F"
               ? "⚠ Loi Climat : loyer gelé entre deux locataires"
               : "⚠ Loi Climat : restrictions de mise en location"}
@@ -245,7 +230,7 @@ export function SoldPropertyCard({ property }: { property: Property }) {
           <Badge tone="neutral">{label}</Badge>
         </div>
       </div>
-      <div className="flex flex-col gap-1 p-4">
+      <div className="flex flex-col gap-1 p-5">
         <p className="text-sm font-medium text-primary">{city}</p>
         <p className="text-sm text-body">
           {formatPropertyType(property.propertyType)} · {formatSurface(surface)}

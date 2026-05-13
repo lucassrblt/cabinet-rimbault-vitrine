@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { AlertCtaSection } from "@/components/listings/AlertCtaSection";
-import { ListingHero } from "@/components/listings/ListingHero";
+import { ActiveFiltersChips } from "@/components/listings/ActiveFiltersChips";
+import { ListingFilterBar } from "@/components/listings/ListingFilterBar";
 import { ListingReassurance } from "@/components/listings/ListingReassurance";
-import { ListingSearchBar } from "@/components/listings/ListingSearchBar";
-import { ListingView } from "@/components/listings/ListingView";
+import { ListingSectionHeader } from "@/components/listings/ListingSectionHeader";
+import { Pagination } from "@/components/listings/Pagination";
+import { SalePropertyCard } from "@/components/property/PropertyCard";
+import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
 import { LinkButton } from "@/components/ui/Button";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
@@ -42,7 +44,6 @@ export default async function AcheterPage({
 }) {
   const sp = await searchParams;
   const query = parseQuery(sp);
-  const commune = query.commune ? findCommuneBySlug(query.commune) : null;
   const page = pageFromQuery(query);
   const filters = queryToSearchFilters(query, "VENTE", page);
 
@@ -61,87 +62,100 @@ export default async function AcheterPage({
   }
 
   const pageData = paginateServerSide(total, page);
+  const basePath = "/acheter";
 
   return (
     <main className="flex flex-1 flex-col">
-      <ListingHero
-        badge="Acheter"
-        title="Trouvez le bien qui vous ressemble."
-        subtitle={`Maisons, appartements, biens d'exception : notre sélection à ${AGENT.address.city} et ses environs.`}
-        image="/hero-agence.jpg"
-      />
+      <section className="bg-header">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-12 md:px-8 md:pb-8 md:pt-16">
+          <ListingSectionHeader
+            mode="sale"
+            total={total}
+            basePath={basePath}
+            sort={query.sort}
+          />
+        </div>
+      </section>
 
-      <ListingSearchBar
-        mode="sale"
-        basePath="/acheter"
-        defaultValues={{
-          commune: query.commune,
-          type: query.type,
-          budgetMax: query.budgetMax,
-          pieces: query.pieces,
-        }}
-      />
-
-      {errorMessage ? (
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-12">
-          <div className="rounded-sm border border-subtle bg-page p-6 text-sm text-body">
-            <p className="font-medium">
-              Liste indisponible pour l&apos;instant.
-            </p>
-            <p className="mt-1 text-body">{errorMessage}</p>
+      <section className="bg-header">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-8 md:px-8 md:pb-10">
+          <ListingFilterBar
+            mode="sale"
+            basePath={basePath}
+            query={query}
+            total={total}
+          />
+          <div className="mt-4">
+            <ActiveFiltersChips mode="sale" basePath={basePath} query={query} />
           </div>
         </div>
-      ) : (
-        <ListingView
-          mode="sale"
-          basePath="/acheter"
-          query={query}
-          items={items}
-          total={pageData.total}
-          page={pageData.page}
-          totalPages={pageData.totalPages}
-        />
-      )}
+      </section>
+
+      <section className="bg-header">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-14 md:px-8 md:pb-16">
+          {errorMessage ? (
+            <div className="rounded-sm border border-subtle bg-card p-6 text-sm text-body">
+              <p className="font-medium">
+                Liste indisponible pour l&apos;instant.
+              </p>
+              <p className="mt-1 text-body">{errorMessage}</p>
+            </div>
+          ) : (
+            <>
+              {items.length === 0 ? (
+                <div className="flex flex-col items-start gap-4 rounded-sm border border-subtle bg-card p-6">
+                  <p className="text-base font-medium text-primary">
+                    Aucun bien ne correspond à vos critères.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <LinkButton href={basePath} variant="secondary" size="sm">
+                      Réinitialiser les filtres
+                    </LinkButton>
+                    <LinkButton href="/contact" size="sm">
+                      Me contacter pour un bien sur mesure
+                    </LinkButton>
+                  </div>
+                </div>
+              ) : (
+                <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map((p) => (
+                    <li key={p.id}>
+                      <SalePropertyCard property={p} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="mt-10">
+                <Pagination
+                  currentPage={pageData.page}
+                  totalPages={pageData.totalPages}
+                  basePath={basePath}
+                  params={{
+                    type: query.type,
+                    commune: query.commune,
+                    pieces: query.pieces,
+                    budgetMin: query.budgetMin,
+                    budgetMax: query.budgetMax,
+                    surfaceMin: query.surfaceMin,
+                    surfaceMax: query.surfaceMax,
+                    sort: query.sort,
+                    meuble: query.meuble,
+                    dpe: query.dpe,
+                    balcon: query.balcon,
+                    terrasse: query.terrasse,
+                    jardin: query.jardin,
+                    hideFG: query.hideFG,
+                  }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </section>
 
       <ListingReassurance mode="sale" />
-      <AlertCtaSection />
-      <SaleSeoBlock communeName={commune?.name} />
+      <PropertyEstimationCTA />
     </main>
-  );
-}
-
-function SaleSeoBlock({ communeName }: { communeName?: string }) {
-  const zone = communeName ?? "l'ouest parisien";
-  return (
-    <section className="border-t border-subtle bg-neutral-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-14">
-        <h2 className="text-xl font-semibold tracking-tight md:text-2xl">
-          Acheter un bien dans {zone}
-        </h2>
-        <div className="mt-4 max-w-3xl space-y-3 text-sm text-body md:text-base">
-          <p>
-            Acheter dans {zone} demande une connaissance fine du terrain : prix
-            réels pratiqués, copropriétés, charges, travaux à anticiper,
-            transports, écoles. Je consacre le temps qu&apos;il faut à chaque
-            dossier pour vous éviter les mauvaises surprises et défendre votre
-            offre au meilleur prix.
-          </p>
-          <p>
-            J&apos;interviens sur un périmètre resserré pour rester pertinent.
-            Tous les biens présentés sont vérifiés, les diagnostics contrôlés,
-            les informations de copropriété collectées en amont.
-          </p>
-        </div>
-        <div className="mt-6 flex flex-wrap gap-3 rounded-sm border border-subtle bg-card p-5">
-          <p className="basis-full text-base font-medium text-primary">
-            Vous ne trouvez pas le bien idéal ?
-          </p>
-          <LinkButton href="/contact">Me contacter</LinkButton>
-          <LinkButton href="/estimation" variant="secondary">
-            Estimer mon bien
-          </LinkButton>
-        </div>
-      </div>
-    </section>
   );
 }

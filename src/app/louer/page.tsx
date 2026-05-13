@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { AlertCtaSection } from "@/components/listings/AlertCtaSection";
-import { ListingHero } from "@/components/listings/ListingHero";
+import { ActiveFiltersChips } from "@/components/listings/ActiveFiltersChips";
+import { ListingFilterBar } from "@/components/listings/ListingFilterBar";
 import { ListingReassurance } from "@/components/listings/ListingReassurance";
-import { ListingSearchBar } from "@/components/listings/ListingSearchBar";
-import { ListingView } from "@/components/listings/ListingView";
+import { ListingSectionHeader } from "@/components/listings/ListingSectionHeader";
+import { Pagination } from "@/components/listings/Pagination";
+import { RentPropertyCard } from "@/components/property/PropertyCard";
+import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
 import { LinkButton } from "@/components/ui/Button";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
@@ -42,7 +44,6 @@ export default async function LouerPage({
 }) {
   const sp = await searchParams;
   const query = parseQuery(sp);
-  const commune = query.commune ? findCommuneBySlug(query.commune) : null;
   const page = pageFromQuery(query);
   const filters = queryToSearchFilters(query, "LOCATION", page);
 
@@ -61,110 +62,100 @@ export default async function LouerPage({
   }
 
   const pageData = paginateServerSide(total, page);
+  const basePath = "/louer";
 
   return (
     <main className="flex flex-1 flex-col">
-      <ListingHero
-        badge="Louer"
-        title="Votre futur chez-vous, en toute confiance."
-        subtitle={`Appartements et maisons à louer à ${AGENT.address.city} — sélectionnés et vérifiés par nos soins.`}
-        image="/hero-agence.jpg"
-      />
+      <section className="bg-header">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-12 md:px-8 md:pb-8 md:pt-16">
+          <ListingSectionHeader
+            mode="rent"
+            total={total}
+            basePath={basePath}
+            sort={query.sort}
+          />
+        </div>
+      </section>
 
-      <ListingSearchBar
-        mode="rent"
-        basePath="/louer"
-        defaultValues={{
-          commune: query.commune,
-          type: query.type,
-          budgetMax: query.budgetMax,
-          pieces: query.pieces,
-        }}
-      />
-
-      {errorMessage ? (
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-12">
-          <div className="rounded-sm border border-subtle bg-page p-6 text-sm text-body">
-            <p className="font-medium">
-              Liste indisponible pour l&apos;instant.
-            </p>
-            <p className="mt-1 text-body">{errorMessage}</p>
+      <section className="bg-header">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-8 md:px-8 md:pb-10">
+          <ListingFilterBar
+            mode="rent"
+            basePath={basePath}
+            query={query}
+            total={total}
+          />
+          <div className="mt-4">
+            <ActiveFiltersChips mode="rent" basePath={basePath} query={query} />
           </div>
         </div>
-      ) : (
-        <ListingView
-          mode="rent"
-          basePath="/louer"
-          query={query}
-          items={items}
-          total={pageData.total}
-          page={pageData.page}
-          totalPages={pageData.totalPages}
-        />
-      )}
+      </section>
+
+      <section className="bg-header">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-14 md:px-8 md:pb-16">
+          {errorMessage ? (
+            <div className="rounded-sm border border-subtle bg-card p-6 text-sm text-body">
+              <p className="font-medium">
+                Liste indisponible pour l&apos;instant.
+              </p>
+              <p className="mt-1 text-body">{errorMessage}</p>
+            </div>
+          ) : (
+            <>
+              {items.length === 0 ? (
+                <div className="flex flex-col items-start gap-4 rounded-sm border border-subtle bg-card p-6">
+                  <p className="text-base font-medium text-primary">
+                    Aucun bien ne correspond à vos critères.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <LinkButton href={basePath} variant="secondary" size="sm">
+                      Réinitialiser les filtres
+                    </LinkButton>
+                    <LinkButton href="/contact" size="sm">
+                      Me signaler ma recherche
+                    </LinkButton>
+                  </div>
+                </div>
+              ) : (
+                <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map((p) => (
+                    <li key={p.id}>
+                      <RentPropertyCard property={p} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <div className="mt-10">
+                <Pagination
+                  currentPage={pageData.page}
+                  totalPages={pageData.totalPages}
+                  basePath={basePath}
+                  params={{
+                    type: query.type,
+                    commune: query.commune,
+                    pieces: query.pieces,
+                    budgetMin: query.budgetMin,
+                    budgetMax: query.budgetMax,
+                    surfaceMin: query.surfaceMin,
+                    surfaceMax: query.surfaceMax,
+                    sort: query.sort,
+                    meuble: query.meuble,
+                    dpe: query.dpe,
+                    balcon: query.balcon,
+                    terrasse: query.terrasse,
+                    jardin: query.jardin,
+                    hideFG: query.hideFG,
+                  }}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      </section>
 
       <ListingReassurance mode="rent" />
-      <AlertCtaSection />
-      <TenantFileSection />
-      <RentSeoBlock communeName={commune?.name} />
+      <PropertyEstimationCTA />
     </main>
-  );
-}
-
-function TenantFileSection() {
-  return (
-    <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-14">
-        <h2 className="text-xl font-semibold tracking-tight md:text-2xl">
-          Votre dossier locataire
-        </h2>
-        <p className="mt-3 max-w-3xl text-sm text-body md:text-base">
-          Préparez à l&apos;avance : pièce d&apos;identité, trois derniers
-          bulletins de salaire ou attestation de revenus, dernier avis
-          d&apos;imposition, justificatif de domicile et, le cas échéant, pièces
-          du garant. Je traite les dossiers complets en priorité. DossierFacile
-          est accepté. Délai de réponse moyen : 48–72 h.
-        </p>
-        <div className="mt-4">
-          <LinkButton href="/contact" variant="secondary" size="sm">
-            Poser une question sur le dossier
-          </LinkButton>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function RentSeoBlock({ communeName }: { communeName?: string }) {
-  const zone = communeName ?? "l'ouest parisien";
-  return (
-    <section className="border-t border-subtle bg-neutral-50/50">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-14">
-        <h2 className="text-xl font-semibold tracking-tight md:text-2xl">
-          Louer un logement dans {zone}
-        </h2>
-        <div className="mt-4 max-w-3xl space-y-3 text-sm text-body md:text-base">
-          <p>
-            Le marché locatif de {zone} est tendu : les bons dossiers partent
-            vite et la concurrence entre candidats est forte. En tant
-            qu&apos;intermédiaire entre bailleurs et locataires, je mets un
-            point d&apos;honneur à présenter des biens conformes, à respecter
-            les délais annoncés et à communiquer clairement sur chaque
-            candidature.
-          </p>
-          <p>
-            Tous les biens respectent les obligations de la loi Climat. Les
-            logements classés F ou G font l&apos;objet d&apos;une mention
-            explicite dès la liste.
-          </p>
-        </div>
-        <div className="mt-6 flex flex-wrap gap-3 rounded-sm border border-subtle bg-card p-5">
-          <p className="basis-full text-base font-medium text-primary">
-            Pas de bien qui correspond ?
-          </p>
-          <LinkButton href="/contact">Me signaler ma recherche</LinkButton>
-        </div>
-      </div>
-    </section>
   );
 }

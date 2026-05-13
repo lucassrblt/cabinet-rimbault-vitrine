@@ -12,7 +12,7 @@ const items: { href: string; label: string }[] = [
   { href: "/agence", label: "L'agence" },
 ];
 
-export function MobileMenu() {
+export function MobileMenu({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function MobileMenu() {
         aria-label="Ouvrir le menu"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className="md:hidden"
+        className={`md:hidden ${tone === "light" ? "text-white" : ""}`}
       >
         <Menu className="h-6 w-6" />
       </button>
@@ -68,7 +68,7 @@ export function MobileMenu() {
             <Link
               href="/estimation"
               onClick={() => setOpen(false)}
-              className="mt-4 rounded-sm bg-primary-600 px-4 py-2 text-center text-base font-medium text-on-primary hover:bg-primary-700"
+              className="mt-4 rounded-lg bg-primary-600 px-4 py-2 text-center text-base font-medium text-on-primary transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary-700 active:translate-y-0"
             >
               Estimer mon bien
             </Link>
