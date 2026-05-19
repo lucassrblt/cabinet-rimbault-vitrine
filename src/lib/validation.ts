@@ -18,15 +18,6 @@ export const postalCodeSchema = z
   .string()
   .regex(postalCodeRegex, "Code postal invalide (5 chiffres)");
 
-export const quickContactSchema = z.object({
-  name: nameSchema,
-  phone: phoneSchema,
-  message: z.string().min(5, "Merci de préciser votre message").max(500),
-  rgpd: rgpdConsentSchema,
-  website: z.string().max(0).optional(),
-});
-export type QuickContactInput = z.infer<typeof quickContactSchema>;
-
 export const contactSchema = z.object({
   subject: z.enum(["vente", "location", "estimation", "rdv", "autre"]),
   reference: z.string().max(40).optional(),
@@ -74,25 +65,6 @@ export const estimationStep1Schema = z.object({
   condition: z.enum(["neuf", "bon", "rafraichir", "renover"]),
 });
 export type EstimationStep1 = z.infer<typeof estimationStep1Schema>;
-
-export const projectRequestSchema = z.object({
-  mode: z.enum(["sale", "rent"]),
-  commune: z.string().min(1, "Commune requise"),
-  propertyType: z.string().optional(),
-  budgetMax: z
-    .string()
-    .optional()
-    .refine((v) => !v || /^\d+$/.test(v), { message: "Budget invalide" }),
-  piecesMin: z.string().optional(),
-  firstName: nameSchema,
-  lastName: nameSchema,
-  phone: phoneSchema,
-  email: emailSchema,
-  message: z.string().max(500).optional(),
-  rgpd: rgpdConsentSchema,
-  website: z.string().max(0).optional(),
-});
-export type ProjectRequestInput = z.infer<typeof projectRequestSchema>;
 
 export const estimationStep2Schema = z.object({
   intent: z.enum(["vendre", "louer", "renseigne"]),

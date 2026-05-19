@@ -12,8 +12,6 @@ import {
   postEvaluation,
   type VisitAvailability,
 } from "@/lib/api/leads";
-import { findCommuneBySlug } from "@/lib/config/communes";
-import { formatPropertyType } from "@/lib/utils";
 import {
   type ContactInput,
   contactSchema,
@@ -21,10 +19,6 @@ import {
   type EstimationStep2,
   estimationStep1Schema,
   estimationStep2Schema,
-  type ProjectRequestInput,
-  projectRequestSchema,
-  type QuickContactInput,
-  quickContactSchema,
   type VisitFormInput,
   visitFormSchema,
 } from "@/lib/validation";
@@ -121,17 +115,6 @@ function parseSurface(v: string): number | undefined {
   return Number.isFinite(n) && n > 0 ? n : undefined;
 }
 
-function splitName(name: string): { firstName: string; lastName: string } {
-  const trimmed = name.trim();
-  const parts = trimmed.split(/\s+/);
-  if (parts.length === 1)
-    return { firstName: parts[0] ?? trimmed, lastName: "—" };
-  return {
-    firstName: parts[0],
-    lastName: parts.slice(1).join(" "),
-  };
-}
-
 function mapZodIssues(
   issues: ReadonlyArray<{ path: ReadonlyArray<PropertyKey>; message: string }>,
 ): Record<string, string> {
@@ -174,105 +157,6 @@ export async function submitContactLead(
     },
     consent: { rgpd: data.rgpd },
     meta: await buildMeta("/contact"),
-  };
-  const res = await postContactLead(payload);
-  if (!res.ok || !res.data) {
-    return {
-      ok: false,
-      error: res.error ?? "Erreur lors de l'envoi.",
-      fields: res.fields,
-    };
-  }
-  return { ok: true, id: res.data.id };
-}
-
-export async function submitQuickContact(
-  input: QuickContactInput,
-): Promise<ActionResult> {
-  if (honeypotTripped(input.website)) {
-    return { ok: true, id: "silent" };
-  }
-  const parsed = quickContactSchema.safeParse(input);
-  if (!parsed.success) {
-    return {
-      ok: false,
-      error: "Formulaire invalide",
-      fields: mapZodIssues(parsed.error.issues),
-    };
-  }
-  const data = parsed.data;
-  const { firstName, lastName } = splitName(data.name);
-  const payload: ContactPayload = {
-    subject: "OTHER",
-    contact: {
-      firstName,
-      lastName,
-      phone: data.phone,
-      email: `${data.phone.replace(/\D/g, "")}@noemail.placeholder`,
-      message: data.message,
-    },
-    consent: { rgpd: data.rgpd },
-    meta: await buildMeta("/"),
-  };
-  const res = await postContactLead(payload);
-  if (!res.ok || !res.data) {
-    return {
-      ok: false,
-      error: res.error ?? "Erreur lors de l'envoi.",
-      fields: res.fields,
-    };
-  }
-  return { ok: true, id: res.data.id };
-}
-
-export async function submitProjectRequest(
-  input: ProjectRequestInput,
-): Promise<ActionResult> {
-  if (honeypotTripped(input.website)) {
-    return { ok: true, id: "silent" };
-  }
-  const parsed = projectRequestSchema.safeParse(input);
-  if (!parsed.success) {
-    return {
-      ok: false,
-      error: "Formulaire invalide",
-      fields: mapZodIssues(parsed.error.issues),
-    };
-  }
-  const data = parsed.data;
-  const isRent = data.mode === "rent";
-  const commune = findCommuneBySlug(data.commune);
-  const lines: string[] = [
-    `Recherche ${isRent ? "location" : "vente"} :`,
-    `• Commune : ${commune?.name ?? data.commune}`,
-  ];
-  if (data.propertyType) {
-    lines.push(`• Type : ${formatPropertyType(data.propertyType)}`);
-  }
-  if (data.budgetMax) {
-    const n = Number(data.budgetMax);
-    const label = isRent ? "Loyer max" : "Budget max";
-    lines.push(`• ${label} : ${n.toLocaleString("fr-FR")} €`);
-  }
-  if (data.piecesMin) {
-    lines.push(`• Pièces min : ${data.piecesMin}`);
-  }
-  if (data.message?.trim()) {
-    lines.push("", data.message.trim());
-  }
-
-  const basePath = isRent ? "/louer" : "/acheter";
-  const payload: ContactPayload = {
-    subject: isRent ? "BIEN_RENT" : "BIEN_SALE",
-    contact: {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      phone: data.phone,
-      email: data.email,
-      message: lines.join("\n"),
-    },
-    consent: { rgpd: data.rgpd },
-    meta: await buildMeta(basePath),
   };
   const res = await postContactLead(payload);
   if (!res.ok || !res.data) {
