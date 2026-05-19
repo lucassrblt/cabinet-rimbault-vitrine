@@ -1,6 +1,7 @@
 import { Mail, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
+import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
 import { Accordion } from "@/components/ui/Accordion";
 import { LinkButton } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -116,6 +117,11 @@ export default function VendrePage() {
           </div>
         </div>
       </section>
+
+      <ReviewsStrip
+        heading="Ils m’ont confié leur projet"
+        className="border-b border-subtle"
+      />
 
       <section>
         <div className="mx-auto w-full max-w-6xl px-4 py-12 text-center md:px-6 md:py-16">

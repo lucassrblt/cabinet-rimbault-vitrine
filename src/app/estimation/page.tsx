@@ -2,8 +2,10 @@ import type { LucideIcon } from "lucide-react";
 import { ClipboardList, MessageSquareText, UserCircle2 } from "lucide-react";
 import type { Metadata } from "next";
 import { EstimationForm } from "@/components/forms/EstimationForm";
+import { GoogleRatingBadge } from "@/components/reviews/GoogleRatingBadge";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { AGENT } from "@/lib/config/agent";
+import { getReviewsData } from "@/lib/reviews";
 
 export const metadata: Metadata = {
   title: "Estimation gratuite de votre bien",
@@ -47,7 +49,8 @@ export default function EstimationPage() {
   );
 }
 
-function HeroSection() {
+async function HeroSection() {
+  const reviews = await getReviewsData();
   return (
     <section className="bg-header">
       <div className="mx-auto w-full max-w-3xl px-4 pb-8 pt-16 text-center md:pb-10 md:pt-20">
@@ -55,7 +58,7 @@ function HeroSection() {
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-primary-600">
             Estimation gratuite
           </p>
-          <h1 className="mt-4 font-serif text-4xl font-medium leading-[1.05] tracking-tight text-primary md:text-5xl">
+          <h1 className="mt-4 font-display text-4xl font-medium leading-[1.05] tracking-tight text-primary md:text-5xl">
             Estimez votre bien
             <br />
             en quelques minutes.
@@ -64,6 +67,11 @@ function HeroSection() {
             Une fourchette argumentée par un agent indépendant. Sans engagement.
             Réponse personnelle sous 24&nbsp;h ouvrées.
           </p>
+          {reviews && (
+            <div className="mt-7 flex justify-center">
+              <GoogleRatingBadge data={reviews} variant="inline" />
+            </div>
+          )}
         </ScrollReveal>
       </div>
     </section>
@@ -92,7 +100,7 @@ function DeliverablesSection() {
               <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-primary-600">
                 Ce que vous recevez
               </p>
-              <h2 className="mt-3 font-serif text-2xl font-semibold tracking-tight text-primary md:text-3xl">
+              <h2 className="mt-3 font-display text-2xl font-semibold tracking-tight text-primary md:text-3xl">
                 Une réponse soignée, sans pression.
               </h2>
             </div>
@@ -109,7 +117,7 @@ function DeliverablesSection() {
                       aria-hidden="true"
                     />
                   </span>
-                  <h3 className="mt-4 font-serif text-base font-semibold text-primary">
+                  <h3 className="mt-4 font-display text-base font-semibold text-primary">
                     {item.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -135,7 +143,7 @@ function PhoneFallbackSection() {
           </p>
           <a
             href={`tel:${AGENT.phoneE164}`}
-            className="mt-3 inline-flex items-baseline gap-2 font-serif text-2xl font-medium tracking-tight text-primary transition-colors hover:text-primary-600 md:text-3xl"
+            className="mt-3 inline-flex items-baseline gap-2 font-display text-2xl font-medium tracking-tight text-primary transition-colors hover:text-primary-600 md:text-3xl"
           >
             {AGENT.phoneDisplay}
           </a>

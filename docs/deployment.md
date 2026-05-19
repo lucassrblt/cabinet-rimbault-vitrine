@@ -18,6 +18,10 @@ Toutes les variables sont **server-only**. **Aucune** ne doit être préfixée `
 |---|---|---|---|
 | `ADMIN_API_URL` | oui | `https://admin.cabinet-rimbault.fr/api/public` | Vercel → Settings → Environment Variables (Production + Preview) |
 | `PUBLIC_API_KEY` | oui | clé fournie par le back-office | idem — **marquer sensible** |
+| `GOOGLE_PLACES_API_KEY` | non | clé Google Cloud, *Places API (New)* | idem — **marquer sensible** |
+| `GOOGLE_PLACE_ID` | non | `ChIJ…` (fiche Google du cabinet) | idem |
+
+Les deux variables `GOOGLE_*` alimentent la section « Avis clients ». Si l'une manque, les avis sont **désactivés** proprement en production (les sections disparaissent) — aucune erreur. En développement, des données de démo prennent le relais.
 
 En local : copier `.env.local.example` en `.env.local` et remplir. Le fichier `.env*` est git-ignoré sauf `.env.local.example`.
 
@@ -32,12 +36,13 @@ Le fichier `src/lib/api/client.ts` importe `"server-only"` : toute tentative d'i
 
 ## Images distantes
 
-`next.config.ts` autorise uniquement `*.supabase.co` (`/storage/v1/object/public/**`). Si le stockage change, mettre à jour `remotePatterns` avant le merge — sinon `next/image` throw en prod.
+`next.config.ts` autorise `*.supabase.co` (`/storage/v1/object/public/**`, photos de biens) et `*.googleusercontent.com` (photos de profil des avis Google). Si une source d'images change, mettre à jour `remotePatterns` avant le merge — sinon `next/image` throw en prod.
 
 ## Cache & revalidation
 
 - `apiFetch` applique `revalidate: 60` par défaut (ISR 1 min).
 - Cache tags : `properties`, `properties:sale`, `properties:rent`, `properties:recent`, `property:<reference>`.
+- Avis Google : `revalidate: 86400` (ISR 24 h), tag `reviews`.
 - Pour forcer un refresh après publication côté admin, déclencher `revalidateTag("properties")` depuis un route handler (pas encore implémenté — à créer à la demande).
 
 ## Domaines
