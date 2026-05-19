@@ -18,8 +18,17 @@ export const postalCodeSchema = z
   .string()
   .regex(postalCodeRegex, "Code postal invalide (5 chiffres)");
 
+export const contactSubjectSchema = z.enum([
+  "vente",
+  "location",
+  "estimation",
+  "rdv",
+  "autre",
+]);
+export type ContactSubject = z.infer<typeof contactSubjectSchema>;
+
 export const contactSchema = z.object({
-  subject: z.enum(["vente", "location", "estimation", "rdv", "autre"]),
+  subject: contactSubjectSchema,
   reference: z.string().max(40).optional(),
   firstName: nameSchema,
   lastName: nameSchema,
@@ -30,6 +39,25 @@ export const contactSchema = z.object({
   website: z.string().max(0).optional(),
 });
 export type ContactInput = z.infer<typeof contactSchema>;
+
+/**
+ * Formulaire de contact court (drawer réutilisable).
+ * Le `subject` est pré-rempli par le déclencheur ; le message est facultatif.
+ */
+export const quickContactSchema = z.object({
+  subject: contactSubjectSchema,
+  reference: z.string().max(40).optional(),
+  firstName: nameSchema,
+  lastName: nameSchema,
+  phone: phoneSchema,
+  email: emailSchema,
+  message: z
+    .literal("")
+    .or(z.string().min(5, "Message trop court (5 caractères min.)").max(500)),
+  rgpd: rgpdConsentSchema,
+  website: z.string().max(0).optional(),
+});
+export type QuickContactInput = z.infer<typeof quickContactSchema>;
 
 export const visitFormSchema = z.object({
   profile: z.enum(["acquereur", "investisseur", "locataire", "curieux"]),

@@ -39,7 +39,7 @@ export function PropertyEstimationCTA() {
 
           <div className="relative grid grid-cols-1 gap-8 px-6 py-10 md:grid-cols-[1fr_auto] md:items-end md:px-12 md:py-14 lg:px-16 lg:py-16">
             <div className="md:max-w-xl">
-              <span className="inline-flex items-center gap-2 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-200">
+              <span className="inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-primary-200">
                 <span
                   aria-hidden="true"
                   className="inline-block h-px w-6 bg-primary-300"
@@ -70,7 +70,7 @@ export function PropertyEstimationCTA() {
                   aria-hidden="true"
                 />
               </Link>
-              <p className="text-[0.68rem] uppercase tracking-[0.18em] text-on-inverse/50">
+              <p className="text-[0.7rem] uppercase tracking-[0.22em] text-on-inverse/50">
                 Gratuit · sans engagement
               </p>
             </div>

@@ -1,5 +1,6 @@
 import { Mail, Phone } from "lucide-react";
 import type { Metadata } from "next";
+import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
 import { Accordion } from "@/components/ui/Accordion";
@@ -35,9 +36,9 @@ export default function VendrePage() {
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <LinkButton href="/estimation">Estimer mon bien</LinkButton>
-            <LinkButton href="/contact" variant="secondary">
+            <ContactTrigger subject="estimation" variant="secondary">
               Me contacter
-            </LinkButton>
+            </ContactTrigger>
           </div>
         </div>
       </section>

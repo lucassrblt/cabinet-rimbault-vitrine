@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
+import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { ActiveFiltersChips } from "@/components/listings/ActiveFiltersChips";
 import { ListingFilterBar } from "@/components/listings/ListingFilterBar";
+import { ListingHero } from "@/components/listings/ListingHero";
 import { ListingReassurance } from "@/components/listings/ListingReassurance";
-import { ListingSectionHeader } from "@/components/listings/ListingSectionHeader";
+import { ListingResultsBar } from "@/components/listings/ListingResultsBar";
 import { Pagination } from "@/components/listings/Pagination";
 import { SalePropertyCard } from "@/components/property/PropertyCard";
 import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
 import { LinkButton } from "@/components/ui/Button";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
@@ -66,19 +69,17 @@ export default async function AcheterPage({
 
   return (
     <main className="flex flex-1 flex-col">
-      <section className="bg-header">
-        <div className="mx-auto w-full max-w-7xl px-4 pb-6 pt-12 md:px-8 md:pb-8 md:pt-16">
-          <ListingSectionHeader
-            mode="sale"
-            total={total}
-            basePath={basePath}
-            sort={query.sort}
-          />
-        </div>
-      </section>
-
-      <section className="bg-header">
-        <div className="mx-auto w-full max-w-7xl px-4 pb-8 md:px-8 md:pb-10">
+      <section className="border-b border-subtle bg-header">
+        {/* STOPGAP : pas de visuel dédié /acheter — réutilise la façade de
+            l'agence. Remplacer par /public/hero-acheter.jpg dès qu'un visuel
+            dédié existe. */}
+        <ListingHero
+          mode="sale"
+          city={AGENT.address.city}
+          image="/hero-agence.jpg"
+          imageAlt="Immeuble de caractère"
+        />
+        <div className="relative z-10 mx-auto -mt-12 w-full max-w-7xl px-4 pb-12 md:-mt-16 md:px-8 md:pb-14">
           <ListingFilterBar
             mode="sale"
             basePath={basePath}
@@ -91,8 +92,8 @@ export default async function AcheterPage({
         </div>
       </section>
 
-      <section className="bg-header">
-        <div className="mx-auto w-full max-w-7xl px-4 pb-14 md:px-8 md:pb-16">
+      <section className="bg-cream">
+        <div className="mx-auto w-full max-w-7xl px-4 py-16 md:px-8 md:py-20">
           {errorMessage ? (
             <div className="rounded-sm border border-subtle bg-card p-6 text-sm text-body">
               <p className="font-medium">
@@ -111,19 +112,29 @@ export default async function AcheterPage({
                     <LinkButton href={basePath} variant="secondary" size="sm">
                       Réinitialiser les filtres
                     </LinkButton>
-                    <LinkButton href="/contact" size="sm">
+                    <ContactTrigger subject="vente" variant="primary" size="sm">
                       Me contacter pour un bien sur mesure
-                    </LinkButton>
+                    </ContactTrigger>
                   </div>
                 </div>
               ) : (
-                <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {items.map((p) => (
-                    <li key={p.id}>
-                      <SalePropertyCard property={p} />
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ListingResultsBar
+                    mode="sale"
+                    total={total}
+                    basePath={basePath}
+                    sort={query.sort}
+                  />
+                  <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {items.map((p, i) => (
+                      <li key={p.id} className="h-full">
+                        <ScrollReveal delay={(i % 3) * 0.07} className="h-full">
+                          <SalePropertyCard property={p} />
+                        </ScrollReveal>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               )}
 
               <div className="mt-10">

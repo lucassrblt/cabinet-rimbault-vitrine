@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import { HeroContent } from "@/components/home/HeroContent";
 import { HeroSearch } from "@/components/home/HeroSearch";
@@ -205,11 +206,22 @@ function AgentSection() {
           title="Un seul interlocuteur, jusqu’à la signature chez le notaire."
         />
 
-        <ScrollReveal delay={0.12} className="mt-10 md:mt-12">
-          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
-            {/* Colonne gauche — profil de l'agent */}
-            <div className="flex flex-col">
-              {/* 1. Réassurance */}
+        <div className="mt-10 grid grid-cols-1 items-center gap-12 md:mt-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
+          {/* Colonne gauche — profil de l'agent (apparitions échelonnées) */}
+          <div className="flex flex-col">
+            {/* Citation de l'agent */}
+            <ScrollReveal>
+              <blockquote className="border-l-2 border-primary-600 pl-5">
+                <p className="font-display text-lg leading-snug text-primary md:text-xl">
+                  «&nbsp;Chaque projet est singulier. Je m’y investis avec la
+                  même exigence, qu’il s’agisse d’un premier achat ou d’une
+                  vente familiale.&nbsp;»
+                </p>
+              </blockquote>
+            </ScrollReveal>
+
+            {/* 1. Réassurance */}
+            <ScrollReveal delay={0.1} className="mt-8">
               <dl className="flex flex-wrap gap-x-8 gap-y-4">
                 {AGENT_HIGHLIGHTS.map((item) => (
                   <div key={item.label} className="flex items-center gap-3">
@@ -229,9 +241,11 @@ function AgentSection() {
                   </div>
                 ))}
               </dl>
+            </ScrollReveal>
 
-              {/* 2. Nom de l'agent */}
-              <div className="mt-8 flex items-center gap-3">
+            {/* 2. Nom de l'agent */}
+            <ScrollReveal delay={0.2} className="mt-8">
+              <div className="flex items-center gap-3">
                 <span
                   aria-hidden="true"
                   className="h-px w-7 shrink-0 bg-primary-600"
@@ -245,46 +259,45 @@ function AgentSection() {
                   </p>
                 </div>
               </div>
+            </ScrollReveal>
 
-              {/* 3. CTA */}
-              <div className="mt-8">
-                <Link
-                  href="/contact"
-                  className="group inline-flex items-center gap-2.5 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
-                >
-                  Échanger avec moi
-                  <span
-                    aria-hidden="true"
-                    className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15"
-                  >
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
-                  </span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Colonne droite — photo + cadran de relief */}
-            <div className="relative flex items-center justify-center">
-              <div className="relative w-full max-w-[320px]">
-                {/* Cadran de relief — petit décalé derrière la photo */}
-                <div
+            {/* 3. CTA — ouvre le drawer de contact */}
+            <ScrollReveal delay={0.3} className="mt-8">
+              <ContactTrigger
+                subject="rdv"
+                className="group inline-flex items-center gap-2.5 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
+              >
+                Échanger avec moi
+                <span
                   aria-hidden="true"
-                  className="absolute -right-3 -bottom-3 h-full w-full rounded-xl bg-secondary-100"
-                />
-                <div className="relative overflow-hidden rounded-xl shadow-md">
-                  <Image
-                    src="/agent.jpg"
-                    alt={`${AGENT.fullName}, ${AGENT.title}`}
-                    width={720}
-                    height={900}
-                    className="aspect-[4/5] w-full object-cover"
-                    sizes="(max-width: 768px) 90vw, 360px"
-                  />
-                </div>
-              </div>
-            </div>
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15"
+                >
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
+                </span>
+              </ContactTrigger>
+            </ScrollReveal>
           </div>
-        </ScrollReveal>
+
+          {/* Colonne droite — portrait posé dans un cadre chaud */}
+          <ScrollReveal delay={0.15} className="flex justify-center">
+            <div className="group relative w-full max-w-[320px]">
+              {/* Cadre chaud arrondi — en retrait derrière le portrait */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-[15%] bottom-0 rounded-[2.25rem] bg-primary-200 shadow-lg"
+              />
+              {/* Portrait détouré — dépasse le cadre par le haut */}
+              <Image
+                src="/agent.png"
+                alt={`${AGENT.fullName}, ${AGENT.title}`}
+                width={720}
+                height={900}
+                className="relative w-full drop-shadow-[0_16px_24px_rgba(28,27,25,0.24)] transition-transform duration-500 ease-out group-hover:-translate-y-2"
+                sizes="(max-width: 768px) 80vw, 320px"
+              />
+            </div>
+          </ScrollReveal>
+        </div>
       </div>
     </section>
   );

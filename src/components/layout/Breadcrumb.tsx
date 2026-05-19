@@ -5,9 +5,19 @@ export interface BreadcrumbItem {
   href?: string;
 }
 
-export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
+export function Breadcrumb({
+  items,
+  tone = "default",
+}: {
+  items: BreadcrumbItem[];
+  tone?: "default" | "light";
+}) {
+  const isLight = tone === "light";
   return (
-    <nav aria-label="Fil d'Ariane" className="text-sm text-body">
+    <nav
+      aria-label="Fil d'Ariane"
+      className={isLight ? "text-sm text-white/70" : "text-sm text-body"}
+    >
       <ol className="flex flex-wrap items-center gap-1">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
@@ -17,16 +27,29 @@ export function Breadcrumb({ items }: { items: BreadcrumbItem[] }) {
               className="flex items-center"
             >
               {item.href && !isLast ? (
-                <Link href={item.href} className="hover:text-primary">
+                <Link
+                  href={item.href}
+                  className={
+                    isLight
+                      ? "transition-colors hover:text-white"
+                      : "hover:text-primary"
+                  }
+                >
                   {item.label}
                 </Link>
               ) : (
-                <span aria-current={isLast ? "page" : undefined}>
+                <span
+                  aria-current={isLast ? "page" : undefined}
+                  className={isLight ? "text-white" : undefined}
+                >
                   {item.label}
                 </span>
               )}
               {!isLast && (
-                <span aria-hidden="true" className="mx-2 text-muted">
+                <span
+                  aria-hidden="true"
+                  className={isLight ? "mx-2 text-white/40" : "mx-2 text-muted"}
+                >
                   /
                 </span>
               )}

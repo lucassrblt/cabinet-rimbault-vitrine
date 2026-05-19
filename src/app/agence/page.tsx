@@ -13,6 +13,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { AgenceHeroContent } from "@/components/agence/AgenceHeroContent";
+import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LinkButton } from "@/components/ui/Button";
@@ -36,8 +37,7 @@ export default function AgencePage() {
       <ChiffresSection />
       <ReviewsSection />
       <HonorairesSection />
-      <NousTrouverSection />
-      <CTASection />
+      <ProjetSection />
     </main>
   );
 }
@@ -313,7 +313,7 @@ function HonorairesSection() {
   );
 }
 
-/* ─── Nous trouver ─── */
+/* ─── Bloc final — votre projet & nous trouver ─── */
 
 const CONTACT_ITEMS = [
   {
@@ -368,127 +368,126 @@ const CONTACT_ITEMS = [
   },
 ] as const;
 
-function NousTrouverSection() {
+function ProjetSection() {
   return (
     <section className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
-        <div className="overflow-hidden rounded-lg bg-neutral-800 px-6 py-14 text-on-inverse shadow-lg md:px-10 md:py-16">
-          <ScrollReveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-400">
-              Rendez-nous visite
-            </p>
-            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-on-inverse md:text-4xl">
-              Nous trouver
-            </h2>
-          </ScrollReveal>
+        <div className="overflow-hidden rounded-lg shadow-lg">
+          <div className="grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr]">
+            {/* Zone gauche — votre projet */}
+            <div className="relative overflow-hidden bg-primary-600 px-6 py-14 md:px-12 md:py-16">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-primary-400/30 blur-3xl"
+              />
+              <div className="relative">
+                <ScrollReveal>
+                  <p className="flex items-center gap-2.5 text-sm font-semibold uppercase tracking-wide text-primary-200">
+                    <span
+                      aria-hidden="true"
+                      className="h-px w-7 bg-primary-300"
+                    />
+                    Votre projet commence ici
+                  </p>
+                  <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-white md:text-4xl">
+                    Parlons de votre projet.
+                  </h2>
+                </ScrollReveal>
 
-          <div className="mt-14 grid grid-cols-1 gap-12 md:grid-cols-2">
-            <div className="space-y-8">
-              {CONTACT_ITEMS.map((item, i) => (
-                <TextReveal key={item.label} delay={i * 0.08}>
-                  <div className="flex items-start gap-4">
-                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-600">
-                      <item.icon
-                        className="h-4 w-4 text-white"
+                <TextReveal delay={0.15}>
+                  <p className="mt-5 max-w-md text-base leading-relaxed text-primary-100">
+                    Achat, vente, location ou simple question&nbsp;: un premier
+                    échange sans engagement pour y voir clair, à votre rythme.
+                  </p>
+                </TextReveal>
+
+                <TextReveal delay={0.25}>
+                  <div className="mt-9 flex flex-col gap-3 sm:max-w-sm">
+                    <ContactTrigger
+                      subject="rdv"
+                      className="group flex items-center justify-between gap-3 rounded-lg bg-white px-6 py-3.5 text-sm font-semibold text-primary-600 shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md active:translate-y-0"
+                    >
+                      Me contacter
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
                         aria-hidden="true"
                       />
-                    </span>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                        {item.label}
-                      </p>
-                      <p className="mt-1 text-[15px] leading-relaxed text-on-inverse">
-                        {item.content}
-                      </p>
-                    </div>
+                    </ContactTrigger>
+                    <Link
+                      href="/estimation"
+                      className="group flex items-center justify-between gap-3 rounded-lg border border-white/30 px-6 py-3.5 text-sm font-semibold text-white transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-white/10 active:translate-y-0"
+                    >
+                      Estimer mon bien
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </Link>
                   </div>
                 </TextReveal>
-              ))}
-              <TextReveal delay={0.4}>
-                <div className="pt-2">
-                  <LinkButton href="/contact">
-                    Prendre rendez-vous
-                    <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-                  </LinkButton>
-                </div>
-              </TextReveal>
-            </div>
-
-            <ScrollReveal delay={0.15}>
-              <div className="overflow-hidden rounded-sm">
-                <Image
-                  src="/hero-agence.jpg"
-                  alt="Vitrine du Cabinet Rimbault"
-                  width={800}
-                  height={600}
-                  className="aspect-[4/3] w-full object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
               </div>
-              <a
-                href={AGENT.googleBusinessUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-neutral-400 transition-colors hover:text-on-inverse"
-              >
-                <MapPin className="h-4 w-4" aria-hidden="true" />
-                Voir sur Google Maps
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
-            </ScrollReveal>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ─── CTA final ─── */
-
-function CTASection() {
-  return (
-    <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
-        <div className="rounded-lg border border-neutral-200/70 bg-neutral-100/60 px-6 py-14 text-center md:px-10 md:py-16">
-          <ScrollReveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
-              Votre projet commence ici
-            </p>
-            <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-              Parlons de votre projet
-            </h2>
-          </ScrollReveal>
-
-          <TextReveal delay={0.15}>
-            <p className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-body">
-              Un premier échange sans engagement pour définir vos besoins.
-            </p>
-          </TextReveal>
-
-          <TextReveal delay={0.25}>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <LinkButton href="/estimation">Estimer mon bien</LinkButton>
-              <Link
-                href="/contact"
-                className="inline-flex items-center gap-2 rounded-sm border border-default px-5 py-2.5 text-sm font-semibold text-primary transition-colors duration-150 hover:bg-neutral-100"
-              >
-                Me contacter
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
             </div>
-          </TextReveal>
 
-          <TextReveal delay={0.35}>
-            <p className="mt-8 text-sm text-muted">
-              Ou directement :{" "}
-              <a
-                href={`tel:${AGENT.phoneE164}`}
-                className="font-medium text-primary underline underline-offset-4"
-              >
-                {AGENT.phoneDisplay}
-              </a>
-            </p>
-          </TextReveal>
+            {/* Zone droite — nous trouver */}
+            <div className="relative overflow-hidden bg-neutral-800 px-6 py-14 md:px-10 md:py-16">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-primary-600/30 blur-3xl"
+              />
+              <div className="relative">
+                <ScrollReveal delay={0.15}>
+                  <p className="flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-primary-300">
+                    <span
+                      aria-hidden="true"
+                      className="h-px w-7 bg-primary-400"
+                    />
+                    Nous trouver
+                  </p>
+                </ScrollReveal>
+
+                <div className="mt-8 space-y-6">
+                  {CONTACT_ITEMS.map((item, i) => (
+                    <TextReveal key={item.label} delay={0.2 + i * 0.08}>
+                      <div className="flex items-start gap-4">
+                        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary-600">
+                          <item.icon
+                            className="h-4 w-4 text-white"
+                            aria-hidden="true"
+                          />
+                        </span>
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                            {item.label}
+                          </p>
+                          <p className="mt-1 text-[15px] leading-relaxed text-on-inverse">
+                            {item.content}
+                          </p>
+                        </div>
+                      </div>
+                    </TextReveal>
+                  ))}
+                </div>
+
+                <TextReveal delay={0.5}>
+                  <div className="mt-8 border-t border-white/10 pt-6">
+                    <a
+                      href={AGENT.googleBusinessUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white"
+                    >
+                      <MapPin className="h-4 w-4" aria-hidden="true" />
+                      Voir sur Google Maps
+                      <ArrowRight
+                        className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </a>
+                  </div>
+                </TextReveal>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

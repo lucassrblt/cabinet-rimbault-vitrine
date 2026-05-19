@@ -1,4 +1,5 @@
 import { Phone } from "lucide-react";
+import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { LinkButton } from "@/components/ui/Button";
 import { AGENT } from "@/lib/config/agent";
@@ -32,9 +33,9 @@ export default function NotFound() {
           <LinkButton href="/estimation" variant="secondary">
             Estimer mon bien
           </LinkButton>
-          <LinkButton href="/contact" variant="secondary">
+          <ContactTrigger subject="autre" variant="secondary">
             Me contacter
-          </LinkButton>
+          </ContactTrigger>
         </div>
       </div>
 

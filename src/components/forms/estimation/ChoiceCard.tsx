@@ -14,6 +14,13 @@ interface ChoiceCardProps {
   size?: "md" | "sm";
 }
 
+/**
+ * Carte de choix sélectionnable du tunnel d'estimation.
+ * - `vertical`   : icône + texte centrés (grille de catégories — étape 1).
+ * - `horizontal` : icône en pastille + texte aligné à gauche (listes compactes).
+ * L'indicateur de sélection (coche bordeaux) n'apparaît qu'une fois la carte
+ * choisie, pour un signal franc sans redondance visuelle.
+ */
 export function ChoiceCard({
   selected,
   onClick,
@@ -23,39 +30,62 @@ export function ChoiceCard({
   layout = "vertical",
   size = "md",
 }: ChoiceCardProps) {
-  const padding = size === "sm" ? "px-4 py-3.5" : "px-4 py-4";
+  const isVertical = layout === "vertical";
+
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "group relative flex w-full items-start gap-3 rounded-sm border bg-card text-left transition-colors duration-200",
-        padding,
+        "relative flex w-full rounded-sm border transition-colors duration-200",
+        isVertical
+          ? "flex-col items-center gap-3 px-4 py-5 text-center"
+          : cn(
+              "items-start gap-3 text-left",
+              size === "sm" ? "px-4 py-3.5" : "px-4 py-4",
+            ),
         selected
-          ? "border-primary-600"
-          : "border-subtle hover:border-default hover:shadow-md",
-        layout === "vertical" && "flex-col gap-3 sm:gap-3",
+          ? "border-primary-600 bg-primary-50"
+          : "border-subtle bg-card hover:border-default hover:shadow-md",
       )}
     >
-      {icon && (
+      {icon &&
+        (isVertical ? (
+          <span
+            className={cn(
+              "transition-colors duration-200",
+              selected ? "text-primary-600" : "text-primary",
+            )}
+          >
+            {icon}
+          </span>
+        ) : (
+          <span
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors duration-200",
+              selected
+                ? "bg-primary-600 text-on-primary"
+                : "bg-neutral-100 text-neutral-500",
+            )}
+          >
+            {icon}
+          </span>
+        ))}
+
+      <span
+        className={cn(
+          "flex flex-col gap-1",
+          isVertical ? "items-center" : "flex-1 pr-6",
+        )}
+      >
         <span
           className={cn(
-            "flex items-center justify-center rounded-full transition-colors duration-200",
-            layout === "vertical" ? "h-10 w-10" : "h-9 w-9 shrink-0",
-            selected
-              ? "bg-primary-600 text-on-primary"
-              : "bg-neutral-100 text-neutral-500",
-          )}
-        >
-          {icon}
-        </span>
-      )}
-      <span className="flex flex-1 flex-col gap-1 pr-6">
-        <span
-          className={cn(
-            "font-medium leading-tight text-primary",
-            size === "sm" ? "text-sm" : "text-[15px]",
+            "leading-tight text-primary",
+            isVertical
+              ? "text-[15px] font-semibold"
+              : "text-[15px] font-medium",
+            size === "sm" && !isVertical && "text-sm",
           )}
         >
           {title}
@@ -66,17 +96,15 @@ export function ChoiceCard({
           </span>
         )}
       </span>
-      <span
-        aria-hidden="true"
-        className={cn(
-          "absolute right-3 top-3 flex h-4 w-4 items-center justify-center rounded-full border transition-colors duration-200",
-          selected
-            ? "border-primary-600 bg-primary-600 text-on-primary"
-            : "border-default bg-card text-transparent",
-        )}
-      >
-        <Check className="h-2.5 w-2.5" strokeWidth={3} />
-      </span>
+
+      {selected && (
+        <span
+          aria-hidden="true"
+          className="absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full bg-primary-600 text-on-primary"
+        >
+          <Check className="h-3 w-3" strokeWidth={3} />
+        </span>
+      )}
     </button>
   );
 }

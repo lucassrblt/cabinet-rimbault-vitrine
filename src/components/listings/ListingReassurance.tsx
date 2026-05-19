@@ -78,31 +78,35 @@ export function ListingReassurance({ mode }: { mode: "sale" | "rent" }) {
   const eyebrow = mode === "sale" ? "Pour bien acheter" : "Pour bien louer";
 
   return (
-    <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-20">
+    <section className="bg-cream-light">
+      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
         <SectionHeader
           eyebrow={eyebrow}
           title="Un accompagnement à chaque étape."
         />
 
-        <div className="mt-10 grid grid-cols-2 gap-8 md:grid-cols-5">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-5">
           {items.map((item, i) => (
-            <ScrollReveal key={item.title} delay={i * 0.1}>
-              <div className="flex flex-col items-center text-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-neutral-200 bg-card">
-                  <item.icon
-                    className="h-6 w-6 text-neutral-500"
-                    strokeWidth={1.5}
-                    aria-hidden="true"
-                  />
-                </div>
-                <h3 className="mt-4 text-sm font-semibold text-primary">
-                  {item.title}
-                </h3>
-                <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                  {item.description}
-                </p>
-              </div>
+            <ScrollReveal
+              key={item.title}
+              delay={0.15 + i * 0.08}
+              className={`flex flex-col items-center px-6 py-10 text-center ${
+                i < items.length - 1
+                  ? "border-b border-neutral-200/70 md:border-b-0 md:border-r"
+                  : ""
+              }`}
+            >
+              <item.icon
+                className="h-10 w-10 text-primary-600"
+                strokeWidth={1.25}
+                aria-hidden="true"
+              />
+              <h3 className="mt-5 font-display text-base font-semibold tracking-tight text-primary">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                {item.description}
+              </p>
             </ScrollReveal>
           ))}
         </div>

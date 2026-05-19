@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Familjen_Grotesk, Manrope } from "next/font/google";
+import { ContactProvider } from "@/components/contact/ContactProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
@@ -47,12 +48,14 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col pt-20 pb-14 md:pb-0">
         <Providers>
-          <SmoothScroll>
-            <Header />
-            <div className="flex flex-1 flex-col">{children}</div>
-            <Footer />
-            <MobileBottomBar />
-          </SmoothScroll>
+          <ContactProvider>
+            <SmoothScroll>
+              <Header />
+              <div className="flex flex-1 flex-col">{children}</div>
+              <Footer />
+              <MobileBottomBar />
+            </SmoothScroll>
+          </ContactProvider>
         </Providers>
       </body>
     </html>

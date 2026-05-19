@@ -6,8 +6,8 @@ import type {
 } from "react";
 import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "secondary" | "ghost";
-type Size = "md" | "sm" | "lg";
+export type Variant = "primary" | "secondary" | "ghost";
+export type Size = "md" | "sm" | "lg";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-focus focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
