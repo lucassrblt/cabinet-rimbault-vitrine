@@ -187,7 +187,7 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
                 cardRefs.current[i] = el;
               }}
               data-card
-              className="group/card w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-lg border border-transparent bg-card shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
+              className="group/card w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-lg border border-subtle bg-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-default hover:shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
             >
               <Link href={`/bien/${property.reference}`}>
                 <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">

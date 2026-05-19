@@ -1,9 +1,18 @@
-import { ArrowRight, KeyRound, MapPin, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Award,
+  Home as HomeIcon,
+  KeyRound,
+  MapPin,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import { HeroContent } from "@/components/home/HeroContent";
 import { HeroSearch } from "@/components/home/HeroSearch";
+import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { listRecentProperties } from "@/lib/api/properties";
@@ -18,6 +27,11 @@ export default async function Home() {
       <HeroSection />
       <FeaturedSection properties={featured} />
       <ReassuranceSection />
+      <AgentSection />
+      <ReviewsStrip
+        heading="La parole à mes clients"
+        className="bg-cream-light"
+      />
       <EstimationCtaSection />
     </main>
   );
@@ -38,7 +52,7 @@ async function loadFeaturedProperties(): Promise<Property[]> {
 
 function HeroSection() {
   return (
-    <section className="relative -mt-20 bg-header pb-12 md:pb-14">
+    <section className="relative -mt-20 bg-cream pb-12 md:pb-14">
       <div className="relative overflow-hidden">
         <Image
           src="/hero-home.jpg"
@@ -68,10 +82,10 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
   if (properties.length === 0) return null;
 
   return (
-    <section className="bg-header">
-      <div className="mx-auto w-full max-w-7xl px-4 pb-20 pt-12 md:px-8 md:pb-28 md:pt-16">
+    <section className="bg-cream">
+      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
         <SectionHeader
-          eyebrow={<span className="text-primary-600">Notre sélection</span>}
+          eyebrow="Notre sélection"
           title="Nos coups de cœur dans votre quartier."
           action={
             <Link
@@ -86,9 +100,9 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
             </Link>
           }
         />
-        <div className="mt-10">
+        <ScrollReveal delay={0.12} className="mt-10">
           <FeaturedCarousel properties={properties} />
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -124,35 +138,153 @@ const REASSURANCE_ITEMS = [
 
 function ReassuranceSection() {
   return (
-    <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
-        <div className="rounded-lg border border-neutral-200/70 bg-neutral-100/60">
-          <div className="grid grid-cols-2 md:grid-cols-4">
-            {REASSURANCE_ITEMS.map((item, i) => (
-              <ScrollReveal
-                key={item.title}
-                delay={i * 0.12}
-                className={`flex flex-col items-center px-6 py-10 text-center ${
-                  i < REASSURANCE_ITEMS.length - 1
-                    ? "border-r border-neutral-200"
-                    : ""
-                } ${i < 2 ? "border-b border-neutral-200 md:border-b-0" : ""}`}
-              >
-                <item.icon
-                  className="h-10 w-10 text-primary-600"
-                  strokeWidth={1.25}
-                  aria-hidden="true"
-                />
-                <h3 className="mt-5 font-serif text-base font-semibold tracking-tight text-primary">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">
-                  {item.description}
-                </p>
-              </ScrollReveal>
-            ))}
-          </div>
+    <section className="bg-cream-light">
+      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+        <SectionHeader
+          eyebrow="Nos engagements"
+          title="Votre projet immobilier entre de bonnes mains."
+        />
+        <div className="mt-12 grid grid-cols-2 md:grid-cols-4">
+          {REASSURANCE_ITEMS.map((item, i) => (
+            <ScrollReveal
+              key={item.title}
+              delay={0.15 + i * 0.08}
+              className={`flex flex-col items-center px-6 py-10 text-center ${
+                i < REASSURANCE_ITEMS.length - 1
+                  ? "border-r border-neutral-200"
+                  : ""
+              } ${i < 2 ? "border-b border-neutral-200 md:border-b-0" : ""}`}
+            >
+              <item.icon
+                className="h-10 w-10 text-primary-600"
+                strokeWidth={1.25}
+                aria-hidden="true"
+              />
+              <h3 className="mt-5 font-display text-base font-semibold tracking-tight text-primary">
+                {item.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">
+                {item.description}
+              </p>
+            </ScrollReveal>
+          ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Bloc agent — présence humaine
+   ───────────────────────────────────────────── */
+
+const AGENT_HIGHLIGHTS = [
+  {
+    icon: Award,
+    value: `${AGENT.stats.years} ans`,
+    label: "d’expérience",
+  },
+  {
+    icon: HomeIcon,
+    value: `${AGENT.stats.transactions}`,
+    label: "transactions",
+  },
+  {
+    icon: MapPin,
+    value: "Expert local",
+    label: AGENT.address.city,
+  },
+] as const;
+
+function AgentSection() {
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+        <SectionHeader
+          eyebrow="Votre interlocuteur"
+          title="Un seul interlocuteur, jusqu’à la signature chez le notaire."
+        />
+
+        <ScrollReveal delay={0.12} className="mt-10 md:mt-12">
+          <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
+            {/* Colonne gauche — profil de l'agent */}
+            <div className="flex flex-col">
+              {/* 1. Réassurance */}
+              <dl className="flex flex-wrap gap-x-8 gap-y-4">
+                {AGENT_HIGHLIGHTS.map((item) => (
+                  <div key={item.label} className="flex items-center gap-3">
+                    <item.icon
+                      className="h-6 w-6 shrink-0 text-primary-600"
+                      strokeWidth={1.5}
+                      aria-hidden="true"
+                    />
+                    <div>
+                      <dt className="font-semibold leading-tight text-primary">
+                        {item.value}
+                      </dt>
+                      <dd className="text-sm leading-tight text-muted">
+                        {item.label}
+                      </dd>
+                    </div>
+                  </div>
+                ))}
+              </dl>
+
+              {/* 2. Nom de l'agent */}
+              <div className="mt-8 flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="h-px w-7 shrink-0 bg-primary-600"
+                />
+                <div>
+                  <p className="font-display text-lg font-semibold text-primary">
+                    {AGENT.fullName}
+                  </p>
+                  <p className="mt-0.5 text-sm text-muted">
+                    {AGENT.title} · {AGENT.address.city}
+                  </p>
+                </div>
+              </div>
+
+              {/* 3. CTA */}
+              <div className="mt-8">
+                <Link
+                  href="/contact"
+                  className="group inline-flex items-center gap-2.5 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
+                >
+                  Échanger avec moi
+                  <span
+                    aria-hidden="true"
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15"
+                  >
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
+                  </span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Colonne droite — photo + cadran de relief */}
+            <div className="relative flex items-center justify-center">
+              <div className="relative w-full max-w-[320px]">
+                {/* Cadran de relief — petit décalé derrière la photo */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -right-3 -bottom-3 h-full w-full rounded-xl bg-secondary-100"
+                />
+                <div className="relative overflow-hidden rounded-xl shadow-md">
+                  <Image
+                    src="/agent.jpg"
+                    alt={`${AGENT.fullName}, ${AGENT.title}`}
+                    width={720}
+                    height={900}
+                    className="aspect-[4/5] w-full object-cover"
+                    sizes="(max-width: 768px) 90vw, 360px"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -164,16 +296,16 @@ function ReassuranceSection() {
 
 function EstimationCtaSection() {
   return (
-    <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-24">
+    <section className="bg-cream">
+      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
         <ScrollReveal>
-          <div className="overflow-hidden rounded-lg shadow-lg">
+          <div className="overflow-hidden rounded-lg shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="flex flex-col justify-center bg-primary-600 px-8 py-12 md:px-12 md:py-16">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">
                   Vous avez un projet&nbsp;?
                 </p>
-                <h2 className="mt-4 font-serif text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">
+                <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">
                   Estimez votre bien
                   <br />
                   en quelques minutes.
