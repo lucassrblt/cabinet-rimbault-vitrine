@@ -46,7 +46,7 @@ export function PropertyEstimationCTA() {
                 />
                 Vous vendez&nbsp;?
               </span>
-              <h2 className="mt-4 font-serif text-3xl leading-[1.05] tracking-tight md:text-[2.6rem] lg:text-5xl">
+              <h2 className="mt-4 font-display text-3xl leading-[1.05] tracking-tight md:text-[2.6rem] lg:text-5xl">
                 Estimez votre bien
                 <span className="block italic text-primary-200">
                   en quelques minutes.

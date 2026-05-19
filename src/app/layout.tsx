@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Familjen_Grotesk, Manrope } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
@@ -9,11 +9,10 @@ import { Providers } from "./providers";
 import "lenis/dist/lenis.css";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const familjenGrotesk = Familjen_Grotesk({
   subsets: ["latin"],
-  axes: ["opsz", "SOFT"],
   display: "swap",
-  variable: "--font-fraunces",
+  variable: "--font-familjen",
 });
 
 const manrope = Manrope({
@@ -44,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${fraunces.variable} ${manrope.variable} lenis lenis-scrolling lenis-smooth h-full antialiased`}
+      className={`${familjenGrotesk.variable} ${manrope.variable} lenis lenis-scrolling lenis-smooth h-full antialiased`}
     >
       <body className="flex min-h-full flex-col pt-20 pb-14 md:pb-0">
         <Providers>

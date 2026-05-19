@@ -129,7 +129,7 @@ export default async function PropertyPage({
                 <PropertyBadgesList property={property} />
               </div>
 
-              <h1 className="font-serif text-3xl leading-[1.05] tracking-tight text-primary md:text-[2.5rem] lg:text-5xl">
+              <h1 className="font-display text-3xl leading-[1.05] tracking-tight text-primary md:text-[2.5rem] lg:text-5xl">
                 {title}
               </h1>
 
@@ -295,7 +295,7 @@ function SectionHeading({
   return (
     <header className="flex flex-col gap-3">
       {eyebrow && <SectionEyebrow label={eyebrow} />}
-      <h2 className="font-serif text-2xl leading-[1.1] tracking-tight text-primary md:text-3xl">
+      <h2 className="font-display text-2xl leading-[1.1] tracking-tight text-primary md:text-3xl">
         {title}
       </h2>
       {description && (
@@ -330,7 +330,7 @@ function PriceCard({
         <p className="text-[0.68rem] font-medium uppercase tracking-[0.18em] text-subtle">
           {isRental ? "Loyer mensuel" : "Prix de vente"}
         </p>
-        <p className="mt-2 font-serif text-[2.25rem] leading-[1] tracking-tight text-primary md:text-[2.5rem]">
+        <p className="mt-2 font-display text-[2.25rem] leading-[1] tracking-tight text-primary md:text-[2.5rem]">
           {isRental ? formatRent(price) : formatPrice(price)}
         </p>
 

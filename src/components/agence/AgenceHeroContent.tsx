@@ -38,7 +38,7 @@ export function AgenceHeroContent({
 
       <motion.h1
         {...reveal(0.2)}
-        className="max-w-2xl whitespace-pre-line font-serif text-4xl font-semibold leading-[1.1] text-white md:text-5xl lg:text-display"
+        className="max-w-2xl whitespace-pre-line font-display text-4xl font-semibold leading-[1.1] text-white md:text-5xl lg:text-display"
       >
         {tagline}
       </motion.h1>

@@ -18,7 +18,7 @@ export function HeroContent({ years }: { years: number }) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-        className="mt-4 max-w-2xl font-serif text-4xl font-semibold leading-tight text-white md:text-display"
+        className="mt-4 max-w-2xl font-display text-4xl font-semibold leading-tight text-white md:text-display"
       >
         Trouver chez vous,
         <br />

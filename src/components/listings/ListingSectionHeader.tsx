@@ -23,7 +23,7 @@ export function ListingSectionHeader({ mode, total, basePath, sort }: Props) {
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-primary-600">
           {eyebrow}
         </p>
-        <h2 className="font-serif text-3xl font-medium leading-[1.1] tracking-tight text-primary md:text-[2.25rem]">
+        <h2 className="font-display text-3xl font-medium leading-[1.1] tracking-tight text-primary md:text-[2.25rem]">
           {title}
         </h2>
         {total > 0 && (

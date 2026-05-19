@@ -72,7 +72,7 @@ export function PropertyContactForm({ reference, isRental }: Props) {
           />
           Contactez-moi
         </span>
-        <p className="mt-3 font-serif text-2xl leading-[1.15] tracking-tight text-primary">
+        <p className="mt-3 font-display text-2xl leading-[1.15] tracking-tight text-primary">
           Une question sur ce bien&nbsp;?
         </p>
         <p className="mt-2 text-sm leading-relaxed text-body">
@@ -116,7 +116,7 @@ export function PropertyContactForm({ reference, isRental }: Props) {
           </div>
           <p
             role="status"
-            className="mt-4 font-serif text-xl tracking-tight text-primary"
+            className="mt-4 font-display text-xl tracking-tight text-primary"
           >
             Demande envoyée.
           </p>

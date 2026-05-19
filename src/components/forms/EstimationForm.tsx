@@ -377,7 +377,7 @@ function ProgressHeader({
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
           {phase === 1 ? "Votre bien" : "Votre projet"}
         </p>
-        <p className="font-serif text-sm tracking-tight text-muted">
+        <p className="font-display text-sm tracking-tight text-muted">
           <span className="text-primary">{step + 1}</span>
           <span className="mx-1.5 text-subtle">/</span>
           <span>{TOTAL}</span>
@@ -480,7 +480,7 @@ function StepHeading({
 }) {
   return (
     <div className="mb-8 flex flex-col gap-3">
-      <h2 className="font-serif text-2xl font-semibold leading-[1.15] tracking-tight text-primary sm:text-3xl">
+      <h2 className="font-display text-2xl font-semibold leading-[1.15] tracking-tight text-primary sm:text-3xl">
         {title}
       </h2>
       {description && (
@@ -1205,7 +1205,7 @@ function Confirmation({
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
         Demande envoyée
       </p>
-      <h2 className="mt-4 font-serif text-3xl font-semibold leading-[1.15] tracking-tight text-primary md:text-4xl">
+      <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.15] tracking-tight text-primary md:text-4xl">
         {firstName ? `Merci ${firstName}.` : "Merci."}
         <br />
         <span className="text-muted">À très vite.</span>

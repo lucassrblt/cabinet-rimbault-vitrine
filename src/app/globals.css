@@ -68,6 +68,8 @@
   --color-bg-card: #ffffff;
   --color-bg-header: #f9f7f2;
   --color-bg-section: #f1f0ed;
+  --color-bg-cream: #f9f6ef; /* crème la plus claire — alternance de sections */
+  --color-bg-cream-light: #f7f3ea; /* crème légèrement plus soutenue — alternance de sections */
   --color-bg-accent: #1c1b19;
   --color-bg-inverse: #1c1b19;
   --color-bg-overlay: rgba(28, 27, 25, 0.6);
@@ -90,11 +92,11 @@
 
   /* ═══════════════════════════════════════════════════════════
    * TYPOGRAPHIE
-   * — --font-fraunces et --font-manrope sont injectées par
+   * — --font-familjen et --font-manrope sont injectées par
    *   next/font depuis layout.tsx (className sur <html>).
    * ═══════════════════════════════════════════════════════════ */
 
-  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-familjen), "Helvetica Neue", Arial, sans-serif;
   --font-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont,
     "Segoe UI", system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -202,6 +204,12 @@ body {
 }
 @utility bg-section {
   background-color: var(--color-bg-section);
+}
+@utility bg-cream {
+  background-color: var(--color-bg-cream);
+}
+@utility bg-cream-light {
+  background-color: var(--color-bg-cream-light);
 }
 @utility bg-inverse {
   background-color: var(--color-bg-inverse);
