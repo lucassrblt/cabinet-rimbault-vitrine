@@ -13,12 +13,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { AgenceHeroContent } from "@/components/agence/AgenceHeroContent";
+import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LinkButton } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TextReveal } from "@/components/ui/TextReveal";
 import { AGENT } from "@/lib/config/agent";
 import { RENT_TIERS, SALE_TIERS } from "@/lib/config/honoraires";
+import { getReviewsData } from "@/lib/reviews";
 
 export const metadata: Metadata = {
   title: "L'agence — Cabinet Rimbault",
@@ -31,6 +34,7 @@ export default function AgencePage() {
       <HeroSection />
       <HistoireSection />
       <ChiffresSection />
+      <ReviewsSection />
       <HonorairesSection />
       <NousTrouverSection />
       <CTASection />
@@ -96,16 +100,18 @@ function HistoireSection() {
     <section id="notre-histoire" className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-[2fr_3fr]">
-          <ScrollReveal>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
-                Notre histoire
-              </p>
-              <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-                Depuis {AGENT.stats.years}&nbsp;ans,
-                <br />à vos côtés
-              </h2>
+          <div>
+            <SectionHeader
+              eyebrow="Notre histoire"
+              title={
+                <>
+                  Depuis {AGENT.stats.years}&nbsp;ans,
+                  <br />à vos côtés
+                </>
+              }
+            />
 
+            <ScrollReveal delay={0.15}>
               <p className="mt-8 text-[15px] leading-[1.7] text-body">
                 Le Cabinet Rimbault, agence immobilière indépendante, installée
                 à {AGENT.address.city} depuis{" "}
@@ -119,8 +125,8 @@ function HistoireSection() {
                 accompagnement sur mesure, fondé sur l&apos;écoute, la
                 transparence et la réactivité.
               </p>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
+          </div>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
             {VALUES.map((v, i) => (
@@ -147,75 +153,69 @@ function HistoireSection() {
 
 /* ─── Nos chiffres ─── */
 
-const STATS = [
-  {
-    target: AGENT.stats.years,
-    suffix: " ans",
-    decimals: 0,
-    label: "d'expérience locale à vos côtés",
-  },
-  {
-    target: AGENT.stats.transactions,
-    suffix: "+",
-    decimals: 0,
-    label: "biens vendus ou loués par an",
-  },
-  {
-    target: AGENT.stats.rating,
-    suffix: "/5",
-    decimals: 1,
-    label: `sur Google (${AGENT.stats.reviewsCount} avis)`,
-  },
-  {
-    target: AGENT.stats.mandateSuccessRate,
-    suffix: "%",
-    decimals: 0,
-    label: "de nos clients nous recommandent",
-  },
-] as const;
+async function ChiffresSection() {
+  // Note + volume d'avis en direct de Google ; repli sur AGENT.stats si indispo.
+  const reviews = await getReviewsData();
+  const rating = reviews?.rating ?? AGENT.stats.rating;
+  const reviewsCount = reviews?.totalCount ?? AGENT.stats.reviewsCount;
 
-function ChiffresSection() {
+  const stats = [
+    {
+      target: AGENT.stats.years,
+      suffix: " ans",
+      decimals: 0,
+      label: "d'expérience locale à vos côtés",
+    },
+    {
+      target: AGENT.stats.transactions,
+      suffix: "+",
+      decimals: 0,
+      label: "biens vendus ou loués par an",
+    },
+    {
+      target: rating,
+      suffix: "/5",
+      decimals: 1,
+      label: `sur Google (${reviewsCount} avis)`,
+    },
+    {
+      target: AGENT.stats.mandateSuccessRate,
+      suffix: "%",
+      decimals: 0,
+      label: "de nos clients nous recommandent",
+    },
+  ];
+
   return (
     <section className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
-        <div className="rounded-lg border border-neutral-200/70 bg-neutral-100/60 px-6 py-14 md:px-10 md:py-16">
-          <ScrollReveal>
-            <div className="text-center">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
-                En quelques chiffres
-              </p>
-              <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-                Nos chiffres
-              </h2>
-            </div>
-          </ScrollReveal>
+        <SectionHeader eyebrow="En quelques chiffres" title="Nos chiffres" />
 
-          <div className="mt-14 grid grid-cols-2 md:grid-cols-4">
-            {STATS.map((stat, i) => (
-              <ScrollReveal
-                key={stat.label}
-                delay={i * 0.15}
-                className={`flex flex-col items-center justify-center px-4 py-8 text-center ${
-                  i < STATS.length - 1
-                    ? "md:border-r md:border-neutral-200/70"
-                    : ""
-                } ${i < 2 ? "border-b border-neutral-200/70 md:border-b-0" : ""}`}
-              >
-                <span className="font-serif text-4xl font-semibold tracking-tight text-primary md:text-5xl lg:text-display">
-                  <AnimatedCounter
-                    target={stat.target}
-                    suffix={stat.suffix}
-                    decimals={stat.decimals}
-                  />
+        <div className="mt-14 grid grid-cols-2 md:grid-cols-4">
+          {stats.map((stat, i) => (
+            <ScrollReveal
+              key={stat.label}
+              delay={i * 0.15}
+              className={`flex flex-col items-center justify-center px-4 py-8 text-center ${
+                i < stats.length - 1
+                  ? "md:border-r md:border-neutral-200/70"
+                  : ""
+              } ${i < 2 ? "border-b border-neutral-200/70 md:border-b-0" : ""}`}
+            >
+              <span className="font-display text-4xl font-semibold tracking-tight text-primary md:text-5xl lg:text-display">
+                <AnimatedCounter
+                  target={stat.target}
+                  suffix={stat.suffix}
+                  decimals={stat.decimals}
+                />
+              </span>
+              <TextReveal delay={i * 0.15 + 0.2}>
+                <span className="mt-3 block text-sm text-muted">
+                  {stat.label}
                 </span>
-                <TextReveal delay={i * 0.15 + 0.2}>
-                  <span className="mt-3 block text-sm text-muted">
-                    {stat.label}
-                  </span>
-                </TextReveal>
-              </ScrollReveal>
-            ))}
-          </div>
+              </TextReveal>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>
@@ -228,94 +228,86 @@ function HonorairesSection() {
   return (
     <section className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
-        <div className="rounded-lg border border-subtle bg-card px-6 py-12 shadow-sm md:px-10 md:py-16">
-          <ScrollReveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
-              Transparence
-            </p>
-            <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-primary md:text-4xl">
-              Nos honoraires
-            </h2>
-            <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-body">
-              Pas de mauvaise surprise. Voici exactement ce que vous payez.
-            </p>
+        <SectionHeader
+          eyebrow="Transparence"
+          title="Nos honoraires"
+          lede="Pas de mauvaise surprise. Voici exactement ce que vous payez."
+        />
+
+        <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
+          <ScrollReveal delay={0.1}>
+            <h3 className="mb-4 font-display text-xl font-semibold text-primary">
+              Vente (TTC)
+            </h3>
+            <div className="overflow-hidden rounded-sm border border-default">
+              <table className="w-full text-sm">
+                <thead className="bg-neutral-100 text-left text-body">
+                  <tr>
+                    <th className="px-5 py-3.5 font-semibold">
+                      Tranche de prix
+                    </th>
+                    <th className="px-5 py-3.5 font-semibold">Honoraires</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-subtle">
+                  {SALE_TIERS.map((t) => (
+                    <tr
+                      key={t.range}
+                      className="transition-colors hover:bg-neutral-50"
+                    >
+                      <td className="px-5 py-3.5 text-primary">{t.range}</td>
+                      <td className="px-5 py-3.5 font-medium text-primary">
+                        {t.fee}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </ScrollReveal>
 
-          <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
-            <ScrollReveal delay={0.1}>
-              <h3 className="mb-4 font-serif text-xl font-semibold text-primary">
-                Vente (TTC)
-              </h3>
-              <div className="overflow-hidden rounded-sm border border-default">
-                <table className="w-full text-sm">
-                  <thead className="bg-neutral-100 text-left text-body">
-                    <tr>
-                      <th className="px-5 py-3.5 font-semibold">
-                        Tranche de prix
-                      </th>
-                      <th className="px-5 py-3.5 font-semibold">Honoraires</th>
+          <ScrollReveal delay={0.2}>
+            <h3 className="mb-4 font-display text-xl font-semibold text-primary">
+              Location (TTC)
+            </h3>
+            <div className="overflow-hidden rounded-sm border border-default">
+              <table className="w-full text-sm">
+                <thead className="bg-neutral-100 text-left text-body">
+                  <tr>
+                    <th className="px-5 py-3.5 font-semibold">Prestation</th>
+                    <th className="px-5 py-3.5 font-semibold">Plafond TTC</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-subtle">
+                  {RENT_TIERS.map((t) => (
+                    <tr
+                      key={t.label}
+                      className="transition-colors hover:bg-neutral-50"
+                    >
+                      <td className="px-5 py-3.5 text-primary">{t.label}</td>
+                      <td className="px-5 py-3.5 font-medium text-primary">
+                        {t.amount}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-subtle">
-                    {SALE_TIERS.map((t) => (
-                      <tr
-                        key={t.range}
-                        className="transition-colors hover:bg-neutral-50"
-                      >
-                        <td className="px-5 py-3.5 text-primary">{t.range}</td>
-                        <td className="px-5 py-3.5 font-medium text-primary">
-                          {t.fee}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.2}>
-              <h3 className="mb-4 font-serif text-xl font-semibold text-primary">
-                Location (TTC)
-              </h3>
-              <div className="overflow-hidden rounded-sm border border-default">
-                <table className="w-full text-sm">
-                  <thead className="bg-neutral-100 text-left text-body">
-                    <tr>
-                      <th className="px-5 py-3.5 font-semibold">Prestation</th>
-                      <th className="px-5 py-3.5 font-semibold">Plafond TTC</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-subtle">
-                    {RENT_TIERS.map((t) => (
-                      <tr
-                        key={t.label}
-                        className="transition-colors hover:bg-neutral-50"
-                      >
-                        <td className="px-5 py-3.5 text-primary">{t.label}</td>
-                        <td className="px-5 py-3.5 font-medium text-primary">
-                          {t.amount}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </ScrollReveal>
-          </div>
-
-          <TextReveal delay={0.3}>
-            <div className="mt-8 flex flex-wrap items-center gap-6">
-              <p className="text-xs text-muted">
-                *TVA : Taux en vigueur en 2024. Tarifs applicables à compter du
-                1ᵉʳ janvier 2024.
-              </p>
-              <LinkButton href="/honoraires" variant="ghost" size="sm">
-                Voir le barème détaillé
-                <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden="true" />
-              </LinkButton>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </TextReveal>
+          </ScrollReveal>
         </div>
+
+        <TextReveal delay={0.3}>
+          <div className="mt-8 flex flex-wrap items-center gap-6">
+            <p className="text-xs text-muted">
+              *TVA : Taux en vigueur en 2024. Tarifs applicables à compter du
+              1ᵉʳ janvier 2024.
+            </p>
+            <LinkButton href="/honoraires" variant="ghost" size="sm">
+              Voir le barème détaillé
+              <ArrowRight className="ml-1 h-3.5 w-3.5" aria-hidden="true" />
+            </LinkButton>
+          </div>
+        </TextReveal>
       </div>
     </section>
   );
@@ -385,7 +377,7 @@ function NousTrouverSection() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-400">
               Rendez-nous visite
             </p>
-            <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-on-inverse md:text-4xl">
+            <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-on-inverse md:text-4xl">
               Nous trouver
             </h2>
           </ScrollReveal>
@@ -462,7 +454,7 @@ function CTASection() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
               Votre projet commence ici
             </p>
-            <h2 className="mt-4 font-serif text-3xl font-semibold tracking-tight text-primary md:text-4xl">
+            <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-primary md:text-4xl">
               Parlons de votre projet
             </h2>
           </ScrollReveal>
