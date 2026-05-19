@@ -1,5 +1,6 @@
 import { HandHeart, Handshake, Search, ShieldCheck, Users } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 interface ReassuranceItem {
   icon: React.ElementType;
@@ -79,37 +80,31 @@ export function ListingReassurance({ mode }: { mode: "sale" | "rent" }) {
   return (
     <section className="bg-header">
       <div className="mx-auto w-full max-w-6xl px-4 py-16 md:px-6 md:py-20">
-        <div className="rounded-lg border border-neutral-200/70 bg-neutral-100/60 px-6 py-10 md:px-10 md:py-14">
-          <ScrollReveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
-              {eyebrow}
-            </p>
-            <h2 className="mt-3 font-serif text-2xl font-semibold tracking-tight md:text-3xl">
-              Un accompagnement à chaque étape.
-            </h2>
-          </ScrollReveal>
+        <SectionHeader
+          eyebrow={eyebrow}
+          title="Un accompagnement à chaque étape."
+        />
 
-          <div className="mt-10 grid grid-cols-2 gap-8 md:grid-cols-5">
-            {items.map((item, i) => (
-              <ScrollReveal key={item.title} delay={i * 0.1}>
-                <div className="flex flex-col items-center text-center">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-neutral-200 bg-card">
-                    <item.icon
-                      className="h-6 w-6 text-neutral-500"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                  </div>
-                  <h3 className="mt-4 text-sm font-semibold text-primary">
-                    {item.title}
-                  </h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                    {item.description}
-                  </p>
+        <div className="mt-10 grid grid-cols-2 gap-8 md:grid-cols-5">
+          {items.map((item, i) => (
+            <ScrollReveal key={item.title} delay={i * 0.1}>
+              <div className="flex flex-col items-center text-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full border border-neutral-200 bg-card">
+                  <item.icon
+                    className="h-6 w-6 text-neutral-500"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
                 </div>
-              </ScrollReveal>
-            ))}
-          </div>
+                <h3 className="mt-4 text-sm font-semibold text-primary">
+                  {item.title}
+                </h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted">
+                  {item.description}
+                </p>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
       </div>
     </section>
