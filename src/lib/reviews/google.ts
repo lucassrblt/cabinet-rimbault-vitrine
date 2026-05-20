@@ -94,6 +94,7 @@ export async function fetchGoogleReviews(): Promise<ReviewsData | null> {
       },
       // ISR 24 h ; le tag autorise un futur revalidateTag("reviews").
       next: { revalidate: 86400, tags: ["reviews"] },
+      signal: AbortSignal.timeout(5000),
     });
 
     if (!res.ok) {

@@ -58,6 +58,7 @@ export async function apiFetch<T>(
       revalidate: revalidate === false ? undefined : revalidate,
       tags,
     },
+    signal: AbortSignal.timeout(5000),
   });
 
   if (!res.ok) {
@@ -98,6 +99,7 @@ export async function apiPost<T>(
       },
       body: JSON.stringify(body),
       cache: "no-store",
+      signal: AbortSignal.timeout(5000),
     });
   } catch (err) {
     return {

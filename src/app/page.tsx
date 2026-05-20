@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import { HeroContent } from "@/components/home/HeroContent";
@@ -29,10 +30,12 @@ export default async function Home() {
       <FeaturedSection properties={featured} />
       <ReassuranceSection />
       <AgentSection />
-      <ReviewsStrip
-        heading="La parole à mes clients"
-        className="bg-cream-light"
-      />
+      <Suspense fallback={null}>
+        <ReviewsStrip
+          heading="La parole à mes clients"
+          className="bg-cream-light"
+        />
+      </Suspense>
       <EstimationCtaSection />
     </main>
   );

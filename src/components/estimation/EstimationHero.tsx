@@ -1,5 +1,6 @@
+import { Suspense } from "react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import type { ReviewsData } from "@/lib/reviews/types";
+import { getReviewsData } from "@/lib/reviews";
 import { HeroImage } from "./HeroImage";
 import { HeroReassurance } from "./HeroReassurance";
 import { HeroSocialProof } from "./HeroSocialProof";
@@ -8,8 +9,11 @@ import { HeroSocialProof } from "./HeroSocialProof";
  * Hero de la page Estimation : deux colonnes (accroche + preuves sociales /
  * photo). Le padding bas généreux laisse la carte du tunnel chevaucher le bas
  * du hero (cf. `page.tsx`).
+ *
+ * Le bloc social proof attend les avis Google via une Suspense locale pour ne
+ * pas bloquer le rendu du hero ni du formulaire d'estimation en dessous.
  */
-export function EstimationHero({ reviews }: { reviews: ReviewsData | null }) {
+export function EstimationHero() {
   return (
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-6xl px-4 pt-14 pb-16 md:px-8 md:pt-20 md:pb-24">
@@ -28,7 +32,9 @@ export function EstimationHero({ reviews }: { reviews: ReviewsData | null }) {
               indépendant.
             </p>
             <div className="mt-7">
-              <HeroSocialProof reviews={reviews} />
+              <Suspense fallback={null}>
+                <HeroSocialProofWithReviews />
+              </Suspense>
             </div>
             <div className="mt-6">
               <HeroReassurance />
@@ -42,4 +48,9 @@ export function EstimationHero({ reviews }: { reviews: ReviewsData | null }) {
       </div>
     </section>
   );
+}
+
+async function HeroSocialProofWithReviews() {
+  const reviews = await getReviewsData();
+  return <HeroSocialProof reviews={reviews} />;
 }

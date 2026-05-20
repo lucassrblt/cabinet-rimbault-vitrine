@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { EstimationHero } from "@/components/estimation/EstimationHero";
 import { EstimationProcess } from "@/components/estimation/EstimationProcess";
 import { EstimationForm } from "@/components/forms/estimation/EstimationForm";
-import { getReviewsData } from "@/lib/reviews";
 
 export const metadata: Metadata = {
   title: "Estimation gratuite de votre bien",
@@ -10,11 +9,10 @@ export const metadata: Metadata = {
     "Quelques questions pour obtenir une première estimation de votre bien par le Cabinet Rimbault.",
 };
 
-export default async function EstimationPage() {
-  const reviews = await getReviewsData();
+export default function EstimationPage() {
   return (
     <main className="flex flex-1 flex-col bg-cream">
-      <EstimationHero reviews={reviews} />
+      <EstimationHero />
 
       {/* Carte du tunnel : remontée par marge négative pour chevaucher le bas du hero. */}
       <section className="relative z-10 -mt-28 md:-mt-44">

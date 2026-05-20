@@ -1,5 +1,6 @@
 import { Mail, Phone } from "lucide-react";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
@@ -119,10 +120,12 @@ export default function VendrePage() {
         </div>
       </section>
 
-      <ReviewsStrip
-        heading="Ils m’ont confié leur projet"
-        className="border-b border-subtle"
-      />
+      <Suspense fallback={null}>
+        <ReviewsStrip
+          heading="Ils m’ont confié leur projet"
+          className="border-b border-subtle"
+        />
+      </Suspense>
 
       <section>
         <div className="mx-auto w-full max-w-6xl px-4 py-12 text-center md:px-6 md:py-16">

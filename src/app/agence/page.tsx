@@ -12,6 +12,7 @@ import {
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { AgenceHeroContent } from "@/components/agence/AgenceHeroContent";
 import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { ReviewsSection } from "@/components/reviews/ReviewsSection";
@@ -34,8 +35,12 @@ export default function AgencePage() {
     <main className="flex flex-1 flex-col">
       <HeroSection />
       <HistoireSection />
-      <ChiffresSection />
-      <ReviewsSection />
+      <Suspense fallback={null}>
+        <ChiffresSection />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ReviewsSection />
+      </Suspense>
       <HonorairesSection />
       <ProjetSection />
     </main>
