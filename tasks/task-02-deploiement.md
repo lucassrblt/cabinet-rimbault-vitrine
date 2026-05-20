@@ -12,7 +12,7 @@
 
 | Var | Description | Exemple |
 |-----|-------------|---------|
-| `ADMIN_API_URL` | Base URL du back-office admin | `https://admin.cabinet-rimbault.fr/api/public` |
+| `PUBLIC_API_URL` | Base URL du back-office admin | `https://admin.cabinet-rimbault.fr/api/public` |
 | `PUBLIC_API_KEY` | Clé `X-API-Key` pour l'API admin | `sk_live_...` |
 
 ### Publiques (visibles dans le bundle)
@@ -29,7 +29,7 @@ Si absente, fallback sur `https://cabinet-rimbault.fr` (hardcodé — à ne pas 
 Créer à la racine (non commité — déjà dans `.gitignore`) :
 
 ```bash
-ADMIN_API_URL=http://localhost:3001/api/public
+PUBLIC_API_URL=http://localhost:3001/api/public
 PUBLIC_API_KEY=votre_cle_api_dev
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```

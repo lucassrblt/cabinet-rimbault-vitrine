@@ -109,6 +109,6 @@
 
 Variables d'env attendues (à documenter dans `.env.local` / Vercel preview) :
 
-- `ADMIN_API_URL` — base URL de l'admin (ex. `https://admin.cabinet-rimbault.fr/api/public`).
+- `PUBLIC_API_URL` — base URL de l'admin (ex. `https://admin.cabinet-rimbault.fr/api/public`).
 - `PUBLIC_API_KEY` — clé API publique (server-only, ne doit pas apparaître dans `.next/static`).
 - `NEXT_PUBLIC_SITE_URL` *(optionnel)* — utilisé par `sitemap.ts` / `robots.ts` ; fallback sur `https://cabinet-rimbault.fr`.

@@ -13,10 +13,10 @@ export interface ApiFetchOptions {
 }
 
 function getConfig(): { baseUrl: string; apiKey: string } {
-  const baseUrl = process.env.ADMIN_API_URL;
+  const baseUrl = process.env.PUBLIC_API_URL;
   const apiKey = process.env.PUBLIC_API_KEY;
   if (!baseUrl) {
-    throw new ApiConfigError("ADMIN_API_URL is not defined");
+    throw new ApiConfigError("PUBLIC_API_URL is not defined");
   }
   if (!apiKey) {
     throw new ApiConfigError("PUBLIC_API_KEY is not defined");

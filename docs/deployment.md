@@ -16,7 +16,7 @@ Toutes les variables sont **server-only**. **Aucune** ne doit être préfixée `
 
 | Variable | Obligatoire | Exemple | Où la configurer |
 |---|---|---|---|
-| `ADMIN_API_URL` | oui | `https://admin.cabinet-rimbault.fr/api/public` | Vercel → Settings → Environment Variables (Production + Preview) |
+| `PUBLIC_API_URL` | oui | `https://admin.cabinet-rimbault.fr/api/public` | Vercel → Settings → Environment Variables (Production + Preview) |
 | `PUBLIC_API_KEY` | oui | clé fournie par le back-office | idem — **marquer sensible** |
 | `GOOGLE_PLACES_API_KEY` | non | clé Google Cloud, *Places API (New)* | idem — **marquer sensible** |
 | `GOOGLE_PLACE_ID` | non | `ChIJ…` (fiche Google du cabinet) | idem |

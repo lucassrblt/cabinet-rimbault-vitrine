@@ -73,7 +73,7 @@ Les éléments suivants sont **consommés par la vitrine existante** (déjà cod
 
 ### Base URL et authentification
 
-- **Base URL admin** : `{ADMIN_API_URL}/api/public` — variable d'env côté vitrine.
+- **Base URL admin** : `{PUBLIC_API_URL}/api/public` — variable d'env côté vitrine.
 - **Authentification** : header `X-API-Key: {PUBLIC_API_KEY}`. Server-only (jamais exposé côté client).
 - **Content-Type** : `application/json` sur les POST.
 
