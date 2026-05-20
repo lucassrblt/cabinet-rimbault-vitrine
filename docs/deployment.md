@@ -29,7 +29,7 @@ En local : copier `.env.local.example` en `.env.local` et remplir. Le fichier `.
 
 ### Gate « Site en cours de développement »
 
-Quand `MAINTENANCE_MODE=on`, le middleware (`src/middleware.ts`) rewrite toutes les requêtes publiques vers `/maintenance` (URL d'origine conservée dans la barre d'adresse), et `robots.txt` / `sitemap.xml` sont neutralisés pour bloquer toute indexation.
+Quand `MAINTENANCE_MODE=on`, le proxy (`src/proxy.ts`) rewrite toutes les requêtes publiques vers `/maintenance` (URL d'origine conservée dans la barre d'adresse), et `robots.txt` / `sitemap.xml` sont neutralisés pour bloquer toute indexation.
 
 **Bypass pour utilisateurs autorisés** :
 
@@ -37,7 +37,7 @@ Quand `MAINTENANCE_MODE=on`, le middleware (`src/middleware.ts`) rewrite toutes 
 2. Le middleware redirige vers `/` (sans le query param) et pose le cookie `site-preview` (httpOnly, secure, sameSite=lax, 30 jours).
 3. L'utilisateur navigue ensuite normalement sur tout le site, jusqu'à expiration du cookie ou changement du token.
 
-**Désactiver le gate au launch** : retirer (ou vider) `MAINTENANCE_MODE` dans Vercel → Production, puis redéployer. Le middleware redevient no-op, le site est public.
+**Désactiver le gate au launch** : retirer (ou vider) `MAINTENANCE_MODE`, puis redéployer. Le proxy redevient no-op, le site est public.
 
 **Rotation du token** : changer la valeur de `MAINTENANCE_BYPASS_TOKEN` et redéployer invalide instantanément tous les cookies déjà posés (la comparaison strict-equal échoue) — utile si un token a fuité.
 

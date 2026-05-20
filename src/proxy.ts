@@ -6,7 +6,7 @@ const QUERY_PARAM = "preview";
 const MAINTENANCE_PATH = "/maintenance";
 
 /**
- * Gate « Site en cours de développement ».
+ * Gate « Site en cours de développement » (proxy Next 16, ex-middleware).
  *
  * Actif seulement si `MAINTENANCE_MODE=on`. Sinon : no-op total.
  *
@@ -15,7 +15,7 @@ const MAINTENANCE_PATH = "/maintenance";
  * cookie, toutes les requêtes sont rewrite vers `/maintenance` (l'URL d'origine
  * reste visible dans la barre d'adresse).
  */
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   if (process.env.MAINTENANCE_MODE !== "on") {
     return NextResponse.next();
   }
