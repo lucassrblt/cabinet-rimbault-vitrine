@@ -20,10 +20,26 @@ Toutes les variables sont **server-only**. **Aucune** ne doit être préfixée `
 | `PUBLIC_API_KEY` | oui | clé fournie par le back-office | idem — **marquer sensible** |
 | `GOOGLE_PLACES_API_KEY` | non | clé Google Cloud, *Places API (New)* | idem — **marquer sensible** |
 | `GOOGLE_PLACE_ID` | non | `ChIJ…` (fiche Google du cabinet) | idem |
+| `MAINTENANCE_MODE` | non | `on` pour activer le gate, vide sinon | Vercel → Production uniquement |
+| `MAINTENANCE_BYPASS_TOKEN` | si gate actif | `openssl rand -hex 24` | Vercel — **marquer sensible** |
 
 Les deux variables `GOOGLE_*` alimentent la section « Avis clients ». Si l'une manque, les avis sont **désactivés** proprement en production (les sections disparaissent) — aucune erreur. En développement, des données de démo prennent le relais.
 
 En local : copier `.env.local.example` en `.env.local` et remplir. Le fichier `.env*` est git-ignoré sauf `.env.local.example`.
+
+### Gate « Site en cours de développement »
+
+Quand `MAINTENANCE_MODE=on`, le middleware (`src/middleware.ts`) rewrite toutes les requêtes publiques vers `/maintenance` (URL d'origine conservée dans la barre d'adresse), et `robots.txt` / `sitemap.xml` sont neutralisés pour bloquer toute indexation.
+
+**Bypass pour utilisateurs autorisés** :
+
+1. Visiter une fois `https://cabinet-rimbault.fr/?preview=<MAINTENANCE_BYPASS_TOKEN>`.
+2. Le middleware redirige vers `/` (sans le query param) et pose le cookie `site-preview` (httpOnly, secure, sameSite=lax, 30 jours).
+3. L'utilisateur navigue ensuite normalement sur tout le site, jusqu'à expiration du cookie ou changement du token.
+
+**Désactiver le gate au launch** : retirer (ou vider) `MAINTENANCE_MODE` dans Vercel → Production, puis redéployer. Le middleware redevient no-op, le site est public.
+
+**Rotation du token** : changer la valeur de `MAINTENANCE_BYPASS_TOKEN` et redéployer invalide instantanément tous les cookies déjà posés (la comparaison strict-equal échoue) — utile si un token a fuité.
 
 ### Vérifier qu'aucune clé ne fuite côté client
 

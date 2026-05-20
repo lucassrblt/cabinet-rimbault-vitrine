@@ -42,6 +42,11 @@ async function fetchAllProperties(): Promise<Property[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Gate de maintenance actif → ne rien exposer aux crawlers.
+  if (process.env.MAINTENANCE_MODE === "on") {
+    return [];
+  }
+
   const properties = await fetchAllProperties();
   const now = new Date();
 

@@ -5,6 +5,13 @@ const SITE_URL =
   "https://cabinet-rimbault.fr";
 
 export default function robots(): MetadataRoute.Robots {
+  // Gate de maintenance actif → bloquer toute indexation.
+  if (process.env.MAINTENANCE_MODE === "on") {
+    return {
+      rules: [{ userAgent: "*", disallow: "/" }],
+    };
+  }
+
   return {
     rules: [
       {
