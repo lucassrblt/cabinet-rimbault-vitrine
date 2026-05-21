@@ -43,7 +43,14 @@ export async function generateMetadata({
   const firstImage =
     property.images.find((i) => i.isMain) ?? property.images[0];
   const city = property.location?.city ?? "";
-  const title = `${formatPropertyType(property.propertyType)} ${city ? `à ${city}` : ""} — ${property.reference}`;
+  const rooms = property.characteristics?.rooms;
+  const title = [
+    formatPropertyType(property.propertyType),
+    rooms != null ? `${rooms} pièce${rooms > 1 ? "s" : ""}` : null,
+    city ? `à ${city}` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
   return {
     title,
     description:

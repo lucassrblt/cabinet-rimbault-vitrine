@@ -26,7 +26,7 @@ import { RENT_TIERS, SALE_TIERS } from "@/lib/config/honoraires";
 import { getReviewsData } from "@/lib/reviews";
 
 export const metadata: Metadata = {
-  title: "L'agence",
+  title: `L'agence — agent immobilier à ${AGENT.address.city}`,
   description: `${AGENT.fullName}, agent immobilier indépendant à ${AGENT.address.city}. Notre histoire, nos chiffres, nos honoraires.`,
 };
 

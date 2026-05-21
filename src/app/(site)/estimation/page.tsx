@@ -3,9 +3,10 @@ import { EstimationHero } from "@/components/estimation/EstimationHero";
 import { EstimationProcess } from "@/components/estimation/EstimationProcess";
 import { EstimationForm } from "@/components/forms/estimation/EstimationForm";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { AGENT } from "@/lib/config/agent";
 
 export const metadata: Metadata = {
-  title: "Estimation gratuite de votre bien",
+  title: `Estimer votre bien à ${AGENT.address.city}`,
   description:
     "Quelques questions pour obtenir une première estimation de votre bien par le Cabinet Rimbault.",
 };

@@ -15,7 +15,7 @@ import {
 } from "@/lib/config/agent";
 
 export const metadata: Metadata = {
-  title: "Vendre votre bien",
+  title: `Vendre votre bien à ${AGENT.address.city}`,
   description: `Méthode, étapes, engagements et FAQ. Un ${AGENT.title} pour accompagner votre vente à ${AGENT.address.city}.`,
 };
 

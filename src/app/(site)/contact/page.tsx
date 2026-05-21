@@ -11,7 +11,7 @@ interface SearchParams {
 }
 
 export const metadata: Metadata = {
-  title: "Me contacter",
+  title: `Contact — agent immobilier à ${AGENT.address.city}`,
   description:
     "Téléphone, email, WhatsApp, adresse et horaires du Cabinet Rimbault. Formulaire typé pour une prise en charge rapide.",
 };

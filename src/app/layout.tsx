@@ -20,7 +20,7 @@ const manrope = Manrope({
 export function generateMetadata(): Metadata {
   return {
     title: {
-      default: `Cabinet Rimbault — Agent immobilier à ${AGENT.address.city}`,
+      default: `Agence immobilière à ${AGENT.address.city} — Cabinet Rimbault`,
       template: "%s | Cabinet Rimbault",
     },
     description: `Cabinet Rimbault — ${AGENT.title} à ${AGENT.address.city}. Vente, location, estimation et accompagnement personnalisé.`,
