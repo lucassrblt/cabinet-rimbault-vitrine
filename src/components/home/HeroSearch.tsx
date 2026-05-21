@@ -1,9 +1,11 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { ChevronDown, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { COMMUNES } from "@/lib/config/communes";
+import { EASE, HERO } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 type Mode = "acheter" | "louer";
@@ -62,8 +64,15 @@ export function HeroSearch() {
   const budgets = mode === "acheter" ? SALE_BUDGETS : RENT_BUDGETS;
 
   return (
-    <form
+    <motion.form
       onSubmit={onSubmit}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: HERO.duration,
+        delay: HERO.searchDelay,
+        ease: EASE,
+      }}
       className="overflow-hidden rounded-lg bg-card shadow-xl"
     >
       <div className="flex border-b border-subtle">
@@ -128,7 +137,7 @@ export function HeroSearch() {
           </button>
         </div>
       </div>
-    </form>
+    </motion.form>
   );
 }
 

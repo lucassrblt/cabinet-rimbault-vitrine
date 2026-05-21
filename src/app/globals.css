@@ -167,7 +167,8 @@ html {
   background: var(--color-bg-page);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
+  /* Pas de `scroll-behavior: smooth` : le smooth scroll est géré par Lenis
+     (cf. SmoothScroll), les deux ensemble entrent en conflit sur les ancres. */
 }
 
 body {

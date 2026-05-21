@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
+import { HeroBackdrop } from "@/components/home/HeroBackdrop";
 import { HeroContent } from "@/components/home/HeroContent";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
@@ -58,16 +59,7 @@ function HeroSection() {
   return (
     <section className="relative -mt-20 bg-cream pb-12 md:pb-14">
       <div className="relative overflow-hidden">
-        <Image
-          src="/hero-home.jpg"
-          alt="Intérieur d'un appartement parisien lumineux"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/20" />
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent" />
+        <HeroBackdrop />
         <HeroContent years={AGENT.stats.years} />
       </div>
 
@@ -104,9 +96,9 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
             </Link>
           }
         />
-        <ScrollReveal delay={0.12} className="mt-10">
+        <div className="mt-10">
           <FeaturedCarousel properties={properties} />
-        </ScrollReveal>
+        </div>
       </div>
     </section>
   );
@@ -152,7 +144,7 @@ function ReassuranceSection() {
           {REASSURANCE_ITEMS.map((item, i) => (
             <ScrollReveal
               key={item.title}
-              delay={0.15 + i * 0.08}
+              index={i}
               className={`flex flex-col items-center px-6 py-10 text-center ${
                 i < REASSURANCE_ITEMS.length - 1
                   ? "border-r border-neutral-200"

@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   ChevronLeft,
@@ -12,6 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getPropertyBadges } from "@/components/property/PropertyBadges";
 import { Badge } from "@/components/ui/Badge";
 import type { Property } from "@/lib/api/types";
+import { EASE, STAGGER_STEP, VIEWPORT } from "@/lib/motion";
 import {
   cn,
   formatPrice,
@@ -197,58 +199,68 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
           if (floorLabel) metaParts.push(floorLabel);
 
           return (
-            <article
+            <motion.div
               key={property.id}
               ref={(el) => {
                 cardRefs.current[i] = el;
               }}
               data-card
-              className="group/card w-[85%] flex-shrink-0 snap-start overflow-hidden rounded-lg border border-subtle bg-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-default hover:shadow-md sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
+              className="flex w-[85%] flex-shrink-0 snap-start sm:w-[45%] lg:w-[calc(33.333%-0.875rem)]"
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={VIEWPORT}
+              transition={{
+                duration: 0.6,
+                delay: Math.min(i, 3) * STAGGER_STEP,
+                ease: EASE,
+              }}
             >
-              <Link href={`/bien/${property.reference}`}>
-                <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
-                  <ImageSlider property={property} priority={i === 0} />
-                  {badges.length > 0 && (
-                    <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
-                      {badges.map((b) => (
-                        <Badge key={b.label} tone="neutral">
-                          {b.label.toUpperCase()}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-1 p-5">
-                  {location && (
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
-                      {location}
-                    </p>
-                  )}
-
-                  {descParts.length > 0 && (
-                    <p className="mt-1 text-sm font-semibold text-primary">
-                      {descParts.join(" - ")}
-                    </p>
-                  )}
-
-                  {metaParts.length > 0 && (
-                    <p className="text-xs text-muted">
-                      {metaParts.join(" • ")}
-                    </p>
-                  )}
-
-                  <div className="mt-auto flex items-center justify-between pt-4">
-                    <p className="text-lg font-bold text-primary">
-                      {formatPrice(price)}
-                    </p>
-                    <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-primary-600 text-on-primary transition-colors duration-200 group-hover/card:bg-primary-700">
-                      <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover/card:translate-x-0.5" />
-                    </span>
+              <article className="group/card w-full overflow-hidden rounded-lg border border-subtle bg-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-default hover:shadow-md">
+                <Link href={`/bien/${property.reference}`}>
+                  <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
+                    <ImageSlider property={property} priority={i === 0} />
+                    {badges.length > 0 && (
+                      <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+                        {badges.map((b) => (
+                          <Badge key={b.label} tone="neutral">
+                            {b.label.toUpperCase()}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </div>
-              </Link>
-            </article>
+
+                  <div className="flex flex-col gap-1 p-5">
+                    {location && (
+                      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
+                        {location}
+                      </p>
+                    )}
+
+                    {descParts.length > 0 && (
+                      <p className="mt-1 text-sm font-semibold text-primary">
+                        {descParts.join(" - ")}
+                      </p>
+                    )}
+
+                    {metaParts.length > 0 && (
+                      <p className="text-xs text-muted">
+                        {metaParts.join(" • ")}
+                      </p>
+                    )}
+
+                    <div className="mt-auto flex items-center justify-between pt-4">
+                      <p className="text-lg font-bold text-primary">
+                        {formatPrice(price)}
+                      </p>
+                      <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-primary-600 text-on-primary transition-colors duration-200 group-hover/card:bg-primary-700">
+                        <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover/card:translate-x-0.5" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              </article>
+            </motion.div>
           );
         })}
       </div>
