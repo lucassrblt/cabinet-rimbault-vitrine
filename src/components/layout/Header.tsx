@@ -56,13 +56,15 @@ export function Header() {
           aria-label="Cabinet Rimbault — Accueil"
         >
           <Image
-            src={isTransparent ? "/cr-logo-white.png" : "/cr-logo.png"}
+            src="/cr-logo.png"
             alt="Cabinet Rimbault"
             width={600}
             height={200}
             priority
             sizes="(min-width: 768px) 132px, 120px"
-            className="h-10 w-auto md:h-11"
+            className={`h-10 w-auto md:h-11 ${
+              isTransparent ? "brightness-0 invert" : ""
+            }`}
           />
         </Link>
 
