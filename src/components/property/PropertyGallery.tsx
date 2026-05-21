@@ -1,9 +1,10 @@
 "use client";
 
 import { ChevronLeft, ChevronRight, Image as ImageIcon, X } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import type { PropertyImage } from "@/lib/api/types";
-import { cn } from "@/lib/utils";
+import { cn, PHOTO_BLUR_DATA_URL } from "@/lib/utils";
 
 interface Props {
   images: PropertyImage[];
@@ -62,11 +63,15 @@ export function PropertyGallery({ images, title }: Props) {
           className="group relative aspect-[16/10] overflow-hidden rounded-sm border border-subtle bg-section"
           aria-label="Agrandir les photos"
         >
-          {/* biome-ignore lint/performance/noImgElement: remote image host not pre-configured */}
-          <img
+          <Image
             src={current.url}
             alt={current.alt ?? title}
-            className="h-full w-full object-cover"
+            fill
+            sizes="(min-width: 768px) 720px, 100vw"
+            placeholder="blur"
+            blurDataURL={PHOTO_BLUR_DATA_URL}
+            className="object-cover"
+            priority
           />
           {total > 1 && (
             <>
@@ -105,12 +110,14 @@ export function PropertyGallery({ images, title }: Props) {
               )}
               aria-label={`Afficher la photo ${i + 1}`}
             >
-              {/* biome-ignore lint/performance/noImgElement: remote image host not pre-configured */}
-              <img
+              <Image
                 src={img.url}
                 alt={img.alt ?? `${title} — ${i + 1}`}
-                className="h-full w-full object-cover"
-                loading="lazy"
+                fill
+                sizes="(min-width: 768px) 180px, 25vw"
+                placeholder="blur"
+                blurDataURL={PHOTO_BLUR_DATA_URL}
+                className="object-cover"
               />
             </button>
           ))}
@@ -150,12 +157,17 @@ export function PropertyGallery({ images, title }: Props) {
             </button>
           </div>
           <div className="relative flex flex-1 items-center justify-center p-4">
-            {/* biome-ignore lint/performance/noImgElement: remote image host not pre-configured */}
-            <img
-              src={current.url}
-              alt={current.alt ?? title}
-              className="max-h-full max-w-full object-contain"
-            />
+            <div className="relative h-full w-full">
+              <Image
+                src={current.url}
+                alt={current.alt ?? title}
+                fill
+                sizes="100vw"
+                placeholder="blur"
+                blurDataURL={PHOTO_BLUR_DATA_URL}
+                className="object-contain"
+              />
+            </div>
             {total > 1 && (
               <>
                 <NavButton direction="prev" onClick={prev} dark />

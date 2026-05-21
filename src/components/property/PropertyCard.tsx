@@ -1,4 +1,5 @@
 import { ArrowRight, Image as ImageIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/Badge";
 import { EnergyBadge } from "@/components/ui/EnergyRating";
@@ -9,6 +10,7 @@ import {
   formatPropertyType,
   formatRent,
   formatSurface,
+  PHOTO_BLUR_DATA_URL,
 } from "@/lib/utils";
 import { PropertyBadgesList } from "./PropertyBadges";
 
@@ -24,12 +26,14 @@ function MainImage({ property }: { property: Property }) {
     );
   }
   return (
-    // biome-ignore lint/performance/noImgElement: remote image host not pre-configured at MVP
-    <img
+    <Image
       src={main.url}
       alt={main.alt ?? property.title}
-      className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-      loading="lazy"
+      fill
+      sizes="(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw"
+      placeholder="blur"
+      blurDataURL={PHOTO_BLUR_DATA_URL}
+      className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
     />
   );
 }

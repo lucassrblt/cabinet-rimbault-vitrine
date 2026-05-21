@@ -6,14 +6,26 @@ import {
   ChevronRight,
   Image as ImageIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getPropertyBadges } from "@/components/property/PropertyBadges";
 import { Badge } from "@/components/ui/Badge";
 import type { Property } from "@/lib/api/types";
-import { cn, formatPrice, formatSurface } from "@/lib/utils";
+import {
+  cn,
+  formatPrice,
+  formatSurface,
+  PHOTO_BLUR_DATA_URL,
+} from "@/lib/utils";
 
-function ImageSlider({ property }: { property: Property }) {
+function ImageSlider({
+  property,
+  priority,
+}: {
+  property: Property;
+  priority?: boolean;
+}) {
   const ordered = [...property.images].sort((a, b) => {
     if (a.isMain !== b.isMain) return a.isMain ? -1 : 1;
     return a.order - b.order;
@@ -38,14 +50,18 @@ function ImageSlider({ property }: { property: Property }) {
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {ordered.map((img, i) => (
-            // biome-ignore lint/performance/noImgElement: remote image host not pre-configured at MVP
-            <img
-              key={img.id}
-              src={img.url}
-              alt={img.alt ?? property.title}
-              className="h-full w-full flex-shrink-0 object-cover"
-              loading={i === 0 ? "eager" : "lazy"}
-            />
+            <div key={img.id} className="relative h-full w-full flex-shrink-0">
+              <Image
+                src={img.url}
+                alt={img.alt ?? property.title}
+                fill
+                sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 85vw"
+                placeholder="blur"
+                blurDataURL={PHOTO_BLUR_DATA_URL}
+                className="object-cover"
+                priority={priority && i === 0}
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -191,7 +207,7 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
             >
               <Link href={`/bien/${property.reference}`}>
                 <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
-                  <ImageSlider property={property} />
+                  <ImageSlider property={property} priority={i === 0} />
                   {badges.length > 0 && (
                     <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
                       {badges.map((b) => (

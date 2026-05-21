@@ -4,6 +4,16 @@ export function cn(...inputs: ClassValue[]): string {
   return clsx(inputs);
 }
 
+/**
+ * Placeholder « blur-up » partagé pour les photos distantes (Supabase).
+ * L'API admin n'expose pas de LQIP par image : on utilise un dégradé neutre
+ * unique, flouté par `next/image` via `placeholder="blur"`, le temps que la
+ * variante optimisée arrive. Si l'API expose un jour un blurDataURL réel
+ * (ThumbHash/BlurHash par photo), le passer en prop à la place de celui-ci.
+ */
+export const PHOTO_BLUR_DATA_URL =
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIxNSI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjZWNlYWU1Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjZGVkY2Q2Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjE1IiBmaWxsPSJ1cmwoI2cpIi8+PC9zdmc+";
+
 const priceFormatter = new Intl.NumberFormat("fr-FR", {
   style: "currency",
   currency: "EUR",
