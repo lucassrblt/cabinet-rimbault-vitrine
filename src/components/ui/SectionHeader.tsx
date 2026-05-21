@@ -2,11 +2,8 @@
 
 import { motion } from "framer-motion";
 import type { ReactNode } from "react";
+import { EASE, VIEWPORT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
-const VIEWPORT = { once: true, margin: "-80px 0px" } as const;
-const MOTION_HEADING = { h1: motion.h1, h2: motion.h2, h3: motion.h3 } as const;
 
 export function SectionHeader({
   eyebrow,
@@ -27,7 +24,7 @@ export function SectionHeader({
   className?: string;
   action?: ReactNode;
 }) {
-  const Heading = MOTION_HEADING[as];
+  const Heading = as;
 
   return (
     <motion.div
@@ -73,13 +70,22 @@ export function SectionHeader({
               as === "h1" && "text-3xl md:text-4xl",
               eyebrow && "mt-3",
             )}
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.6, delay: 0.2, ease: EASE }}
           >
-            {title}
+            {/* Line-mask reveal — le titre monte depuis un masque.
+               Le padding em (compensé par la marge négative) évite de rogner
+               accents et jambages au repos. */}
+            <span className="block overflow-hidden py-[0.15em] -my-[0.15em]">
+              <motion.span
+                className="block"
+                variants={{
+                  hidden: { y: "150%" },
+                  visible: { y: "0%" },
+                }}
+                transition={{ duration: 0.7, delay: 0.2, ease: EASE }}
+              >
+                {title}
+              </motion.span>
+            </span>
           </Heading>
         </div>
         {action && <div className="hidden md:block">{action}</div>}

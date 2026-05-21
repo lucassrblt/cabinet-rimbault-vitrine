@@ -22,7 +22,7 @@ export function EstimationProcess() {
           return (
             <ScrollReveal
               key={step.title}
-              delay={0.15 + i * 0.08}
+              index={i}
               className={`flex flex-col items-center px-6 py-10 text-center ${
                 i < PROCESS_STEPS.length - 1
                   ? "border-b border-neutral-200/70 md:border-b-0 md:border-r"

@@ -14,6 +14,7 @@ import { getPropertyBadges } from "@/components/property/PropertyBadges";
 import { Badge } from "@/components/ui/Badge";
 import type { Property } from "@/lib/api/types";
 import { EASE, STAGGER_STEP, VIEWPORT } from "@/lib/motion";
+import { useDragScroll } from "@/lib/useDragScroll";
 import {
   cn,
   formatPrice,
@@ -137,6 +138,8 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  useDragScroll(scrollRef);
+
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -175,7 +178,7 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
     <div>
       <div
         ref={scrollRef}
-        className="scrollbar-hide -mx-2 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-visible px-2 py-4"
+        className="scrollbar-hide -mx-2 flex cursor-grab snap-x snap-mandatory select-none gap-5 overflow-x-auto overflow-y-visible px-2 py-4"
       >
         {properties.map((property, i) => {
           const city = property.location?.city;
@@ -216,7 +219,10 @@ export function FeaturedCarousel({ properties }: { properties: Property[] }) {
               }}
             >
               <article className="group/card w-full overflow-hidden rounded-lg border border-subtle bg-card transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:border-default hover:shadow-md">
-                <Link href={`/bien/${property.reference}`}>
+                <Link
+                  href={`/bien/${property.reference}`}
+                  className="cursor-grab"
+                >
                   <div className="relative aspect-[4/3] overflow-hidden bg-neutral-200">
                     <ImageSlider property={property} priority={i === 0} />
                     {badges.length > 0 && (

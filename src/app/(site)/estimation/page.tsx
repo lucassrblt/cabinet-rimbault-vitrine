@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { EstimationHero } from "@/components/estimation/EstimationHero";
 import { EstimationProcess } from "@/components/estimation/EstimationProcess";
 import { EstimationForm } from "@/components/forms/estimation/EstimationForm";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 
 export const metadata: Metadata = {
   title: "Estimation gratuite de votre bien",
@@ -17,9 +18,11 @@ export default function EstimationPage() {
       {/* Carte du tunnel : remontée par marge négative pour chevaucher le bas du hero. */}
       <section className="relative z-10 -mt-28 md:-mt-44">
         <div className="mx-auto w-full max-w-5xl px-4 md:px-8">
-          <div className="rounded-lg border border-subtle bg-card p-6 shadow-lg md:p-9">
-            <EstimationForm />
-          </div>
+          <ScrollReveal>
+            <div className="rounded-lg border border-subtle bg-card p-6 shadow-lg md:p-9">
+              <EstimationForm />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 

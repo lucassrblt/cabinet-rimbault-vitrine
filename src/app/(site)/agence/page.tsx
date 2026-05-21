@@ -10,7 +10,6 @@ import {
   Zap,
 } from "lucide-react";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AgenceHeroContent } from "@/components/agence/AgenceHeroContent";
@@ -18,6 +17,7 @@ import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { ReviewsSection } from "@/components/reviews/ReviewsSection";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
 import { LinkButton } from "@/components/ui/Button";
+import { ParallaxImage } from "@/components/ui/ParallaxImage";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TextReveal } from "@/components/ui/TextReveal";
@@ -26,7 +26,7 @@ import { RENT_TIERS, SALE_TIERS } from "@/lib/config/honoraires";
 import { getReviewsData } from "@/lib/reviews";
 
 export const metadata: Metadata = {
-  title: "L'agence — Cabinet Rimbault",
+  title: "L'agence",
   description: `${AGENT.fullName}, agent immobilier indépendant à ${AGENT.address.city}. Notre histoire, nos chiffres, nos honoraires.`,
 };
 
@@ -52,13 +52,10 @@ export default function AgencePage() {
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-neutral-900">
-      <Image
+      <ParallaxImage
         src="/hero-agence.jpg"
         alt="Vitrine du Cabinet Rimbault — Transactions Immobilières"
-        fill
-        priority
-        className="object-cover object-[center_35%]"
-        sizes="100vw"
+        objectPosition="center 35%"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
       <AgenceHeroContent

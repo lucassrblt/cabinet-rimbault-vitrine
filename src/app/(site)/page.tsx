@@ -12,10 +12,13 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
-import { HeroBackdrop } from "@/components/home/HeroBackdrop";
 import { HeroContent } from "@/components/home/HeroContent";
 import { HeroSearch } from "@/components/home/HeroSearch";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
+import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { Magnetic } from "@/components/ui/Magnetic";
+import { ParallaxImage } from "@/components/ui/ParallaxImage";
+import { RevealMask } from "@/components/ui/RevealMask";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { listRecentProperties } from "@/lib/api/properties";
@@ -59,7 +62,18 @@ function HeroSection() {
   return (
     <section className="relative -mt-20 bg-cream pb-12 md:pb-14">
       <div className="relative overflow-hidden">
-        <HeroBackdrop />
+        <ParallaxImage
+          src="/hero-home.jpg"
+          alt="Intérieur d'un appartement parisien lumineux"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/20"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent"
+        />
         <HeroContent years={AGENT.stats.years} />
       </div>
 
@@ -177,12 +191,14 @@ function ReassuranceSection() {
 const AGENT_HIGHLIGHTS = [
   {
     icon: Award,
-    value: `${AGENT.stats.years} ans`,
+    count: AGENT.stats.years,
+    suffix: " ans",
     label: "d’expérience",
   },
   {
     icon: HomeIcon,
-    value: `${AGENT.stats.transactions}`,
+    count: AGENT.stats.transactions,
+    suffix: "+",
     label: "transactions",
   },
   {
@@ -227,7 +243,14 @@ function AgentSection() {
                     />
                     <div>
                       <dt className="font-semibold leading-tight text-primary">
-                        {item.value}
+                        {"count" in item ? (
+                          <AnimatedCounter
+                            target={item.count}
+                            suffix={item.suffix}
+                          />
+                        ) : (
+                          item.value
+                        )}
                       </dt>
                       <dd className="text-sm leading-tight text-muted">
                         {item.label}
@@ -258,23 +281,29 @@ function AgentSection() {
 
             {/* 3. CTA — ouvre le drawer de contact */}
             <ScrollReveal delay={0.3} className="mt-8">
-              <ContactTrigger
-                subject="rdv"
-                className="group inline-flex items-center gap-2.5 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
-              >
-                Échanger avec moi
-                <span
-                  aria-hidden="true"
-                  className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15"
+              <Magnetic>
+                <ContactTrigger
+                  subject="rdv"
+                  className="group inline-flex items-center gap-2.5 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-300 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
                 >
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
-                </span>
-              </ContactTrigger>
+                  Échanger avec moi
+                  <span
+                    aria-hidden="true"
+                    className="flex h-6 w-6 items-center justify-center rounded-full bg-white/15"
+                  >
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
+                  </span>
+                </ContactTrigger>
+              </Magnetic>
             </ScrollReveal>
           </div>
 
           {/* Colonne droite — portrait posé dans un cadre chaud */}
-          <ScrollReveal delay={0.15} className="flex justify-center">
+          <RevealMask
+            direction="up"
+            delay={0.1}
+            className="flex justify-center"
+          >
             <div className="group relative w-full max-w-[320px]">
               {/* Cadre chaud arrondi — en retrait derrière le portrait */}
               <div
@@ -291,7 +320,7 @@ function AgentSection() {
                 sizes="(max-width: 768px) 80vw, 320px"
               />
             </div>
-          </ScrollReveal>
+          </RevealMask>
         </div>
       </div>
     </section>
@@ -322,16 +351,22 @@ function EstimationCtaSection() {
                   Une estimation fiable et gratuite par nos experts.
                 </p>
                 <div className="mt-8">
-                  <Link
-                    href="/estimation"
-                    className="group inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-primary-600 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-md active:translate-y-0"
-                  >
-                    Estimer mon bien
-                    <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
-                  </Link>
+                  <Magnetic>
+                    <Link
+                      href="/estimation"
+                      className="group inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-primary-600 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-neutral-100 hover:shadow-md active:translate-y-0"
+                    >
+                      Estimer mon bien
+                      <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5" />
+                    </Link>
+                  </Magnetic>
                 </div>
               </div>
-              <div className="relative hidden min-h-[240px] md:block">
+              <RevealMask
+                direction="left"
+                delay={0.15}
+                className="relative hidden min-h-[240px] md:block"
+              >
                 <Image
                   src="/hero-agence.jpg"
                   alt="Façade d'un immeuble de caractère"
@@ -339,7 +374,7 @@ function EstimationCtaSection() {
                   className="object-cover"
                   sizes="50vw"
                 />
-              </div>
+              </RevealMask>
             </div>
           </div>
         </ScrollReveal>
