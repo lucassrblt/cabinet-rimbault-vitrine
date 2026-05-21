@@ -288,6 +288,24 @@ body.is-grabbing * {
 }
 
 /* ═════════════════════════════════════════════════════════════
+ * TRANSITIONS DE PAGE — crossfade (View Transitions API)
+ * — Réglage de la durée/easing du fondu par défaut entre routes.
+ * ═════════════════════════════════════════════════════════════ */
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 260ms;
+  animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms;
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════
  * NAV LINK — animated underline
  * ═════════════════════════════════════════════════════════════ */
 

@@ -1,3 +1,6 @@
+/// <reference types="react/canary" />
+
+import { ViewTransition } from "react";
 import { ContactProvider } from "@/components/contact/ContactProvider";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -14,7 +17,9 @@ export default function SiteLayout({
       <SmoothScroll>
         <div className="flex min-h-full flex-1 flex-col pt-20 pb-14 md:pb-0">
           <Header />
-          <div className="flex flex-1 flex-col">{children}</div>
+          <div className="flex flex-1 flex-col">
+            <ViewTransition>{children}</ViewTransition>
+          </div>
           <Footer />
           <MobileBottomBar />
         </div>

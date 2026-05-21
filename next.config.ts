@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Active la View Transitions API de React pour les navigations de route
+    // (crossfade de page — cf. (site)/layout.tsx + globals.css).
+    viewTransition: true,
+  },
   images: {
     remotePatterns: [
       {
