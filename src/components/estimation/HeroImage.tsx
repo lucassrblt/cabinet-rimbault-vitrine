@@ -9,7 +9,7 @@ export function HeroImage() {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-subtle bg-neutral-100 md:aspect-auto md:h-[420px]">
       <ParallaxImage
-        src="/hero-estimation.png"
+        src="/hero-estimation.jpg"
         alt=""
         settle={false}
         sizes="(min-width: 768px) 50vw, 100vw"

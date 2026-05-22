@@ -1,13 +1,13 @@
-# Déploiement — Vercel
+# Déploiement — Netlify
 
-Le site vitrine est déployé sur Vercel. Ce fichier centralise ce qu'un agent (humain ou Claude) doit savoir pour intervenir sans casser prod ou preview.
+Le site vitrine est déployé sur Netlify. Ce fichier centralise ce qu'un agent (humain ou Claude) doit savoir pour intervenir sans casser prod ou preview.
 
 ## Environnements
 
-| Environnement | Branche | Rôle |
+| Environnement | Branche / contexte Netlify | Rôle |
 |---|---|---|
-| **Production** | `main` | Site public cabinet-rimbault.fr |
-| **Preview** | toute PR | URL jetable par PR, pointe sur l'API admin de staging |
+| **Production** | `main` (contexte *Production*) | Site public cabinet-rimbault.fr |
+| **Preview** | toute PR (contexte *Deploy Preview*) | URL jetable par PR, pointe sur l'API admin de staging |
 | **Development** | local | `next dev` + `.env.local` |
 
 ## Variables d'environnement
@@ -16,12 +16,14 @@ Toutes les variables sont **server-only**. **Aucune** ne doit être préfixée `
 
 | Variable | Obligatoire | Exemple | Où la configurer |
 |---|---|---|---|
-| `PUBLIC_API_URL` | oui | `https://admin.cabinet-rimbault.fr/api/public` | Vercel → Settings → Environment Variables (Production + Preview) |
-| `PUBLIC_API_KEY` | oui | clé fournie par le back-office | idem — **marquer sensible** |
-| `GOOGLE_PLACES_API_KEY` | non | clé Google Cloud, *Places API (New)* | idem — **marquer sensible** |
+| `PUBLIC_API_URL` | oui | `https://admin.cabinet-rimbault.fr/api/public` | Netlify → Project configuration → Environment variables (contextes *Production* + *Deploy previews*) |
+| `PUBLIC_API_KEY` | oui | clé fournie par le back-office | idem — **marquer comme secret** |
+| `GOOGLE_PLACES_API_KEY` | non | clé Google Cloud, *Places API (New)* | idem — **marquer comme secret** |
 | `GOOGLE_PLACE_ID` | non | `ChIJ…` (fiche Google du cabinet) | idem |
-| `MAINTENANCE_MODE` | non | `on` pour activer le gate, vide sinon | Vercel → Production uniquement |
-| `MAINTENANCE_BYPASS_TOKEN` | si gate actif | `openssl rand -hex 24` | Vercel — **marquer sensible** |
+| `MAINTENANCE_MODE` | non | `on` pour activer le gate, vide sinon | Netlify → contexte *Production* uniquement |
+| `MAINTENANCE_BYPASS_TOKEN` | si gate actif | `openssl rand -hex 24` | Netlify — **marquer comme secret** |
+
+Les variables Netlify se définissent par **contexte de déploiement** (*Production*, *Deploy previews*, *Branch deploys*, *Local development*). Les contextes preview doivent pointer vers l'API admin de staging.
 
 Les deux variables `GOOGLE_*` alimentent la section « Avis clients ». Si l'une manque, les avis sont **désactivés** proprement en production (les sections disparaissent) — aucune erreur. En développement, des données de démo prennent le relais.
 
@@ -47,8 +49,9 @@ Le fichier `src/lib/api/client.ts` importe `"server-only"` : toute tentative d'i
 
 ## Build
 
-- `next build` via Vercel, Node.js 20+.
+- `next build` via Netlify (`@netlify/plugin-nextjs`, runtime Next.js auto-détecté — pas de `netlify.toml` dédié), Node.js 20+.
 - Runtime : Node (pas Edge). Les handlers qui lisent `process.env` ou font du `fetch` avec cache tags restent en Node par défaut.
+- Le SSR tourne en fonction Netlify : après inactivité, la première requête paie un *cold start* (~1–2 s de TTFB observés) avant que le cache durable ne reprenne la main.
 
 ## Images distantes
 
@@ -64,11 +67,11 @@ Le fichier `src/lib/api/client.ts` importe `"server-only"` : toute tentative d'i
 ## Domaines
 
 - Production : `cabinet-rimbault.fr` (et `www.` en redirection).
-- Preview : `*.vercel.app` — **ne pas** indexer (header `x-robots-tag: noindex` ajouté par Vercel sur preview automatiquement ; vérifier si un jour on ajoute un middleware).
+- Preview : `*.netlify.app` (Deploy Previews) — **ne pas** indexer (le gate `MAINTENANCE_MODE` neutralise déjà `robots.txt` ; sinon vérifier qu'un header `x-robots-tag: noindex` couvre bien les previews).
 
 ## Vérifs avant merge
 
 1. `npm run typecheck`
 2. `npm run lint`
 3. `npm run build` en local si la PR touche `next.config.ts`, `layout.tsx`, ou la couche API.
-4. Sur la PR Vercel : ouvrir la preview, vérifier qu'une fiche bien rend et que les assets `*.supabase.co` chargent.
+4. Sur le Deploy Preview Netlify de la PR : vérifier qu'une fiche bien rend et que les assets `*.supabase.co` chargent.
