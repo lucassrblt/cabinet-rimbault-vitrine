@@ -64,7 +64,7 @@ export function ListingHero({
         className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/35 to-transparent"
       />
 
-      <div className="relative z-10 mx-auto flex min-h-[clamp(20rem,46vw,30rem)] w-full max-w-7xl flex-col justify-end px-4 pt-14 pb-28 md:px-8 md:pt-16 md:pb-32">
+      <div className="relative z-10 mx-auto flex min-h-[clamp(20rem,46vw,30rem)] w-full max-w-7xl flex-col justify-end px-gutter pt-14 pb-28 md:pt-16 md:pb-32">
         <motion.div {...reveal(0)}>
           <Breadcrumb
             tone="light"

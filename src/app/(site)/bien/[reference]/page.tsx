@@ -96,7 +96,7 @@ export default async function PropertyPage({
   return (
     <main className="flex flex-1 flex-col bg-page">
       {/* Breadcrumb */}
-      <div className="mx-auto w-full max-w-6xl px-4 pt-6 md:px-6 md:pt-8">
+      <div className="mx-auto w-full max-w-6xl px-gutter pt-6 md:pt-8">
         <Breadcrumb
           items={[
             { label: "Accueil", href: "/" },
@@ -118,7 +118,7 @@ export default async function PropertyPage({
       </div>
 
       {/* HERO — gallery (left) + sticky contact card (right) */}
-      <section className="mx-auto w-full max-w-6xl px-4 pt-6 pb-12 md:px-6 md:pt-8 md:pb-16">
+      <section className="mx-auto w-full max-w-6xl px-gutter pt-6 pb-12 md:pt-8 md:pb-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
           {/* LEFT — gallery + title + stats + description */}
           <div className="flex flex-col gap-8 min-w-0">
@@ -454,7 +454,7 @@ function CharacteristicsSection({
 
   return (
     <section className="border-t border-subtle bg-section/60">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading
           eyebrow="Détails"
           title="Caractéristiques du bien"
@@ -530,7 +530,7 @@ function CoproSection({ property }: { property: Property }) {
 
   return (
     <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading
           eyebrow="Loi Alur"
           title="Copropriété"
@@ -568,7 +568,7 @@ function DocumentsSection({ property }: { property: Property }) {
   if (docs.length === 0) return null;
   return (
     <section className="border-t border-subtle bg-section/60">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading eyebrow="Annexes" title="Documents à télécharger" />
         <ul className="mt-8 grid max-w-3xl grid-cols-1 gap-2 text-sm">
           {docs.map((d) => (
@@ -608,7 +608,7 @@ function EnergySection({ property }: { property: Property }) {
   const costMax = e.annualEnergyCostMax;
   return (
     <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading eyebrow="Diagnostic" title="Performance énergétique" />
         <div className="mt-8 grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
           <EnergyScale
@@ -683,7 +683,7 @@ function HonorairesSection({
   const f = property.finance;
   return (
     <section className="border-t border-subtle bg-section/60">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading eyebrow="Frais d'agence" title="Honoraires" />
         <div className="mt-6 max-w-2xl text-sm leading-relaxed text-body">
           {isRental ? (
@@ -723,7 +723,7 @@ function LocationSection({ property }: { property: Property }) {
   const proximities = property.proximities ?? [];
   return (
     <section className="border-t border-subtle">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading
           eyebrow="Emplacement"
           title="Localisation"
@@ -815,7 +815,7 @@ function SimilarSection({
 }) {
   return (
     <section className="border-t border-subtle bg-section/60">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <SectionHeading
           eyebrow="Sélection"
           title="Autres biens qui pourraient vous plaire"
@@ -846,7 +846,7 @@ function SimilarSection({
 function LegalStrip() {
   return (
     <section className="border-t border-subtle bg-page">
-      <div className="mx-auto w-full max-w-6xl px-4 py-6 text-xs leading-relaxed text-body md:px-6">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-6 text-xs leading-relaxed text-body">
         <p>
           Cabinet Rimbault · {AGENT.legal.carteT} · {AGENT.legal.cci} ·{" "}
           {AGENT.legal.garant} · {AGENT.legal.mediator}

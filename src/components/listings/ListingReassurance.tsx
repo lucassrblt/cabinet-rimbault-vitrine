@@ -79,7 +79,7 @@ export function ListingReassurance({ mode }: { mode: "sale" | "rent" }) {
 
   return (
     <section className="bg-cream-light">
-      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow={eyebrow}
           title="Un accompagnement à chaque étape."

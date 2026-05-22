@@ -18,7 +18,7 @@ export default function EstimationPage() {
 
       {/* Carte du tunnel : remontée par marge négative pour chevaucher le bas du hero. */}
       <section className="relative z-10 -mt-28 md:-mt-44">
-        <div className="mx-auto w-full max-w-5xl px-4 md:px-8">
+        <div className="mx-auto w-full max-w-5xl px-gutter">
           <ScrollReveal>
             <div className="rounded-lg border border-subtle bg-card p-6 shadow-lg md:p-9">
               <EstimationForm />
@@ -28,7 +28,7 @@ export default function EstimationPage() {
       </section>
 
       <section className="pt-14 pb-24 md:pt-16 md:pb-28">
-        <div className="mx-auto w-full max-w-5xl px-4 md:px-8">
+        <div className="mx-auto w-full max-w-5xl px-gutter">
           <EstimationProcess />
         </div>
       </section>

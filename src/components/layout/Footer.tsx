@@ -26,7 +26,7 @@ const LEGAL_LINKS = [
 export function Footer() {
   return (
     <footer className="border-t border-neutral-700 bg-inverse">
-      <div className="mx-auto w-full max-w-6xl px-4 py-14 md:px-6 md:py-20">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-14 md:py-20">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
             <Link
@@ -99,7 +99,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-neutral-700">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 md:px-6">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-8">
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-neutral-400">
             Informations réglementaires
           </p>

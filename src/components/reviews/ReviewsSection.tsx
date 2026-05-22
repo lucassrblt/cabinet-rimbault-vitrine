@@ -19,7 +19,7 @@ export async function ReviewsSection() {
 
   return (
     <section id="avis" className="scroll-mt-24 bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-20 md:py-28">
         <SectionHeader
           eyebrow="Avis clients"
           title="Ils m’ont fait confiance"

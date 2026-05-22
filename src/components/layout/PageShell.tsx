@@ -13,7 +13,7 @@ export function PageShell({
   children: ReactNode;
 }) {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 p-6 md:p-10">
+    <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-8 px-gutter py-6 md:py-10">
       {breadcrumb && breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
       <header>
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">

@@ -79,7 +79,7 @@ export default async function AcheterPage({
           image="/hero-agence.jpg"
           imageAlt="Immeuble de caractère"
         />
-        <div className="relative z-10 mx-auto -mt-12 w-full max-w-7xl px-4 pb-12 md:-mt-16 md:px-8 md:pb-14">
+        <div className="relative z-10 mx-auto -mt-12 w-full max-w-7xl px-gutter pb-12 md:-mt-16 md:pb-14">
           <ListingFilterBar
             mode="sale"
             basePath={basePath}
@@ -93,7 +93,7 @@ export default async function AcheterPage({
       </section>
 
       <section className="bg-cream">
-        <div className="mx-auto w-full max-w-7xl px-4 py-16 md:px-8 md:py-20">
+        <div className="mx-auto w-full max-w-7xl px-gutter py-16 md:py-20">
           {errorMessage ? (
             <div className="rounded-sm border border-subtle bg-card p-6 text-sm text-body">
               <p className="font-medium">

@@ -27,7 +27,7 @@ export async function ReviewsStrip({
 
   return (
     <section className={className}>
-      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow="Avis clients"
           title={heading}

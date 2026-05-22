@@ -18,7 +18,7 @@ import { HeroSocialProof } from "./HeroSocialProof";
 export function EstimationHero() {
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-4 pt-14 pb-16 md:px-8 md:pt-20 md:pb-24">
+      <div className="mx-auto w-full max-w-6xl px-gutter pt-14 pb-16 md:pt-20 md:pb-24">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:items-start md:gap-14">
           <div>
             <ScrollReveal index={0}>

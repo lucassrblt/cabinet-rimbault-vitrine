@@ -66,8 +66,8 @@ export function SectionHeader({
           <Heading
             id={id}
             className={cn(
-              "font-display text-2xl font-semibold tracking-tight text-primary md:text-3xl",
-              as === "h1" && "text-3xl md:text-4xl",
+              "font-display text-3xl font-semibold tracking-tight text-primary",
+              as === "h1" && "text-4xl",
               eyebrow && "mt-3",
             )}
           >

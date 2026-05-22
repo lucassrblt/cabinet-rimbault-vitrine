@@ -60,7 +60,7 @@ export function Header() {
           : "border-b border-subtle bg-header"
       }`}
     >
-      <div className="mx-auto flex h-20 w-full max-w-7xl items-center px-4 md:px-8">
+      <div className="mx-auto flex h-20 w-full max-w-7xl items-center px-gutter">
         <Link
           href="/"
           className="shrink-0"

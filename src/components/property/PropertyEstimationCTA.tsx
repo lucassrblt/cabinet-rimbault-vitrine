@@ -4,7 +4,7 @@ import Link from "next/link";
 export function PropertyEstimationCTA() {
   return (
     <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
         <div className="relative overflow-hidden rounded-sm bg-inverse text-on-inverse">
           {/* Decorative photo — right side, masked into the panel */}
           <div

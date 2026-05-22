@@ -100,7 +100,7 @@ const VALUES: { icon: LucideIcon; title: string; description: string }[] = [
 function HistoireSection() {
   return (
     <section id="notre-histoire" className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-20 md:py-28">
         <div className="grid grid-cols-1 gap-16 md:grid-cols-[2fr_3fr]">
           <div>
             <SectionHeader
@@ -190,7 +190,7 @@ async function ChiffresSection() {
 
   return (
     <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-20 md:py-28">
         <SectionHeader eyebrow="En quelques chiffres" title="Nos chiffres" />
 
         <div className="mt-14 grid grid-cols-2 md:grid-cols-4">
@@ -229,7 +229,7 @@ async function ChiffresSection() {
 function HonorairesSection() {
   return (
     <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-20 md:py-28">
         <SectionHeader
           eyebrow="Transparence"
           title="Nos honoraires"
@@ -373,7 +373,7 @@ const CONTACT_ITEMS = [
 function ProjetSection() {
   return (
     <section className="bg-header">
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 md:px-6 md:py-28">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-20 md:py-28">
         <div className="overflow-hidden rounded-lg shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-[1.15fr_0.85fr]">
             {/* Zone gauche — votre projet */}

@@ -23,7 +23,7 @@ export function AgenceHeroContent({
       initial="hidden"
       animate="visible"
       variants={heroContainer}
-      className="relative z-10 mx-auto flex min-h-[calc(100vh-10rem)] w-full max-w-6xl flex-col justify-end px-4 pb-20 pt-14 md:px-6 md:pb-24"
+      className="relative z-10 mx-auto flex min-h-[calc(100vh-10rem)] w-full max-w-6xl flex-col justify-end px-gutter pb-20 pt-14 md:pb-24"
     >
       <motion.span
         variants={heroLine}

@@ -23,7 +23,7 @@ export default function VendrePage() {
   return (
     <main className="flex flex-1 flex-col">
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <Breadcrumb
             items={[{ label: "Accueil", href: "/" }, { label: "Vendre" }]}
           />
@@ -45,7 +45,7 @@ export default function VendrePage() {
       </section>
 
       <section className="border-b border-subtle">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <SectionHeader
             title="Comment ça se passe, concrètement"
             lede="Quatre étapes claires, avec des délais indicatifs et ce que je fais précisément à chacune."
@@ -70,7 +70,7 @@ export default function VendrePage() {
       </section>
 
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <SectionHeader
             title="Ce que j'apporte à votre vente"
             lede="Pas de promesses abstraites — des engagements concrets, vérifiables."
@@ -92,7 +92,7 @@ export default function VendrePage() {
       </section>
 
       <section className="border-b border-subtle">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <SectionHeader
             title="Honoraires : tout est clair"
             lede="Pas d'avance. Les honoraires ne sont dus qu'en cas de vente. Le barème complet est publié."
@@ -106,7 +106,7 @@ export default function VendrePage() {
       </section>
 
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <SectionHeader title="Questions fréquentes" />
           <div className="mt-6 max-w-3xl">
             <Accordion
@@ -128,7 +128,7 @@ export default function VendrePage() {
       </Suspense>
 
       <section>
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 text-center md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 text-center md:py-16">
           <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
             Prêt à estimer votre bien ?
           </h2>

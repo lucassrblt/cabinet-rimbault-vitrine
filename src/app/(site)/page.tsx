@@ -77,7 +77,7 @@ function HeroSection() {
         <HeroContent years={AGENT.stats.years} />
       </div>
 
-      <div className="relative z-20 mx-auto -mt-14 w-full max-w-5xl px-4 md:-mt-16 md:px-8">
+      <div className="relative z-20 mx-auto -mt-14 w-full max-w-5xl px-gutter md:-mt-16">
         <HeroSearch />
       </div>
     </section>
@@ -93,7 +93,7 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
 
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow="Notre sélection"
           title="Nos coups de cœur dans votre quartier."
@@ -149,7 +149,7 @@ const REASSURANCE_ITEMS = [
 function ReassuranceSection() {
   return (
     <section className="bg-cream-light">
-      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow="Nos engagements"
           title="Votre projet immobilier entre de bonnes mains."
@@ -159,7 +159,7 @@ function ReassuranceSection() {
             <ScrollReveal
               key={item.title}
               index={i}
-              className={`flex flex-col items-center px-6 py-10 text-center ${
+              className={`flex flex-col items-center px-4 py-8 text-center md:px-6 md:py-10 ${
                 i < REASSURANCE_ITEMS.length - 1
                   ? "border-r border-neutral-200"
                   : ""
@@ -211,7 +211,7 @@ const AGENT_HIGHLIGHTS = [
 function AgentSection() {
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow="Votre interlocuteur"
           title="Un seul interlocuteur, jusqu’à la signature chez le notaire."
@@ -334,15 +334,15 @@ function AgentSection() {
 function EstimationCtaSection() {
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <ScrollReveal>
           <div className="overflow-hidden rounded-lg shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2">
-              <div className="flex flex-col justify-center bg-primary-600 px-8 py-12 md:px-12 md:py-16">
+              <div className="flex flex-col justify-center bg-primary-600 px-6 py-10 md:px-12 md:py-16">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">
                   Vous avez un projet&nbsp;?
                 </p>
-                <h2 className="mt-4 font-display text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">
+                <h2 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-tight text-white">
                   Estimez votre bien
                   <br />
                   en quelques minutes.

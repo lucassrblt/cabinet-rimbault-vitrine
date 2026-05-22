@@ -6,7 +6,7 @@ import { AGENT } from "@/lib/config/agent";
 
 export default function NotFound() {
   return (
-    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center px-4 py-14 md:px-6 md:py-24">
+    <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center px-gutter py-14 md:py-24">
       <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
         Cette page n&apos;existe pas (ou plus)
       </h1>

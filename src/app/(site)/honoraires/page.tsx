@@ -14,7 +14,7 @@ export default function HonorairesPage() {
   return (
     <main className="flex flex-1 flex-col">
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-4xl px-4 py-10 md:px-6 md:py-12">
+        <div className="mx-auto w-full max-w-4xl px-gutter py-10 md:py-12">
           <Breadcrumb
             items={[{ label: "Accueil", href: "/" }, { label: "Honoraires" }]}
           />
@@ -29,7 +29,7 @@ export default function HonorairesPage() {
       </section>
 
       <section className="border-b border-subtle">
-        <div className="mx-auto w-full max-w-4xl px-4 py-10 md:px-6 md:py-12">
+        <div className="mx-auto w-full max-w-4xl px-gutter py-10 md:py-12">
           <h2 className="text-2xl font-semibold tracking-tight">Vente</h2>
           <p className="mt-2 text-sm text-body">
             Charge acquéreur — sauf stipulation contraire au mandat.
@@ -67,7 +67,7 @@ export default function HonorairesPage() {
       </section>
 
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-4xl px-4 py-10 md:px-6 md:py-12">
+        <div className="mx-auto w-full max-w-4xl px-gutter py-10 md:py-12">
           <h2 className="text-2xl font-semibold tracking-tight">
             Location (longue durée)
           </h2>
@@ -111,7 +111,7 @@ export default function HonorairesPage() {
       </section>
 
       <section>
-        <div className="mx-auto w-full max-w-4xl px-4 py-10 md:px-6 md:py-12">
+        <div className="mx-auto w-full max-w-4xl px-gutter py-10 md:py-12">
           <h2 className="text-xl font-semibold tracking-tight">
             Mentions légales &amp; médiation
           </h2>

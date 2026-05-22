@@ -42,7 +42,7 @@ export default async function ContactPage({
   return (
     <main className="flex flex-1 flex-col">
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-10 md:px-6 md:py-14">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-10 md:py-14">
           <Breadcrumb
             items={[{ label: "Accueil", href: "/" }, { label: "Contact" }]}
           />
@@ -101,7 +101,7 @@ export default async function ContactPage({
       </section>
 
       <section className="border-b border-subtle">
-        <div className="mx-auto w-full max-w-4xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-4xl px-gutter py-12 md:py-16">
           <SectionHeader title="M'envoyer un message" />
           <div className="mt-6 rounded-sm border border-subtle bg-card p-6 md:p-8">
             <ContactForm
@@ -113,7 +113,7 @@ export default async function ContactPage({
       </section>
 
       <section className="border-b border-subtle bg-neutral-50/50">
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <SectionHeader title="Venir à l'agence" />
           <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="aspect-[4/3] overflow-hidden rounded-sm border border-subtle bg-section">
@@ -173,7 +173,7 @@ export default async function ContactPage({
       </section>
 
       <section>
-        <div className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6 md:py-16">
+        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
           <SectionHeader title="Me suivre" />
           <div className="mt-6 flex flex-wrap gap-3">
             <a

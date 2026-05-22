@@ -9,7 +9,7 @@ export function HeroContent({ years }: { years: number }) {
       initial="hidden"
       animate="visible"
       variants={heroContainer}
-      className="relative z-10 mx-auto flex min-h-[80svh] w-full max-w-7xl flex-col justify-center px-4 pb-24 pt-28 md:px-8 md:pb-28 md:pt-32"
+      className="relative z-10 mx-auto flex min-h-[80svh] w-full max-w-7xl flex-col justify-center px-gutter pb-24 pt-28 md:pb-28 md:pt-32"
     >
       <motion.p
         variants={heroLine}
@@ -20,7 +20,7 @@ export function HeroContent({ years }: { years: number }) {
 
       <motion.h1
         variants={heroLine}
-        className="mt-4 max-w-2xl font-display text-4xl font-semibold leading-tight text-white md:text-display"
+        className="mt-4 max-w-2xl font-display text-display font-semibold leading-tight text-white"
       >
         Trouver chez vous,
         <br />
