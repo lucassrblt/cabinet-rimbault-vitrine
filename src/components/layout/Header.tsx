@@ -22,7 +22,16 @@ export function Header() {
   const pathname = usePathname();
   const [hidden, setHidden] = useState(false);
   const [scrolledPastHero, setScrolledPastHero] = useState(false);
+  // `menuOpen` pilote l'AnimatePresence du menu ; `menuVisible` reste vrai tant
+  // que le panneau est à l'écran (repli compris) pour resync l'apparence du header.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
   const { scrollY } = useScroll();
+
+  const handleMenuOpenChange = (next: boolean) => {
+    setMenuOpen(next);
+    if (next) setMenuVisible(true);
+  };
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -35,13 +44,15 @@ export function Header() {
   });
 
   const isHomepage = pathname === "/";
-  const isTransparent = isHomepage && !scrolledPastHero;
+  // Menu mobile à l'écran → header forcé opaque (sinon le logo blanc inversé
+  // disparaît sur le crème du panneau) et figé, jusqu'à la fin du repli.
+  const isTransparent = isHomepage && !scrolledPastHero && !menuVisible;
 
   const tone: "dark" | "light" = isTransparent ? "light" : "dark";
 
   return (
     <motion.header
-      animate={{ y: hidden ? "-100%" : "0%" }}
+      animate={{ y: hidden && !menuVisible ? "-100%" : "0%" }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${
         isTransparent
@@ -62,7 +73,7 @@ export function Header() {
             height={200}
             priority
             sizes="(min-width: 768px) 132px, 120px"
-            className={`h-10 w-auto md:h-11 ${
+            className={`h-10 w-auto transition-[filter] duration-200 md:h-11 ${
               isTransparent ? "brightness-0 invert" : ""
             }`}
           />
@@ -85,7 +96,13 @@ export function Header() {
         </div>
 
         <div className="flex flex-1 items-center justify-end md:hidden">
-          <MobileMenu tone={tone} />
+          <MobileMenu
+            open={menuOpen}
+            onOpenChange={handleMenuOpenChange}
+            onExited={() => setMenuVisible(false)}
+            items={navItems}
+            tone={tone}
+          />
         </div>
       </div>
     </motion.header>

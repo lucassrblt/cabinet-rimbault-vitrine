@@ -15,7 +15,8 @@ export default function SiteLayout({
   return (
     <ContactProvider>
       <SmoothScroll>
-        <div className="flex min-h-full flex-1 flex-col pt-20 pb-14 md:pb-0">
+        {/* pb : hauteur de la MobileBottomBar + safe-area iPhone (annulé en md). */}
+        <div className="flex min-h-full flex-1 flex-col pt-20 pb-[calc(3.5rem+env(safe-area-inset-bottom))] md:pb-0">
           <Header />
           <div className="flex flex-1 flex-col">
             <ViewTransition>{children}</ViewTransition>
