@@ -33,12 +33,6 @@ export function EstimationHero() {
                 en quelques minutes.
               </h1>
             </ScrollReveal>
-            <ScrollReveal index={2} className="mt-5">
-              <p className="max-w-md text-base leading-relaxed text-body">
-                Une fourchette de prix fiable et argumentée, réalisée par un
-                agent indépendant.
-              </p>
-            </ScrollReveal>
             <ScrollReveal index={3} className="mt-7">
               <Suspense fallback={null}>
                 <HeroSocialProofWithReviews />

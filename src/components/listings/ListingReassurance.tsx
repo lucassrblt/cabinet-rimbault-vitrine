@@ -18,14 +18,7 @@ const SALE_ITEMS: ReassuranceItem[] = [
   {
     icon: Search,
     title: "Sélection rigoureuse",
-    description:
-      "Des biens visités et sélectionnés avec soin pour leur qualité et leur potentiel.",
-  },
-  {
-    icon: Handshake,
-    title: "Négociation juste",
-    description:
-      "Nous défendons vos intérêts pour obtenir le meilleur prix dans les meilleures conditions.",
+    description: "Des biens visités et sélectionnés avec soin.",
   },
   {
     icon: Users,
@@ -37,7 +30,7 @@ const SALE_ITEMS: ReassuranceItem[] = [
     icon: ShieldCheck,
     title: "Sécurité & sérénité",
     description:
-      "Un interlocuteur unique et une gestion transparente de votre dossier.",
+      "Un interlocuteur unique et une gestion permanente et transparente de votre dossier.",
   },
 ];
 

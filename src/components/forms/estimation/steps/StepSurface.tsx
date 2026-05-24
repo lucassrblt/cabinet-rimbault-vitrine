@@ -40,7 +40,7 @@ export function StepSurface({
         description={
           isTerrain
             ? "Indiquez la surface totale du terrain."
-            : "La surface habitable carrez et le nombre de pièces sont les principaux facteurs de prix."
+            : "La surface et le nombre de pièces sont les principaux facteurs de prix."
         }
       />
       <div className="flex flex-col gap-5">

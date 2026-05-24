@@ -53,9 +53,8 @@ export function PropertyEstimationCTA() {
                 </span>
               </h2>
               <p className="mt-5 max-w-md text-sm leading-relaxed text-on-inverse/80 md:text-base">
-                Une fourchette d&rsquo;estimation argumentée, gratuite et sans
-                engagement. Je vous réponds personnellement sous 24&nbsp;h
-                ouvrées.
+                Nos estimations sont gratuites et sans engagemen. Nous vous
+                répondons dans les meilleurs délais.
               </p>
             </div>
 
