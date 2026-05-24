@@ -74,7 +74,7 @@ function HeroSection() {
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent"
         />
-        <HeroContent years={AGENT.stats.years} />
+        <HeroContent />
       </div>
 
       <div className="relative z-20 mx-auto -mt-14 w-full max-w-5xl px-gutter md:-mt-16">

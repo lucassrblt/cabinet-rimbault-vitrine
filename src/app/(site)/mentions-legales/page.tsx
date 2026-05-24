@@ -59,8 +59,8 @@ export default function MentionsLegalesPage() {
           Hébergeur
         </h2>
         <p className="mt-3">
-          Vercel Inc. — 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis —
-          https://vercel.com
+          Netlify, Inc. — 44 Montgomery Street, Suite 300, San Francisco, CA
+          94104, États-Unis — https://www.netlify.com
         </p>
       </section>
 

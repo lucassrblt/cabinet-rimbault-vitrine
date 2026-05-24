@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { heroContainer, heroLine } from "@/lib/motion";
 
-export function HeroContent({ years }: { years: number }) {
+export function HeroContent() {
   return (
     <motion.div
       initial="hidden"
@@ -31,9 +31,8 @@ export function HeroContent({ years }: { years: number }) {
         variants={heroLine}
         className="mt-5 max-w-lg text-base leading-relaxed text-white/80 md:text-lg"
       >
-        Cabinet indépendant en Île-de-France, nous accompagnons depuis {years}{" "}
-        ans les habitants dans leurs projets d&apos;achat, de vente, de
-        location, d&apos;estimation et de gestion.
+        Nous accompagnons depuis 2009 nos clients dans leurs projets d'achat, de
+        vente, d'estimation et de location.
       </motion.p>
     </motion.div>
   );
