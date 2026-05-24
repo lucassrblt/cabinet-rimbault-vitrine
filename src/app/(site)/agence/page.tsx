@@ -21,7 +21,7 @@ import { ParallaxImage } from "@/components/ui/ParallaxImage";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TextReveal } from "@/components/ui/TextReveal";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 import { RENT_TIERS, SALE_TIERS } from "@/lib/config/honoraires";
 import { getReviewsData } from "@/lib/reviews";
 
@@ -76,7 +76,7 @@ const VALUES: { icon: LucideIcon; title: string; description: string }[] = [
     icon: User,
     title: "Accompagnement personnalisé",
     description:
-      "Un interlocuteur dédié vous accompagne à chaque étape de votre projet : estimation, recherche, visites, négociation et signature.",
+      "Un interlocuteur dédié vous accompagne à chaque étape de votre projet : découverte, recherche de biens, estimation, avis de valeur, visite, négociation et signature.",
   },
   {
     icon: MapPin,
@@ -87,7 +87,7 @@ const VALUES: { icon: LucideIcon; title: string; description: string }[] = [
     icon: Zap,
     title: "Indépendance & réactivité",
     description:
-      "Agence indépendante, nous vous garantissons un conseil objectif et des décisions rapides.",
+      "Agence indépendante, nous vous garantissons un conseil objectif et des décisions réfléchies en fonction de votre projet.",
   },
   {
     icon: Shield,
@@ -107,7 +107,7 @@ function HistoireSection() {
               eyebrow="Notre histoire"
               title={
                 <>
-                  Depuis {AGENT.stats.years}&nbsp;ans,
+                  Depuis 2009,
                   <br />à vos côtés
                 </>
               }
@@ -118,8 +118,8 @@ function HistoireSection() {
                 Le Cabinet Rimbault, agence immobilière indépendante, installée
                 à {AGENT.address.city} depuis{" "}
                 {new Date().getFullYear() - AGENT.stats.years}, accompagne
-                particuliers et professionnels dans tous leurs projets
-                immobiliers.
+                vendeurs, acquéreurs, bailleurs et locataires dans tous leurs
+                projets immobiliers.
               </p>
               <p className="mt-5 text-[15px] leading-[1.7] text-body">
                 Notre approche repose sur une conviction simple&nbsp;: chaque
@@ -172,7 +172,7 @@ async function ChiffresSection() {
       target: AGENT.stats.transactions,
       suffix: "+",
       decimals: 0,
-      label: "biens vendus ou loués par an",
+      label: "biens vendus ou loués par notre agence",
     },
     {
       target: rating,
@@ -233,7 +233,7 @@ function HonorairesSection() {
         <SectionHeader
           eyebrow="Transparence"
           title="Nos honoraires"
-          lede="Pas de mauvaise surprise. Voici exactement ce que vous payez."
+          lede="Ci-dessous le barème de nos d'honoraires"
         />
 
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -358,6 +358,12 @@ const CONTACT_ITEMS = [
     label: "Horaires",
     content: (
       <>
+        {AGENT.hours.monday && (
+          <>
+            {AGENT.hours.monday}
+            <br />
+          </>
+        )}
         {AGENT.hours.weekdays}
         {AGENT.hours.saturday && (
           <>
@@ -470,23 +476,25 @@ function ProjetSection() {
                   ))}
                 </div>
 
-                <TextReveal delay={0.5}>
-                  <div className="mt-8 border-t border-white/10 pt-6">
-                    <a
-                      href={AGENT.googleBusinessUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white"
-                    >
-                      <MapPin className="h-4 w-4" aria-hidden="true" />
-                      Voir sur Google Maps
-                      <ArrowRight
-                        className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
-                        aria-hidden="true"
-                      />
-                    </a>
-                  </div>
-                </TextReveal>
+                {!isPlaceholder(AGENT.googleBusinessUrl) && (
+                  <TextReveal delay={0.5}>
+                    <div className="mt-8 border-t border-white/10 pt-6">
+                      <a
+                        href={AGENT.googleBusinessUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-2 text-sm font-medium text-neutral-400 transition-colors hover:text-white"
+                      >
+                        <MapPin className="h-4 w-4" aria-hidden="true" />
+                        Voir sur Google Maps
+                        <ArrowRight
+                          className="h-3.5 w-3.5 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                          aria-hidden="true"
+                        />
+                      </a>
+                    </div>
+                  </TextReveal>
+                )}
               </div>
             </div>
           </div>

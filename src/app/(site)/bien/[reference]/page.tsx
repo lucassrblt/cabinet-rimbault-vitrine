@@ -3,10 +3,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PropertyContactForm } from "@/components/forms/PropertyContactForm";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
-import { PropertyBadgesList } from "@/components/property/PropertyBadges";
-import { SalePropertyCard } from "@/components/property/PropertyCard";
+import { AutoPropertyCard } from "@/components/property/PropertyCard";
 import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
 import { PropertyGallery } from "@/components/property/PropertyGallery";
+import { PropertyHeader } from "@/components/property/PropertyHeader";
 import { LinkButton } from "@/components/ui/Button";
 import { EnergyScale } from "@/components/ui/EnergyRating";
 import {
@@ -73,24 +73,23 @@ export default async function PropertyPage({
   params: Promise<Params>;
 }) {
   const { reference } = await params;
-  const property = await safeGet(reference);
+  // Appel direct (pas de safeGet) : une vraie erreur API doit remonter à
+  // error.tsx, seul un 404 (→ null) déclenche notFound().
+  const property = await getPropertyByReference(reference);
   if (!property) notFound();
 
   const isRental = property.transactionType === "LOCATION";
   const city = property.location?.city ?? "";
   const neighborhood = property.location?.neighborhood ?? "";
   const rooms = property.characteristics?.rooms;
-  const bedrooms = property.characteristics?.bedrooms;
-  const surface = property.characteristics?.surface;
-  const floor = property.characteristics?.floor;
-  const totalFloors = property.characteristics?.totalFloors;
-  const amenities = property.amenities;
   const energy = property.energy;
 
   const similar = await loadSimilar(property.reference);
 
   const typeLabel = formatPropertyType(property.propertyType);
-  const title = `${typeLabel}${rooms != null ? ` ${rooms} pièces` : ""}${city ? ` à ${city}` : ""}`;
+  const roomsLabel =
+    rooms != null ? ` ${rooms} pièce${rooms > 1 ? "s" : ""}` : "";
+  const title = `${typeLabel}${roomsLabel}${city ? ` à ${city}` : ""}`;
   const subline = [neighborhood, city].filter(Boolean).join(" · ");
 
   return (
@@ -117,96 +116,19 @@ export default async function PropertyPage({
         />
       </div>
 
-      {/* HERO — gallery (left) + sticky contact card (right) */}
+      {/* Corps — galerie (gauche) + carte contact sticky (droite) */}
       <section className="mx-auto w-full max-w-6xl px-gutter pt-6 pb-12 md:pt-8 md:pb-16">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px] lg:gap-10">
-          {/* LEFT — gallery + title + stats + description */}
-          <div className="flex flex-col gap-8 min-w-0">
+          {/* GAUCHE — galerie + en-tête + caractéristiques + description */}
+          <div className="flex min-w-0 flex-col gap-8">
             <PropertyGallery images={property.images} title={title} />
 
-            <header className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-2 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">
-                  <span
-                    aria-hidden="true"
-                    className="inline-block h-px w-6 bg-primary-600"
-                  />
-                  {isRental ? "À louer" : "À vendre"}
-                </span>
-                <PropertyBadgesList property={property} />
-              </div>
-
-              <h1 className="font-display text-3xl leading-[1.05] tracking-tight text-primary md:text-[2.5rem] lg:text-5xl">
-                {title}
-              </h1>
-
-              {subline && (
-                <p className="flex items-center gap-2 text-sm text-body">
-                  <MapPin
-                    className="h-3.5 w-3.5 text-primary-600"
-                    aria-hidden="true"
-                  />
-                  {subline}
-                </p>
-              )}
-
-              <p className="text-xs uppercase tracking-[0.12em] text-subtle">
-                Réf.&nbsp;
-                <span className="text-muted">{property.reference}</span>
-                {property.publishedAt
-                  ? ` · Mis en ligne le ${formatDate(property.publishedAt)}`
-                  : ""}
-              </p>
-
-              <ul className="-mx-1 mt-1 flex flex-wrap gap-2">
-                {surface != null && (
-                  <Pill>
-                    <span className="font-semibold text-primary">
-                      {surface}
-                    </span>
-                    <span className="text-muted">m²</span>
-                  </Pill>
-                )}
-                {rooms != null && (
-                  <Pill>
-                    <span className="font-semibold text-primary">{rooms}</span>
-                    <span className="text-muted">
-                      pièce{rooms > 1 ? "s" : ""}
-                    </span>
-                  </Pill>
-                )}
-                {bedrooms != null && bedrooms > 0 && (
-                  <Pill>
-                    <span className="font-semibold text-primary">
-                      {bedrooms}
-                    </span>
-                    <span className="text-muted">ch.</span>
-                  </Pill>
-                )}
-                {amenities?.hasBalcony && <Pill muted>Balcon</Pill>}
-                {amenities?.hasTerrace && <Pill muted>Terrasse</Pill>}
-                {amenities?.hasGarden && <Pill muted>Jardin</Pill>}
-                {amenities?.hasElevator && <Pill muted>Ascenseur</Pill>}
-                {amenities?.hasParking && <Pill muted>Parking</Pill>}
-                {floor != null && (
-                  <Pill>
-                    <span className="text-muted">étage</span>
-                    <span className="font-semibold text-primary">
-                      {floor}
-                      {totalFloors != null ? `/${totalFloors}` : ""}
-                    </span>
-                  </Pill>
-                )}
-                {energy?.energyClass && (
-                  <Pill>
-                    <span className="text-muted">DPE</span>
-                    <span className="font-semibold text-primary">
-                      {energy.energyClass}
-                    </span>
-                  </Pill>
-                )}
-              </ul>
-            </header>
+            <PropertyHeader
+              property={property}
+              title={title}
+              subline={subline}
+              isRental={isRental}
+            />
 
             {/* Description — editorial body */}
             <article className="flex flex-col gap-3">
@@ -257,26 +179,6 @@ export default async function PropertyPage({
 }
 
 /* ─────────────────────────── Inline UI helpers ─────────────────────────── */
-
-function Pill({
-  children,
-  muted,
-}: {
-  children: React.ReactNode;
-  muted?: boolean;
-}) {
-  return (
-    <li
-      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors ${
-        muted
-          ? "border-subtle bg-card text-body"
-          : "border-subtle bg-card text-primary"
-      }`}
-    >
-      {children}
-    </li>
-  );
-}
 
 function SectionEyebrow({ label }: { label: string }) {
   return (
@@ -332,7 +234,7 @@ function PriceCard({
   const honorairesLabel = honorairesChargeLabel(f);
 
   return (
-    <div className="overflow-hidden rounded-sm border border-subtle bg-card shadow-[0_4px_12px_rgba(28,27,25,0.06),0_2px_4px_rgba(28,27,25,0.04)]">
+    <div className="overflow-hidden rounded-sm border border-subtle bg-card">
       <div className="px-6 pt-5 pb-6">
         <p className="text-[0.68rem] font-medium uppercase tracking-[0.18em] text-subtle">
           {isRental ? "Loyer mensuel" : "Prix de vente"}
@@ -823,7 +725,7 @@ function SimilarSection({
         <ul className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {similar.map((p) => (
             <li key={p.id}>
-              <SalePropertyCard property={p} />
+              <AutoPropertyCard property={p} />
             </li>
           ))}
         </ul>

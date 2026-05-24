@@ -15,7 +15,7 @@ export function HeroContent({ years }: { years: number }) {
         variants={heroLine}
         className="inline-block w-fit rounded-lg bg-primary-600 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-on-primary"
       >
-        Agence immobilière en Île-de-France
+        Cabinet Immobillier à Asnières-sur-Seine
       </motion.p>
 
       <motion.h1

@@ -62,7 +62,7 @@ export function PropertyContactForm({ reference, isRental }: Props) {
   });
 
   return (
-    <div className="overflow-hidden rounded-sm border border-subtle bg-card shadow-[0_4px_12px_rgba(28,27,25,0.06),0_2px_4px_rgba(28,27,25,0.04)]">
+    <div className="overflow-hidden rounded-sm border border-subtle bg-card">
       {/* Eyebrow + lead — editorial header */}
       <header className="relative px-6 pt-6 pb-5">
         <span className="inline-flex items-center gap-2 text-[0.68rem] font-medium uppercase tracking-[0.18em] text-primary-600">

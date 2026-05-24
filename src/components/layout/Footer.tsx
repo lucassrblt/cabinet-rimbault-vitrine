@@ -82,6 +82,12 @@ export function Footer() {
               </p>
             </address>
             <p className="mt-4 text-xs text-neutral-400">
+              {AGENT.hours.monday && (
+                <>
+                  {AGENT.hours.monday}
+                  <br />
+                </>
+              )}
               {AGENT.hours.weekdays}
               {AGENT.hours.saturday && (
                 <>

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
 import Link from "next/link";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 
 /**
  * Écran de confirmation affiché après l'envoi de la demande d'estimation.
@@ -15,7 +15,7 @@ export function EstimationConfirmation({
   leadId: string;
   firstName: string;
 }) {
-  const hasPhone = AGENT.phoneE164 && AGENT.phoneE164 !== "TODO";
+  const hasPhone = !isPlaceholder(AGENT.phoneE164);
   return (
     <motion.div
       data-lead-id={leadId}

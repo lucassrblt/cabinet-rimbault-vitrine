@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 import type { ContactInput } from "@/lib/validation";
 
 interface SearchParams {
@@ -79,23 +79,25 @@ export default async function ContactPage({
                 {AGENT.email}
               </span>
             </a>
-            <a
-              href={AGENT.whatsappUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="flex flex-col items-start gap-2 rounded-sm border border-subtle bg-card p-5 hover:border-strong"
-            >
-              <MessageCircle
-                className="h-5 w-5 text-muted"
-                aria-hidden="true"
-              />
-              <span className="text-xs font-medium uppercase tracking-wider text-muted">
-                WhatsApp
-              </span>
-              <span className="text-base font-semibold text-primary">
-                Démarrer une conversation
-              </span>
-            </a>
+            {!isPlaceholder(AGENT.whatsappUrl) && (
+              <a
+                href={AGENT.whatsappUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="flex flex-col items-start gap-2 rounded-sm border border-subtle bg-card p-5 hover:border-strong"
+              >
+                <MessageCircle
+                  className="h-5 w-5 text-muted"
+                  aria-hidden="true"
+                />
+                <span className="text-xs font-medium uppercase tracking-wider text-muted">
+                  WhatsApp
+                </span>
+                <span className="text-base font-semibold text-primary">
+                  Démarrer une conversation
+                </span>
+              </a>
+            )}
           </div>
         </div>
       </section>
@@ -153,6 +155,7 @@ export default async function ContactPage({
                   Horaires
                 </p>
                 <ul className="mt-1 text-sm text-primary">
+                  {AGENT.hours.monday && <li>{AGENT.hours.monday}</li>}
                   <li>{AGENT.hours.weekdays}</li>
                   {AGENT.hours.saturday && <li>{AGENT.hours.saturday}</li>}
                 </ul>
@@ -172,37 +175,47 @@ export default async function ContactPage({
         </div>
       </section>
 
-      <section>
-        <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
-          <SectionHeader title="Me suivre" />
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href={AGENT.instagram}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-sm border border-default px-4 py-2 text-sm font-medium hover:border-strong"
-            >
-              Instagram
-            </a>
-            <a
-              href={AGENT.linkedin}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-sm border border-default px-4 py-2 text-sm font-medium hover:border-strong"
-            >
-              LinkedIn
-            </a>
-            <a
-              href={AGENT.googleBusinessUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 rounded-sm border border-default px-4 py-2 text-sm font-medium hover:border-strong"
-            >
-              Google Business
-            </a>
+      {(!isPlaceholder(AGENT.instagram) ||
+        !isPlaceholder(AGENT.linkedin) ||
+        !isPlaceholder(AGENT.googleBusinessUrl)) && (
+        <section>
+          <div className="mx-auto w-full max-w-6xl px-gutter py-12 md:py-16">
+            <SectionHeader title="Me suivre" />
+            <div className="mt-6 flex flex-wrap gap-3">
+              {!isPlaceholder(AGENT.instagram) && (
+                <a
+                  href={AGENT.instagram}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center gap-2 rounded-sm border border-default px-4 py-2 text-sm font-medium hover:border-strong"
+                >
+                  Instagram
+                </a>
+              )}
+              {!isPlaceholder(AGENT.linkedin) && (
+                <a
+                  href={AGENT.linkedin}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center gap-2 rounded-sm border border-default px-4 py-2 text-sm font-medium hover:border-strong"
+                >
+                  LinkedIn
+                </a>
+              )}
+              {!isPlaceholder(AGENT.googleBusinessUrl) && (
+                <a
+                  href={AGENT.googleBusinessUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center gap-2 rounded-sm border border-default px-4 py-2 text-sm font-medium hover:border-strong"
+                >
+                  Google Business
+                </a>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </main>
   );
 }

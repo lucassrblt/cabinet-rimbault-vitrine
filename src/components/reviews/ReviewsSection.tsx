@@ -22,8 +22,8 @@ export async function ReviewsSection() {
       <div className="mx-auto w-full max-w-6xl px-gutter py-20 md:py-28">
         <SectionHeader
           eyebrow="Avis clients"
-          title="Ils m’ont fait confiance"
-          lede="Des retours authentiques, publiés directement sur Google par les propriétaires et acquéreurs que j’ai accompagnés."
+          title="Ils nous ont fait confiance"
+          lede="Des retours authentiques, publiés directement sur Google par nos clients"
           action={<GoogleRatingBadge data={data} variant="block" />}
         />
 

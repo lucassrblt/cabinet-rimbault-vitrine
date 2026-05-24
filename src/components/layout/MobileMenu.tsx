@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 import { EASE, HERO, heroContainer, heroLine } from "@/lib/motion";
 
 interface NavItem {
@@ -92,7 +92,7 @@ export function MobileMenu({
   }, [open, onOpenChange]);
 
   const close = () => onOpenChange(false);
-  const hasPhone = AGENT.phoneE164 !== "TODO";
+  const hasPhone = !isPlaceholder(AGENT.phoneE164);
 
   return (
     <>

@@ -3,9 +3,9 @@ export const AGENT = {
   lastName: "Rimbault",
   fullName: "Xavier Rimbault",
   title: "Agent immobilier",
-  phoneE164: "TODO",
-  phoneDisplay: "TODO",
-  email: "contact@cabinet-rimbault.fr",
+  phoneE164: "0173645610",
+  phoneDisplay: "0173645610",
+  email: "xrimbault@numericable.fr",
   whatsappUrl: "TODO",
   instagram: "TODO",
   linkedin: "TODO",
@@ -16,8 +16,9 @@ export const AGENT = {
     city: "Asnières-sur-Seine",
   },
   hours: {
-    weekdays: "Lundi – Samedi : 9h – 19h",
-    saturday: "",
+    monday: "Lundi : sur RDV",
+    weekdays: "Mardi – Vendredi : 9h – 19h",
+    saturday: "Samedi : 9h – 18h",
   },
   transports: [
     { icon: "metro" as const, label: "Métro ligne 13 — station Gabriel Péri" },
@@ -27,25 +28,29 @@ export const AGENT = {
   stats: {
     years: 17,
     communesCount: 8,
-    transactions: 185,
+    transactions: 315,
     reviewsCount: 47,
     rating: 4.9,
-    mandateSuccessRate: 96,
+    mandateSuccessRate: 98,
   },
   legal: {
     siren: "511 484 586",
     legalForm: "SAS",
     capital: "4 000 €",
     naf: "68.31Z",
-    carteT: "TODO",
-    cci: "CCI Hauts-de-Seine",
-    garant: "TODO",
-    mediator: "Médiateur de la consommation : TODO",
+    carteT: "CPI 9201 2018 000 024 838",
+    cci: "CCI Paris Ile-de-France",
+    garant: "LLOYD'S France",
+    mediator: "TODO",
     siret: "SIRET 511 484 586 00025",
     rcs: "RCS Nanterre B 511 484 586",
     insurance: "TODO",
   },
 } as const;
+
+/** true tant que la valeur est un placeholder non renseigné (`"TODO"` ou vide). */
+export const isPlaceholder = (v: string | undefined): boolean =>
+  !v || v === "TODO";
 
 export const AGENT_BIO_PARAGRAPHS: string[] = [
   "Je suis Xavier Rimbault, agent immobilier, installé à Asnières-sur-Seine depuis 2009. Après plusieurs années dans de grandes enseignes immobilières franciliennes, j'ai fondé le Cabinet Rimbault pour offrir un accompagnement plus humain, plus réactif et ancré dans la réalité du terrain.",

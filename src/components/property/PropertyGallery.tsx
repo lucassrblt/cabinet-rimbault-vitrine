@@ -1,9 +1,11 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Image as ImageIcon, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import type { PropertyImage } from "@/lib/api/types";
+import { EASE, VIEWPORT } from "@/lib/motion";
 import { cn, PHOTO_BLUR_DATA_URL } from "@/lib/utils";
 
 interface Props {
@@ -56,13 +58,14 @@ export function PropertyGallery({ images, title }: Props) {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_180px]">
-        <button
-          type="button"
-          onClick={() => setLightboxOpen(true)}
-          className="group relative aspect-[16/10] overflow-hidden rounded-sm border border-subtle bg-section"
-          aria-label="Agrandir les photos"
-        >
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={VIEWPORT}
+        transition={{ duration: 0.6, ease: EASE }}
+        className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_180px]"
+      >
+        <div className="group relative aspect-[16/10] overflow-hidden rounded-sm border border-subtle bg-section">
           <Image
             src={current.url}
             alt={current.alt ?? title}
@@ -70,22 +73,35 @@ export function PropertyGallery({ images, title }: Props) {
             sizes="(min-width: 768px) 720px, 100vw"
             placeholder="blur"
             blurDataURL={PHOTO_BLUR_DATA_URL}
-            className="object-cover"
+            className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.045]"
             priority
           />
+          {/* Couvre l'image pour ouvrir la lightbox — séparé des flèches de nav
+              pour éviter une imbrication <button> dans <button>. */}
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(true)}
+            className="absolute inset-0 z-10 cursor-zoom-in"
+            aria-label="Agrandir les photos"
+          />
+          {current.caption && (
+            <span className="absolute bottom-3 left-3 z-20 max-w-[70%] truncate rounded-full bg-black/55 px-3 py-1 text-xs text-white backdrop-blur-sm">
+              {current.caption}
+            </span>
+          )}
           {total > 1 && (
             <>
               <NavButton direction="prev" onClick={prev} />
               <NavButton direction="next" onClick={next} />
               <div
-                className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5"
+                className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5"
                 aria-hidden="true"
               >
                 {ordered.map((img, i) => (
                   <span
                     key={img.id}
                     className={cn(
-                      "h-1.5 w-1.5 rounded-full bg-white/80",
+                      "h-1.5 w-1.5 rounded-full transition-colors",
                       i === index ? "bg-white" : "bg-white/50",
                     )}
                   />
@@ -93,7 +109,7 @@ export function PropertyGallery({ images, title }: Props) {
               </div>
             </>
           )}
-        </button>
+        </div>
 
         <div className="flex flex-row gap-2 overflow-x-auto md:flex-col md:gap-3 md:overflow-y-auto">
           {ordered.slice(0, 4).map((img, i) => (
@@ -105,10 +121,13 @@ export function PropertyGallery({ images, title }: Props) {
                 setIndex(i);
               }}
               className={cn(
-                "relative aspect-[4/3] shrink-0 basis-24 overflow-hidden rounded-sm border bg-section md:basis-auto",
-                i === index ? "border-strong" : "border-subtle",
+                "relative aspect-[4/3] shrink-0 basis-24 overflow-hidden rounded-sm border bg-section transition-all md:basis-auto",
+                i === index
+                  ? "border-strong"
+                  : "border-subtle opacity-80 hover:opacity-100",
               )}
               aria-label={`Afficher la photo ${i + 1}`}
+              aria-current={i === index ? "true" : undefined}
             >
               <Image
                 src={img.url}
@@ -128,55 +147,72 @@ export function PropertyGallery({ images, title }: Props) {
                 e.stopPropagation();
                 setLightboxOpen(true);
               }}
-              className="flex aspect-[4/3] shrink-0 basis-24 items-center justify-center rounded-sm border border-subtle bg-card text-xs font-medium text-body hover:border-strong md:basis-auto"
+              className="flex aspect-[4/3] shrink-0 basis-24 items-center justify-center rounded-sm border border-subtle bg-card text-xs font-medium text-body transition-colors hover:border-strong hover:text-primary md:basis-auto"
             >
               + {total - 4} photos
             </button>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {lightboxOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Galerie photos"
-          className="fixed inset-0 z-50 flex flex-col bg-black/95"
-        >
-          <div className="flex items-center justify-between p-4 text-white">
-            <span className="text-sm">
-              {index + 1} / {total}
-            </span>
-            <button
-              type="button"
-              aria-label="Fermer la galerie"
-              onClick={() => setLightboxOpen(false)}
-              className="rounded-sm p-1 hover:bg-white/10"
-            >
-              <X className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="relative flex flex-1 items-center justify-center p-4">
-            <div className="relative h-full w-full">
-              <Image
-                src={current.url}
-                alt={current.alt ?? title}
-                fill
-                sizes="100vw"
-                placeholder="blur"
-                blurDataURL={PHOTO_BLUR_DATA_URL}
-                className="object-contain"
-              />
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Galerie photos"
+            className="fixed inset-0 z-50 flex flex-col bg-black/95"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: EASE }}
+          >
+            <div className="flex items-center justify-between p-4 text-white">
+              <span className="text-sm tabular-nums">
+                {index + 1} / {total}
+              </span>
+              <button
+                type="button"
+                aria-label="Fermer la galerie"
+                onClick={() => setLightboxOpen(false)}
+                className="rounded-sm p-1 transition-colors hover:bg-white/10"
+              >
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
             </div>
-            {total > 1 && (
-              <>
-                <NavButton direction="prev" onClick={prev} dark />
-                <NavButton direction="next" onClick={next} dark />
-              </>
+            <div className="relative flex flex-1 items-center justify-center p-4">
+              <motion.div
+                key={current.id}
+                className="relative h-full w-full"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.28, ease: EASE }}
+              >
+                <Image
+                  src={current.url}
+                  alt={current.alt ?? title}
+                  fill
+                  sizes="100vw"
+                  placeholder="blur"
+                  blurDataURL={PHOTO_BLUR_DATA_URL}
+                  className="object-contain"
+                />
+              </motion.div>
+              {total > 1 && (
+                <>
+                  <NavButton direction="prev" onClick={prev} dark />
+                  <NavButton direction="next" onClick={next} dark />
+                </>
+              )}
+            </div>
+            {current.caption && (
+              <p className="px-4 pb-4 text-center text-sm text-white/70">
+                {current.caption}
+              </p>
             )}
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
@@ -200,7 +236,7 @@ function NavButton({
       }}
       aria-label={direction === "prev" ? "Photo précédente" : "Photo suivante"}
       className={cn(
-        "absolute top-1/2 -translate-y-1/2 rounded-full p-2 transition",
+        "absolute top-1/2 z-20 -translate-y-1/2 rounded-full p-2 transition",
         direction === "prev" ? "left-3" : "right-3",
         dark
           ? "bg-white/10 text-white hover:bg-white/20"

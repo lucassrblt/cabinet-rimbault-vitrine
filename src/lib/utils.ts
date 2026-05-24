@@ -66,6 +66,18 @@ export function formatTransactionType(type: string): string {
   return map[type] ?? type;
 }
 
+export function formatCondition(condition: string): string {
+  const map: Record<string, string> = {
+    NEUF: "Neuf",
+    TRES_BON_ETAT: "Très bon état",
+    BON_ETAT: "Bon état",
+    A_RAFRAICHIR: "À rafraîchir",
+    A_RENOVER: "À rénover",
+    A_RESTAURER: "À restaurer",
+  };
+  return map[condition] ?? condition;
+}
+
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return "";
   try {

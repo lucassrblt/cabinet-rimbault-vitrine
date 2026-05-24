@@ -16,14 +16,16 @@ const COLORS: Record<Exclude<EnergyClass, "VIERGE">, string> = {
 export function EnergyBadge({
   value,
   size = "sm",
+  kind = "DPE",
 }: {
   value: EnergyClass | null | undefined;
   size?: "sm" | "md";
+  kind?: "DPE" | "GES";
 }) {
   if (!value || value === "VIERGE") {
     return (
       <span className="inline-flex items-center rounded-sm border border-subtle px-2 py-0.5 text-xs text-muted">
-        DPE —
+        {kind} —
       </span>
     );
   }
@@ -35,7 +37,7 @@ export function EnergyBadge({
         size === "md" ? "h-7 w-7 text-sm" : "h-5 px-1.5 text-xs",
       )}
       role="img"
-      aria-label={`DPE ${value}`}
+      aria-label={`${kind} ${value}`}
     >
       {value}
     </span>
