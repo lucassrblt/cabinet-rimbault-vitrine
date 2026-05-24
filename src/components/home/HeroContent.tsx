@@ -22,9 +22,9 @@ export function HeroContent({ years }: { years: number }) {
         variants={heroLine}
         className="mt-4 max-w-2xl font-display text-display font-semibold leading-tight text-white"
       >
-        Trouver chez vous,
+        Trouver chez nous,
         <br />
-        près de chez nous.
+        votre futur chez vous.
       </motion.h1>
 
       <motion.p
