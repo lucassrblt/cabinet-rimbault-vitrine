@@ -45,10 +45,6 @@ export default function MentionsLegalesPage() {
         </p>
         <p className="mt-2">Garant financier : {AGENT.legal.garant}.</p>
         <p className="mt-2">
-          Assurance responsabilité civile professionnelle :{" "}
-          {AGENT.legal.insurance}.
-        </p>
-        <p className="mt-2">
           Ne détient aucun fonds, effet ou valeur. Ne reçoit aucun mandat de
           gestion.
         </p>

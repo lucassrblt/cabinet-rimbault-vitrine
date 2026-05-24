@@ -45,11 +45,6 @@ s'affiche donc en attendant ces valeurs.
   Remplacer le `TODO` dans `"Médiateur de la consommation : TODO"`.
   Valeur fournie : `__________`
 
-- [ ] **`legal.insurance`** — `agent.ts:46` — _verdict : Légal_
-  Assurance responsabilité civile professionnelle (RCP). Affichée dans
-  `/mentions-legales`.
-  Valeur fournie : `__________`
-
 ### Obligatoires — bloquant pour la mise en ligne
 
 - [ ] **`phoneE164`** — `agent.ts:6` — _verdict : Bloquant lancement_

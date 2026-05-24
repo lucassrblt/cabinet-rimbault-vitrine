@@ -44,7 +44,6 @@ export const AGENT = {
     mediator: "TODO",
     siret: "SIRET 511 484 586 00025",
     rcs: "RCS Nanterre B 511 484 586",
-    insurance: "TODO",
   },
 } as const;
 
