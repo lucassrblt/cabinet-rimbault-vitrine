@@ -21,12 +21,12 @@ const CONTENT: Record<Mode, { crumb: string; eyebrow: string; lede: string }> =
     sale: {
       crumb: "Acheter",
       eyebrow: "Nos biens à la vente",
-      lede: "Une sélection de biens visités un à un par le cabinet, pour ne vous présenter que des logements que nous défendrions nous-mêmes.",
+      lede: "Notre portefeuille de biens géré par le cabinet",
     },
     rent: {
       crumb: "Louer",
       eyebrow: "Nos biens à la location",
-      lede: "Des logements vérifiés et suivis par le cabinet — diagnostics, conformité, état des lieux — pour une location sereine, du premier contact à la remise des clés.",
+      lede: "Notre portfeuille de biens locatif gérer par le cabinet",
     },
   };
 

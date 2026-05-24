@@ -36,7 +36,7 @@ export default async function Home() {
       <AgentSection />
       <Suspense fallback={null}>
         <ReviewsStrip
-          heading="La parole à mes clients"
+          heading="La parole à nos clients"
           className="bg-cream-light"
         />
       </Suspense>
@@ -125,24 +125,23 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
 const REASSURANCE_ITEMS = [
   {
     icon: ShieldCheck,
-    title: "Depuis 1969",
-    description: "Plus de 50 ans d’expérience à vos côtés.",
+    title: "Depuis 2009",
+    description: "Plus de 15 ans d’expérience à vos côtés.",
   },
   {
     icon: Users,
     title: "Accompagnement sur-mesure",
-    description: "Une équipe à votre écoute à chaque étape.",
+    description: "Notre cabinet, à votre écoute à chaque étape.",
   },
   {
     icon: MapPin,
     title: "Ancrage local",
-    description: "Une connaissance fine du marché à Tours et ses environs.",
+    description: "Une expertise détaillée et éclairée en fonction du marché",
   },
   {
     icon: KeyRound,
     title: "Service global",
-    description:
-      "Transaction, location, gestion : nous simplifions vos projets.",
+    description: "Transaction, location : nous simplifions vos projets.",
   },
 ] as const;
 
@@ -348,7 +347,7 @@ function EstimationCtaSection() {
                   en quelques minutes.
                 </h2>
                 <p className="mt-4 text-base text-primary-100">
-                  Une estimation fiable et gratuite par nos experts.
+                  Une estimation fiable et gratuite.
                 </p>
                 <div className="mt-8">
                   <Magnetic>
