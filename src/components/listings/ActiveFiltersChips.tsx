@@ -48,6 +48,12 @@ function buildChips(mode: ChipsMode, q: ListingQuery): Chip[] {
   if (q.balcon === "true") chips.push({ key: "balcon", label: "Balcon" });
   if (q.terrasse === "true") chips.push({ key: "terrasse", label: "Terrasse" });
   if (q.jardin === "true") chips.push({ key: "jardin", label: "Jardin" });
+  if (q.cave === "true") chips.push({ key: "cave", label: "Cave" });
+  if (q.parking === "true")
+    chips.push({ key: "parking", label: "Place de parking" });
+  if (q.garage === "true") chips.push({ key: "garage", label: "Garage" });
+  if (q.ascenseur === "true")
+    chips.push({ key: "ascenseur", label: "Ascenseur" });
   if (mode === "rent" && q.meuble === "true")
     chips.push({ key: "meuble", label: "Meublé" });
   if (q.dpe) chips.push({ key: "dpe", label: `DPE max ${q.dpe}` });

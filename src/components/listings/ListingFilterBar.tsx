@@ -2,9 +2,11 @@
 
 import { Coins, Home, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { TextInput } from "@/components/ui/FormField";
 import { COMMUNES } from "@/lib/config/communes";
 import type { ListingQuery } from "@/lib/listing";
+import type { CommuneCounts } from "@/lib/listing-counts";
 import { cn } from "@/lib/utils";
 import { FilterDrawer } from "./FilterDrawer";
 import { FilterPopover } from "./FilterPopover";
@@ -16,6 +18,7 @@ interface Props {
   basePath: string;
   query: ListingQuery;
   total: number;
+  communeCounts?: CommuneCounts;
 }
 
 const SALE_TYPES = [
@@ -47,6 +50,24 @@ function formatEuro(n: number): string {
   return `${n.toLocaleString("fr-FR")} €`;
 }
 
+function formatCompact(n: number, mode: FilterBarMode): string {
+  if (mode === "rent") return formatEuro(n);
+  if (n >= 1_000_000) {
+    const m = n / 1_000_000;
+    const s = m.toFixed(m % 1 === 0 ? 0 : 1).replace(".", ",");
+    return `${s} M€`;
+  }
+  if (n >= 1_000) return `${Math.round(n / 1_000)} k€`;
+  return `${n} €`;
+}
+
+function parseEuro(raw: string): number | undefined {
+  const digits = raw.replace(/[^\d]/g, "");
+  if (!digits) return undefined;
+  const n = Number(digits);
+  return Number.isFinite(n) ? n : undefined;
+}
+
 function buildHref(
   base: string,
   query: ListingQuery,
@@ -65,6 +86,7 @@ function buildHref(
 interface PendingState {
   commune?: string;
   type?: string;
+  budgetMin?: string;
   budgetMax?: string;
 }
 
@@ -72,11 +94,18 @@ function pendingFromQuery(q: ListingQuery): PendingState {
   return {
     commune: q.commune,
     type: q.type,
+    budgetMin: q.budgetMin,
     budgetMax: q.budgetMax,
   };
 }
 
-export function ListingFilterBar({ mode, basePath, query, total }: Props) {
+export function ListingFilterBar({
+  mode,
+  basePath,
+  query,
+  total,
+  communeCounts,
+}: Props) {
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [pending, setPending] = useState<PendingState>(() =>
@@ -91,7 +120,7 @@ export function ListingFilterBar({ mode, basePath, query, total }: Props) {
 
   const types = mode === "sale" ? SALE_TYPES : RENT_TYPES;
   const budgets = mode === "sale" ? SALE_BUDGETS : RENT_BUDGETS;
-  const budgetLabel = mode === "sale" ? "Budget max" : "Loyer max";
+  const budgetLabel = mode === "sale" ? "Budget" : "Loyer";
 
   const search = (override?: Partial<PendingState>) => {
     const next = { ...pending, ...(override ?? {}) };
@@ -99,6 +128,7 @@ export function ListingFilterBar({ mode, basePath, query, total }: Props) {
       buildHref(basePath, query, {
         commune: next.commune || undefined,
         type: next.type || undefined,
+        budgetMin: next.budgetMin || undefined,
         budgetMax: next.budgetMax || undefined,
       }),
     );
@@ -110,12 +140,14 @@ export function ListingFilterBar({ mode, basePath, query, total }: Props) {
     const hasPendingDelta =
       pending.commune !== query.commune ||
       pending.type !== query.type ||
+      pending.budgetMin !== query.budgetMin ||
       pending.budgetMax !== query.budgetMax;
     if (hasPendingDelta) {
       router.push(
         buildHref(basePath, query, {
           commune: pending.commune || undefined,
           type: pending.type || undefined,
+          budgetMin: pending.budgetMin || undefined,
           budgetMax: pending.budgetMax || undefined,
         }),
       );
@@ -134,14 +166,24 @@ export function ListingFilterBar({ mode, basePath, query, total }: Props) {
   }, [pending.type, types]);
 
   const budgetValueLabel = useMemo(() => {
-    if (!pending.budgetMax) return undefined;
-    return `≤ ${formatEuro(Number(pending.budgetMax))}`;
-  }, [pending.budgetMax]);
+    const min = pending.budgetMin ? Number(pending.budgetMin) : undefined;
+    const max = pending.budgetMax ? Number(pending.budgetMax) : undefined;
+    if (min === undefined && max === undefined) return undefined;
+    if (min !== undefined && max !== undefined) {
+      return `${formatCompact(min, mode)} – ${formatCompact(max, mode)}`;
+    }
+    if (max !== undefined) return `≤ ${formatCompact(max, mode)}`;
+    return `≥ ${formatCompact(min as number, mode)}`;
+  }, [pending.budgetMin, pending.budgetMax, mode]);
 
   const advancedCount =
     (query.balcon === "true" ? 1 : 0) +
     (query.terrasse === "true" ? 1 : 0) +
     (query.jardin === "true" ? 1 : 0) +
+    (query.cave === "true" ? 1 : 0) +
+    (query.parking === "true" ? 1 : 0) +
+    (query.garage === "true" ? 1 : 0) +
+    (query.ascenseur === "true" ? 1 : 0) +
     (query.meuble === "true" ? 1 : 0) +
     (query.dpe ? 1 : 0) +
     (query.hideFG === "true" ? 1 : 0) +
@@ -160,22 +202,16 @@ export function ListingFilterBar({ mode, basePath, query, total }: Props) {
                 valueLabel={communeLabel ?? "Toutes les communes"}
                 active={Boolean(pending.commune)}
                 variant="cell"
-                width="sm"
+                width="md"
               >
                 {(close) => (
-                  <RadioList
+                  <CommuneList
                     value={pending.commune ?? ""}
+                    counts={communeCounts}
                     onSelect={(v) => {
                       setPending((p) => ({ ...p, commune: v || undefined }));
                       close();
                     }}
-                    options={[
-                      { value: "", label: "Toutes les communes" },
-                      ...COMMUNES.map((c) => ({
-                        value: c.slug,
-                        label: c.name,
-                      })),
-                    ]}
                   />
                 )}
               </FilterPopover>
@@ -207,18 +243,31 @@ export function ListingFilterBar({ mode, basePath, query, total }: Props) {
               <FilterPopover
                 label={budgetLabel}
                 icon={Coins}
-                valueLabel={budgetValueLabel ?? "Tous budgets"}
-                active={Boolean(pending.budgetMax)}
+                valueLabel={
+                  budgetValueLabel ??
+                  (mode === "sale" ? "Tous budgets" : "Tous loyers")
+                }
+                active={Boolean(pending.budgetMin || pending.budgetMax)}
                 variant="cell"
-                width="md"
+                width="lg"
               >
                 {(close) => (
-                  <BudgetChoice
-                    value={pending.budgetMax}
+                  <BudgetRange
+                    mode={mode}
+                    initialMin={pending.budgetMin}
+                    initialMax={pending.budgetMax}
                     steps={budgets}
-                    onSelect={(v) => {
-                      setPending((p) => ({ ...p, budgetMax: v || undefined }));
+                    onApply={(min, max) => {
+                      setPending((p) => ({
+                        ...p,
+                        budgetMin: min || undefined,
+                        budgetMax: max || undefined,
+                      }));
                       close();
+                      search({
+                        budgetMin: min || undefined,
+                        budgetMax: max || undefined,
+                      });
                     }}
                   />
                 )}
@@ -319,15 +368,33 @@ function RadioList({
   );
 }
 
-function BudgetChoice({
+function CommuneList({
   value,
-  steps,
+  counts,
   onSelect,
 }: {
-  value?: string;
-  steps: number[];
+  value: string;
+  counts?: CommuneCounts;
   onSelect: (v: string) => void;
 }) {
+  // Tri : communes avec stock par décroissant, puis communes vides à la fin.
+  // En l'absence de compteurs (fallback), on garde l'ordre de la config.
+  const ordered = useMemo(() => {
+    if (!counts) return COMMUNES;
+    return [...COMMUNES].sort((a, b) => {
+      const ca = counts[a.slug] ?? 0;
+      const cb = counts[b.slug] ?? 0;
+      if (ca === cb) return 0;
+      if (ca === 0) return 1;
+      if (cb === 0) return -1;
+      return cb - ca;
+    });
+  }, [counts]);
+
+  const totalAvailable = counts
+    ? Object.values(counts).reduce((acc, n) => acc + n, 0)
+    : undefined;
+
   return (
     <ul className="flex max-h-[60vh] flex-col gap-0.5 overflow-y-auto">
       <li>
@@ -335,46 +402,242 @@ function BudgetChoice({
           type="button"
           onClick={() => onSelect("")}
           className={cn(
-            "flex w-full items-center justify-between rounded-sm px-3 py-2 text-left text-sm transition-colors",
+            "flex w-full items-center justify-between gap-3 rounded-sm px-3 py-2 text-left text-sm transition-colors",
             !value
               ? "bg-primary-50 text-primary-600"
               : "text-primary hover:bg-section",
           )}
         >
-          <span>Tous budgets</span>
-          {!value && (
-            <span
-              aria-hidden="true"
-              className="h-1.5 w-1.5 rounded-full bg-primary-600"
-            />
-          )}
+          <span>Toutes les communes</span>
+          <span
+            className={cn(
+              "text-xs tabular-nums",
+              !value ? "text-primary-600" : "text-muted",
+            )}
+          >
+            {totalAvailable !== undefined ? totalAvailable : ""}
+          </span>
         </button>
       </li>
-      {steps.map((s) => {
-        const active = value === String(s);
+      {ordered.map((c) => {
+        const active = c.slug === value;
+        const count = counts?.[c.slug];
+        const empty = count === 0;
         return (
-          <li key={s}>
+          <li key={c.slug}>
             <button
               type="button"
-              onClick={() => onSelect(String(s))}
+              onClick={() => onSelect(c.slug)}
               className={cn(
-                "flex w-full items-center justify-between rounded-sm px-3 py-2 text-left text-sm transition-colors",
+                "flex w-full items-center justify-between gap-3 rounded-sm px-3 py-2 text-left text-sm transition-colors",
                 active
                   ? "bg-primary-50 text-primary-600"
-                  : "text-primary hover:bg-section",
+                  : empty
+                    ? "text-muted hover:bg-section"
+                    : "text-primary hover:bg-section",
               )}
+              aria-label={
+                count !== undefined
+                  ? `${c.name}, ${count} bien${count > 1 ? "s" : ""}`
+                  : c.name
+              }
             >
-              <span>Jusqu&apos;à {formatEuro(s)}</span>
-              {active && (
+              <span className="truncate">{c.name}</span>
+              {count !== undefined && (
                 <span
-                  aria-hidden="true"
-                  className="h-1.5 w-1.5 rounded-full bg-primary-600"
-                />
+                  className={cn(
+                    "shrink-0 text-xs tabular-nums",
+                    active
+                      ? "text-primary-600"
+                      : empty
+                        ? "text-muted/70"
+                        : "text-muted",
+                  )}
+                >
+                  {empty ? "—" : count}
+                </span>
               )}
             </button>
           </li>
         );
       })}
     </ul>
+  );
+}
+
+function formatInputEuro(n: number): string {
+  return n.toLocaleString("fr-FR");
+}
+
+function BudgetRange({
+  mode,
+  initialMin,
+  initialMax,
+  steps,
+  onApply,
+}: {
+  mode: FilterBarMode;
+  initialMin?: string;
+  initialMax?: string;
+  steps: number[];
+  onApply: (min: string, max: string) => void;
+}) {
+  const [min, setMin] = useState(() =>
+    initialMin ? formatInputEuro(Number(initialMin)) : "",
+  );
+  const [max, setMax] = useState(() =>
+    initialMax ? formatInputEuro(Number(initialMax)) : "",
+  );
+
+  const parsedMin = parseEuro(min);
+  const parsedMax = parseEuro(max);
+  const invalid =
+    parsedMin !== undefined && parsedMax !== undefined && parsedMin > parsedMax;
+
+  const handleChange =
+    (set: (v: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const n = parseEuro(e.target.value);
+      set(n !== undefined ? formatInputEuro(n) : "");
+    };
+
+  const submit = () => {
+    if (invalid) return;
+    onApply(
+      parsedMin !== undefined ? String(parsedMin) : "",
+      parsedMax !== undefined ? String(parsedMax) : "",
+    );
+  };
+
+  const clear = () => {
+    setMin("");
+    setMax("");
+  };
+
+  const chipsTitle =
+    mode === "sale" ? "Plafonds rapides" : "Loyers max courants";
+
+  const minId = useId();
+  const maxId = useId();
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor={minId}
+            className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted"
+          >
+            Min.
+          </label>
+          <div className="relative">
+            <TextInput
+              id={minId}
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="Pas de min."
+              value={min}
+              onChange={handleChange(setMin)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submit();
+              }}
+              className={cn(
+                "pr-7 tabular-nums",
+                invalid && "border-error focus:ring-error",
+              )}
+              aria-invalid={invalid || undefined}
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-xs text-muted">
+              €
+            </span>
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor={maxId}
+            className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted"
+          >
+            Max.
+          </label>
+          <div className="relative">
+            <TextInput
+              id={maxId}
+              type="text"
+              inputMode="numeric"
+              autoComplete="off"
+              placeholder="Pas de max."
+              value={max}
+              onChange={handleChange(setMax)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") submit();
+              }}
+              className={cn(
+                "pr-7 tabular-nums",
+                invalid && "border-error focus:ring-error",
+              )}
+              aria-invalid={invalid || undefined}
+            />
+            <span className="pointer-events-none absolute inset-y-0 right-2.5 flex items-center text-xs text-muted">
+              €
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {invalid && (
+        <p className="text-xs text-error" role="alert">
+          Le minimum doit être inférieur au maximum.
+        </p>
+      )}
+
+      <div>
+        <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
+          {chipsTitle}
+        </p>
+        <div className="flex flex-wrap gap-1.5">
+          {steps.map((s) => {
+            const active = parsedMax === s;
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setMax(formatInputEuro(s))}
+                className={cn(
+                  "rounded-full border px-2.5 py-1 text-xs transition-colors",
+                  active
+                    ? "border-primary-600 bg-primary-600 text-on-primary"
+                    : "border-default bg-card text-primary hover:border-strong",
+                )}
+              >
+                ≤ {formatCompact(s, mode)}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between gap-2 pt-1">
+        <button
+          type="button"
+          onClick={clear}
+          className="text-xs text-muted underline underline-offset-2 hover:text-primary"
+        >
+          Effacer
+        </button>
+        <button
+          type="button"
+          onClick={submit}
+          disabled={invalid}
+          className={cn(
+            "inline-flex h-9 items-center justify-center rounded-sm px-4 text-sm font-semibold transition-colors",
+            invalid
+              ? "cursor-not-allowed bg-section text-muted"
+              : "bg-primary-600 text-on-primary hover:bg-primary-700",
+          )}
+        >
+          Appliquer
+        </button>
+      </div>
+    </div>
   );
 }

@@ -8,7 +8,6 @@ import { FunnelProgress } from "./FunnelProgress";
 import { StepAddress } from "./steps/StepAddress";
 import { StepCondition } from "./steps/StepCondition";
 import { StepContact } from "./steps/StepContact";
-import { StepDelay } from "./steps/StepDelay";
 import { StepIntent } from "./steps/StepIntent";
 import { StepSurface } from "./steps/StepSurface";
 import { StepType } from "./steps/StepType";
@@ -32,6 +31,7 @@ export function EstimationForm() {
     canProceed,
     phase,
     update,
+    selectAndAdvance,
     next,
     prev,
     submit,
@@ -45,7 +45,7 @@ export function EstimationForm() {
     <div className="flex flex-col">
       <FunnelProgress step={step} progress={progress} phase={phase} />
 
-      <div className="relative min-h-[420px] overflow-hidden px-1 sm:px-2">
+      <div className="relative min-h-[280px] overflow-hidden px-1 sm:px-2">
         <AnimatePresence mode="wait" initial={false} custom={direction}>
           <motion.div
             key={step}
@@ -59,7 +59,7 @@ export function EstimationForm() {
             {step === 0 && (
               <StepType
                 value={data.type}
-                onChange={(v) => update("type", v)}
+                onChange={(v) => selectAndAdvance("type", v)}
                 error={errors.type}
               />
             )}
@@ -99,13 +99,6 @@ export function EstimationForm() {
               />
             )}
             {step === 5 && (
-              <StepDelay
-                value={data.delay}
-                onChange={(v) => update("delay", v)}
-                error={errors.delay}
-              />
-            )}
-            {step === 6 && (
               <StepContact
                 data={data}
                 update={update}

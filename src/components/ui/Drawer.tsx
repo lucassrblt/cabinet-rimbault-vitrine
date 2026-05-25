@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useLenis } from "lenis/react";
 import { X } from "lucide-react";
 import {
   type ReactNode,
@@ -53,6 +54,7 @@ export function Drawer({
   const titleId = useId();
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const lenis = useLenis();
 
   useEffect(() => {
     setMounted(true);
@@ -61,10 +63,12 @@ export function Drawer({
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
+    lenis?.stop();
     return () => {
       document.body.style.overflow = "";
+      lenis?.start();
     };
-  }, [open]);
+  }, [open, lenis]);
 
   useEffect(() => {
     if (!open) return;

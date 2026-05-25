@@ -200,7 +200,8 @@ export function AddressAutocomplete({
             blurTimerRef.current = window.setTimeout(() => setOpen(false), 120);
           }}
           onKeyDown={handleKey}
-          className="w-full bg-transparent text-base text-primary placeholder:text-muted focus:outline-none"
+          style={{ outline: "none", boxShadow: "none" }}
+          className="w-full appearance-none border-0 bg-transparent p-0 text-base text-primary placeholder:text-muted"
         />
         {loading && (
           <Loader2

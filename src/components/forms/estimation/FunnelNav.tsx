@@ -6,7 +6,7 @@ import { TOTAL } from "./estimation-funnel";
 
 /**
  * Navigation du tunnel.
- * - Étape 0 : pas de « Retour », « Continuer » en pleine largeur.
+ * - Étape 0 : pas de navigation — la sélection du type avance automatiquement.
  * - Étapes intermédiaires : « Retour » + « Continuer ».
  * - Dernière étape : « Retour » + « Envoyer ma demande ».
  * Le bouton d'avancement est désactivé tant que les champs requis de l'étape
@@ -27,7 +27,7 @@ export function FunnelNav({
   onNext: () => void;
   onSubmit: () => void;
 }) {
-  const isFirst = step === 0;
+  if (step === 0) return null;
   const isLast = step === TOTAL - 1;
 
   const submitButton = (
@@ -36,7 +36,7 @@ export function FunnelNav({
       size="lg"
       onClick={onSubmit}
       disabled={isPending || !canProceed}
-      className={isFirst ? "w-full" : "sm:min-w-[14rem]"}
+      className="sm:min-w-[14rem]"
     >
       {isPending ? (
         <>
@@ -58,7 +58,7 @@ export function FunnelNav({
       size="lg"
       onClick={onNext}
       disabled={!canProceed}
-      className={isFirst ? "w-full" : "sm:min-w-[12rem]"}
+      className="sm:min-w-[12rem]"
     >
       Continuer
       <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -67,12 +67,8 @@ export function FunnelNav({
 
   const action = isLast ? submitButton : nextButton;
 
-  if (isFirst) {
-    return <div className="mt-8 border-t border-subtle pt-5">{action}</div>;
-  }
-
   return (
-    <div className="mt-8 flex flex-col-reverse items-stretch gap-3 border-t border-subtle pt-5 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mt-6 flex flex-col-reverse items-stretch gap-3 border-t border-subtle pt-4 sm:flex-row sm:items-center sm:justify-between">
       <button
         type="button"
         onClick={onPrev}

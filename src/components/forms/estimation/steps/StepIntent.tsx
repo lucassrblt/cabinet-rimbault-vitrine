@@ -22,26 +22,10 @@ export function StepIntent({
     value: EstimationStep2["intent"];
     label: string;
     icon: typeof Tag;
-    description: string;
   }[] = [
-    {
-      value: "vendre",
-      label: "Je veux vendre",
-      icon: Tag,
-      description: "Mise en vente envisagée",
-    },
-    {
-      value: "louer",
-      label: "Je veux louer",
-      icon: KeyRound,
-      description: "Mise en location envisagée",
-    },
-    {
-      value: "renseigne",
-      label: "Je me renseigne",
-      icon: Search,
-      description: "Juste une idée du prix",
-    },
+    { value: "vendre", label: "Je veux vendre", icon: Tag },
+    { value: "louer", label: "Je veux louer", icon: KeyRound },
+    { value: "renseigne", label: "Je me renseigne", icon: Search },
   ];
   return (
     <div>
@@ -59,7 +43,6 @@ export function StepIntent({
               onClick={() => onChange(opt.value)}
               icon={<Icon className="h-4 w-4" aria-hidden="true" />}
               title={opt.label}
-              description={opt.description}
               layout="horizontal"
               size="sm"
             />

@@ -89,13 +89,6 @@ const INTENT_MAP: Record<EstimationStep2["intent"], string> = {
   renseigne: "EXPLORATION",
 };
 
-const TIMEFRAME_MAP: Record<EstimationStep2["delay"], string> = {
-  "3m": "LT_3_MOIS",
-  "3-6m": "3_6_MOIS",
-  "6-12m": "6_12_MOIS",
-  "plus-tard": "PLUS_TARD",
-};
-
 function parseRooms(v: string): number | undefined {
   if (!v) return undefined;
   if (v.endsWith("+")) return Number.parseInt(v, 10);
@@ -262,9 +255,11 @@ export async function submitEvaluation(
     hasBalcony: outdoor.includes("balcon"),
     hasTerrace: outdoor.includes("terrasse"),
     hasGarden: outdoor.includes("jardin"),
+    hasGarage: outdoor.includes("garage"),
+    hasParking: outdoor.includes("parking"),
+    hasPool: outdoor.includes("piscine"),
     condition: CONDITION_MAP[step1.condition],
     intent: INTENT_MAP[step2.intent],
-    timeframe: TIMEFRAME_MAP[step2.delay],
     message: step2.message || undefined,
     rgpd: step2.rgpd,
     firstName: step2.firstName,

@@ -17,7 +17,7 @@ export function FunnelProgress({
   phase: 1 | 2;
 }) {
   return (
-    <div className="mb-8 flex flex-col gap-3 sm:mb-10">
+    <div className="mb-6 flex flex-col gap-3 sm:mb-7">
       <div className="flex items-baseline justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-600">
           {phase === 1 ? "Votre bien" : "Votre projet"}

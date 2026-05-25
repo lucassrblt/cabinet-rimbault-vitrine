@@ -20,25 +20,41 @@ interface Props {
 }
 
 type DrawerState = {
+  type: string;
+  typeLabel: string;
   pieces: string;
   surfaceMin: string;
   surfaceMax: string;
   balcon: boolean;
   terrasse: boolean;
   jardin: boolean;
+  cave: boolean;
+  parking: boolean;
+  garage: boolean;
+  ascenseur: boolean;
   meuble: boolean;
   dpe: string;
   hideFG: boolean;
 };
 
 function fromQuery(q: ListingQuery): DrawerState {
+  const type = q.type ?? "";
+  const matched = type
+    ? TYPE_OPTIONS.find((o) => o.value === type)?.label
+    : undefined;
   return {
+    type,
+    typeLabel: matched ?? "",
     pieces: q.pieces ?? "",
     surfaceMin: q.surfaceMin ?? "",
     surfaceMax: q.surfaceMax ?? "",
     balcon: q.balcon === "true",
     terrasse: q.terrasse === "true",
     jardin: q.jardin === "true",
+    cave: q.cave === "true",
+    parking: q.parking === "true",
+    garage: q.garage === "true",
+    ascenseur: q.ascenseur === "true",
     meuble: q.meuble === "true",
     dpe: q.dpe ?? "",
     hideFG: q.hideFG === "true",
@@ -46,16 +62,30 @@ function fromQuery(q: ListingQuery): DrawerState {
 }
 
 const EMPTY: DrawerState = {
+  type: "",
+  typeLabel: "",
   pieces: "",
   surfaceMin: "",
   surfaceMax: "",
   balcon: false,
   terrasse: false,
   jardin: false,
+  cave: false,
+  parking: false,
+  garage: false,
+  ascenseur: false,
   meuble: false,
   dpe: "",
   hideFG: false,
 };
+
+const TYPE_OPTIONS: { value: string; label: string }[] = [
+  { value: "APPARTEMENT", label: "Appartement" },
+  { value: "MAISON", label: "Maison" },
+  { value: "LOCAL_COMMERCIAL", label: "Local" },
+  { value: "PARKING", label: "Parking" },
+  { value: "PARKING", label: "Box" },
+];
 
 const ROOMS = ["1", "2", "3", "4", "5"];
 const SURFACES = [20, 30, 50, 70, 90, 120, 150, 200];
@@ -79,7 +109,7 @@ export function FilterDrawer({
   const apply = () => {
     const params = new URLSearchParams();
     if (query.commune) params.set("commune", query.commune);
-    if (query.type) params.set("type", query.type);
+    if (state.type) params.set("type", state.type);
     if (query.budgetMin) params.set("budgetMin", query.budgetMin);
     if (query.budgetMax) params.set("budgetMax", query.budgetMax);
     if (query.sort) params.set("sort", query.sort);
@@ -90,6 +120,10 @@ export function FilterDrawer({
     if (state.balcon) params.set("balcon", "true");
     if (state.terrasse) params.set("terrasse", "true");
     if (state.jardin) params.set("jardin", "true");
+    if (state.cave) params.set("cave", "true");
+    if (state.parking) params.set("parking", "true");
+    if (state.garage) params.set("garage", "true");
+    if (state.ascenseur) params.set("ascenseur", "true");
     if (mode === "rent" && state.meuble) params.set("meuble", "true");
     if (state.dpe) params.set("dpe", state.dpe);
     if (state.hideFG) params.set("hideFG", "true");
@@ -124,6 +158,35 @@ export function FilterDrawer({
       }
     >
       <div className="flex flex-col gap-7">
+        <Group title="Type de bien">
+          <div className="flex flex-wrap gap-2">
+            {TYPE_OPTIONS.map((opt) => {
+              const active = state.typeLabel === opt.label;
+              return (
+                <button
+                  key={opt.label}
+                  type="button"
+                  onClick={() =>
+                    setState((s) => ({
+                      ...s,
+                      type: active ? "" : opt.value,
+                      typeLabel: active ? "" : opt.label,
+                    }))
+                  }
+                  className={cn(
+                    "inline-flex h-10 items-center justify-center rounded-sm border px-4 text-sm font-medium transition-colors",
+                    active
+                      ? "border-primary-600 bg-primary-600 text-on-primary"
+                      : "border-default bg-card text-primary hover:border-strong",
+                  )}
+                >
+                  {opt.label}
+                </button>
+              );
+            })}
+          </div>
+        </Group>
+
         <Group title="Pièces">
           <div className="flex flex-wrap gap-2">
             {ROOMS.map((r) => {
@@ -147,9 +210,6 @@ export function FilterDrawer({
               );
             })}
           </div>
-          <p className="text-xs text-muted">
-            Nombre minimum de pièces principales.
-          </p>
         </Group>
 
         <Group title="Surface">
@@ -216,6 +276,29 @@ export function FilterDrawer({
             checked={state.jardin}
             onChange={(v) => setState((s) => ({ ...s, jardin: v }))}
             label="Jardin"
+          />
+        </Group>
+
+        <Group title="Annexes">
+          <CheckboxRow
+            checked={state.cave}
+            onChange={(v) => setState((s) => ({ ...s, cave: v }))}
+            label="Cave"
+          />
+          <CheckboxRow
+            checked={state.parking}
+            onChange={(v) => setState((s) => ({ ...s, parking: v }))}
+            label="Place de parking"
+          />
+          <CheckboxRow
+            checked={state.garage}
+            onChange={(v) => setState((s) => ({ ...s, garage: v }))}
+            label="Garage"
+          />
+          <CheckboxRow
+            checked={state.ascenseur}
+            onChange={(v) => setState((s) => ({ ...s, ascenseur: v }))}
+            label="Ascenseur"
           />
         </Group>
 

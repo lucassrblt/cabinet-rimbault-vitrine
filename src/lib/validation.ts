@@ -96,7 +96,6 @@ export type EstimationStep1 = z.infer<typeof estimationStep1Schema>;
 
 export const estimationStep2Schema = z.object({
   intent: z.enum(["vendre", "louer", "renseigne"]),
-  delay: z.enum(["3m", "3-6m", "6-12m", "plus-tard"]),
   firstName: nameSchema,
   lastName: nameSchema,
   phone: phoneSchema,

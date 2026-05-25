@@ -211,28 +211,42 @@ function AgentSection() {
   return (
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
-        <SectionHeader
-          eyebrow="Votre interlocuteur"
-          title="Un seul interlocuteur, jusqu’à la signature chez le notaire."
-        />
-
-        <div className="mt-10 grid grid-cols-1 items-center gap-12 md:mt-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
+        <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16">
           {/* Colonne gauche — profil de l'agent (apparitions échelonnées) */}
           <div className="flex flex-col">
-            {/* Citation de l'agent */}
+            {/* 1. Eyebrow + titre */}
             <ScrollReveal>
-              <blockquote className="border-l-2 border-primary-600 pl-5">
-                <p className="font-display text-lg leading-snug text-primary md:text-xl">
-                  «&nbsp;Chaque projet est singulier. Je m’y investis avec la
-                  même exigence, qu’il s’agisse d’un premier achat ou d’une
-                  vente familiale.&nbsp;»
-                </p>
-              </blockquote>
+              <p className="font-sans text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">
+                Votre interlocuteur
+              </p>
+              <h2 className="mt-4 font-display text-4xl font-semibold leading-tight tracking-tight text-primary md:text-5xl">
+                Un accompagnement
+                <br />
+                de confiance, simplement.
+              </h2>
             </ScrollReveal>
 
-            {/* 1. Réassurance */}
+            {/* 2. Nom de l'agent */}
             <ScrollReveal delay={0.1} className="mt-8">
-              <dl className="flex flex-wrap gap-x-8 gap-y-4">
+              <div className="flex items-center gap-3">
+                <span
+                  aria-hidden="true"
+                  className="h-px w-7 shrink-0 bg-primary-600"
+                />
+                <div>
+                  <p className="font-display text-lg font-semibold text-primary">
+                    {AGENT.fullName}
+                  </p>
+                  <p className="mt-0.5 text-sm text-muted">
+                    {AGENT.title} · {AGENT.address.city}
+                  </p>
+                </div>
+              </div>
+            </ScrollReveal>
+
+            {/* 3. Stats inline */}
+            <ScrollReveal delay={0.2} className="mt-8">
+              <dl className="flex flex-wrap gap-x-10 gap-y-5">
                 {AGENT_HIGHLIGHTS.map((item) => (
                   <div key={item.label} className="flex items-center gap-3">
                     <item.icon
@@ -260,26 +274,8 @@ function AgentSection() {
               </dl>
             </ScrollReveal>
 
-            {/* 2. Nom de l'agent */}
-            <ScrollReveal delay={0.2} className="mt-8">
-              <div className="flex items-center gap-3">
-                <span
-                  aria-hidden="true"
-                  className="h-px w-7 shrink-0 bg-primary-600"
-                />
-                <div>
-                  <p className="font-display text-lg font-semibold text-primary">
-                    {AGENT.fullName}
-                  </p>
-                  <p className="mt-0.5 text-sm text-muted">
-                    {AGENT.title} · {AGENT.address.city}
-                  </p>
-                </div>
-              </div>
-            </ScrollReveal>
-
-            {/* 3. CTA — ouvre le drawer de contact */}
-            <ScrollReveal delay={0.3} className="mt-8">
+            {/* 4. CTA — ouvre le drawer de contact */}
+            <ScrollReveal delay={0.3} className="mt-10">
               <Magnetic>
                 <ContactTrigger
                   subject="rdv"

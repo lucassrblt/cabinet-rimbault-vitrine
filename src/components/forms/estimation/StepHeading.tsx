@@ -11,8 +11,8 @@ export function StepHeading({
   description?: string;
 }) {
   return (
-    <div className="mb-7 flex flex-col gap-2.5 sm:mb-8">
-      <h2 className="font-display text-2xl font-semibold leading-[1.15] tracking-tight text-primary sm:text-3xl">
+    <div className="mb-5 flex flex-col gap-2 sm:mb-6">
+      <h2 className="font-display text-xl font-semibold leading-[1.15] tracking-tight text-primary sm:text-2xl">
         {title}
       </h2>
       {description && (

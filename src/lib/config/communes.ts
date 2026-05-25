@@ -1,7 +1,9 @@
 export interface Commune {
   slug: string;
   name: string;
-  postalCode: string;
+  // Optionnel : absent pour les périmètres regroupés (ex. Paris intra-muros)
+  // où le filtre s'applique via la ville (contains insensible) sans CP fixe.
+  postalCode?: string;
 }
 
 export const COMMUNES: Commune[] = [
@@ -17,6 +19,9 @@ export const COMMUNES: Commune[] = [
   { slug: "clichy", name: "Clichy", postalCode: "92110" },
   { slug: "levallois-perret", name: "Levallois-Perret", postalCode: "92300" },
   { slug: "neuilly-sur-seine", name: "Neuilly-sur-Seine", postalCode: "92200" },
+  // Paris intra-muros : regroupe les 20 arrondissements. L'API filtre par
+  // `city contains "Paris"` (insensible), donc on n'envoie pas de postalCode.
+  { slug: "paris", name: "Paris (intra-muros)" },
 ];
 
 export const COMMUNES_COMMENT =

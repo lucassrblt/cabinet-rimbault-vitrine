@@ -73,6 +73,16 @@ export function useEstimationFunnel() {
     if (errors[key]) setErrors((e) => ({ ...e, [key]: undefined }));
   }
 
+  function selectAndAdvance<K extends keyof FormState>(
+    key: K,
+    value: FormState[K],
+  ) {
+    setData((d) => ({ ...d, [key]: value }));
+    setErrors((e) => ({ ...e, [key]: undefined }));
+    setDirection(1);
+    setStep((s) => Math.min(TOTAL - 1, s + 1));
+  }
+
   function validateStep(s: number): boolean {
     const e: FieldErrors = {};
     if (s === 0) {
@@ -103,8 +113,6 @@ export function useEstimationFunnel() {
     } else if (s === 4) {
       if (!data.intent) e.intent = "Choisissez votre intention";
     } else if (s === 5) {
-      if (!data.delay) e.delay = "Choisissez un délai";
-    } else if (s === 6) {
       if (!data.firstName || data.firstName.length < 2)
         e.firstName = "Prénom requis";
       if (!data.lastName || data.lastName.length < 2) e.lastName = "Nom requis";
@@ -139,8 +147,6 @@ export function useEstimationFunnel() {
       case 4:
         return Boolean(data.intent);
       case 5:
-        return Boolean(data.delay);
-      case 6:
         return Boolean(
           data.firstName.trim().length >= 2 &&
             data.lastName.trim().length >= 2 &&
@@ -166,7 +172,7 @@ export function useEstimationFunnel() {
   }
 
   function submit() {
-    if (!validateStep(6)) return;
+    if (!validateStep(5)) return;
     setRootError(null);
     startTransition(async () => {
       const street = data.address?.street ?? data.address?.label ?? "";
@@ -183,7 +189,6 @@ export function useEstimationFunnel() {
       };
       const step2: EstimationStep2 = {
         intent: data.intent as EstimationStep2["intent"],
-        delay: data.delay as EstimationStep2["delay"],
         firstName: data.firstName,
         lastName: data.lastName,
         phone: data.phone,
@@ -231,6 +236,7 @@ export function useEstimationFunnel() {
     canProceed,
     phase: STEPS[step].phase,
     update,
+    selectAndAdvance,
     next,
     prev,
     submit,

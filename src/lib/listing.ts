@@ -22,6 +22,10 @@ export interface ListingQuery {
   balcon?: string;
   terrasse?: string;
   jardin?: string;
+  cave?: string;
+  parking?: string;
+  garage?: string;
+  ascenseur?: string;
   hideFG?: string;
 }
 
@@ -50,6 +54,10 @@ export function parseQuery(
     balcon: get("balcon"),
     terrasse: get("terrasse"),
     jardin: get("jardin"),
+    cave: get("cave"),
+    parking: get("parking"),
+    garage: get("garage"),
+    ascenseur: get("ascenseur"),
     hideFG: get("hideFG"),
   };
 }
@@ -125,11 +133,19 @@ export function queryToSearchFilters(
     }
   }
 
+  // Pour Paris (intra-muros) on filtre par "city contains Paris" sans CP fixe.
+  // L'API matche tous les arrondissements (75001-75020 + libellés "Paris 16e", etc.).
+  const communeCityFilter = commune
+    ? commune.slug === "paris"
+      ? "Paris"
+      : commune.name
+    : undefined;
+
   const filters: SearchFilters = {
     transactionType,
     propertyType: (query.type as PropertyType) || undefined,
     postalCode: commune?.postalCode,
-    city: commune ? commune.name : undefined,
+    city: communeCityFilter,
     minPrice: num(query.budgetMin),
     maxPrice: num(query.budgetMax),
     minSurface: num(query.surfaceMin),

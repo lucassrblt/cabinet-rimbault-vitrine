@@ -20,6 +20,7 @@ import {
   parseQuery,
   queryToSearchFilters,
 } from "@/lib/listing";
+import { type CommuneCounts, getCommuneCounts } from "@/lib/listing-counts";
 
 interface SearchParams {
   [key: string]: string | string[] | undefined;
@@ -50,13 +51,22 @@ export default async function AcheterPage({
   const page = pageFromQuery(query);
   const filters = queryToSearchFilters(query, "VENTE", page);
 
+  // Filtres « base » pour les compteurs par commune : on retire la commune
+  // active pour que chaque compteur reflète « combien si je passe à celle-là ».
+  const { city: _city, postalCode: _postalCode, ...countFilters } = filters;
+
   let items: Property[] = [];
   let total = 0;
+  let communeCounts: CommuneCounts = {};
   let errorMessage: string | undefined;
   try {
-    const res = await searchProperties(filters);
+    const [res, counts] = await Promise.all([
+      searchProperties(filters),
+      getCommuneCounts("VENTE", countFilters),
+    ]);
     items = res.data ?? [];
     total = res.total ?? items.length;
+    communeCounts = counts;
   } catch (err) {
     errorMessage =
       err instanceof Error
@@ -85,6 +95,7 @@ export default async function AcheterPage({
             basePath={basePath}
             query={query}
             total={total}
+            communeCounts={communeCounts}
           />
           <div className="mt-4">
             <ActiveFiltersChips mode="sale" basePath={basePath} query={query} />

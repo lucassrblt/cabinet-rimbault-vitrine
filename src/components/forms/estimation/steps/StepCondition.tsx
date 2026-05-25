@@ -2,12 +2,17 @@
 
 import {
   Brush,
+  Car,
   Check,
+  CircleParking,
+  DoorOpen,
   Hammer,
   HelpCircle,
+  Package,
   Sparkles,
   Sprout,
   Trees,
+  Waves,
 } from "lucide-react";
 import { ChoiceCard } from "@/components/forms/estimation/ChoiceCard";
 import type { FormState } from "@/components/forms/estimation/estimation-funnel";
@@ -68,6 +73,11 @@ export function StepCondition({
     { value: "balcon", label: "Balcon", icon: Sprout },
     { value: "terrasse", label: "Terrasse", icon: Sprout },
     { value: "jardin", label: "Jardin", icon: Trees },
+    { value: "cour", label: "Cour", icon: DoorOpen },
+    { value: "garage", label: "Garage", icon: Car },
+    { value: "parking", label: "Parking", icon: CircleParking },
+    { value: "cave", label: "Cave", icon: Package },
+    { value: "piscine", label: "Piscine", icon: Waves },
     { value: "aucun", label: "Aucun", icon: HelpCircle },
   ];
 
@@ -96,14 +106,12 @@ export function StepCondition({
             : "État général et extérieur"
         }
         description={
-          isTerrain
-            ? "Ces informations affinent l'analyse."
-            : "Travaux à prévoir et extérieurs influencent fortement le prix."
+          isTerrain ? "Ces informations affinent l'analyse." : undefined
         }
       />
 
-      <fieldset className="flex flex-col gap-3">
-        <legend className="text-sm font-medium text-primary">
+      <fieldset>
+        <legend className="mb-3 text-sm font-medium text-primary">
           État général <span className="text-red-600">*</span>
         </legend>
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -127,11 +135,14 @@ export function StepCondition({
       </fieldset>
 
       {!isTerrain && (
-        <fieldset className="mt-6 flex flex-col gap-3">
+        <fieldset className="mt-6">
           <legend className="text-sm font-medium text-primary">
-            Extérieur (facultatif)
+            Extérieurs & dépendances (facultatif)
           </legend>
-          <div className="flex flex-wrap gap-2">
+          <p className="mt-0.5 text-xs text-muted">
+            Plusieurs choix possibles.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
             {outdoorOpts.map((opt) => {
               const Icon = opt.icon;
               const selected = outdoor.includes(opt.value);
@@ -144,8 +155,8 @@ export function StepCondition({
                   className={cn(
                     "inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm transition-colors",
                     selected
-                      ? "border-primary-600 text-primary"
-                      : "border-default text-body hover:border-neutral-400",
+                      ? "border-primary-600 bg-primary-600 text-on-primary"
+                      : "border-default bg-card text-primary hover:border-strong",
                   )}
                 >
                   <Icon className="h-3.5 w-3.5" aria-hidden="true" />

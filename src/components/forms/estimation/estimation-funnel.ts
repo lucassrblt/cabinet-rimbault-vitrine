@@ -15,7 +15,6 @@ export type FormState = {
   outdoor: string[];
   condition: EstimationStep1["condition"] | "";
   intent: EstimationStep2["intent"] | "";
-  delay: EstimationStep2["delay"] | "";
   firstName: string;
   lastName: string;
   phone: string;
@@ -40,7 +39,6 @@ export const INITIAL: FormState = {
   outdoor: [],
   condition: "",
   intent: "",
-  delay: "",
   firstName: "",
   lastName: "",
   phone: "",
@@ -56,7 +54,6 @@ export const STEPS = [
   { phase: 1, label: "Votre bien" },
   { phase: 1, label: "Votre bien" },
   { phase: 1, label: "Votre bien" },
-  { phase: 2, label: "Votre projet" },
   { phase: 2, label: "Votre projet" },
   { phase: 2, label: "Votre projet" },
 ] as const;
