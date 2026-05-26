@@ -59,7 +59,9 @@ Le fichier `src/lib/api/client.ts` importe `"server-only"` : toute tentative d'i
 
 ## Cache & revalidation
 
-- `apiFetch` applique `revalidate: 60` par défaut (ISR 1 min).
+- `apiFetch` applique `revalidate: 300` par défaut (ISR 5 min) — couvre les listings.
+- Fiche bien (`getPropertyByReference`) et biens similaires (`getSimilarProperties`) : `revalidate: 600` (ISR 10 min).
+- Fiches biens pré-rendues au build via `generateStaticParams` dans `src/app/(site)/bien/[reference]/page.tsx` (jusqu'à 200 biens). Les biens créés après le build sont rendus à la volée puis cachés via ISR (`dynamicParams` reste à `true`, défaut Next 16).
 - Cache tags : `properties`, `properties:sale`, `properties:rent`, `properties:recent`, `property:<reference>`.
 - Avis Google : `revalidate: 86400` (ISR 24 h), tag `reviews`.
 - Pour forcer un refresh après publication côté admin, déclencher `revalidateTag("properties")` depuis un route handler (pas encore implémenté — à créer à la demande).

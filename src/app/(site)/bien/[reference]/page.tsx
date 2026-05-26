@@ -12,6 +12,8 @@ import { EnergyScale } from "@/components/ui/EnergyRating";
 import {
   getPropertyByReference,
   getSimilarProperties,
+  listRentProperties,
+  listSaleProperties,
 } from "@/lib/api/properties";
 import type { HonorairesCharge, Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
@@ -25,6 +27,21 @@ import {
 
 interface Params {
   reference: string;
+}
+
+export async function generateStaticParams(): Promise<Params[]> {
+  try {
+    const [sale, rent] = await Promise.all([
+      listSaleProperties({ limit: 100 }),
+      listRentProperties({ limit: 100 }),
+    ]);
+    const refs = new Set<string>();
+    for (const p of sale.data) refs.add(p.reference);
+    for (const p of rent.data) refs.add(p.reference);
+    return Array.from(refs, (reference) => ({ reference }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({

@@ -47,7 +47,7 @@ export async function apiFetch<T>(
   const url = new URL(`${baseUrl}${path}`);
   if (query) appendQuery(url, query);
 
-  const { revalidate = 60, tags } = options;
+  const { revalidate = 300, tags } = options;
 
   const res = await fetch(url, {
     headers: {

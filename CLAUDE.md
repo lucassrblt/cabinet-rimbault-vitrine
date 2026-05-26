@@ -46,7 +46,7 @@ Avant de rendre une tâche : `npm run typecheck` **et** `npm run lint` doivent p
 - La clé API (`PUBLIC_API_KEY`) est **server-only**. `src/lib/api/client.ts` importe `"server-only"` — ne pas retirer.
 - Pour filtrer/rechercher, passer par `searchParams` dans l'URL (SEO + URLs partageables). Pas de state client pour les filtres de listing.
 - TanStack Query uniquement pour : autocomplétion, carte, pagination infinie, interactions rapides. Sinon, Server Component + ISR.
-- Cache par défaut `revalidate: 60`, tags structurés (`properties`, `properties:sale`, `property:<ref>`). Réutiliser les helpers existants dans `src/lib/api/properties.ts` plutôt que refaire `fetch()`.
+- Cache par défaut `revalidate: 300` (listings), `revalidate: 600` sur fiche bien et biens similaires. Tags structurés (`properties`, `properties:sale`, `property:<ref>`). Réutiliser les helpers existants dans `src/lib/api/properties.ts` plutôt que refaire `fetch()`.
 
 ### Organisation
 

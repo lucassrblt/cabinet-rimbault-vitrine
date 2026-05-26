@@ -64,7 +64,7 @@ export async function getPropertyByReference(
     const response = await apiFetch<ApiItemResponse<Property>>(
       `/properties/${encodeURIComponent(reference)}`,
       undefined,
-      { tags: [propertyTag(reference)], ...options },
+      { revalidate: 600, tags: [propertyTag(reference)], ...options },
     );
     return response.data;
   } catch (error) {
@@ -88,7 +88,7 @@ export async function getSimilarProperties(
     const res = await apiFetch<ApiListResponse<Property>>(
       `/properties/${encodeURIComponent(reference)}/similar`,
       limit ? { limit } : undefined,
-      { tags: [propertyTag(reference), LIST_TAG], ...options },
+      { revalidate: 600, tags: [propertyTag(reference), LIST_TAG], ...options },
     );
     return res.data ?? [];
   } catch (error) {
