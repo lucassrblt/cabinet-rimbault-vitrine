@@ -33,7 +33,7 @@ export function StepIntent({
         title="Quel est votre projet ?"
         description="Pour adapter la réponse du cabinet à votre situation. Aucun engagement à cette étape."
       />
-      <div className="grid grid-cols-1 gap-2.5">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
         {options.map((opt) => {
           const Icon = opt.icon;
           return (
@@ -41,10 +41,8 @@ export function StepIntent({
               key={opt.value}
               selected={value === opt.value}
               onClick={() => onChange(opt.value)}
-              icon={<Icon className="h-4 w-4" aria-hidden="true" />}
+              icon={<Icon className="h-5 w-5" aria-hidden="true" />}
               title={opt.label}
-              layout="horizontal"
-              size="sm"
             />
           );
         })}

@@ -15,11 +15,11 @@ import {
 import { type ContactInput, contactSchema } from "@/lib/validation";
 
 const SUBJECTS: { value: ContactInput["subject"]; label: string }[] = [
-  { value: "vente", label: "Information sur un bien en vente" },
-  { value: "location", label: "Information sur un bien en location" },
-  { value: "estimation", label: "Estimation de mon bien" },
-  { value: "rdv", label: "Prendre rendez-vous" },
-  { value: "autre", label: "Partenariat / autre" },
+  { value: "vente", label: "Bien en vente" },
+  { value: "location", label: "Bien en location" },
+  { value: "estimation", label: "Estimation" },
+  { value: "rdv", label: "Rendez-vous" },
+  { value: "autre", label: "Autre" },
 ];
 
 export function ContactForm({
@@ -81,7 +81,9 @@ export function ContactForm({
         className="rounded-sm border border-emerald-200 bg-emerald-50 p-6 text-emerald-900"
       >
         <p className="text-lg font-semibold">Message reçu</p>
-        <p className="mt-1 text-sm">Je vous réponds sous 24 h ouvrées.</p>
+        <p className="mt-1 text-sm">
+          Le Cabinet vous répond sous 24 h ouvrées.
+        </p>
       </div>
     );
   }
@@ -106,16 +108,16 @@ export function ContactForm({
       )}
       <fieldset className="flex flex-col gap-2">
         <FieldLabel required>Sujet de votre demande</FieldLabel>
-        <div className="grid grid-cols-1 gap-1.5">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
           {SUBJECTS.map((s) => (
             <label
               key={s.value}
-              className="flex cursor-pointer items-center gap-2 rounded-sm border border-subtle px-3 py-2 text-sm hover:border-default"
+              className="group relative flex cursor-pointer items-center justify-center rounded-sm border border-default bg-card px-3 py-2.5 text-center text-sm font-medium text-body transition hover:border-strong hover:text-primary has-[:checked]:border-primary-600 has-[:checked]:bg-primary-50 has-[:checked]:text-primary-700 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-focus"
             >
               <input
                 type="radio"
                 value={s.value}
-                className="h-4 w-4"
+                className="sr-only"
                 {...register("subject")}
               />
               <span>{s.label}</span>
