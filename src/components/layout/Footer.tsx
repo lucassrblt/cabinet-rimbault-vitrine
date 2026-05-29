@@ -6,7 +6,6 @@ import { AGENT } from "@/lib/config/agent";
 const SERVICE_LINKS = [
   { href: "/acheter", label: "Acheter" },
   { href: "/louer", label: "Louer" },
-  { href: "/vendre", label: "Vendre" },
   { href: "/estimation", label: "Estimation gratuite" },
 ] as const;
 

@@ -12,7 +12,6 @@ const navItems = [
   { href: "/", label: "Accueil" },
   { href: "/acheter", label: "Acheter" },
   { href: "/louer", label: "Louer" },
-  { href: "/vendre", label: "Vendre" },
   { href: "/agence", label: "L'agence" },
 ];
 

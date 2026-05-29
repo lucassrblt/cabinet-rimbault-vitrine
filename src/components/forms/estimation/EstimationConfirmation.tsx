@@ -38,17 +38,11 @@ export function EstimationConfirmation({
       </p>
       <div className="mt-10 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:gap-4">
         <Link
-          href="/vendre"
+          href="/acheter"
           className="inline-flex flex-1 items-center justify-center gap-2 border border-primary-600 px-4 py-2.5 text-sm font-medium text-primary-600 transition-colors hover:bg-primary-600 hover:text-on-primary"
         >
-          Découvrir notre méthode
-          <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
-        <Link
-          href="/acheter"
-          className="inline-flex flex-1 items-center justify-center gap-2 border border-default px-4 py-2.5 text-sm font-medium text-body transition-colors hover:border-neutral-400 hover:text-primary"
-        >
           Voir les biens à vendre
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </Link>
       </div>
       {hasPhone && (
