@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { RevealMask } from "@/components/ui/RevealMask";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { getReviewsData } from "@/lib/reviews";
 import { HeroImage } from "./HeroImage";
@@ -43,9 +42,9 @@ export function EstimationHero() {
             </ScrollReveal>
           </div>
 
-          <RevealMask delay={0.12} direction="left">
+          <div className="reveal-sweep-left">
             <HeroImage />
-          </RevealMask>
+          </div>
         </div>
       </div>
     </section>

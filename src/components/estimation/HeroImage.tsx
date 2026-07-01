@@ -1,4 +1,5 @@
 import { ParallaxImage } from "@/components/ui/ParallaxImage";
+import { HERO_ESTIMATION } from "@/lib/images";
 
 /**
  * Photo du hero (colonne droite) — intérieur clair, en miroir de la promesse
@@ -9,7 +10,7 @@ export function HeroImage() {
   return (
     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-subtle bg-neutral-100 md:aspect-auto md:h-[420px]">
       <ParallaxImage
-        src="/hero-estimation.jpg"
+        src={HERO_ESTIMATION}
         alt=""
         settle={false}
         sizes="(min-width: 768px) 50vw, 100vw"

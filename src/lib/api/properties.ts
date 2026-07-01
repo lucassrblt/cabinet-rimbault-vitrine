@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { type ApiFetchOptions, apiFetch, type QueryValue } from "./client";
 import type {
   ApiItemResponse,
@@ -56,28 +57,35 @@ export async function searchProperties(
   );
 }
 
-export async function getPropertyByReference(
-  reference: string,
-  options: ApiFetchOptions = {},
-): Promise<Property | null> {
-  try {
-    const response = await apiFetch<ApiItemResponse<Property>>(
-      `/properties/${encodeURIComponent(reference)}`,
-      undefined,
-      { revalidate: 600, tags: [propertyTag(reference)], ...options },
-    );
-    return response.data;
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      "status" in error &&
-      (error as { status: number }).status === 404
-    ) {
-      return null;
+// Mémoïsé par requête avec cache() : generateMetadata + le composant page
+// appellent tous deux getPropertyByReference(reference). Le timeout d'abort de
+// apiFetch désactive la dedup fetch native de Next, d'où le double appel réseau
+// que cache() élimine (request-scoped ; le Data Cache revalidate: 600 gère, lui,
+// l'inter-requêtes).
+export const getPropertyByReference = cache(
+  async function getPropertyByReference(
+    reference: string,
+    options: ApiFetchOptions = {},
+  ): Promise<Property | null> {
+    try {
+      const response = await apiFetch<ApiItemResponse<Property>>(
+        `/properties/${encodeURIComponent(reference)}`,
+        undefined,
+        { revalidate: 600, tags: [propertyTag(reference)], ...options },
+      );
+      return response.data;
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        "status" in error &&
+        (error as { status: number }).status === 404
+      ) {
+        return null;
+      }
+      throw error;
     }
-    throw error;
-  }
-}
+  },
+);
 
 export async function getSimilarProperties(
   reference: string,

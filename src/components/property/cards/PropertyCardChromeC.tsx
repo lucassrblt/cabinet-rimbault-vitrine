@@ -61,12 +61,11 @@ function SoldOverlay({ property }: { property: Property }) {
   );
 }
 
-/** PropertyCardEditorial — variante « boîte blanche minimaliste ».
- *  Carte entière sur bg-card, photo plein bord en haut, padding 6 pour le texte.
- *  Pas de bordure visible, pas de translate-y au hover : on n'imite pas un
- *  portail. La photo reste un objet inscrit dans la carte ; la shadow vit
- *  désormais sur la carte (pas la photo) et s'amplifie au hover. */
-export function PropertyCardEditorial({ property }: { property: Property }) {
+/** Variante C — Punch couleur.
+ *  Aucun chrome ajouté à la carte. La signature vient des couleurs de marque
+ *  injectées dans le texte : eyebrow en vert ardoise (secondaire jamais utilisé
+ *  ailleurs) + prix XL en grenat profond. Le contenu signe à la place du cadre. */
+export function PropertyCardChromeC({ property }: { property: Property }) {
   const sliderImages = getSliderImages(property);
   const primary = sliderImages[0] ?? null;
   const sold = isSold(property);
@@ -76,8 +75,8 @@ export function PropertyCardEditorial({ property }: { property: Property }) {
   const price = getDisplayPrice(property);
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-sm bg-card shadow-[0_2px_8px_-4px_rgba(28,27,25,0.06)] ring-1 ring-black/5 transition-shadow duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:shadow-[0_16px_32px_-12px_rgba(28,27,25,0.18)]">
-      <div className="relative aspect-[4/3] overflow-hidden bg-section">
+    <article className="group relative flex h-full flex-col">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-section shadow-[0_10px_24px_-12px_rgba(28,27,25,0.18)] ring-1 ring-black/10 transition-all duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:-translate-y-0.5 group-hover:shadow-[0_18px_36px_-12px_rgba(28,27,25,0.22)]">
         {sold ? (
           <PropertyCardImage
             primary={primary}
@@ -92,9 +91,9 @@ export function PropertyCardEditorial({ property }: { property: Property }) {
         <SoldOverlay property={property} />
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-6">
+      <div className="flex flex-1 flex-col gap-3 pt-5">
         {eyebrow && (
-          <p className="font-display text-[11px] font-medium uppercase tracking-[0.28em] text-primary-600">
+          <p className="font-display text-[11px] font-semibold uppercase tracking-[0.28em] text-secondary-600">
             {eyebrow}
           </p>
         )}
@@ -132,7 +131,7 @@ export function PropertyCardEditorial({ property }: { property: Property }) {
           </ul>
         )}
 
-        <p className="mt-auto pt-2 font-display text-2xl font-medium tracking-tight text-primary">
+        <p className="mt-auto pt-2 font-display text-3xl font-medium tracking-tight text-primary-700">
           {price}
         </p>
       </div>

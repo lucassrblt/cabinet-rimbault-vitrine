@@ -69,6 +69,9 @@ const RENT_ITEMS: ReassuranceItem[] = [
 export function ListingReassurance({ mode }: { mode: "sale" | "rent" }) {
   const items = mode === "sale" ? SALE_ITEMS : RENT_ITEMS;
   const eyebrow = mode === "sale" ? "Pour bien acheter" : "Pour bien louer";
+  // Colonnes calées sur le nombre d'items (4 achat / 5 location) pour remplir
+  // toute la largeur — classes statiques pour rester détectables par Tailwind.
+  const colsClass = items.length >= 5 ? "md:grid-cols-5" : "md:grid-cols-4";
 
   return (
     <section className="bg-cream-light">
@@ -78,7 +81,7 @@ export function ListingReassurance({ mode }: { mode: "sale" | "rent" }) {
           title="Un accompagnement à chaque étape."
         />
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-5">
+        <div className={`mt-12 grid grid-cols-1 ${colsClass}`}>
           {items.map((item, i) => (
             <ScrollReveal
               key={item.title}

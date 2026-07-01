@@ -3,6 +3,7 @@ import { ParallaxImage } from "@/components/ui/ParallaxImage";
 import { RevealMask } from "@/components/ui/RevealMask";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { AGENT } from "@/lib/config/agent";
+import { HERO_AGENCE } from "@/lib/images";
 
 export type ContactHeroVariant = "a" | "b";
 
@@ -88,7 +89,7 @@ export function ContactHero({
           <RevealMask delay={0.12} direction="left">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg border border-subtle bg-neutral-100 md:aspect-auto md:h-[420px]">
               <ParallaxImage
-                src="/hero-agence.jpg"
+                src={HERO_AGENCE}
                 alt=""
                 settle={false}
                 sizes="(min-width: 768px) 50vw, 100vw"

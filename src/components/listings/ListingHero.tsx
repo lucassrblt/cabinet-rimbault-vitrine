@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -42,7 +42,7 @@ export function ListingHero({
 }: {
   mode: Mode;
   city: string;
-  image: string;
+  image: string | StaticImageData;
   imageAlt: string;
 }) {
   const c = CONTENT[mode];
@@ -55,6 +55,7 @@ export function ListingHero({
         alt={imageAlt}
         fill
         priority
+        placeholder={typeof image === "object" ? "blur" : "empty"}
         className="object-cover"
         sizes="100vw"
       />

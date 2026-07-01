@@ -14,6 +14,7 @@ import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
 import { findCommuneBySlug } from "@/lib/config/communes";
+import { HERO_AGENCE } from "@/lib/images";
 import {
   pageFromQuery,
   paginateServerSide,
@@ -55,18 +56,20 @@ export default async function AcheterPage({
   // active pour que chaque compteur reflète « combien si je passe à celle-là ».
   const { city: _city, postalCode: _postalCode, ...countFilters } = filters;
 
+  // Compteurs par commune : démarrés SANS await (hors chemin bloquant), streamés
+  // vers le popover via use(). Le .catch garantit que use() ne throw jamais.
+  const communeCountsPromise = getCommuneCounts("VENTE", countFilters).catch(
+    () => ({}) as CommuneCounts,
+  );
+
   let items: Property[] = [];
   let total = 0;
-  let communeCounts: CommuneCounts = {};
   let errorMessage: string | undefined;
   try {
-    const [res, counts] = await Promise.all([
-      searchProperties(filters),
-      getCommuneCounts("VENTE", countFilters),
-    ]);
+    // Seul appel bloquant : la grille en dépend, et `total` en provient.
+    const res = await searchProperties(filters, { revalidate: 600 });
     items = res.data ?? [];
     total = res.total ?? items.length;
-    communeCounts = counts;
   } catch (err) {
     errorMessage =
       err instanceof Error
@@ -86,7 +89,7 @@ export default async function AcheterPage({
         <ListingHero
           mode="sale"
           city={AGENT.address.city}
-          image="/hero-agence.jpg"
+          image={HERO_AGENCE}
           imageAlt="Immeuble de caractère"
         />
         <div className="relative z-10 mx-auto -mt-12 w-full max-w-7xl px-gutter pb-12 md:-mt-16 md:pb-14">
@@ -95,7 +98,7 @@ export default async function AcheterPage({
             basePath={basePath}
             query={query}
             total={total}
-            communeCounts={communeCounts}
+            communeCountsPromise={communeCountsPromise}
           />
           <div className="mt-4">
             <ActiveFiltersChips mode="sale" basePath={basePath} query={query} />

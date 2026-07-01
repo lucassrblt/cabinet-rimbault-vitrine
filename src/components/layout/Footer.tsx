@@ -1,7 +1,7 @@
 import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 
 const SERVICE_LINKS = [
   { href: "/acheter", label: "Acheter" },
@@ -116,7 +116,9 @@ export function Footer() {
               {AGENT.legal.rcs} · {AGENT.legal.siret}
             </li>
             <li>Garant financier : {AGENT.legal.garant}</li>
-            <li>{AGENT.legal.mediator}</li>
+            {!isPlaceholder(AGENT.legal.mediator) && (
+              <li>{AGENT.legal.mediator}</li>
+            )}
           </ul>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <Link

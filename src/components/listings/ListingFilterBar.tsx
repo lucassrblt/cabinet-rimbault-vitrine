@@ -2,7 +2,7 @@
 
 import { Coins, Home, MapPin, Search, SlidersHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useState } from "react";
+import { Suspense, use, useEffect, useId, useMemo, useState } from "react";
 import { TextInput } from "@/components/ui/FormField";
 import { COMMUNES } from "@/lib/config/communes";
 import type { ListingQuery } from "@/lib/listing";
@@ -18,7 +18,9 @@ interface Props {
   basePath: string;
   query: ListingQuery;
   total: number;
-  communeCounts?: CommuneCounts;
+  // Promesse (non-attendue côté serveur) : les compteurs streament dans le
+  // popover via use() sans bloquer le rendu de la page. Cf. getCommuneCounts.
+  communeCountsPromise?: Promise<CommuneCounts>;
 }
 
 const SALE_TYPES = [
@@ -104,7 +106,7 @@ export function ListingFilterBar({
   basePath,
   query,
   total,
-  communeCounts,
+  communeCountsPromise,
 }: Props) {
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -204,16 +206,39 @@ export function ListingFilterBar({
                 variant="cell"
                 width="md"
               >
-                {(close) => (
-                  <CommuneList
-                    value={pending.commune ?? ""}
-                    counts={communeCounts}
-                    onSelect={(v) => {
-                      setPending((p) => ({ ...p, commune: v || undefined }));
-                      close();
-                    }}
-                  />
-                )}
+                {(close) => {
+                  const onSelect = (v: string) => {
+                    setPending((p) => ({ ...p, commune: v || undefined }));
+                    close();
+                  };
+                  // Compteurs streamés : le popover est instantanément
+                  // interactif (fallback = ordre config, sans badge) ; les
+                  // badges + le tri se remplissent dès résolution de la promesse.
+                  if (!communeCountsPromise) {
+                    return (
+                      <CommuneList
+                        value={pending.commune ?? ""}
+                        onSelect={onSelect}
+                      />
+                    );
+                  }
+                  return (
+                    <Suspense
+                      fallback={
+                        <CommuneList
+                          value={pending.commune ?? ""}
+                          onSelect={onSelect}
+                        />
+                      }
+                    >
+                      <CommuneListWithCounts
+                        promise={communeCountsPromise}
+                        value={pending.commune ?? ""}
+                        onSelect={onSelect}
+                      />
+                    </Suspense>
+                  );
+                }}
               </FilterPopover>
             </div>
 
@@ -366,6 +391,21 @@ function RadioList({
       })}
     </ul>
   );
+}
+
+/** Déballe la promesse de compteurs avec use() (suspend le seul panneau du
+ *  popover, jamais la page) puis rend CommuneList enrichi. */
+function CommuneListWithCounts({
+  promise,
+  value,
+  onSelect,
+}: {
+  promise: Promise<CommuneCounts>;
+  value: string;
+  onSelect: (v: string) => void;
+}) {
+  const counts = use(promise);
+  return <CommuneList value={value} counts={counts} onSelect={onSelect} />;
 }
 
 function CommuneList({

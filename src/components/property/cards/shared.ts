@@ -21,6 +21,14 @@ export function getPrimaryImages(property: Property): {
   return { primary, secondary };
 }
 
+/** Toutes les images d'un bien, triées : image principale d'abord, puis ordre. */
+export function getSliderImages(property: Property): PropertyImage[] {
+  return property.images.slice().sort((a, b) => {
+    if (a.isMain !== b.isMain) return a.isMain ? -1 : 1;
+    return a.order - b.order;
+  });
+}
+
 /** Construit un fallback éditorial à partir des caractéristiques quand
  *  `property.title` est vide ou trop générique. */
 export function buildFallbackTitle(property: Property): string {

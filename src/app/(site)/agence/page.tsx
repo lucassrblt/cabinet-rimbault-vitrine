@@ -23,6 +23,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TextReveal } from "@/components/ui/TextReveal";
 import { AGENT, isPlaceholder } from "@/lib/config/agent";
 import { RENT_TIERS, SALE_TIERS } from "@/lib/config/honoraires";
+import { HERO_AGENCE } from "@/lib/images";
 import { getReviewsData } from "@/lib/reviews";
 
 export const metadata: Metadata = {
@@ -53,7 +54,7 @@ function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-neutral-900">
       <ParallaxImage
-        src="/hero-agence.jpg"
+        src={HERO_AGENCE}
         alt="Vitrine du Cabinet Rimbault — Transactions Immobilières"
         objectPosition="center 35%"
       />

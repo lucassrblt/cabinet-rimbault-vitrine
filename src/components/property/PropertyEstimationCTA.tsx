@@ -1,5 +1,7 @@
 import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { HERO_AGENCE } from "@/lib/images";
 
 export function PropertyEstimationCTA() {
   return (
@@ -9,11 +11,17 @@ export function PropertyEstimationCTA() {
           {/* Decorative photo — right side, masked into the panel */}
           <div
             aria-hidden="true"
-            className="absolute inset-y-0 right-0 hidden w-[44%] bg-cover bg-center md:block"
-            style={{
-              backgroundImage: "url(/hero-agence.jpg)",
-            }}
-          />
+            className="absolute inset-y-0 right-0 hidden w-[44%] md:block"
+          >
+            <Image
+              src={HERO_AGENCE}
+              alt=""
+              fill
+              placeholder="blur"
+              className="object-cover"
+              sizes="(min-width: 1152px) 512px, 44vw"
+            />
+          </div>
           {/* Soft gradient bridging text → photo */}
           <div
             aria-hidden="true"
@@ -26,11 +34,17 @@ export function PropertyEstimationCTA() {
           {/* Mobile soft photo header */}
           <div
             aria-hidden="true"
-            className="aspect-[16/8] w-full bg-cover bg-center md:hidden"
-            style={{
-              backgroundImage: "url(/hero-agence.jpg)",
-            }}
-          />
+            className="relative aspect-[16/8] w-full md:hidden"
+          >
+            <Image
+              src={HERO_AGENCE}
+              alt=""
+              fill
+              placeholder="blur"
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
           {/* Burgundy hairline accent — signature gesture */}
           <span
             aria-hidden="true"
