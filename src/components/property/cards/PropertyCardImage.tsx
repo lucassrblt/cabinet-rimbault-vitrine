@@ -48,7 +48,7 @@ export function PropertyCardImage({
     <div className={cn("relative h-full w-full overflow-hidden", className)}>
       <Image
         src={primary.url}
-        alt={primary.alt ?? alt}
+        alt={alt}
         fill
         sizes={sizes}
         placeholder="blur"

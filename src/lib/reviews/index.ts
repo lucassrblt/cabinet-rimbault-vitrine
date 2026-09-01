@@ -22,15 +22,17 @@ export const getReviewsData = cache(async (): Promise<ReviewsData | null> => {
 });
 
 /**
- * Sélection affichable : avis ≥ 4★ au texte non vide. La note globale, elle,
- * reste celle renvoyée par Google (non recalculée). Tronque à `limit`.
+ * Sélection affichable : avis ≥ 4★ au texte non vide, triés par richesse du
+ * texte (les avis détaillés d'abord — un avis d'une ligne signé d'un pseudo
+ * n'a pas sa place en tête de home). La note globale, elle, reste celle
+ * renvoyée par Google (non recalculée). Tronque à `limit`.
  */
 export function featuredReviews(
   data: ReviewsData,
   limit?: number,
 ): GoogleReview[] {
-  const filtered = data.reviews.filter(
-    (review) => review.rating >= 4 && review.text.trim().length > 0,
-  );
+  const filtered = data.reviews
+    .filter((review) => review.rating >= 4 && review.text.trim().length > 0)
+    .sort((a, b) => b.text.trim().length - a.text.trim().length);
   return limit ? filtered.slice(0, limit) : filtered;
 }

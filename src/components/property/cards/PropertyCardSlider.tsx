@@ -70,7 +70,7 @@ export function PropertyCardSlider({
         >
           <Image
             src={current.url}
-            alt={current.alt ?? alt}
+            alt={alt}
             fill
             sizes={sizes}
             placeholder="blur"

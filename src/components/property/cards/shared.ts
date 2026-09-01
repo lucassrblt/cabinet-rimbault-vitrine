@@ -38,11 +38,34 @@ export function buildFallbackTitle(property: Property): string {
   return `${type} ${rooms} pièce${rooms > 1 ? "s" : ""}`;
 }
 
-/** Titre prioritaire : `property.title` si saisi par l'agent, sinon fallback. */
+/** Atouts saillants (2 max, par ordre d'attractivité) pour le suffixe de
+ *  titre : « — terrasse, parking ». */
+function amenityHighlights(property: Property): string[] {
+  const a = property.amenities;
+  if (!a) return [];
+  const ordered: [boolean, string][] = [
+    [a.hasTerrace, "terrasse"],
+    [a.hasGarden, "jardin"],
+    [a.hasBalcony, "balcon"],
+    [a.hasParking, "parking"],
+    [a.hasGarage, "garage"],
+    [a.hasCellar, "cave"],
+  ];
+  return ordered
+    .filter(([has]) => has)
+    .map(([, label]) => label)
+    .slice(0, 2);
+}
+
+/** Titre des cards : toujours composé côté vitrine (« Appartement 2 pièces —
+ *  terrasse, parking »). Le titre saisi par l'agent (souvent en majuscules
+ *  brutes back-office) n'est plus affiché sur les cards — la fiche bien garde
+ *  son propre titre composé. */
 export function getDisplayTitle(property: Property): string {
-  const t = property.title?.trim();
-  if (t && t.length > 0) return t;
-  return buildFallbackTitle(property);
+  const base = buildFallbackTitle(property);
+  const highlights = amenityHighlights(property);
+  if (highlights.length === 0) return base;
+  return `${base} — ${highlights.join(", ")}`;
 }
 
 /** Eyebrow géographique : "PARIS 16e — AUTEUIL" (capitales, séparateur tiret cadratin). */

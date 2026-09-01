@@ -21,31 +21,36 @@ function formatRating(value: number): string {
   });
 }
 
+/**
+ * Panneau texte du hero « carte » (DA moderne chaleureux) : fond clair,
+ * badge chip, H1 sombre, 2 CTA, pastille Google. La photo occupe l'autre
+ * moitié de la carte (posée par la page).
+ */
 export function HeroContent({ reviews }: { reviews: HeroReviews | null }) {
   return (
     <motion.div
       initial="hidden"
       animate="visible"
       variants={heroContainer}
-      className="relative z-10 mx-auto flex min-h-[76svh] w-full max-w-7xl flex-col justify-center px-gutter pb-24 pt-28 md:pb-28 md:pt-32"
+      className="flex flex-col justify-center px-6 py-12 md:px-12 md:py-16 lg:px-14"
     >
       <motion.p
         variants={heroLine}
-        className="inline-block w-fit rounded-lg bg-primary-600 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-on-primary"
+        className="inline-flex w-fit items-center rounded-full border border-subtle bg-card px-4 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-primary-600"
       >
         Cabinet immobilier à Asnières-sur-Seine
       </motion.p>
 
       <motion.h1
         variants={heroLine}
-        className="mt-4 max-w-2xl font-display text-display font-semibold leading-tight text-white"
+        className="mt-5 max-w-xl font-display text-4xl font-semibold leading-[1.08] tracking-tight text-primary md:text-5xl"
       >
         Vendre ou acheter à Asnières-sur-Seine, avec un interlocuteur unique.
       </motion.h1>
 
       <motion.p
         variants={heroLine}
-        className="mt-5 max-w-lg text-base leading-relaxed text-white/80 md:text-lg"
+        className="mt-5 max-w-md text-base leading-relaxed text-body md:text-lg"
       >
         De l&apos;estimation à la signature, le Cabinet Rimbault vous accompagne
         depuis 2009.
@@ -67,27 +72,27 @@ export function HeroContent({ reviews }: { reviews: HeroReviews | null }) {
         </Link>
         <Link
           href="/acheter"
-          className="inline-flex items-center gap-2 rounded-lg border border-white/40 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-white/70 hover:bg-white/20 active:translate-y-0"
+          className="inline-flex items-center gap-2 rounded-lg border border-default bg-card px-6 py-3 text-sm font-semibold text-primary transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-strong hover:bg-section/40 active:translate-y-0"
         >
           Voir nos biens
         </Link>
       </motion.div>
 
       {reviews && (
-        <motion.div variants={heroLine} className="mt-7">
+        <motion.div variants={heroLine} className="mt-8">
           <a
             href={reviews.sourceUrl}
             target="_blank"
             rel="noreferrer noopener"
             aria-label={`Note de ${formatRating(reviews.rating)} sur 5 — ${reviews.totalCount} avis Google, voir la fiche`}
-            className="inline-flex items-center gap-2.5 rounded-full border border-white/25 bg-black/30 px-4 py-2 backdrop-blur-sm transition-colors hover:border-white/50"
+            className="inline-flex items-center gap-2.5 rounded-full border border-subtle bg-card px-4 py-2 shadow-sm transition-colors hover:border-default"
           >
             <GoogleGlyph className="h-4 w-4 shrink-0" />
-            <span className="font-display text-base font-semibold text-white">
+            <span className="font-display text-base font-semibold text-primary">
               {formatRating(reviews.rating)}
             </span>
             <Rating value={reviews.rating} />
-            <span className="text-sm text-white/80">
+            <span className="text-sm text-muted">
               {reviews.totalCount} avis
             </span>
           </a>

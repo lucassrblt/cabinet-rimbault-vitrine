@@ -9,16 +9,13 @@ import { PROCESS_STEPS } from "./estimation-content";
  * de la page d'accueil) — `SectionHeader`, cellules bordées, icônes bordeaux —
  * pour rester cohérent avec les autres pages.
  */
-export function EstimationProcess({
-  eyebrow = "Comment ça se passe",
-  title = "Une estimation humaine, en trois temps.",
-}: {
-  eyebrow?: string;
-  title?: string;
-} = {}) {
+export function EstimationProcess() {
   return (
     <div>
-      <SectionHeader eyebrow={eyebrow} title={title} />
+      <SectionHeader
+        eyebrow="Comment ça se passe"
+        title="Une estimation humaine, en trois temps."
+      />
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3">
         {PROCESS_STEPS.map((step, i) => {
           const Icon = step.icon;
