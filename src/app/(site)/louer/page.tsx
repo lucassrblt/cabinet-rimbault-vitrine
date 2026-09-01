@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { ContactTrigger } from "@/components/contact/ContactTrigger";
 import { ActiveFiltersChips } from "@/components/listings/ActiveFiltersChips";
+import { ListingEmptyState } from "@/components/listings/ListingEmptyState";
 import { ListingFilterBar } from "@/components/listings/ListingFilterBar";
 import { ListingHero } from "@/components/listings/ListingHero";
 import { ListingReassurance } from "@/components/listings/ListingReassurance";
@@ -8,7 +8,6 @@ import { ListingResultsBar } from "@/components/listings/ListingResultsBar";
 import { Pagination } from "@/components/listings/Pagination";
 import { RentPropertyCard } from "@/components/property/PropertyCard";
 import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
-import { LinkButton } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
@@ -16,6 +15,7 @@ import { AGENT } from "@/lib/config/agent";
 import { findCommuneBySlug } from "@/lib/config/communes";
 import { HERO_HOME } from "@/lib/images";
 import {
+  hasActiveFilters,
   pageFromQuery,
   paginateServerSide,
   parseQuery,
@@ -116,23 +116,11 @@ export default async function LouerPage({
           ) : (
             <>
               {items.length === 0 ? (
-                <div className="flex flex-col items-start gap-4 rounded-sm border border-subtle bg-card p-6">
-                  <p className="text-base font-medium text-primary">
-                    Aucun bien ne correspond à vos critères.
-                  </p>
-                  <div className="flex flex-wrap gap-3">
-                    <LinkButton href={basePath} variant="secondary" size="sm">
-                      Réinitialiser les filtres
-                    </LinkButton>
-                    <ContactTrigger
-                      subject="location"
-                      variant="primary"
-                      size="sm"
-                    >
-                      Me signaler ma recherche
-                    </ContactTrigger>
-                  </div>
-                </div>
+                <ListingEmptyState
+                  mode="rent"
+                  filtered={hasActiveFilters(query)}
+                  basePath={basePath}
+                />
               ) : (
                 <>
                   <ListingResultsBar
@@ -153,29 +141,31 @@ export default async function LouerPage({
                 </>
               )}
 
-              <div className="mt-10">
-                <Pagination
-                  currentPage={pageData.page}
-                  totalPages={pageData.totalPages}
-                  basePath={basePath}
-                  params={{
-                    type: query.type,
-                    commune: query.commune,
-                    pieces: query.pieces,
-                    budgetMin: query.budgetMin,
-                    budgetMax: query.budgetMax,
-                    surfaceMin: query.surfaceMin,
-                    surfaceMax: query.surfaceMax,
-                    sort: query.sort,
-                    meuble: query.meuble,
-                    dpe: query.dpe,
-                    balcon: query.balcon,
-                    terrasse: query.terrasse,
-                    jardin: query.jardin,
-                    hideFG: query.hideFG,
-                  }}
-                />
-              </div>
+              {items.length > 0 && (
+                <div className="mt-10">
+                  <Pagination
+                    currentPage={pageData.page}
+                    totalPages={pageData.totalPages}
+                    basePath={basePath}
+                    params={{
+                      type: query.type,
+                      commune: query.commune,
+                      pieces: query.pieces,
+                      budgetMin: query.budgetMin,
+                      budgetMax: query.budgetMax,
+                      surfaceMin: query.surfaceMin,
+                      surfaceMax: query.surfaceMax,
+                      sort: query.sort,
+                      meuble: query.meuble,
+                      dpe: query.dpe,
+                      balcon: query.balcon,
+                      terrasse: query.terrasse,
+                      jardin: query.jardin,
+                      hideFG: query.hideFG,
+                    }}
+                  />
+                </div>
+              )}
             </>
           )}
         </div>

@@ -1,9 +1,9 @@
 import { ArrowRight, KeyRound, MapPin, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import { EstimationProcess } from "@/components/estimation/EstimationProcess";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import { HeroContent } from "@/components/home/HeroContent";
-import { HeroSearch } from "@/components/home/HeroSearch";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { ParallaxImage } from "@/components/ui/ParallaxImage";
@@ -15,6 +15,7 @@ import { listRecentProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
 import { HERO_AGENCE, HERO_HOME } from "@/lib/images";
+import { getReviewsData } from "@/lib/reviews";
 
 export default async function Home() {
   const featured = await loadFeaturedProperties();
@@ -23,6 +24,7 @@ export default async function Home() {
     <main className="flex flex-1 flex-col">
       <HeroSection />
       <FeaturedSection properties={featured} />
+      <SellerSection />
       <ReassuranceSection />
       <Suspense fallback={null}>
         <ReviewsStrip
@@ -45,12 +47,15 @@ async function loadFeaturedProperties(): Promise<Property[]> {
 }
 
 /* ─────────────────────────────────────────────
-   Hero — INCHANGÉ
+   Hero — conviction : accroche + 2 CTA + preuve Google
    ───────────────────────────────────────────── */
 
-function HeroSection() {
+async function HeroSection() {
+  // Note Google en direct (cachée) ; pastille masquée si la fiche est indispo.
+  const reviews = await getReviewsData().catch(() => null);
+
   return (
-    <section className="relative -mt-20 bg-cream pb-12 md:pb-14">
+    <section className="relative -mt-20 bg-cream">
       <div className="relative overflow-hidden">
         <ParallaxImage
           src={HERO_HOME}
@@ -64,18 +69,24 @@ function HeroSection() {
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/40 to-transparent"
         />
-        <HeroContent />
-      </div>
-
-      <div className="relative z-20 mx-auto -mt-14 w-full max-w-5xl px-gutter md:-mt-16">
-        <HeroSearch />
+        <HeroContent
+          reviews={
+            reviews
+              ? {
+                  rating: reviews.rating,
+                  totalCount: reviews.totalCount,
+                  sourceUrl: reviews.sourceUrl,
+                }
+              : null
+          }
+        />
       </div>
     </section>
   );
 }
 
 /* ─────────────────────────────────────────────
-   Notre sélection — INCHANGÉ
+   Notre sélection — la rareté assumée comme preuve
    ───────────────────────────────────────────── */
 
 function FeaturedSection({ properties }: { properties: Property[] }) {
@@ -86,7 +97,8 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
       <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow="Notre sélection"
-          title="Nos coups de cœur dans votre quartier."
+          title="Une sélection volontairement restreinte."
+          lede="Chaque bien présenté est un mandat que nous suivons personnellement, de la première visite à la signature."
           action={
             <Link
               href="/acheter"
@@ -103,6 +115,52 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
         <div className="mt-10">
           <FeaturedCarousel properties={properties} />
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Bloc vendeur — le cœur de la page (objectif : lead estimation)
+   ───────────────────────────────────────────── */
+
+function SellerSection() {
+  return (
+    <section className="bg-cream-light">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
+        <EstimationProcess
+          eyebrow="Vous vendez ?"
+          title="Confiez-nous votre bien."
+        />
+
+        <ScrollReveal>
+          <div className="mt-12 flex flex-col items-start justify-between gap-6 border-t border-neutral-200 pt-10 md:flex-row md:items-center">
+            <p className="max-w-xl text-sm leading-relaxed text-body">
+              Des honoraires transparents, affichés publiquement.{" "}
+              <Link
+                href="/honoraires"
+                className="font-medium text-primary underline underline-offset-4 hover:text-primary-600"
+              >
+                Consulter le barème
+              </Link>
+            </p>
+            <div className="flex flex-col items-start gap-2 md:items-end">
+              <Magnetic>
+                <Link
+                  href="/estimation"
+                  className="group inline-flex items-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
+                >
+                  Estimer mon bien
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </Magnetic>
+              <p className="text-xs text-muted">Gratuit · sans engagement</p>
+            </div>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -137,7 +195,7 @@ const REASSURANCE_ITEMS = [
 
 function ReassuranceSection() {
   return (
-    <section className="bg-cream-light">
+    <section className="bg-cream">
       <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
           eyebrow="Nos engagements"

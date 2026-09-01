@@ -1,6 +1,5 @@
 import { Phone } from "lucide-react";
 import { ContactTrigger } from "@/components/contact/ContactTrigger";
-import { HeroSearch } from "@/components/home/HeroSearch";
 import { LinkButton } from "@/components/ui/Button";
 import { AGENT } from "@/lib/config/agent";
 
@@ -16,12 +15,8 @@ export default function NotFound() {
       </p>
 
       <div className="mt-8">
-        <HeroSearch />
-      </div>
-
-      <div className="mt-8">
         <p className="text-sm font-medium text-primary">
-          Ou accédez directement à :
+          Accédez directement à :
         </p>
         <div className="mt-3 flex flex-wrap gap-3">
           <LinkButton href="/acheter" variant="secondary">

@@ -31,6 +31,13 @@ export interface ListingQuery {
 
 export const PER_PAGE = 12;
 
+/** true si au moins un filtre utilisateur est actif (tri et page exclus) —
+ *  permet de distinguer « portefeuille vide » de « filtres trop restrictifs ». */
+export function hasActiveFilters(query: ListingQuery): boolean {
+  const { sort: _sort, page: _page, ...filters } = query;
+  return Object.values(filters).some((v) => v != null && v !== "");
+}
+
 export function parseQuery(
   sp: Record<string, string | string[] | undefined>,
 ): ListingQuery {

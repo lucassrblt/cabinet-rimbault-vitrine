@@ -3,8 +3,8 @@
  *
  * Évite la duplication de l'easing à travers les composants `motion` et
  * synchronise le séquencement d'entrée des heros (ParallaxImage / HeroContent /
- * HeroSearch / AgenceHeroContent lisent les mêmes valeurs : pas d'arbre
- * `motion` commun, mais un rendu orchestré).
+ * AgenceHeroContent lisent les mêmes valeurs : pas d'arbre `motion` commun,
+ * mais un rendu orchestré).
  */
 
 import type { Variants } from "framer-motion";
