@@ -64,7 +64,7 @@ async function HeroSection() {
   return (
     <section className="bg-cream pt-6 pb-4 md:pt-8">
       <div className="mx-auto w-full max-w-7xl px-gutter">
-        <div className="relative overflow-hidden rounded-2xl bg-header shadow-md md:min-h-[440px]">
+        <div className="relative overflow-hidden rounded-xl bg-header shadow-md md:min-h-[440px]">
           {/* Photo plein bord à droite, fondue dans la zone texte (mock). */}
           <div className="relative h-56 w-full sm:h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
             <ShimmerImage
@@ -155,7 +155,7 @@ function SellerSection() {
   return (
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-7xl px-gutter py-16 md:py-24">
-        <div className="relative overflow-hidden rounded-2xl bg-secondary-50 px-6 py-12 md:px-12 md:py-16">
+        <div className="relative overflow-hidden rounded-xl bg-secondary-50 px-6 py-12 md:px-12 md:py-16">
           {/* Illustration au trait (pont d'Asnières) — placeholder dessiné,
               à remplacer par le SVG définitif du PO. */}
           <div
@@ -322,7 +322,7 @@ function EstimationCtaSection() {
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <ScrollReveal>
-          <div className="overflow-hidden rounded-2xl shadow-sm">
+          <div className="overflow-hidden rounded-xl shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="flex flex-col justify-center bg-primary-600 px-6 py-10 md:px-12 md:py-16">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">

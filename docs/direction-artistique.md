@@ -44,7 +44,7 @@ en cas de doute, faire comme elle.
   principale (une bordure `border-subtle` peut coexister avec l'ombre, jamais
   seule en grille dense).
 - **Conteneurs de section** (hero en carte, bloc vendeur teinté, bannière
-  CTA) : `rounded-2xl` (16 px) — seule exception au rayon 8, réservée aux
+  CTA) : `rounded-xl` (12 px) — seule exception au rayon 8, réservée aux
   grands conteneurs pleine largeur.
 - **Pastilles numérotées** : cercle `secondary-50`, chiffre ardoise — pour
   toute séquence réelle (étapes d'estimation, process de vente).
