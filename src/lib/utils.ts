@@ -56,16 +56,6 @@ export function formatPropertyType(type: string): string {
   return map[type] ?? type;
 }
 
-export function formatTransactionType(type: string): string {
-  const map: Record<string, string> = {
-    VENTE: "À vendre",
-    LOCATION: "À louer",
-    VIAGER: "Viager",
-    LOCATION_SAISONNIERE: "Location saisonnière",
-  };
-  return map[type] ?? type;
-}
-
 export function formatCondition(condition: string): string {
   const map: Record<string, string> = {
     NEUF: "Neuf",
@@ -89,19 +79,6 @@ export function formatDate(iso: string | null | undefined): string {
   } catch {
     return "";
   }
-}
-
-export function formatStatusLabel(status: string): string {
-  const map: Record<string, string> = {
-    DISPONIBLE: "Disponible",
-    SOUS_COMPROMIS: "Sous compromis",
-    SOUS_OFFRE: "Sous offre",
-    VENDU: "Vendu",
-    LOUE: "Loué",
-    ARCHIVE: "Archivé",
-    BROUILLON: "Brouillon",
-  };
-  return map[status] ?? status;
 }
 
 export function formatFloor(floor: number | null | undefined): string | null {
