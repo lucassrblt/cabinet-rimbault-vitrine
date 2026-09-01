@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { ActiveFiltersChips } from "@/components/listings/ActiveFiltersChips";
 import { ListingEmptyState } from "@/components/listings/ListingEmptyState";
 import { ListingFilterBar } from "@/components/listings/ListingFilterBar";
-import { ListingHero } from "@/components/listings/ListingHero";
+import { ListingHeader } from "@/components/listings/ListingHeader";
 import { ListingReassurance } from "@/components/listings/ListingReassurance";
-import { ListingResultsBar } from "@/components/listings/ListingResultsBar";
 import { Pagination } from "@/components/listings/Pagination";
 import { SalePropertyCard } from "@/components/property/PropertyCard";
 import { PropertyEstimationCTA } from "@/components/property/PropertyEstimationCTA";
@@ -13,7 +12,6 @@ import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
 import { AGENT } from "@/lib/config/agent";
 import { findCommuneBySlug } from "@/lib/config/communes";
-import { HERO_AGENCE } from "@/lib/images";
 import {
   hasActiveFilters,
   pageFromQuery,
@@ -83,31 +81,26 @@ export default async function AcheterPage({
   return (
     <main className="flex flex-1 flex-col">
       <section className="border-b border-subtle bg-header">
-        {/* STOPGAP : pas de visuel dédié /acheter — réutilise la façade de
-            l'agence. Remplacer par /public/hero-acheter.jpg dès qu'un visuel
-            dédié existe. */}
-        <ListingHero
-          mode="sale"
-          city={AGENT.address.city}
-          image={HERO_AGENCE}
-          imageAlt="Immeuble de caractère"
-        />
-        <div className="relative z-10 mx-auto -mt-12 w-full max-w-7xl px-gutter pb-12 md:-mt-16 md:pb-14">
+        <ListingHeader mode="sale" city={AGENT.address.city} total={total} />
+      </section>
+
+      <section className="bg-cream">
+        {/* La toolbar chevauche la frontière de l'en-tête (geste variante A). */}
+        <div className="relative z-10 mx-auto -mt-8 w-full max-w-7xl px-gutter md:-mt-10">
           <ListingFilterBar
             mode="sale"
             basePath={basePath}
             query={query}
             total={total}
+            sort={query.sort}
             communeCountsPromise={communeCountsPromise}
           />
           <div className="mt-4">
             <ActiveFiltersChips mode="sale" basePath={basePath} query={query} />
           </div>
         </div>
-      </section>
 
-      <section className="bg-cream">
-        <div className="mx-auto w-full max-w-7xl px-gutter py-16 md:py-20">
+        <div className="mx-auto w-full max-w-7xl px-gutter py-12 md:py-16">
           {errorMessage ? (
             <div className="rounded-sm border border-subtle bg-card p-6 text-sm text-body">
               <p className="font-medium">
@@ -124,23 +117,15 @@ export default async function AcheterPage({
                   basePath={basePath}
                 />
               ) : (
-                <>
-                  <ListingResultsBar
-                    mode="sale"
-                    total={total}
-                    basePath={basePath}
-                    sort={query.sort}
-                  />
-                  <ul className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {items.map((p, i) => (
-                      <li key={p.id} className="h-full">
-                        <ScrollReveal delay={(i % 3) * 0.07} className="h-full">
-                          <SalePropertyCard property={p} />
-                        </ScrollReveal>
-                      </li>
-                    ))}
-                  </ul>
-                </>
+                <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map((p, i) => (
+                    <li key={p.id} className="h-full">
+                      <ScrollReveal delay={(i % 3) * 0.07} className="h-full">
+                        <SalePropertyCard property={p} />
+                      </ScrollReveal>
+                    </li>
+                  ))}
+                </ul>
               )}
 
               {items.length > 0 && (

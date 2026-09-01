@@ -1,6 +1,6 @@
 "use client";
 
-import { Coins, Home, MapPin, Search, SlidersHorizontal } from "lucide-react";
+import { Coins, Home, MapPin, SlidersHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Suspense, use, useEffect, useId, useMemo, useState } from "react";
 import { TextInput } from "@/components/ui/FormField";
@@ -10,6 +10,7 @@ import type { CommuneCounts } from "@/lib/listing-counts";
 import { cn } from "@/lib/utils";
 import { FilterDrawer } from "./FilterDrawer";
 import { FilterPopover } from "./FilterPopover";
+import { SortSelect } from "./SortSelect";
 
 export type FilterBarMode = "sale" | "rent";
 
@@ -18,6 +19,8 @@ interface Props {
   basePath: string;
   query: ListingQuery;
   total: number;
+  /** Tri actif (`query.sort`) — affiché dans la toolbar, à droite. */
+  sort?: string;
   // Promesse (non-attendue côté serveur) : les compteurs streament dans le
   // popover via use() sans bloquer le rendu de la page. Cf. getCommuneCounts.
   communeCountsPromise?: Promise<CommuneCounts>;
@@ -106,6 +109,7 @@ export function ListingFilterBar({
   basePath,
   query,
   total,
+  sort,
   communeCountsPromise,
 }: Props) {
   const router = useRouter();
@@ -207,9 +211,12 @@ export function ListingFilterBar({
                 width="md"
               >
                 {(close) => {
+                  // Application immédiate : le choix committe l'URL sans
+                  // bouton « Rechercher ».
                   const onSelect = (v: string) => {
                     setPending((p) => ({ ...p, commune: v || undefined }));
                     close();
+                    search({ commune: v || undefined });
                   };
                   // Compteurs streamés : le popover est instantanément
                   // interactif (fallback = ordre config, sans badge) ; les
@@ -257,6 +264,7 @@ export function ListingFilterBar({
                     onSelect={(v) => {
                       setPending((p) => ({ ...p, type: v || undefined }));
                       close();
+                      search({ type: v || undefined });
                     }}
                     options={types}
                   />
@@ -300,15 +308,7 @@ export function ListingFilterBar({
             </div>
           </div>
 
-          <div className="flex items-stretch gap-2 md:gap-1.5 md:border-l md:border-subtle md:pl-2">
-            <button
-              type="button"
-              onClick={() => search()}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-600 px-5 py-3 text-sm font-semibold text-on-primary transition-colors hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus md:flex-none md:px-6"
-            >
-              Rechercher
-              <Search className="h-4 w-4" aria-hidden="true" />
-            </button>
+          <div className="flex flex-wrap items-stretch gap-2 md:flex-nowrap md:gap-1.5 md:border-l md:border-subtle md:pl-2">
             <button
               type="button"
               onClick={openMoreFilters}
@@ -337,6 +337,7 @@ export function ListingFilterBar({
                 </span>
               )}
             </button>
+            <SortSelect mode={mode} basePath={basePath} value={sort} />
           </div>
         </div>
       </div>
