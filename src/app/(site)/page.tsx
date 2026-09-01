@@ -1,9 +1,17 @@
-import { ArrowRight, KeyRound, MapPin, ShieldCheck, Users } from "lucide-react";
+import {
+  ArrowRight,
+  Home as HomeIcon,
+  KeyRound,
+  MapPin,
+  ShieldCheck,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { PROCESS_STEPS } from "@/components/estimation/estimation-content";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import { HeroContent } from "@/components/home/HeroContent";
+import { PontAsnieres } from "@/components/home/PontAsnieres";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { RevealMask } from "@/components/ui/RevealMask";
@@ -56,19 +64,9 @@ async function HeroSection() {
   return (
     <section className="bg-cream pt-6 pb-4 md:pt-8">
       <div className="mx-auto w-full max-w-7xl px-gutter">
-        <div className="grid grid-cols-1 overflow-hidden rounded-lg bg-header shadow-md md:min-h-[520px] md:grid-cols-2">
-          <HeroContent
-            reviews={
-              reviews
-                ? {
-                    rating: reviews.rating,
-                    totalCount: reviews.totalCount,
-                    sourceUrl: reviews.sourceUrl,
-                  }
-                : null
-            }
-          />
-          <div className="relative order-first min-h-[240px] md:order-none md:min-h-0">
+        <div className="relative overflow-hidden rounded-2xl bg-header shadow-md md:min-h-[440px]">
+          {/* Photo plein bord à droite, fondue dans la zone texte (mock). */}
+          <div className="relative h-56 w-full sm:h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
             <ShimmerImage
               src={HERO_HOME}
               alt="Intérieur d'un appartement lumineux"
@@ -76,7 +74,25 @@ async function HeroSection() {
               priority
               placeholder="blur"
               className="object-cover"
-              sizes="(min-width: 1280px) 640px, (min-width: 768px) 50vw, 100vw"
+              sizes="(min-width: 1280px) 740px, (min-width: 768px) 58vw, 100vw"
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-y-0 left-0 hidden w-56 bg-gradient-to-r from-[#f9f7f2] via-[#f9f7f2]/70 to-transparent md:block"
+            />
+          </div>
+
+          <div className="relative z-10 md:w-[52%]">
+            <HeroContent
+              reviews={
+                reviews
+                  ? {
+                      rating: reviews.rating,
+                      totalCount: reviews.totalCount,
+                      sourceUrl: reviews.sourceUrl,
+                    }
+                  : null
+              }
             />
           </div>
         </div>
@@ -96,7 +112,18 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <SectionHeader
-          eyebrow="Notre sélection"
+          eyebrow={
+            <span className="inline-flex items-center gap-2.5">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-secondary-500">
+                <HomeIcon
+                  className="h-3.5 w-3.5 text-white"
+                  strokeWidth={2}
+                  aria-hidden="true"
+                />
+              </span>
+              Notre sélection
+            </span>
+          }
           title="Une sélection volontairement restreinte."
           lede="Chaque bien présenté est un mandat que nous suivons personnellement, de la première visite à la signature."
           action={
@@ -128,14 +155,15 @@ function SellerSection() {
   return (
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-7xl px-gutter py-16 md:py-24">
-        <div className="relative overflow-hidden rounded-lg bg-secondary-50 px-6 py-12 md:px-12 md:py-16">
-          {/* Slot illustration au trait (pont d'Asnières) — SVG fourni par le
-              PO, posé en fond discret haut-droite. */}
+        <div className="relative overflow-hidden rounded-2xl bg-secondary-50 px-6 py-12 md:px-12 md:py-16">
+          {/* Illustration au trait (pont d'Asnières) — placeholder dessiné,
+              à remplacer par le SVG définitif du PO. */}
           <div
             aria-hidden="true"
-            data-illustration-slot="pont-asnieres"
-            className="pointer-events-none absolute right-0 top-0 hidden h-48 w-1/2 md:block"
-          />
+            className="pointer-events-none absolute right-6 top-6 hidden h-44 w-[46%] md:block"
+          >
+            <PontAsnieres className="h-full w-full text-secondary-500/35" />
+          </div>
 
           <div className="relative">
             <SectionHeader
@@ -152,7 +180,7 @@ function SellerSection() {
                         {i + 1}
                       </span>
                       <step.icon
-                        className="h-5 w-5 text-secondary-500"
+                        className="h-5 w-5 text-primary-600"
                         strokeWidth={1.75}
                         aria-hidden="true"
                       />
@@ -264,22 +292,18 @@ function ReassuranceSection() {
         <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {REASSURANCE_ITEMS.map((item, i) => (
             <ScrollReveal key={item.title} index={i} className="h-full">
-              <div className="flex h-full flex-col gap-4 rounded-lg bg-card p-6 shadow-md">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-secondary-50">
-                  <item.icon
-                    className="h-5 w-5 text-secondary-500"
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                </span>
-                <div>
-                  <h3 className="font-display text-base font-semibold tracking-tight text-primary">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-body">
-                    {item.description}
-                  </p>
-                </div>
+              <div className="flex h-full flex-col items-center gap-3 rounded-lg bg-card p-6 text-center shadow-md">
+                <item.icon
+                  className="h-6 w-6 text-primary-600"
+                  strokeWidth={1.5}
+                  aria-hidden="true"
+                />
+                <h3 className="font-display text-base font-semibold tracking-tight text-primary">
+                  {item.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-body">
+                  {item.description}
+                </p>
               </div>
             </ScrollReveal>
           ))}
@@ -298,7 +322,7 @@ function EstimationCtaSection() {
     <section className="bg-cream">
       <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
         <ScrollReveal>
-          <div className="overflow-hidden rounded-lg shadow-sm">
+          <div className="overflow-hidden rounded-2xl shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2">
               <div className="flex flex-col justify-center bg-primary-600 px-6 py-10 md:px-12 md:py-16">
                 <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary-200">

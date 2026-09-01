@@ -40,18 +40,24 @@ en cas de doute, faire comme elle.
 ## Grammaire des objets
 
 - **Cartes douces** : `rounded-lg` (8 px), fond `bg-card`, **ombre diffuse
-  légère** (`shadow-soft`) — pas de liserés fins gris comme structure
+  légère** (`shadow-md`) — pas de liserés fins gris comme structure
   principale (une bordure `border-subtle` peut coexister avec l'ombre, jamais
   seule en grille dense).
+- **Conteneurs de section** (hero en carte, bloc vendeur teinté, bannière
+  CTA) : `rounded-2xl` (16 px) — seule exception au rayon 8, réservée aux
+  grands conteneurs pleine largeur.
 - **Pastilles numérotées** : cercle `secondary-50`, chiffre ardoise — pour
   toute séquence réelle (étapes d'estimation, process de vente).
 - **Chips pilules** : micro-réassurance sous les CTA (« Gratuit · Sans
   engagement · Réponse rapide »).
-- **Icônes** : lucide, petites (≤ 24 px hors pastilles), trait fin
-  (`strokeWidth` 1.5–1.75), couleur **ardoise** quand décoratives. Les grandes
-  icônes-illustrations (40 px+) sont bannies.
+- **Icônes** : lucide, petites (≤ 24 px), trait fin (`strokeWidth` 1.5–1.75).
+  **Grenat fin** dans les cartes de contenu (étapes, engagements — cf. mock) ;
+  **ardoise** pour les pastilles rondes et puces informationnelles. Les
+  grandes icônes-illustrations (40 px+) sont bannies.
 - Une seule section « ancre » teintée (`secondary-50`) ou colorée par page,
   le reste respire sur crème.
+- **Vérification** : toute passe design se valide par **screenshot Playwright**
+  (1440 px + 390 px) comparé au mock, jamais par lecture du HTML seul.
 
 ## Imagerie
 
