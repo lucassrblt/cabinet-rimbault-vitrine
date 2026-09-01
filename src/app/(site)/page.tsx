@@ -34,10 +34,7 @@ export default async function Home() {
       <SellerSection />
       <ReassuranceSection />
       <Suspense fallback={null}>
-        <ReviewsStrip
-          heading="La parole à nos clients"
-          className="bg-cream-light"
-        />
+        <ReviewsStrip heading="La parole à nos clients" className="bg-cream" />
       </Suspense>
       <EstimationCtaSection />
     </main>
@@ -63,7 +60,7 @@ async function HeroSection() {
 
   return (
     <section className="bg-cream pt-6 pb-4 md:pt-8">
-      <div className="mx-auto w-full max-w-7xl px-gutter">
+      <div className="mx-auto w-full max-w-6xl px-gutter">
         <div className="relative overflow-hidden rounded-xl bg-header shadow-md md:min-h-[440px]">
           {/* Photo plein bord à droite, fondue dans la zone texte (mock). */}
           <div className="relative h-56 w-full sm:h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
@@ -110,7 +107,7 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
 
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-16 md:py-20">
         <SectionHeader
           eyebrow={
             <span className="inline-flex items-center gap-2.5">
@@ -154,7 +151,7 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
 function SellerSection() {
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-7xl px-gutter py-16 md:py-24">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-16 md:py-20">
         <div className="relative overflow-hidden rounded-xl bg-secondary-50 px-6 py-12 md:px-12 md:py-16">
           {/* Illustration au trait (pont d'Asnières) — placeholder dessiné,
               à remplacer par le SVG définitif du PO. */}
@@ -284,7 +281,7 @@ const REASSURANCE_ITEMS = [
 function ReassuranceSection() {
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-7xl px-gutter py-16 md:py-24">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-16 md:py-20">
         <SectionHeader
           eyebrow="Nos engagements"
           title="Votre projet immobilier entre de bonnes mains."
@@ -320,7 +317,7 @@ function ReassuranceSection() {
 function EstimationCtaSection() {
   return (
     <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-gutter py-24 md:py-32">
+      <div className="mx-auto w-full max-w-6xl px-gutter py-16 md:py-20">
         <ScrollReveal>
           <div className="overflow-hidden rounded-xl shadow-sm">
             <div className="grid grid-cols-1 md:grid-cols-2">

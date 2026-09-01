@@ -46,12 +46,16 @@ export function SectionHeader({
                 align === "center" && "justify-center",
               )}
             >
-              <motion.span
-                aria-hidden="true"
-                className="h-px w-7 origin-left bg-primary-600/60"
-                variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1 } }}
-                transition={{ duration: 0.5, ease: EASE }}
-              />
+              {/* Filet réservé aux eyebrows texte — un eyebrow composé (ex.
+                  pastille + libellé) apporte déjà son propre ornement. */}
+              {typeof eyebrow === "string" && (
+                <motion.span
+                  aria-hidden="true"
+                  className="h-px w-7 origin-left bg-primary-600/60"
+                  variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1 } }}
+                  transition={{ duration: 0.5, ease: EASE }}
+                />
+              )}
               <motion.span
                 variants={{
                   hidden: { opacity: 0, y: 6 },
