@@ -22,9 +22,9 @@ function formatRating(value: number): string {
 }
 
 /**
- * Panneau texte du hero « carte » (DA moderne chaleureux) : fond clair,
- * badge chip, H1 sombre, 2 CTA, pastille Google. La photo occupe l'autre
- * moitié de la carte (posée par la page).
+ * Contenu texte du hero pleine largeur (DA « contenu ouvert ») : badge chip,
+ * H1 sombre, 2 CTA, pastille Google — posé sur le panneau lumineux dégradé
+ * qui fond la photo (conteneur et paddings gérés par la page).
  */
 export function HeroContent({ reviews }: { reviews: HeroReviews | null }) {
   return (
@@ -32,7 +32,7 @@ export function HeroContent({ reviews }: { reviews: HeroReviews | null }) {
       initial="hidden"
       animate="visible"
       variants={heroContainer}
-      className="flex flex-col justify-center px-6 py-12 md:px-12 md:py-16 lg:px-14"
+      className="flex flex-col"
     >
       <motion.p
         variants={heroLine}

@@ -26,7 +26,7 @@ en cas de doute, faire comme elle.
 | Ardoise clair | `#F2F5F3` (`secondary-50`) | Fonds teintés des sections « ancre » et des pastilles. |
 | Crème chaud | `#F9F6EF` / `#F7F3EA` | Fonds de page et alternance de sections. Jamais de blanc pur ni de gris froid en fond. |
 | Brun-noir | `#1C1B19` | Texte principal. |
-| Ardoise sombre | `secondary-900` | Footer (clôture de page). |
+| Brun-noir chaud | `bg-inverse` `#1C1B19` | Footer (clôture de page). L'ardoise ne s'utilise **jamais en masse**. |
 
 ## Typographie
 
@@ -37,23 +37,34 @@ en cas de doute, faire comme elle.
 - Italique display ponctuel autorisé pour un mot de douceur dans un titre
   (« choisie avec *soin* ») — maximum un par page.
 
+## Principe structurant : « images arrondies, contenu ouvert »
+
+La rondeur et la chaleur vivent sur les **photos** (coins arrondis), les
+boutons et les chips. Le texte se pose **nu sur le crème** — sans carte, sans
+bordure, sans ombre. Les cartes sont réservées aux **objets fonctionnels** :
+biens (le produit), avis (citations), bannière CTA, formulaires et l'aperçu
+du tunnel d'estimation. Les sections se séparent par l'espace ou par une
+bande teintée **pleine largeur** (bord à bord) — jamais par des conteneurs
+encadrés arrondis. Le hero est une bande photo pleine largeur fondue dans un
+panneau lumineux dégradé derrière le texte.
+
 ## Grammaire des objets
 
 - **Cartes douces** : `rounded-lg` (8 px), fond `bg-card`, **ombre diffuse
   légère** (`shadow-md`) — pas de liserés fins gris comme structure
   principale (une bordure `border-subtle` peut coexister avec l'ombre, jamais
   seule en grille dense).
-- **Conteneurs de section** (hero en carte, bloc vendeur teinté, bannière
-  CTA) : `rounded-xl` (12 px) — seule exception au rayon 8, réservée aux
-  grands conteneurs pleine largeur.
+- **Bannière CTA** : `rounded-xl` (12 px) — seule exception au rayon 8.
+  Hero et bande vendeur sont des sections pleine largeur, pas des conteneurs.
 - **Pastilles numérotées** : cercle `secondary-50`, chiffre ardoise — pour
   toute séquence réelle (étapes d'estimation, process de vente).
 - **Chips pilules** : micro-réassurance sous les CTA (« Gratuit · Sans
   engagement · Réponse rapide »).
-- **Icônes** : lucide, petites (≤ 24 px), trait fin (`strokeWidth` 1.5–1.75).
-  **Grenat fin** dans les cartes de contenu (étapes, engagements — cf. mock) ;
-  **ardoise** pour les pastilles rondes et puces informationnelles. Les
-  grandes icônes-illustrations (40 px+) sont bannies.
+- **Icônes fonctionnelles** : lucide, petites (≤ 24 px), trait fin.
+  **Pictos décoratifs** : jamais de bibliothèque — les pictos maison au trait
+  (`src/components/home/pictos.tsx`, grenat, même esprit croquis que le pont)
+  pour les engagements et équivalents. Pastilles rondes numérotées : ardoise
+  pleine, chiffre blanc (timeline) ou fond ardoise clair (cartes).
 - Une seule section « ancre » teintée (`secondary-50`) ou colorée par page,
   le reste respire sur crème.
 - **Vérification** : toute passe design se valide par **screenshot Playwright**
@@ -85,10 +96,13 @@ l'emphase.
 - Codes portail immobilier (moteur de recherche en hero, grilles de filtres).
 - Grenat en aplat décoratif (exception : la bannière CTA estimation).
 
-## Mocks de référence
+## Mock de référence (variante finale validée, 2026-09-01)
 
-Les mocks validés (2026-09-01) sont la source visuelle : hero en carte
-arrondie flottante (texte crème / photo), sélection en cartes douces, bloc
-vendeur sur fond `secondary-50` avec pont au trait + 3 cartes d'étapes à
-pastilles, engagements en 4 cartes douces, avis Google en cartes, bannière
-grenat + photo vitrine + chips, footer ardoise sombre.
+Hero : bande photo pleine largeur, panneau lumineux dégradé derrière le
+texte. Sélection : cartes blanches (le produit) sur crème, pastille ronde
+ardoise sur l'eyebrow. Bande vendeur : `secondary-50` pleine largeur, pont
+au trait grand en haut à droite, timeline verticale 3 étapes (pastilles
+ardoise pleines reliées) concluant sur le CTA + chips, aperçu cliquable de
+l'étape 1 du tunnel légèrement incliné posé sous le pont. Engagements :
+4 colonnes ouvertes, pictos maison au trait grenat. Avis : cartes + badge
+Google. Bannière : grenat + photo vitrine + chips. Footer : brun-noir chaud.

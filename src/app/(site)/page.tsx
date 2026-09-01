@@ -1,17 +1,17 @@
-import {
-  ArrowRight,
-  Home as HomeIcon,
-  KeyRound,
-  MapPin,
-  ShieldCheck,
-  Users,
-} from "lucide-react";
+import { ArrowRight, Home as HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import { PROCESS_STEPS } from "@/components/estimation/estimation-content";
+import { EstimationPreview } from "@/components/home/EstimationPreview";
 import { FeaturedCarousel } from "@/components/home/FeaturedCarousel";
 import { HeroContent } from "@/components/home/HeroContent";
 import { PontAsnieres } from "@/components/home/PontAsnieres";
+import {
+  PictoCle,
+  PictoFacade,
+  PictoPlan,
+  PictoPoignee,
+} from "@/components/home/pictos";
 import { ReviewsStrip } from "@/components/reviews/ReviewsStrip";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { RevealMask } from "@/components/ui/RevealMask";
@@ -59,39 +59,38 @@ async function HeroSection() {
   const reviews = await getReviewsData().catch(() => null);
 
   return (
-    <section className="bg-cream pt-6 pb-4 md:pt-8">
-      <div className="mx-auto w-full max-w-6xl px-gutter">
-        <div className="relative overflow-hidden rounded-xl bg-header shadow-md md:min-h-[440px]">
-          {/* Photo plein bord à droite, fondue dans la zone texte (mock). */}
-          <div className="relative h-56 w-full sm:h-72 md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[58%]">
-            <ShimmerImage
-              src={HERO_HOME}
-              alt="Intérieur d'un appartement lumineux"
-              fill
-              priority
-              placeholder="blur"
-              className="object-cover"
-              sizes="(min-width: 1280px) 740px, (min-width: 768px) 58vw, 100vw"
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-y-0 left-0 hidden w-56 bg-gradient-to-r from-[#f9f7f2] via-[#f9f7f2]/70 to-transparent md:block"
-            />
-          </div>
+    <section className="relative bg-[#fbf9f4]">
+      {/* Photo pleine largeur, fondue derrière le panneau texte (desktop) ;
+          bandeau photo simple au-dessus du texte en mobile. */}
+      <div className="relative h-60 w-full sm:h-72 md:absolute md:inset-0 md:h-full">
+        <ShimmerImage
+          src={HERO_HOME}
+          alt="Intérieur d'un appartement lumineux"
+          fill
+          priority
+          placeholder="blur"
+          className="object-cover md:object-[70%_center]"
+          sizes="100vw"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-gradient-to-r from-[#fbf9f4] from-[32%] via-[#fbf9f4]/85 via-[52%] to-transparent to-[78%] md:block"
+        />
+      </div>
 
-          <div className="relative z-10 md:w-[52%]">
-            <HeroContent
-              reviews={
-                reviews
-                  ? {
-                      rating: reviews.rating,
-                      totalCount: reviews.totalCount,
-                      sourceUrl: reviews.sourceUrl,
-                    }
-                  : null
-              }
-            />
-          </div>
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-gutter md:flex md:min-h-[520px] md:items-center">
+        <div className="max-w-xl py-12 md:py-16">
+          <HeroContent
+            reviews={
+              reviews
+                ? {
+                    rating: reviews.rating,
+                    totalCount: reviews.totalCount,
+                    sourceUrl: reviews.sourceUrl,
+                  }
+                : null
+            }
+          />
         </div>
       </div>
     </section>
@@ -148,82 +147,95 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
    Bloc vendeur — le cœur de la page (objectif : lead estimation)
    ───────────────────────────────────────────── */
 
+/** Étapes de la timeline vendeur — mêmes 3 temps que le tunnel, avec une
+ *  3e description raccourcie pour le format timeline (la page estimation
+ *  garde sa version longue via PROCESS_STEPS). */
+const SELLER_STEPS = PROCESS_STEPS.map((step, i) =>
+  i === 2
+    ? {
+        ...step,
+        description:
+          "Une première fourchette de prix argumentée, les atouts de votre bien, ses conseils.",
+      }
+    : step,
+);
+
 function SellerSection() {
   return (
-    <section className="bg-cream">
-      <div className="mx-auto w-full max-w-6xl px-gutter py-16 md:py-20">
-        <div className="relative overflow-hidden rounded-xl bg-secondary-50 px-6 py-12 md:px-12 md:py-16">
-          {/* Illustration au trait (pont d'Asnières) — placeholder dessiné,
-              à remplacer par le SVG définitif du PO. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute right-6 top-6 hidden h-44 w-[46%] md:block"
-          >
-            <PontAsnieres className="h-full w-full text-secondary-500/35" />
-          </div>
+    <section className="relative overflow-hidden bg-secondary-50">
+      {/* Pont d'Asnières au trait — signature graphique, haut droit de la
+          bande ; la carte formulaire vient se poser sur sa moitié basse. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute right-0 top-8 hidden w-[56%] md:block"
+      >
+        <PontAsnieres className="h-auto w-full text-secondary-500/35" />
+      </div>
 
-          <div className="relative">
+      <div className="relative mx-auto w-full max-w-6xl px-gutter py-16 md:py-20">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-[45fr_45fr] md:justify-between md:gap-[10%]">
+          {/* Timeline — se conclut sur l'action */}
+          <div>
             <SectionHeader
               eyebrow="Vous vendez ?"
               title="Confiez-nous votre bien."
             />
 
-            <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
-              {PROCESS_STEPS.map((step, i) => (
-                <ScrollReveal key={step.title} index={i} className="h-full">
-                  <div className="flex h-full flex-col gap-4 rounded-lg bg-card p-6 shadow-md">
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary-50 font-display text-sm font-semibold text-secondary-600">
-                        {i + 1}
-                      </span>
-                      <step.icon
-                        className="h-5 w-5 text-primary-600"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-display text-base font-semibold tracking-tight text-primary">
-                        {step.title}
-                      </h3>
-                      <p className="mt-2 text-sm leading-relaxed text-body">
-                        {step.description}
-                      </p>
-                    </div>
+            <ol className="mt-10 space-y-0">
+              {SELLER_STEPS.map((step, i) => (
+                <li key={step.title} className="relative flex gap-4 pb-8">
+                  {i < SELLER_STEPS.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute left-[15px] top-8 h-[calc(100%-1.25rem)] w-px bg-secondary-300"
+                    />
+                  )}
+                  <span className="z-10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-500 font-display text-sm font-semibold text-white">
+                    {i + 1}
+                  </span>
+                  <div className="pt-1">
+                    <h3 className="font-display text-base font-semibold tracking-tight text-primary">
+                      {step.title}
+                    </h3>
+                    <p className="mt-1.5 max-w-md text-sm leading-relaxed text-body">
+                      {step.description}
+                    </p>
                   </div>
-                </ScrollReveal>
+                </li>
               ))}
-            </div>
+            </ol>
 
-            <ScrollReveal>
-              <div className="mt-10 flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-                <p className="max-w-xl text-sm leading-relaxed text-body">
-                  Des honoraires transparents, affichés publiquement.{" "}
-                  <Link
-                    href="/honoraires"
-                    className="font-medium text-primary underline underline-offset-4 hover:text-primary-600"
-                  >
-                    Consulter le barème
-                  </Link>
-                </p>
-                <div className="flex flex-col items-start gap-3 md:items-end">
-                  <Magnetic>
-                    <Link
-                      href="/estimation"
-                      className="group inline-flex items-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
-                    >
-                      Estimer mon bien
-                      <ArrowRight
-                        className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
-                        aria-hidden="true"
-                      />
-                    </Link>
-                  </Magnetic>
-                  <ReassuranceChips />
-                </div>
-              </div>
-            </ScrollReveal>
+            <div className="flex flex-col items-start gap-3">
+              <Magnetic>
+                <Link
+                  href="/estimation"
+                  className="group inline-flex items-center gap-2 rounded-lg bg-primary-600 px-6 py-3 text-sm font-semibold text-on-primary shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-primary-700 hover:shadow-md active:translate-y-0"
+                >
+                  Estimer mon bien
+                  <ArrowRight
+                    className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </Link>
+              </Magnetic>
+              <ReassuranceChips />
+              <p className="mt-2 text-sm leading-relaxed text-body">
+                Des honoraires transparents, affichés publiquement.{" "}
+                <Link
+                  href="/honoraires"
+                  className="font-medium text-primary underline underline-offset-4 hover:text-primary-600"
+                >
+                  Consulter le barème
+                </Link>
+              </p>
+            </div>
           </div>
+
+          {/* Aperçu du tunnel d'estimation — l'objet de conversion, posé
+              sur la moitié basse du pont */}
+          <ScrollReveal className="self-end md:pb-4">
+            <EstimationPreview />
+          </ScrollReveal>
         </div>
       </div>
     </section>
@@ -257,22 +269,22 @@ function ReassuranceChips({ light = false }: { light?: boolean }) {
 
 const REASSURANCE_ITEMS = [
   {
-    icon: ShieldCheck,
+    icon: PictoFacade,
     title: `Depuis ${AGENT.stats.sinceYear}`,
     description: `${AGENT.stats.years} ans d’expérience à vos côtés.`,
   },
   {
-    icon: Users,
+    icon: PictoPoignee,
     title: "Accompagnement sur-mesure",
     description: "Notre cabinet, à votre écoute à chaque étape.",
   },
   {
-    icon: MapPin,
+    icon: PictoPlan,
     title: "Ancrage local",
     description: "Une expertise détaillée et éclairée en fonction du marché",
   },
   {
-    icon: KeyRound,
+    icon: PictoCle,
     title: "Service global",
     description: "Transaction, location : nous simplifions vos projets.",
   },
@@ -286,19 +298,17 @@ function ReassuranceSection() {
           eyebrow="Nos engagements"
           title="Votre projet immobilier entre de bonnes mains."
         />
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
           {REASSURANCE_ITEMS.map((item, i) => (
-            <ScrollReveal key={item.title} index={i} className="h-full">
-              <div className="flex h-full flex-col items-center gap-3 rounded-lg bg-card p-6 text-center shadow-md">
-                <item.icon
-                  className="h-6 w-6 text-primary-600"
-                  strokeWidth={1.5}
-                  aria-hidden="true"
-                />
+            <ScrollReveal key={item.title} index={i}>
+              <div className="flex flex-col items-center gap-4 text-center">
+                <span aria-hidden="true" className="text-primary-600">
+                  <item.icon className="h-12 w-12" />
+                </span>
                 <h3 className="font-display text-base font-semibold tracking-tight text-primary">
                   {item.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-body">
+                <p className="max-w-[26ch] text-sm leading-relaxed text-body">
                   {item.description}
                 </p>
               </div>
