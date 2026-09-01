@@ -11,20 +11,20 @@ function formatRating(value: number): string {
 
 /**
  * Bloc de preuve sociale du hero : une pastille unique qui combine la note
- * Google (lien sortant vers la fiche) et la mention « +200 propriétaires ».
+ * Google (lien sortant vers la fiche) et l'ancrage local depuis 2009.
  *
  * Reconstruit depuis `GoogleGlyph` + `Rating` plutôt qu'imbriqué dans
  * `GoogleRatingBadge` pour éviter une double bordure de pastille.
  *
- * Fallback `reviews === null` : on affiche uniquement la ligne propriétaires,
+ * Fallback `reviews === null` : on affiche uniquement la ligne d'ancrage,
  * sans bordure (preuve sociale dégradée propre).
  */
 export function HeroSocialProof({ reviews }: { reviews: ReviewsData | null }) {
   if (!reviews) {
     return (
       <p className="text-sm text-body">
-        <span className="font-semibold text-primary">+200 propriétaires</span>{" "}
-        nous font confiance
+        <span className="font-semibold text-primary">Depuis 2009</span> à
+        Asnières-sur-Seine
       </p>
     );
   }
@@ -54,8 +54,8 @@ export function HeroSocialProof({ reviews }: { reviews: ReviewsData | null }) {
       />
 
       <span className="text-sm text-body">
-        <span className="font-semibold text-primary">+200 propriétaires</span>{" "}
-        nous font confiance
+        <span className="font-semibold text-primary">Depuis 2009</span> à
+        Asnières-sur-Seine
       </span>
     </div>
   );

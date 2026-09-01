@@ -13,6 +13,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ShimmerImage } from "@/components/ui/ShimmerImage";
 import { listRecentProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
+import { AGENT } from "@/lib/config/agent";
 import { HERO_AGENCE, HERO_HOME } from "@/lib/images";
 
 export default async function Home() {
@@ -114,8 +115,8 @@ function FeaturedSection({ properties }: { properties: Property[] }) {
 const REASSURANCE_ITEMS = [
   {
     icon: ShieldCheck,
-    title: "Depuis 2009",
-    description: "Plus de 15 ans d’expérience à vos côtés.",
+    title: `Depuis ${AGENT.stats.sinceYear}`,
+    description: `${AGENT.stats.years} ans d’expérience à vos côtés.`,
   },
   {
     icon: Users,

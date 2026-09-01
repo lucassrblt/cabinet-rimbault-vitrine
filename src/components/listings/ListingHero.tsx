@@ -26,7 +26,7 @@ const CONTENT: Record<Mode, { crumb: string; eyebrow: string; lede: string }> =
     rent: {
       crumb: "Louer",
       eyebrow: "Nos biens à la location",
-      lede: "Notre portfeuille de biens locatif gérer par le cabinet",
+      lede: "Notre portefeuille de biens locatifs géré par le cabinet",
     },
   };
 

@@ -15,8 +15,12 @@ import {
   listRentProperties,
   listSaleProperties,
 } from "@/lib/api/properties";
-import type { HonorairesCharge, Property } from "@/lib/api/types";
-import { AGENT } from "@/lib/config/agent";
+import type {
+  HonorairesCharge,
+  Property,
+  PropertyDocument,
+} from "@/lib/api/types";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 import {
   formatDate,
   formatPrice,
@@ -482,6 +486,24 @@ function CoproSection({ property }: { property: Property }) {
   );
 }
 
+/** Libellés FR des types de documents renvoyés bruts par l'API admin. */
+const DOCUMENT_TYPE_LABEL: Record<string, string> = {
+  LABEL_PDF: "Étiquette énergie (PDF)",
+  DPE_PDF: "Diagnostic de performance énergétique (PDF)",
+  DPE_IMAGE: "Diagnostic de performance énergétique",
+  GES_IMAGE: "Émissions de gaz à effet de serre",
+  PLAN: "Plan du bien",
+};
+
+function documentLabel(d: PropertyDocument): string {
+  if (d.label && !DOCUMENT_TYPE_LABEL[d.label] && d.label !== d.type) {
+    return d.label;
+  }
+  const key = d.label ?? d.type;
+  if (key && DOCUMENT_TYPE_LABEL[key]) return DOCUMENT_TYPE_LABEL[key];
+  return "Document";
+}
+
 function DocumentsSection({ property }: { property: Property }) {
   const docs = property.documents ?? [];
   if (docs.length === 0) return null;
@@ -501,13 +523,8 @@ function DocumentsSection({ property }: { property: Property }) {
                 rel="noopener noreferrer"
                 className="font-medium text-primary underline underline-offset-2 hover:text-link-hover"
               >
-                {d.label ?? d.type ?? "Document"}
+                {documentLabel(d)}
               </a>
-              {d.type && (
-                <span className="ml-2 text-[0.68rem] uppercase tracking-[0.12em] text-subtle">
-                  {d.type}
-                </span>
-              )}
             </li>
           ))}
         </ul>
@@ -588,7 +605,11 @@ function honorairesChargeLabel(f: Property["finance"]): string | null {
   if (!f) return null;
   if (f.honorairesCharge)
     return HONORAIRES_CHARGE_LABEL[f.honorairesCharge] ?? null;
-  if (f.honorairesType) return f.honorairesType.toLowerCase();
+  if (f.honorairesType)
+    return (
+      HONORAIRES_CHARGE_LABEL[f.honorairesType as HonorairesCharge] ??
+      f.honorairesType.toLowerCase()
+    );
   return null;
 }
 
@@ -768,7 +789,10 @@ function LegalStrip() {
       <div className="mx-auto w-full max-w-6xl px-gutter py-6 text-xs leading-relaxed text-body">
         <p>
           Cabinet Rimbault · {AGENT.legal.carteT} · {AGENT.legal.cci} ·{" "}
-          {AGENT.legal.garant} · {AGENT.legal.mediator}
+          {AGENT.legal.garant}
+          {!isPlaceholder(AGENT.legal.mediator) && (
+            <> · {AGENT.legal.mediator}</>
+          )}
         </p>
         <p className="mt-2">
           <a href="/mentions-legales" className="underline underline-offset-2">

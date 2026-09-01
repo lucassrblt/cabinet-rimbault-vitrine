@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageShell } from "@/components/layout/PageShell";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -64,7 +64,11 @@ export default function MentionsLegalesPage() {
         <h2 id="mediateur" className="text-xl font-semibold tracking-tight">
           Médiateur de la consommation
         </h2>
-        <p className="mt-3">{AGENT.legal.mediator}</p>
+        <p className="mt-3">
+          {isPlaceholder(AGENT.legal.mediator)
+            ? "Coordonnées du médiateur de la consommation disponibles sur demande auprès de l'agence."
+            : AGENT.legal.mediator}
+        </p>
       </section>
 
       <section aria-labelledby="propriete" className="mt-8 text-sm text-body">

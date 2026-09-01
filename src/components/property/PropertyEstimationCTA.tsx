@@ -67,7 +67,7 @@ export function PropertyEstimationCTA() {
                 </span>
               </h2>
               <p className="mt-5 max-w-md text-sm leading-relaxed text-on-inverse/80 md:text-base">
-                Nos estimations sont gratuites et sans engagemen. Nous vous
+                Nos estimations sont gratuites et sans engagement. Nous vous
                 répondons dans les meilleurs délais.
               </p>
             </div>

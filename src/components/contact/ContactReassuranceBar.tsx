@@ -4,7 +4,7 @@ import { TextReveal } from "@/components/ui/TextReveal";
 import { AGENT } from "@/lib/config/agent";
 import { getReviewsData } from "@/lib/reviews";
 
-const SINCE_YEAR = new Date().getFullYear() - AGENT.stats.years;
+const SINCE_YEAR = AGENT.stats.sinceYear;
 
 export function ContactReassuranceBar() {
   return (

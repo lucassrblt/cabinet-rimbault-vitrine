@@ -26,10 +26,11 @@ export const AGENT = {
     { icon: "parking" as const, label: "Parking Voltaire (100 m)" },
   ],
   stats: {
-    years: 17,
+    sinceYear: 2009,
+    years: new Date().getFullYear() - 2009,
     communesCount: 8,
     transactions: 315,
-    reviewsCount: 47,
+    reviewsCount: 32,
     rating: 4.9,
     mandateSuccessRate: 98,
   },

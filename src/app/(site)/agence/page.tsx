@@ -62,7 +62,7 @@ function HeroSection() {
       <AgenceHeroContent
         badgeLabel={`Agence immobilière à ${AGENT.address.city}`}
         tagline={`L'immobilier\nà taille humaine.`}
-        subtitle={`Un seul interlocuteur, de l'estimation à la signature. Cabinet indépendant à ${AGENT.address.city} depuis ${new Date().getFullYear() - AGENT.stats.years}.`}
+        subtitle={`Un seul interlocuteur, de l'estimation à la signature. Cabinet indépendant à ${AGENT.address.city} depuis ${AGENT.stats.sinceYear}.`}
         ctaLabel="Découvrir l'agence"
         ctaHref="#notre-histoire"
       />
@@ -117,10 +117,9 @@ function HistoireSection() {
             <ScrollReveal delay={0.15}>
               <p className="mt-8 text-[15px] leading-[1.7] text-body">
                 Le Cabinet Rimbault, agence immobilière indépendante, installée
-                à {AGENT.address.city} depuis{" "}
-                {new Date().getFullYear() - AGENT.stats.years}, accompagne
-                vendeurs, acquéreurs, bailleurs et locataires dans tous leurs
-                projets immobiliers.
+                à {AGENT.address.city} depuis {AGENT.stats.sinceYear},
+                accompagne vendeurs, acquéreurs, bailleurs et locataires dans
+                tous leurs projets immobiliers.
               </p>
               <p className="mt-5 text-[15px] leading-[1.7] text-body">
                 Notre approche repose sur une conviction simple&nbsp;: chaque
@@ -234,7 +233,7 @@ function HonorairesSection() {
         <SectionHeader
           eyebrow="Transparence"
           title="Nos honoraires"
-          lede="Ci-dessous le barème de nos d'honoraires"
+          lede="Ci-dessous, le barème de nos honoraires"
         />
 
         <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2">

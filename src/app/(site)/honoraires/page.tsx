@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { LinkButton } from "@/components/ui/Button";
-import { AGENT } from "@/lib/config/agent";
+import { AGENT, isPlaceholder } from "@/lib/config/agent";
 import { RENT_TIERS, SALE_TIERS } from "@/lib/config/honoraires";
 
 export const metadata: Metadata = {
@@ -123,8 +123,10 @@ export default function HonorairesPage() {
             <p>
               En cas de litige relatif à une transaction, après une réclamation
               écrite restée sans réponse satisfaisante, le client consommateur
-              peut saisir le médiateur de la consommation :{" "}
-              {AGENT.legal.mediator}.
+              peut saisir le médiateur de la consommation
+              {isPlaceholder(AGENT.legal.mediator)
+                ? " (coordonnées disponibles sur demande auprès de l'agence)."
+                : ` : ${AGENT.legal.mediator}.`}
             </p>
           </div>
           <div className="mt-6">
