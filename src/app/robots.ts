@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { isPreviewDeploy } from "@/lib/deploy-context";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
@@ -10,6 +11,12 @@ export default function robots(): MetadataRoute.Robots {
     return {
       rules: [{ userAgent: "*", disallow: "/" }],
     };
+  }
+
+  // Preview : crawlable (agents/LLM) mais noindex via X-Robots-Tag + meta.
+  // Pas de sitemap : il pointerait vers le domaine de production.
+  if (isPreviewDeploy) {
+    return { rules: [{ userAgent: "*", allow: "/" }] };
   }
 
   return {

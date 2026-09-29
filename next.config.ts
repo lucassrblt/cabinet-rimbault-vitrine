@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { isPreviewDeploy } from "./src/lib/deploy-context";
 
 const nextConfig: NextConfig = {
   images: {
@@ -18,6 +19,18 @@ const nextConfig: NextConfig = {
         hostname: "*.googleusercontent.com",
       },
     ],
+  },
+  async headers() {
+    // Previews : lisibles (robots.txt permissif) mais jamais indexées.
+    if (!isPreviewDeploy) return [];
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Robots-Tag", value: "noindex, noarchive, nosnippet" },
+        ],
+      },
+    ];
   },
   async redirects() {
     return [

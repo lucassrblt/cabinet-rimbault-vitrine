@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { searchProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
+import { isPreviewDeploy } from "@/lib/deploy-context";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
@@ -42,7 +43,7 @@ async function fetchAllProperties(): Promise<Property[]> {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Gate de maintenance actif → ne rien exposer aux crawlers.
-  if (process.env.MAINTENANCE_MODE === "on") {
+  if (process.env.MAINTENANCE_MODE === "on" || isPreviewDeploy) {
     return [];
   }
 
