@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Familjen_Grotesk, Manrope } from "next/font/google";
 import NextTopLoader from "nextjs-toploader";
 import { AGENT } from "@/lib/config/agent";
+import { isPreviewDeploy } from "@/lib/deploy-context";
 import { Providers } from "./providers";
 import "lenis/dist/lenis.css";
 import "./globals.css";
@@ -26,8 +27,8 @@ export function generateMetadata(): Metadata {
     },
     description: `Cabinet Rimbault — ${AGENT.title} à ${AGENT.address.city}. Vente, location, estimation et accompagnement personnalisé.`,
     robots: {
-      index: true,
-      follow: true,
+      index: !isPreviewDeploy,
+      follow: !isPreviewDeploy,
     },
   };
 }

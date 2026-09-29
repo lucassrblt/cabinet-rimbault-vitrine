@@ -69,7 +69,7 @@ Le fichier `src/lib/api/client.ts` importe `"server-only"` : toute tentative d'i
 ## Domaines
 
 - Production : `cabinet-rimbault.fr` (et `www.` en redirection).
-- Preview : `*.netlify.app` (Deploy Previews) — **ne pas** indexer (le gate `MAINTENANCE_MODE` neutralise déjà `robots.txt` ; sinon vérifier qu'un header `x-robots-tag: noindex` couvre bien les previews).
+- Preview : `*.netlify.app` (Deploy Previews / Branch deploys, `CONTEXT` ≠ `production`) — **lisibles mais non indexées** : `robots.txt` permissif (sans sitemap), `X-Robots-Tag: noindex, noarchive, nosnippet` et `<meta robots noindex>` (cf. `src/lib/deploy-context.ts`). Permet de faire parcourir la preview par un LLM/agent sans l'exposer aux moteurs. Prérequis : `MAINTENANCE_MODE` **non défini** sur les contextes *Deploy previews* / *Branch deploys*. Pas d'authentification : la confidentialité repose sur l'URL non publiée.
 
 ## Vérifs avant merge
 
