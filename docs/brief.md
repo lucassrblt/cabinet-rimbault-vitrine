@@ -37,6 +37,7 @@ Hors scope v1 : acquisition de mandats (prospection vendeurs, tunnel d'estimatio
 - **Logo** : aucun. Point de départ = l'enseigne (capitales à empattements « CABINET RIMBAULT », italique « Transactions Immobilières »). Logotype typographique à moderniser.
 - **Répartition** : sérieux par la structure (grille, espace, hiérarchie) ; modernité par la retenue ; chaleur par les mots et le réel (photos de l'agence et du quartier, vrais avis).
 - **Ton** : vouvoiement, chaleureux mais cordial, factuel, sans jargon.
+- **Retours sur les premières explorations (2026-10-01)** : direction A « L'enseigne » retenue, mais trop « vibe codée » — aplat de rouge trop massif, proportions, trop de texte, pas assez de visuel. → La photo d'abord, le texte en une ligne ; le rouge en accent, jamais en grand aplat.
 - **Références** : hors immobilier — cabinets d'architectes / notaires récents, artisans haut de gamme, petits hôtels indépendants.
 
 ## 5. Contenu disponible
@@ -50,12 +51,14 @@ Hors scope v1 : acquisition de mandats (prospection vendeurs, tunnel d'estimatio
 
 | Page | Rôle |
 |---|---|
-| **Accueil** | Preuve en 30 s : sélection de biens en grand, puis synthèse de la méthode, ancienneté, avis, adresse |
+| **Accueil** | Preuve en 30 s : les 3 biens les plus récents (plus tard : choisis par l'agent) + lien vers tous les biens, puis synthèse de la méthode, ancienneté, avis, adresse |
 | **Nos biens** | Liste complète (8-10). Pas de filtres, repère vente / location |
 | **Fiche bien** | Page la plus importante : photos, informations complètes et transparentes, contact immédiat |
 | **L'agence** | Approfondissement, sans doublon avec l'accueil : la méthode détaillée (comment se passe une vente, une location), le périmètre, les avis complets, les honoraires en résumé |
 | **Contact** | Téléphone, WhatsApp, e-mail, formulaire, plan, horaires |
 | Honoraires · Mentions légales · Confidentialité | Obligatoires (cookies fusionnés dans Confidentialité tant qu'aucun traceur) |
+
+Accueil validé (wireframe « Le quartier », 2026-10-01) : ouverture sur une photo maîtrisée d'Asnières (à prendre) chevauchée par la carte d'identité de l'agence → 3 biens récents en tailles décalées → avis → méthode en 3 lignes + photo de vitrine → nous trouver (photo devanture + carte adresse). **Principe de mise en page validé : décalages, photos qui débordent d'un côté, éléments qui se chevauchent, rythme varié — pas de blocs pleine largeur empilés.** Fiche bien : wireframe validé.
 
 Règle anti-doublon : l'accueil **affirme** (une phrase par engagement), l'agence **démontre** (le détail, les étapes, les preuves). Si un bloc de l'agence n'apporte rien de plus que l'accueil, il saute.
 

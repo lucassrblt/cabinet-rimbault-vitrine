@@ -1,0 +1,49 @@
+.wf {
+  background: #fff;
+  color: #222;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Repères de section : masquables pour juger la page « à nu ». */
+.wf .wf-annot {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 5;
+  background: #ffe94d;
+  color: #222;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.1rem 0.4rem;
+  pointer-events: none;
+}
+.wf:has(#wf-hide:checked) .wf-annot {
+  display: none;
+}
+
+.wf .wf-scroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.wf .wf-scroll > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+.wf details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+.wf details > summary::after {
+  content: "+";
+  float: right;
+}
+.wf details[open] > summary::after {
+  content: "–";
+}
