@@ -26,7 +26,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="fr"
       className={`${sourceSerif.variable} ${instrumentSans.variable}`}
+      // La classe « js » est posée avant l'hydratation (cf. script ci-dessous).
+      suppressHydrationWarning
     >
+      <head>
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: script statique, sans donnée utilisateur
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.add('js')",
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );

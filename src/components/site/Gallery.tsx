@@ -59,7 +59,7 @@ export function Gallery({ images, title, status }: Props) {
             key={img.id}
             type="button"
             onClick={open}
-            className={`group relative overflow-hidden bg-pierre ${i === 0 ? "col-span-2 row-span-2" : ""} ${images.length < 3 && i === 1 ? "row-span-2" : ""}`}
+            className={`group relative overflow-hidden rounded-photo bg-pierre ${i === 0 ? "col-span-2 row-span-2" : ""} ${images.length < 3 && i === 1 ? "row-span-2" : ""}`}
           >
             <Image
               src={img.url}
@@ -70,12 +70,12 @@ export function Gallery({ images, title, status }: Props) {
               className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-[1.02]"
             />
             {i === 0 && status && (
-              <span className="absolute top-3 left-3 bg-blanc px-2.5 py-1 text-mention">
+              <span className="absolute top-3 left-3 rounded-controle bg-blanc px-2.5 py-1 text-mention">
                 {status}
               </span>
             )}
             {i === 2 && (
-              <span className="absolute right-3 bottom-3 bg-blanc px-3 py-1.5 text-mention">
+              <span className="absolute right-3 bottom-3 rounded-controle bg-blanc px-3 py-1.5 text-mention">
                 Voir les {images.length} photos
               </span>
             )}
@@ -85,7 +85,7 @@ export function Gallery({ images, title, status }: Props) {
 
       <dialog
         ref={dialog}
-        className="m-0 h-full max-h-none w-full max-w-none bg-blanc p-0 backdrop:bg-encre/60"
+        className="galerie m-0 h-full max-h-none w-full max-w-none bg-blanc p-0 backdrop:bg-encre/60"
         aria-label={`Photos : ${title}`}
       >
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-filet bg-blanc px-4 py-3 md:px-10">
@@ -108,7 +108,7 @@ export function Gallery({ images, title, status }: Props) {
                 width={2000}
                 height={1500}
                 sizes="(min-width: 1024px) 64rem, 100vw"
-                className="h-auto w-full"
+                className="h-auto w-full rounded-photo"
               />
             </li>
           ))}

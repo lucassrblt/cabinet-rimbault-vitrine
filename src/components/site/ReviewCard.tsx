@@ -3,7 +3,7 @@ import type { GoogleReview } from "@/lib/reviews/google";
 
 export function ReviewCard({ review }: { review: GoogleReview }) {
   return (
-    <figure className="flex w-[80vw] max-w-[22rem] shrink-0 snap-start flex-col bg-blanc p-6">
+    <figure className="flex w-[80vw] max-w-[22rem] shrink-0 snap-start flex-col rounded-carte bg-blanc p-6">
       <p
         className="flex gap-0.5"
         role="img"

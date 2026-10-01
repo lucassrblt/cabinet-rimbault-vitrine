@@ -11,7 +11,7 @@ export function Logo({
   return (
     <span className={cn("inline-flex items-center gap-3", className)}>
       <span
-        className="titre flex size-10 shrink-0 items-center justify-center bg-rouge text-[1rem] font-bold tracking-wider text-blanc"
+        className="titre flex size-10 shrink-0 items-center justify-center rounded-controle bg-rouge text-[1rem] font-bold tracking-wider text-blanc"
         aria-hidden
       >
         CR
@@ -33,7 +33,7 @@ export function Plaque({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex flex-col bg-rouge px-[0.95em] pt-[0.7em] pb-[0.6em] leading-none text-blanc",
+        "inline-flex flex-col rounded-plaque bg-rouge px-[0.95em] pt-[0.7em] pb-[0.6em] leading-none text-blanc",
         className,
       )}
     >

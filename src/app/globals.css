@@ -10,6 +10,22 @@
   --color-rouge: #7f1a24;
   --color-rouge-fonce: #63131c;
 
+  /* Arrondis hiérarchisés : la photo et la carte, puis les contrôles. */
+  --radius-photo: 6px;
+  --radius-carte: 6px;
+  --radius-controle: 4px;
+  --radius-plaque: 2px;
+
+  /* Une seule ombre, réservée aux cartes qui chevauchent une photo. */
+  --shadow-chevauchement:
+    0 1px 2px rgb(36 31 30 / 0.06), 0 22px 48px -18px rgb(36 31 30 / 0.28);
+
+  /* Mouvement : une courbe, trois durées. */
+  --ease-site: cubic-bezier(0.22, 1, 0.36, 1);
+  --duree-courte: 180ms;
+  --duree-moyenne: 650ms;
+  --duree-longue: 1300ms;
+
   --font-serif: var(--font-source-serif), Georgia, serif;
   --font-sans: var(--font-instrument-sans), system-ui, sans-serif;
 
@@ -84,10 +100,15 @@
     font-weight: 500;
     font-size: 0.9875rem;
     white-space: nowrap;
+    border-radius: var(--radius-controle);
     transition:
-      background-color 160ms,
-      color 160ms,
-      border-color 160ms;
+      background-color var(--duree-courte) var(--ease-site),
+      color var(--duree-courte) var(--ease-site),
+      border-color var(--duree-courte) var(--ease-site),
+      transform var(--duree-courte) var(--ease-site);
+  }
+  .bouton:active {
+    transform: translateY(1px);
   }
   .bouton-principal {
     background: var(--color-rouge);
@@ -112,14 +133,24 @@
   }
 
   .lien {
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-decoration-color: var(--color-filet);
-    text-underline-offset: 0.3em;
-    transition: text-decoration-color 160ms;
+    text-decoration: none;
+    background-image:
+      linear-gradient(var(--color-rouge), var(--color-rouge)),
+      linear-gradient(var(--color-filet), var(--color-filet));
+    background-size:
+      0% 1px,
+      100% 1px;
+    background-position:
+      0 100%,
+      0 100%;
+    background-repeat: no-repeat;
+    padding-bottom: 0.15em;
+    transition: background-size var(--duree-moyenne) var(--ease-site);
   }
   .lien:hover {
-    text-decoration-color: var(--color-rouge);
+    background-size:
+      100% 1px,
+      100% 1px;
   }
 
   .champ {
@@ -129,7 +160,8 @@
     border: 1px solid var(--color-filet);
     background: var(--color-blanc);
     padding: 0.65rem 0.85rem;
-    transition: border-color 160ms;
+    border-radius: var(--radius-controle);
+    transition: border-color var(--duree-courte) var(--ease-site);
   }
   .champ:hover {
     border-color: var(--color-gris);
@@ -137,5 +169,133 @@
   .champ:focus {
     border-color: var(--color-encre);
     outline: none;
+  }
+}
+
+/* ——— Mouvement ———
+   Les états initiaux ne s'appliquent que si JavaScript tourne (classe
+   posée avant le premier rendu) : sans JS, tout reste visible. */
+
+@utility carte-chevauchante {
+  border-radius: var(--radius-carte);
+  box-shadow: var(--shadow-chevauchement);
+}
+
+@keyframes ouverture-photo {
+  from {
+    transform: scale(1.045);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes ouverture-carte {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.js .anim-ouverture-photo {
+  animation: ouverture-photo var(--duree-longue) var(--ease-site) both;
+}
+.js .anim-ouverture-carte {
+  animation: ouverture-carte var(--duree-moyenne) var(--ease-site) 220ms both;
+}
+
+/* Apparitions au défilement, une fois. Trois variantes liées au contenu. */
+.js [data-reveal] {
+  transition:
+    opacity var(--duree-moyenne) var(--ease-site),
+    transform var(--duree-moyenne) var(--ease-site),
+    clip-path var(--duree-longue) var(--ease-site);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js [data-reveal="monte"]:not([data-visible]) {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.js [data-reveal="glisse"]:not([data-visible]) {
+  opacity: 0;
+  transform: translateX(28px);
+}
+/* Le masque porte sur l'image, pas sur le bloc observé : un élément
+   entièrement masqué ne « rentre » jamais dans l'écran pour l'observateur. */
+.js [data-reveal="decouvre"] > img {
+  clip-path: inset(0 0 0 0);
+  transition:
+    clip-path var(--duree-longue) var(--ease-site),
+    transform var(--duree-longue) var(--ease-site);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js [data-reveal="decouvre"]:not([data-visible]) > img {
+  clip-path: inset(100% 0 0 0);
+  transform: scale(1.06);
+}
+
+/* En-tête : se compacte au défilement. */
+.en-tete {
+  transition:
+    box-shadow var(--duree-moyenne) var(--ease-site),
+    background-color var(--duree-moyenne) var(--ease-site);
+}
+.en-tete[data-scrolled] {
+  background-color: rgb(255 255 255 / 0.92);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 1px 0 var(--color-filet),
+    0 10px 30px -20px rgb(36 31 30 / 0.25);
+}
+.en-tete .en-tete-barre {
+  transition: height var(--duree-moyenne) var(--ease-site);
+}
+.en-tete[data-scrolled] .en-tete-barre {
+  height: 3.75rem;
+}
+
+/* Blocs repliables : ouverture fluide là où le navigateur le permet. */
+:root {
+  interpolate-size: allow-keywords;
+}
+details.repliable::details-content {
+  height: 0;
+  overflow: clip;
+  transition:
+    height var(--duree-moyenne) var(--ease-site),
+    content-visibility var(--duree-moyenne) allow-discrete;
+}
+details.repliable[open]::details-content {
+  height: auto;
+}
+
+/* Galerie plein écran : fondu à l'ouverture. */
+dialog.galerie[open] {
+  animation: ouverture-carte var(--duree-moyenne) var(--ease-site) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .anim-ouverture-photo,
+  .js .anim-ouverture-carte,
+  dialog.galerie[open] {
+    animation: none;
+  }
+  .js [data-reveal] {
+    transition: none;
+  }
+  .js [data-reveal] > img {
+    transition: none;
+  }
+  .js [data-reveal]:not([data-visible]),
+  .js [data-reveal]:not([data-visible]) > img {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+  details.repliable::details-content {
+    transition: none;
   }
 }

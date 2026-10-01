@@ -1,3 +1,4 @@
+import { Motion } from "@/components/site/Motion";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 
@@ -9,6 +10,7 @@ export default function MaquettesLayout({
       <SiteHeader base="/maquettes" />
       {children}
       <SiteFooter />
+      <Motion />
     </>
   );
 }

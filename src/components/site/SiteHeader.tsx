@@ -5,8 +5,8 @@ import { Logo } from "./Logo";
 
 export function SiteHeader({ base }: { base: string }) {
   return (
-    <header className="border-b border-filet">
-      <div className="conteneur flex h-[4.5rem] items-center justify-between gap-6">
+    <header className="en-tete sticky top-0 z-30 border-b border-filet bg-blanc">
+      <div className="en-tete-barre conteneur flex h-[4.5rem] items-center justify-between gap-6">
         <Link href={base} aria-label="Cabinet Rimbault, accueil">
           <span className="sm:hidden">
             <Logo compact />

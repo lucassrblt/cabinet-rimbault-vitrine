@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type React from "react";
 import { Plaque } from "@/components/site/Logo";
 import { PropertyCard } from "@/components/site/PropertyCard";
 import { ReviewCard } from "@/components/site/ReviewCard";
@@ -44,17 +45,17 @@ export default async function AccueilMaquette() {
     <main>
       {/* Ouverture : photo maîtrisée, chevauchée par la carte d'identité. */}
       <section className="md:grid md:grid-cols-12">
-        <div className="relative aspect-[4/3] bg-pierre md:col-span-9 md:col-start-1 md:row-start-1 md:aspect-auto md:h-[min(32rem,62vh)]">
+        <div className="relative aspect-[4/3] overflow-hidden bg-pierre md:col-span-9 md:col-start-1 md:row-start-1 md:aspect-auto md:h-[min(32rem,62vh)] md:rounded-r-photo">
           <Image
             src={OUVERTURE.src}
             alt="Les quais de Seine à Asnières"
             fill
             preload
             sizes="(min-width: 768px) 75vw, 100vw"
-            className="object-cover"
+            className="anim-ouverture-photo object-cover"
           />
         </div>
-        <div className="relative mx-4 -mt-16 bg-blanc p-6 ring-1 ring-filet md:col-span-5 md:col-start-8 md:row-start-1 md:mx-0 md:mt-10 md:mr-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] md:self-start md:p-9">
+        <div className="carte-chevauchante anim-ouverture-carte relative mx-4 -mt-16 bg-blanc p-6 md:col-span-5 md:col-start-8 md:row-start-1 md:mx-0 md:mt-10 md:mr-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] md:self-start md:p-9">
           <Plaque className="text-[0.8rem]" />
           <h1 className="titre mt-6 text-[1.75rem] leading-tight xl:text-section">
             Agence immobilière à{" "}
@@ -81,7 +82,10 @@ export default async function AccueilMaquette() {
 
       {/* Biens : trois récents, en tailles décalées. */}
       <section id="biens" className="conteneur mt-14 scroll-mt-6 md:mt-16">
-        <div className="flex items-baseline justify-between gap-4">
+        <div
+          className="flex items-baseline justify-between gap-4"
+          data-reveal="monte"
+        >
           <h2 className="titre text-section">En vente</h2>
           <Link href="/maquettes#biens" className="lien">
             Voir les {properties.length} biens
@@ -96,6 +100,7 @@ export default async function AccueilMaquette() {
               ratio="aspect-[4/3] md:aspect-[4/5]"
               sizes="(min-width: 768px) 40vw, 100vw"
               className="col-span-2 md:col-span-6"
+              revealDelay={0}
             />
           )}
           {second && (
@@ -105,6 +110,7 @@ export default async function AccueilMaquette() {
               ratio="aspect-[4/5] md:aspect-[4/3]"
               sizes="(min-width: 768px) 34vw, 50vw"
               className="md:col-span-5 md:col-start-8 md:mt-28"
+              revealDelay={140}
             />
           )}
           {third && (
@@ -114,6 +120,7 @@ export default async function AccueilMaquette() {
               ratio="aspect-[4/5] md:aspect-[4/3]"
               sizes="(min-width: 768px) 28vw, 50vw"
               className="mt-12 md:col-span-4 md:col-start-7 md:-mt-56"
+              revealDelay={280}
             />
           )}
         </div>
@@ -123,7 +130,10 @@ export default async function AccueilMaquette() {
       {reviews && reviews.reviews.length > 0 && (
         <section className="mt-24 md:mt-36" aria-labelledby="avis">
           <div className="md:grid md:grid-cols-12 md:items-start md:gap-10 md:pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))]">
-            <div className="px-4 md:col-span-3 md:px-0 md:pt-10">
+            <div
+              className="px-4 md:col-span-3 md:px-0 md:pt-10"
+              data-reveal="monte"
+            >
               <h2 id="avis" className="sr-only">
                 Avis clients
               </h2>
@@ -135,7 +145,11 @@ export default async function AccueilMaquette() {
                 Lire tous les avis
               </a>
             </div>
-            <div className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto bg-pierre px-4 py-8 [scrollbar-width:none] md:col-span-9 md:mt-0 md:px-8 md:py-10">
+            <div
+              data-reveal="glisse"
+              style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+              className="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto bg-pierre px-4 py-8 [scrollbar-width:none] md:col-span-9 md:mt-0 md:rounded-l-carte md:px-8 md:py-10"
+            >
               {reviews.reviews.map((r) => (
                 <ReviewCard key={r.id} review={r} />
               ))}
@@ -151,17 +165,30 @@ export default async function AccueilMaquette() {
       >
         <div className="px-4 md:col-span-7 md:col-start-2 md:px-0">
           <ul className="titre space-y-5 text-[1.375rem] leading-snug md:text-[1.75rem]">
-            <li>Nous refusons les estimations gonflées.</li>
-            <li className="md:pl-12">
+            <li data-reveal="monte">Nous refusons les estimations gonflées.</li>
+            <li
+              className="md:pl-12"
+              data-reveal="monte"
+              style={{ "--reveal-delay": "120ms" } as React.CSSProperties}
+            >
               Un seul interlocuteur, jusqu’au notaire.
             </li>
-            <li className="md:pl-24">Asnières et ses voisines, rue par rue.</li>
+            <li
+              className="md:pl-24"
+              data-reveal="monte"
+              style={{ "--reveal-delay": "240ms" } as React.CSSProperties}
+            >
+              Asnières et ses voisines, rue par rue.
+            </li>
           </ul>
           <Link href="/maquettes#agence" className="lien mt-8 inline-block">
             Notre façon de travailler
           </Link>
         </div>
-        <div className="relative mt-10 ml-16 aspect-[3/4] bg-pierre md:col-span-4 md:col-start-9 md:mt-0 md:ml-0">
+        <div
+          data-reveal="decouvre"
+          className="relative mt-10 ml-16 aspect-[3/4] overflow-hidden rounded-l-photo bg-pierre md:col-span-4 md:col-start-9 md:mt-0 md:ml-0"
+        >
           <Image
             src={QUARTIER.src}
             alt="La mairie d’Asnières-sur-Seine"
@@ -177,7 +204,10 @@ export default async function AccueilMaquette() {
         id="contact"
         className="mt-28 scroll-mt-6 pb-28 md:mt-44 md:grid md:grid-cols-12 md:pb-36"
       >
-        <div className="relative aspect-[4/3] bg-pierre md:col-span-7 md:col-start-1 md:row-start-1 md:aspect-[16/11]">
+        <div
+          data-reveal="decouvre"
+          className="relative aspect-[4/3] overflow-hidden bg-pierre md:col-span-7 md:col-start-1 md:row-start-1 md:aspect-[16/11] md:rounded-r-photo"
+        >
           <Image
             src="/maquettes/devanture-provisoire.jpg"
             alt="La devanture de l’agence, boulevard Voltaire"
@@ -186,7 +216,11 @@ export default async function AccueilMaquette() {
             className="object-cover"
           />
         </div>
-        <div className="relative mx-4 -mt-12 bg-blanc p-6 ring-1 ring-filet md:col-span-4 md:col-start-7 md:row-start-1 md:mx-0 md:mb-12 md:self-end md:p-9">
+        <div
+          data-reveal="monte"
+          style={{ "--reveal-delay": "260ms" } as React.CSSProperties}
+          className="carte-chevauchante relative mx-4 -mt-12 bg-blanc p-6 md:col-span-4 md:col-start-7 md:row-start-1 md:mx-0 md:mb-12 md:self-end md:p-9"
+        >
           <p className="titre text-intertitre">{agency.address.street}</p>
           <p className="titre text-intertitre">
             {agency.address.postalCode} {agency.address.city}

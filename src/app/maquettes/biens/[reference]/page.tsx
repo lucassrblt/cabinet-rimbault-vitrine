@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 function Details({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <details className="group border-b border-filet">
+    <details className="repliable group border-b border-filet">
       <summary className="flex cursor-pointer list-none items-center justify-between py-5 font-medium [&::-webkit-details-marker]:hidden">
         {title}
         <ChevronDown
@@ -195,7 +195,7 @@ export default async function FicheBienMaquette({ params }: Params) {
                   return (
                     <li
                       key={name}
-                      className="flex items-center gap-2 bg-pierre px-3 py-1.5 text-mention"
+                      className="flex items-center gap-2 rounded-controle bg-pierre px-3 py-1.5 text-mention"
                     >
                       {Icon && <Icon size={15} aria-hidden />}
                       {name}
@@ -237,7 +237,7 @@ export default async function FicheBienMaquette({ params }: Params) {
             )}
           </section>
 
-          <section className="mt-14">
+          <section className="mt-14" data-reveal="monte">
             <h2 className="titre text-intertitre">Énergie</h2>
             <div className="mt-5 grid gap-8 sm:grid-cols-2">
               <EnergyCompact
@@ -294,9 +294,9 @@ export default async function FicheBienMaquette({ params }: Params) {
             </Details>
           </section>
 
-          <section className="mt-14">
+          <section className="mt-14" data-reveal="monte">
             <h2 className="titre text-intertitre">Le quartier</h2>
-            <div className="mt-5 flex aspect-[16/9] flex-col items-center md:aspect-[21/9] justify-center gap-2 bg-pierre text-gris">
+            <div className="mt-5 flex aspect-[16/9] flex-col items-center rounded-carte md:aspect-[21/9] justify-center gap-2 bg-pierre text-gris">
               <MapPin size={22} aria-hidden />
               <p className="text-mention">
                 Carte du secteur,{" "}
@@ -312,7 +312,8 @@ export default async function FicheBienMaquette({ params }: Params) {
 
           <section
             id="visite"
-            className="mt-14 scroll-mt-6 bg-pierre p-6 md:p-10"
+            data-reveal="monte"
+            className="mt-14 scroll-mt-24 rounded-carte bg-pierre p-6 md:p-10"
           >
             <h2 className="titre text-section">Demander une visite</h2>
             <p className="mt-2 text-gris">
@@ -355,7 +356,7 @@ export default async function FicheBienMaquette({ params }: Params) {
         </div>
 
         <aside className="hidden md:col-span-4 md:block">
-          <div className="sticky top-6 border border-filet p-7">
+          <div className="sticky top-24 rounded-carte border border-filet p-7">
             <p className="titre text-chiffre font-semibold">{priceLabel(p)}</p>
             <p className="mt-1 text-mention text-gris">
               {title}, {propertySurface(p)}
@@ -370,7 +371,9 @@ export default async function FicheBienMaquette({ params }: Params) {
 
       {similar.length > 0 && (
         <section className="conteneur mt-24 pb-24 md:mt-32 md:pb-32">
-          <h2 className="titre text-section">D’autres biens</h2>
+          <h2 className="titre text-section" data-reveal="monte">
+            D’autres biens
+          </h2>
           <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-10">
             {similar.slice(0, 3).map((s, i) => (
               <PropertyCard
@@ -386,6 +389,7 @@ export default async function FicheBienMaquette({ params }: Params) {
                     "md:col-span-4 md:mt-6",
                   ][i]
                 }
+                revealDelay={i * 140}
               />
             ))}
           </div>
