@@ -38,6 +38,12 @@ Hors scope v1 : acquisition de mandats (prospection vendeurs, tunnel d'estimatio
 - **Répartition** : sérieux par la structure (grille, espace, hiérarchie) ; modernité par la retenue ; chaleur par les mots et le réel (photos de l'agence et du quartier, vrais avis).
 - **Ton** : vouvoiement, chaleureux mais cordial, factuel, sans jargon.
 - **Retours sur les premières explorations (2026-10-01)** : direction A « L'enseigne » retenue, mais trop « vibe codée » — aplat de rouge trop massif, proportions, trop de texte, pas assez de visuel. → La photo d'abord, le texte en une ligne ; le rouge en accent, jamais en grand aplat.
+- **Style validé (planche `/planche`, 2026-10-01)** :
+  - Rouge **profond `#7F1A24`** (survol `#63131C`) — logotype, une seule action principale par écran, états actifs. Jamais en fond de section (~4 % d'une page).
+  - Neutres : blanc `#FFFFFF`, pierre `#F1EFEC`, filet `#E2DED9`, gris `#6E6763`, encre `#241F1E`.
+  - Typographie : **Source Serif 4** (titres, chiffres, logotype) + **Instrument Sans** (texte, interface). Échelle 1,25 sur base 17 px : 14 / 17 / 21 / 26 / 33 / 52 / 65.
+  - Logotype : **monogramme « CR »** (carré rouge) + nom en capitales dans l'en-tête ; **la plaque** (enseigne miniature) une seule fois en signature (carte d'ouverture ou pied de page).
+  - Photos : coins nets, ni ombre ni filtre, trois formats (4:3, 4:5, 3:4). Seul texte sur image : la carte qui chevauche la photo d'ouverture.
 - **Références** : hors immobilier — cabinets d'architectes / notaires récents, artisans haut de gamme, petits hôtels indépendants.
 
 ## 5. Contenu disponible

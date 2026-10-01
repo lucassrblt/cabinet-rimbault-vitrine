@@ -21,5 +21,5 @@ export function formatNumber(value: number) {
 }
 
 export function formatSurface(value: number) {
-  return `${numberFormat.format(value)} m²`;
+  return `${numberFormat.format(value)}\u00a0m²`;
 }
