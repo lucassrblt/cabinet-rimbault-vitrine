@@ -22,3 +22,18 @@ export async function getProperty(reference: string): Promise<Property | null> {
     throw error;
   }
 }
+
+export async function getSimilarProperties(
+  reference: string,
+  limit = 3,
+): Promise<Property[]> {
+  try {
+    const { data } = await apiFetch<{ data: Property[] }>(
+      `/properties/${encodeURIComponent(reference)}/similar?limit=${limit}`,
+      { revalidate: 600, tags: [`property:${reference}`] },
+    );
+    return data;
+  } catch {
+    return [];
+  }
+}

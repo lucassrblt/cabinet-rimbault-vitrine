@@ -21,6 +21,10 @@ export const agency = {
     count: 32,
     href: "https://www.google.com/maps/search/Cabinet+Rimbault+Asni%C3%A8res",
   },
+  mapsDirections:
+    "https://www.google.com/maps/dir/?api=1&destination=117+boulevard+Voltaire+92600+Asni%C3%A8res-sur-Seine",
+  // À fournir par l'agent (cf. docs/brief.md §9).
+  whatsapp: null as string | null,
   legal: {
     card: "Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France",
     company: "SAS au capital de 4 000 €, RCS Nanterre 511 484 586",

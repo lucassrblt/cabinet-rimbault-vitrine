@@ -110,6 +110,18 @@ export function descriptionParagraphs(p: Property) {
     .map((part) => (isShouting(part) ? capitalize(part.toLowerCase()) : part));
 }
 
+/**
+ * Sépare la description en repères courts (quartier, transports…) et en
+ * paragraphes de fond.
+ */
+export function descriptionParts(p: Property) {
+  const parts = descriptionParagraphs(p);
+  return {
+    highlights: parts.filter((part) => part.length < 90),
+    paragraphs: parts.filter((part) => part.length >= 90),
+  };
+}
+
 export function mainImage(p: Property) {
   return p.images.find((image) => image.isMain) ?? p.images[0] ?? null;
 }

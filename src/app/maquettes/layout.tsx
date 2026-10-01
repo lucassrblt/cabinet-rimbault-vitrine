@@ -1,0 +1,14 @@
+import { SiteFooter } from "@/components/site/SiteFooter";
+import { SiteHeader } from "@/components/site/SiteHeader";
+
+export default function MaquettesLayout({
+  children,
+}: LayoutProps<"/maquettes">) {
+  return (
+    <>
+      <SiteHeader base="/maquettes" />
+      {children}
+      <SiteFooter />
+    </>
+  );
+}
