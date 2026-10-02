@@ -29,22 +29,22 @@ function hourLabel(h: number) {
     : `${Math.floor(h)} h`;
 }
 
-export type OpeningStatus = { open: boolean; label: string };
+/** `label` pour une phrase complète, `short` quand la place manque. */
+export type OpeningStatus = { open: boolean; label: string; short: string };
 
-/** Prochaine ouverture après le jour `from` (exclu). */
-function nextOpening(from: number) {
+/** Prochaine ouverture après le jour `from` (exclu), ex. « mardi à 9 h ». */
+function nextSlot(from: number) {
   for (let i = 1; i <= 7; i++) {
     const day = (from + i) % 7;
     const slot = SCHEDULE[day];
     if (slot && slot !== "rdv") {
-      const when = i === 1 ? "demain" : DAY_NAMES[day];
-      return `réouverture ${when} à ${hourLabel(slot.open)}`;
+      return `${i === 1 ? "demain" : DAY_NAMES[day]} à ${hourLabel(slot.open)}`;
     }
   }
   return "";
 }
 
-/** Statut affiché dans l'affichette, calculé à l'heure de Paris. */
+/** Statut de l'agence, calculé à l'heure de Paris. */
 export function openingStatus(date = new Date()): OpeningStatus {
   const paris = new Date(
     date.toLocaleString("en-US", { timeZone: "Europe/Paris" }),
@@ -53,22 +53,37 @@ export function openingStatus(date = new Date()): OpeningStatus {
   const hour = paris.getHours() + paris.getMinutes() / 60;
   const slot = SCHEDULE[day];
 
-  if (slot === "rdv")
+  if (slot === "rdv") {
     return {
       open: false,
-      label: `Aujourd’hui sur rendez-vous, ${nextOpening(day)}`,
+      label: `Aujourd’hui sur rendez-vous, réouverture ${nextSlot(day)}`,
+      short: "Sur rendez-vous aujourd’hui",
     };
-  if (!slot)
-    return { open: false, label: `Fermé aujourd’hui, ${nextOpening(day)}` };
-  if (hour < slot.open)
+  }
+  if (!slot) {
+    return {
+      open: false,
+      label: `Fermé aujourd’hui, réouverture ${nextSlot(day)}`,
+      short: `Ouvre ${nextSlot(day)}`,
+    };
+  }
+  if (hour < slot.open) {
     return {
       open: false,
       label: `Ouvre aujourd’hui à ${hourLabel(slot.open)}`,
+      short: `Ouvre à ${hourLabel(slot.open)}`,
     };
-  if (hour < slot.close)
+  }
+  if (hour < slot.close) {
     return {
       open: true,
       label: `Ouvert aujourd’hui jusqu’à ${hourLabel(slot.close)}`,
+      short: `Ouvert jusqu’à ${hourLabel(slot.close)}`,
     };
-  return { open: false, label: `Fermé, ${nextOpening(day)}` };
+  }
+  return {
+    open: false,
+    label: `Fermé, réouverture ${nextSlot(day)}`,
+    short: `Ouvre ${nextSlot(day)}`,
+  };
 }

@@ -9,16 +9,25 @@ import { type OpeningStatus, openingStatus } from "@/lib/opening";
 import { cn } from "@/lib/utils";
 
 /**
- * En-tête « affichette » : un bandeau dit en direct si l'agence est ouverte,
- * comme l'affichette des horaires sur la porte du boulevard Voltaire.
- * Le statut est calculé dans le navigateur (les pages sont mises en cache).
+ * Variantes du statut d'ouverture, comparées via `?bandeau=` :
+ * - `aucun`   : pas de statut dans l'en-tête ;
+ * - `bouton`  : le statut sous le numéro, dans le bouton d'appel ;
+ * - `barre`   : le statut en texte simple, à côté du bouton d'appel ;
+ * - `affiche` : un bandeau au-dessus, composé comme une affichette.
  */
+export type Bandeau = "aucun" | "bouton" | "barre" | "affiche";
+const BANDEAUX: Bandeau[] = ["aucun", "bouton", "barre", "affiche"];
+
 export function SiteHeader({ base }: { base: string }) {
   const pathname = usePathname();
   const [status, setStatus] = useState<OpeningStatus | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [bandeau, setBandeau] = useState<Bandeau>("bouton");
 
   useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("bandeau");
+    if (BANDEAUX.includes(param as Bandeau)) setBandeau(param as Bandeau);
+    // Le statut est calculé dans le navigateur : les pages sont mises en cache.
     const update = () => setStatus(openingStatus());
     update();
     const timer = window.setInterval(update, 60_000);
@@ -36,36 +45,26 @@ export function SiteHeader({ base }: { base: string }) {
   ];
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
+  const fade = cn(
+    "transition-opacity duration-500",
+    status ? "opacity-100" : "opacity-0",
+  );
 
   return (
     <header className="en-tete sticky top-0 z-30 bg-blanc">
-      <div className="bg-pierre">
-        <div className="conteneur flex h-9 items-center justify-between gap-4 text-[0.8125rem]">
-          <p className="flex items-center gap-2" aria-live="polite">
-            <span
-              className={cn(
-                "size-2 rounded-full transition-colors duration-500",
-                status?.open ? "bg-[#2f7d4f]" : "bg-gris",
-              )}
-              aria-hidden
-            />
-            <span
-              className={cn(
-                "transition-opacity duration-500",
-                status ? "opacity-100" : "opacity-0",
-              )}
-            >
-              {status?.label ?? "Horaires de l’agence"}
-            </span>
-          </p>
-          <a
-            href={agency.mapsDirections}
-            className="hidden text-gris transition-colors hover:text-encre sm:inline"
+      {bandeau === "affiche" && (
+        <div className="border-b border-filet bg-pierre">
+          <p
+            className={cn(
+              "conteneur titre py-2 text-center text-[0.9375rem] italic",
+              fade,
+            )}
+            aria-live="polite"
           >
-            {agency.address.street}, {agency.address.city}
-          </a>
+            {status ? `${status.label}, au ${agency.address.street}.` : " "}
+          </p>
         </div>
-      </div>
+      )}
 
       <div className="en-tete-barre conteneur flex h-[4.25rem] items-center justify-between gap-4">
         <Link
@@ -94,13 +93,36 @@ export function SiteHeader({ base }: { base: string }) {
           ))}
         </nav>
 
-        <a
-          href={agency.phone.href}
-          className="hidden items-center gap-2 rounded-full border border-encre/80 px-5 py-2.5 text-[0.9375rem] font-medium transition-colors duration-200 hover:bg-encre hover:text-blanc md:inline-flex"
-        >
-          <Phone size={16} aria-hidden />
-          {agency.phone.display}
-        </a>
+        <div className="hidden items-center gap-5 md:flex">
+          {bandeau === "barre" && (
+            <span className={cn("text-[0.875rem] text-gris", fade)}>
+              {status?.short}
+            </span>
+          )}
+          <a
+            href={agency.phone.href}
+            className={cn(
+              "inline-flex items-center gap-2.5 rounded-full border border-encre/80 font-medium transition-colors duration-200 hover:bg-encre hover:text-blanc",
+              bandeau === "bouton"
+                ? "py-1.5 pr-5 pl-4"
+                : "px-5 py-2.5 text-[0.9375rem]",
+            )}
+          >
+            <Phone size={16} aria-hidden />
+            {bandeau === "bouton" ? (
+              <span className="flex flex-col leading-tight">
+                <span className="text-[0.9375rem]">{agency.phone.display}</span>
+                <span
+                  className={cn("text-[0.75rem] font-normal opacity-70", fade)}
+                >
+                  {status?.short ?? " "}
+                </span>
+              </span>
+            ) : (
+              agency.phone.display
+            )}
+          </a>
+        </div>
 
         <button
           type="button"
@@ -150,6 +172,11 @@ export function SiteHeader({ base }: { base: string }) {
               <Phone size={17} aria-hidden />
               Appeler le {agency.phone.display}
             </a>
+            {status && bandeau !== "aucun" && (
+              <p className="mt-3 text-center text-mention text-gris">
+                {status.label}
+              </p>
+            )}
           </nav>
         </div>
       </div>
