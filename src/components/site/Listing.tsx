@@ -1,12 +1,10 @@
 // Page Nos biens : la liste retenue (alternée, avec carrousel) et les
 // en-têtes de page en comparaison.
 
-import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
 import type { Property } from "@/lib/api/types";
 import {
-  mainImage,
   priceLabel,
   propertyFeatures,
   propertyFloor,
@@ -110,22 +108,12 @@ export function ListeBiens({ items }: { items: Property[] }) {
               </dl>
 
               {features.length > 0 && (
-                <ul className="mt-4 flex flex-wrap gap-1.5">
-                  {features.map((f) => (
-                    <li
-                      key={f}
-                      className="rounded-full bg-pierre px-3 py-1 text-[0.8125rem]"
-                    >
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+                <p className="mt-4 text-[0.9375rem] text-gris">
+                  {features.join(", ")}
+                </p>
               )}
 
-              <Link
-                href={href(p)}
-                className="mt-6 inline-flex rounded-full border border-encre/80 px-5 py-2.5 text-[0.9375rem] font-medium transition-colors duration-200 hover:bg-encre hover:text-blanc"
-              >
+              <Link href={href(p)} className="bouton bouton-secondaire mt-6">
                 Voir le bien
               </Link>
             </div>
@@ -165,107 +153,39 @@ function ranges(items: Property[]) {
     price: prices.length
       ? `${fmtPrice(Math.min(...prices))} à ${fmtPrice(Math.max(...prices))}`
       : null,
-    cities: cities.length ? cities.join(" et ") : null,
+    cities: cities.length
+      ? cities.map((c) => c.replaceAll("-", "\u2011")).join(" et ")
+      : null,
   };
 }
 
-/** 1. La phrase, seule. */
-export function TitrePhrase({ items }: { items: Property[] }) {
-  return (
-    <h1
-      data-reveal="monte"
-      className="titre max-w-[22ch] text-[2.125rem] leading-[1.1] md:text-[3rem]"
-    >
-      {countLabel(items)} en vente, suivis par la même personne jusqu’à la
-      signature.
-    </h1>
-  );
-}
-
-/** 2. La phrase et des repères tirés des biens : surfaces, prix, communes. */
-export function TitreReperes({ items }: { items: Property[] }) {
+/**
+ * Le titre de page : « Nos biens » en grand, puis une ligne de repères
+ * calculés à partir des biens (combien, quelles surfaces, quels prix, où).
+ */
+export function TitreBiens({ items }: { items: Property[] }) {
   const r = ranges(items);
   const facts = [
+    ["En vente", countLabel(items)],
     ["Surfaces", r.surface],
     ["Prix", r.price],
-    ["Où", r.cities],
+    ["Communes", r.cities],
   ].filter(([, v]) => v) as [string, string][];
   return (
-    <div
-      data-reveal="monte"
-      className="md:grid md:grid-cols-12 md:items-end md:gap-10"
-    >
-      <h1 className="titre text-[2.25rem] leading-[1.05] md:col-span-6 md:text-[3.5rem]">
-        {countLabel(items)} en vente
+    <div data-reveal="monte">
+      <h1 className="titre text-[4rem] leading-[0.92] tracking-[-0.03em] md:text-[8.5rem]">
+        Nos biens
       </h1>
-      <dl className="mt-8 grid gap-5 sm:grid-cols-3 md:col-span-6 md:mt-0 md:pb-2">
+      <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 md:mt-14 md:grid-cols-4 md:gap-x-10">
         {facts.map(([k, v]) => (
           <div key={k} className="border-t border-encre pt-3">
             <dt className="text-mention text-gris">{k}</dt>
-            <dd className="titre mt-1 text-[1.1875rem] leading-snug">{v}</dd>
+            <dd className="titre mt-1 text-[1.125rem] leading-snug md:text-[1.25rem]">
+              {v}
+            </dd>
           </div>
         ))}
       </dl>
-    </div>
-  );
-}
-
-/** 3. La phrase et les biens en vignettes qui se chevauchent : un aperçu visuel. */
-export function TitreVignettes({ items }: { items: Property[] }) {
-  return (
-    <div
-      data-reveal="monte"
-      className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
-    >
-      <h1 className="titre max-w-[18ch] text-[2.25rem] leading-[1.08] md:text-[3.25rem]">
-        {countLabel(items)} en vente, à voir avec nous.
-      </h1>
-      <ul className="flex pl-4">
-        {items.map((p, i) => {
-          const image = mainImage(p);
-          return (
-            <li
-              key={p.id}
-              className="-ml-4"
-              style={{ zIndex: items.length - i }}
-            >
-              <a
-                href={`#${anchor(p)}`}
-                className="relative block size-[4.5rem] overflow-hidden rounded-[14px] bg-pierre ring-4 ring-blanc transition-transform duration-300 hover:-translate-y-1.5 md:size-24"
-                aria-label={`${propertyTitle(p)}, ${placeLabel(p)}`}
-              >
-                {image && (
-                  <Image
-                    src={image.url}
-                    alt=""
-                    fill
-                    sizes="6rem"
-                    className="object-cover"
-                  />
-                )}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-/** 4. Le grand titre : la typographie fait l'image, la phrase se décale. */
-export function TitreGrand({ items }: { items: Property[] }) {
-  return (
-    <div data-reveal="monte">
-      <h1 className="titre text-[4.5rem] leading-[0.9] tracking-[-0.03em] md:text-[9rem]">
-        Nos biens
-        <sup className="ml-2 align-top text-[1.25rem] tracking-normal text-rouge md:text-[1.75rem]">
-          {items.length}
-        </sup>
-      </h1>
-      <p className="mt-6 max-w-[34ch] text-[1.125rem] text-gris md:mt-8 md:ml-[42%] md:text-[1.25rem]">
-        Des appartements à Asnières-sur-Seine et alentour, suivis par la même
-        personne de la visite à la signature.
-      </p>
     </div>
   );
 }

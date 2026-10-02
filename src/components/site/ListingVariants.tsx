@@ -328,7 +328,7 @@ export function ListeMosaique({ items }: { items: Property[] }) {
 
 export function FinCarte() {
   return (
-    <div className="grid gap-8 rounded-[14px] bg-pierre p-6 md:grid-cols-12 md:items-center md:p-10">
+    <div className="grid gap-8 rounded-carte bg-pierre p-6 md:grid-cols-12 md:items-center md:p-10">
       <div className="md:col-span-6">
         <h3 className="titre text-section leading-tight">
           Vous ne trouvez pas votre bien ?
@@ -339,19 +339,12 @@ export function FinCarte() {
         </p>
       </div>
       <form className="grid gap-3 md:col-span-6 md:grid-cols-2">
-        <input
-          className="champ rounded-full px-5"
-          placeholder="Ex. 3 pièces avec balcon"
-        />
-        <input
-          className="champ rounded-full px-5"
-          placeholder="Votre téléphone"
-          type="tel"
-        />
+        <input className="champ" placeholder="Ex. 3 pièces avec balcon" />
+        <input className="champ" placeholder="Votre téléphone" type="tel" />
         <p className="text-[0.75rem] text-gris md:col-span-2">
           Votre numéro sert uniquement à vous rappeler.
         </p>
-        <span className="bouton bouton-sombre rounded-full md:col-span-2 md:justify-self-start">
+        <span className="bouton bouton-sombre md:col-span-2 md:justify-self-start">
           Être rappelé
         </span>
       </form>

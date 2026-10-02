@@ -102,7 +102,7 @@ export function CardCarousel({
         <>
           {counter ? (
             <span
-              className="pointer-events-none absolute right-3 bottom-3 rounded-full bg-encre/70 px-3 py-1 text-[0.8125rem] text-blanc tabular-nums backdrop-blur-sm"
+              className="pointer-events-none absolute right-3 bottom-3 rounded-controle bg-encre/70 px-3 py-1 text-[0.8125rem] text-blanc tabular-nums backdrop-blur-sm"
               aria-live="polite"
             >
               {index + 1} / {images.length}
@@ -127,7 +127,7 @@ export function CardCarousel({
               onClick={() => go(d)}
               aria-label={d < 0 ? "Photo précédente" : "Photo suivante"}
               className={cn(
-                "absolute top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-full bg-blanc/90 opacity-0 shadow-[0_4px_14px_-6px_rgb(36_31_30/0.5)] transition-opacity duration-300 group-hover/carousel:opacity-100 focus-visible:opacity-100 md:flex",
+                "absolute top-1/2 hidden size-10 -translate-y-1/2 items-center justify-center rounded-controle bg-blanc/90 opacity-0 shadow-[0_4px_14px_-6px_rgb(36_31_30/0.5)] transition-opacity duration-300 group-hover/carousel:opacity-100 focus-visible:opacity-100 md:flex",
                 d < 0 ? "left-3" : "right-3",
                 (d < 0 ? index === 0 : index === images.length - 1) &&
                   "invisible",

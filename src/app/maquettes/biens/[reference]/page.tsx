@@ -1,21 +1,11 @@
-import {
-  Archive,
-  ArrowUpDown,
-  Building,
-  Car,
-  ChevronDown,
-  MapPin,
-  MessageCircle,
-  Phone,
-  Sun,
-  Trees,
-} from "lucide-react";
+import { ChevronDown, MapPin, MessageCircle, Phone } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { EnergyCompact } from "@/components/site/EnergyCompact";
 import { Gallery } from "@/components/site/Gallery";
+import { OpeningNote } from "@/components/site/OpeningNote";
 import { PropertyCard } from "@/components/site/PropertyCard";
 import { agency } from "@/lib/agency";
 import { getProperty, getSimilarProperties } from "@/lib/api/properties";
@@ -31,15 +21,6 @@ import {
   statusLabel,
 } from "@/lib/property";
 import { formatPrice, formatSurface } from "@/lib/utils";
-
-const FEATURE_ICONS: Record<string, typeof Sun> = {
-  Terrasse: Sun,
-  Jardin: Trees,
-  Balcon: Building,
-  Parking: Car,
-  Cave: Archive,
-  Ascenseur: ArrowUpDown,
-};
 
 type Params = PageProps<"/maquettes/biens/[reference]">;
 
@@ -189,20 +170,7 @@ export default async function FicheBienMaquette({ params }: Params) {
           <section className="mt-12">
             <h2 className="sr-only">Le bien</h2>
             {features.length > 0 && (
-              <ul className="flex flex-wrap gap-2">
-                {features.map((name) => {
-                  const Icon = FEATURE_ICONS[name];
-                  return (
-                    <li
-                      key={name}
-                      className="flex items-center gap-2 rounded-controle bg-pierre px-3 py-1.5 text-mention"
-                    >
-                      {Icon && <Icon size={15} aria-hidden />}
-                      {name}
-                    </li>
-                  );
-                })}
-              </ul>
+              <p className="text-gris">{features.join(", ")}</p>
             )}
             {highlights.length > 0 && (
               <ul className="mt-6 space-y-1.5">
@@ -362,6 +330,7 @@ export default async function FicheBienMaquette({ params }: Params) {
               {title}, {propertySurface(p)}
             </p>
             <div className="mt-6 flex flex-col gap-3">{contactActions}</div>
+            <OpeningNote className="mt-3" />
             <p className="mt-6 text-mention text-gris">
               Référence {p.reference}
             </p>
