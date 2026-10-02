@@ -1,9 +1,7 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import type React from "react";
-import { CallButton } from "@/components/site/CallButton";
-import { Plaque } from "@/components/site/Logo";
+import { Bouton, BoutonAppel, LienAppuye } from "@/components/site/Action";
 import { PropertyCard } from "@/components/site/PropertyCard";
 import { ReviewCard } from "@/components/site/ReviewCard";
 import { agency } from "@/lib/agency";
@@ -57,8 +55,7 @@ export default async function AccueilMaquette() {
           />
         </div>
         <div className="carte-chevauchante anim-ouverture-carte relative mx-4 -mt-16 bg-blanc p-6 md:col-span-5 md:col-start-8 md:row-start-1 md:mx-0 md:mt-10 md:mr-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] md:self-start md:p-9">
-          <Plaque className="text-[0.8rem]" />
-          <h1 className="titre mt-6 text-[1.75rem] leading-tight xl:text-section">
+          <h1 className="titre text-[1.75rem] leading-tight xl:text-section">
             Agence immobilière à{" "}
             <span className="whitespace-nowrap">Asnières-sur-Seine</span>,
             depuis {agency.since}.
@@ -71,12 +68,10 @@ export default async function AccueilMaquette() {
             {rating} sur 5, {count} avis Google
           </a>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href="#biens" className="bouton bouton-principal">
-              Voir nos biens
-            </a>
-            <a href={agency.phone.href} className="bouton bouton-secondaire">
+            <Bouton href="/maquettes/biens">Voir nos biens</Bouton>
+            <LienAppuye href={agency.phone.href} className="self-center">
               Appeler
-            </a>
+            </LienAppuye>
           </div>
         </div>
       </section>
@@ -88,9 +83,9 @@ export default async function AccueilMaquette() {
           data-reveal="monte"
         >
           <h2 className="titre text-section">En vente</h2>
-          <Link href="/maquettes/biens" className="lien">
+          <LienAppuye href="/maquettes/biens">
             Voir les {properties.length} biens
-          </Link>
+          </LienAppuye>
         </div>
         <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-10">
           {first && (
@@ -182,9 +177,9 @@ export default async function AccueilMaquette() {
               Asnières et ses voisines, rue par rue.
             </li>
           </ul>
-          <Link href="/maquettes/agence" className="lien mt-8 inline-block">
+          <LienAppuye href="/maquettes/agence" className="mt-8">
             Notre façon de travailler
-          </Link>
+          </LienAppuye>
         </div>
         <div
           data-reveal="decouvre"
@@ -235,13 +230,10 @@ export default async function AccueilMaquette() {
             ))}
           </dl>
           <div className="mt-7 flex flex-wrap gap-3">
-            <CallButton />
-            <a
-              href={agency.mapsDirections}
-              className="lien self-center text-[0.9375rem]"
-            >
+            <BoutonAppel />
+            <LienAppuye href={agency.mapsDirections} className="self-center">
               Itinéraire
-            </a>
+            </LienAppuye>
           </div>
         </div>
       </section>

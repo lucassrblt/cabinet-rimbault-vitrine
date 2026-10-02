@@ -1,9 +1,9 @@
-import { ChevronDown, MapPin, MessageCircle, Phone } from "lucide-react";
+import { ChevronDown, MapPin } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
-import { CallButton } from "@/components/site/CallButton";
+import { Bouton, BoutonAppel, LienAppuye } from "@/components/site/Action";
 import { EnergyCompact } from "@/components/site/EnergyCompact";
 import { Gallery } from "@/components/site/Gallery";
 import { OpeningNote } from "@/components/site/OpeningNote";
@@ -108,16 +108,15 @@ export default async function FicheBienMaquette({ params }: Params) {
 
   const contactActions = (
     <>
-      <CallButton />
+      <BoutonAppel className="justify-between" />
       {agency.whatsapp && (
-        <a href={agency.whatsapp} className="bouton bouton-secondaire">
-          <MessageCircle size={17} aria-hidden />
+        <LienAppuye href={agency.whatsapp} className="self-start">
           WhatsApp
-        </a>
+        </LienAppuye>
       )}
-      <a href="#visite" className="bouton bouton-secondaire">
+      <LienAppuye href="#visite" className="self-start">
         Demander une visite
-      </a>
+      </LienAppuye>
     </>
   );
 
@@ -313,9 +312,7 @@ export default async function FicheBienMaquette({ params }: Params) {
                 <span className="lien">Politique de confidentialité</span>
               </p>
               <div className="sm:col-span-2">
-                <button type="button" className="bouton bouton-principal">
-                  Envoyer la demande
-                </button>
+                <Bouton as="button">Envoyer la demande</Bouton>
               </div>
             </form>
           </section>
@@ -363,23 +360,12 @@ export default async function FicheBienMaquette({ params }: Params) {
         </section>
       )}
 
-      <div className="fixed inset-x-0 bottom-0 z-20 flex gap-2 border-t border-filet bg-blanc p-3 md:hidden [&>*]:flex-1">
-        <a href={agency.phone.href} className="bouton bouton-principal">
-          <Phone size={17} aria-hidden />
-          Appeler
-        </a>
+      <div className="fixed inset-x-0 bottom-0 z-20 flex items-center justify-between gap-4 border-t border-filet bg-blanc/95 px-4 py-3 backdrop-blur md:hidden">
+        <LienAppuye href="#visite">Visiter</LienAppuye>
         {agency.whatsapp && (
-          <a
-            href={agency.whatsapp}
-            className="bouton bouton-secondaire"
-            aria-label="WhatsApp"
-          >
-            <MessageCircle size={17} aria-hidden />
-          </a>
+          <LienAppuye href={agency.whatsapp}>WhatsApp</LienAppuye>
         )}
-        <a href="#visite" className="bouton bouton-secondaire">
-          Visiter
-        </a>
+        <BoutonAppel label="Appeler" />
       </div>
     </main>
   );

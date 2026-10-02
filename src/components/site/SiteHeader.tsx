@@ -1,11 +1,12 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { agency } from "@/lib/agency";
 import { cn } from "@/lib/utils";
-import { CallButton } from "./CallButton";
+import { BoutonAppel } from "./Action";
 
 /**
  * En-tête éditorial : le nom, la navigation en texte simple (page active en
@@ -60,7 +61,15 @@ export function SiteHeader({ base }: { base: string }) {
         </nav>
 
         <div className="hidden md:block">
-          <CallButton variant="discret" />
+          <a
+            href={agency.phone.href}
+            className="group inline-flex items-center gap-3 text-[0.9375rem] font-medium tabular-nums"
+          >
+            {agency.phone.display}
+            <span className="flex size-9 items-center justify-center rounded-full bg-encre text-blanc transition-transform duration-300 group-hover:scale-110">
+              <Phone size={15} aria-hidden />
+            </span>
+          </a>
         </div>
 
         <button
@@ -68,7 +77,7 @@ export function SiteHeader({ base }: { base: string }) {
           onClick={() => setMenuOpen((v) => !v)}
           aria-expanded={menuOpen}
           aria-controls="menu-mobile"
-          className="flex h-10 items-center gap-2 rounded-controle border border-filet px-3 text-[0.9375rem] md:hidden"
+          className="flex h-10 items-center gap-2 rounded-full border border-filet px-4 text-[0.9375rem] md:hidden"
         >
           {menuOpen ? (
             <X size={18} aria-hidden />
@@ -104,7 +113,10 @@ export function SiteHeader({ base }: { base: string }) {
                 {l.label}
               </Link>
             ))}
-            <CallButton className="mt-6" />
+            <BoutonAppel
+              className="mt-6 self-start"
+              label={`Appeler le ${agency.phone.display}`}
+            />
           </nav>
         </div>
       </div>

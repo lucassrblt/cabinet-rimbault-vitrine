@@ -27,7 +27,7 @@ export const agency = {
   whatsapp: null as string | null,
   legal: {
     card: "Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France",
-    company: "SAS au capital de 4 000 €, RCS Nanterre 511 484 586",
+    company: "SAS au capital de 4 000 €, RCS Nanterre 511 484 586",
     guarantor: "Garant financier : LLOYD’S France",
     mediator: null as string | null,
   },
