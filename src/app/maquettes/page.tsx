@@ -81,13 +81,13 @@ export default async function AccueilMaquette() {
       </section>
 
       {/* Biens : trois récents, en tailles décalées. */}
-      <section id="biens" className="conteneur mt-14 scroll-mt-6 md:mt-16">
+      <section id="biens" className="conteneur mt-14 scroll-mt-32 md:mt-16">
         <div
           className="flex items-baseline justify-between gap-4"
           data-reveal="monte"
         >
           <h2 className="titre text-section">En vente</h2>
-          <Link href="/maquettes#biens" className="lien">
+          <Link href="/maquettes/biens" className="lien">
             Voir les {properties.length} biens
           </Link>
         </div>
@@ -161,7 +161,7 @@ export default async function AccueilMaquette() {
       {/* Méthode : trois lignes en escalier, une photo d'intérieur qui déborde. */}
       <section
         id="agence"
-        className="mt-24 scroll-mt-6 md:mt-36 md:grid md:grid-cols-12 md:items-center md:gap-10"
+        className="mt-24 scroll-mt-32 md:mt-36 md:grid md:grid-cols-12 md:items-center md:gap-10"
       >
         <div className="px-4 md:col-span-7 md:col-start-2 md:px-0">
           <ul className="titre space-y-5 text-[1.375rem] leading-snug md:text-[1.75rem]">
@@ -181,7 +181,7 @@ export default async function AccueilMaquette() {
               Asnières et ses voisines, rue par rue.
             </li>
           </ul>
-          <Link href="/maquettes#agence" className="lien mt-8 inline-block">
+          <Link href="/maquettes/agence" className="lien mt-8 inline-block">
             Notre façon de travailler
           </Link>
         </div>
@@ -202,7 +202,7 @@ export default async function AccueilMaquette() {
       {/* Nous trouver : la devanture déborde à gauche, la carte adresse chevauche. */}
       <section
         id="contact"
-        className="mt-28 scroll-mt-6 pb-28 md:mt-44 md:grid md:grid-cols-12 md:pb-36"
+        className="mt-28 scroll-mt-32 pb-28 md:mt-44 md:grid md:grid-cols-12 md:pb-36"
       >
         <div
           data-reveal="decouvre"

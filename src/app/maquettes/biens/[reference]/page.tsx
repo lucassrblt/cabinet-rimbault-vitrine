@@ -145,7 +145,7 @@ export default async function FicheBienMaquette({ params }: Params) {
   return (
     <main className="pb-24 md:pb-0">
       <div className="conteneur py-4 text-mention text-gris">
-        <Link href="/maquettes#biens" className="lien">
+        <Link href="/maquettes/biens" className="lien">
           Nos biens
         </Link>
         <span aria-hidden> / </span>
@@ -313,7 +313,7 @@ export default async function FicheBienMaquette({ params }: Params) {
           <section
             id="visite"
             data-reveal="monte"
-            className="mt-14 scroll-mt-24 rounded-carte bg-pierre p-6 md:p-10"
+            className="mt-14 scroll-mt-32 rounded-carte bg-pierre p-6 md:p-10"
           >
             <h2 className="titre text-section">Demander une visite</h2>
             <p className="mt-2 text-gris">
@@ -356,7 +356,7 @@ export default async function FicheBienMaquette({ params }: Params) {
         </div>
 
         <aside className="hidden md:col-span-4 md:block">
-          <div className="sticky top-24 rounded-carte border border-filet p-7">
+          <div className="sticky top-32 rounded-carte border border-filet p-7">
             <p className="titre text-chiffre font-semibold">{priceLabel(p)}</p>
             <p className="mt-1 text-mention text-gris">
               {title}, {propertySurface(p)}
