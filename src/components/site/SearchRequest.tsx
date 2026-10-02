@@ -110,10 +110,7 @@ export function FinProchain() {
           cherchez, nous vous appelons en premier.
         </p>
         <form className="mt-6 space-y-3">
-          <input
-            className="champ"
-            placeholder="Ex. 3 pièces avec balcon"
-          />
+          <input className="champ" placeholder="Ex. 3 pièces avec balcon" />
           <input className="champ" placeholder="Votre téléphone" type="tel" />
           <p className="text-[0.75rem] text-gris">{RGPD}</p>
           <span className="bouton bouton-principal">
