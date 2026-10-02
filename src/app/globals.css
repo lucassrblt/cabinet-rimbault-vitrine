@@ -342,3 +342,65 @@ dialog.galerie[open] {
     transition: none;
   }
 }
+
+/* ——— Comparaison de styles (maquettes) ———
+   `actuelle` : sans attribut. `stricte` et `nuancee` : « le serif parle,
+   le rond agit ». Règles hors couche : elles priment sur les utilitaires. */
+
+:root[data-style="stricte"],
+:root[data-style="nuancee"] {
+  --radius-photo: 6px;
+  --radius-carte: 6px;
+  --radius-controle: 999px;
+  --shadow-chevauchement: none;
+}
+:is([data-style="stricte"], [data-style="nuancee"]) .carte-chevauchante {
+  box-shadow: inset 0 0 0 1px var(--color-filet);
+}
+:is([data-style="stricte"], [data-style="nuancee"]) .champ {
+  border-radius: 999px;
+  padding-inline: 1.25rem;
+}
+:is([data-style="stricte"], [data-style="nuancee"]) .carte-avis {
+  background: transparent;
+  border-radius: 0;
+  border-top: 1px solid var(--color-encre);
+  padding: 1.25rem 0 0;
+}
+:is([data-style="stricte"], [data-style="nuancee"]) .citation {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  line-height: 1.45;
+}
+
+/* Stricte : on retire les effets éditoriaux. */
+[data-style="stricte"] .grille-decalee > * {
+  grid-column: span 1;
+  margin-top: 0;
+}
+[data-style="stricte"] .grille-decalee {
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 768px) {
+  [data-style="stricte"] .grille-decalee {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+[data-style="stricte"] .grille-decalee [data-reveal="decouvre"] {
+  aspect-ratio: 4 / 3;
+}
+[data-style="stricte"] .escalier > li {
+  padding-left: 0;
+}
+[data-style="stricte"] .note-geante,
+[data-style="stricte"] .titre-geant {
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+}
+[data-style="stricte"] .reperes {
+  display: none;
+}
+[data-style="stricte"] .reperes-ligne {
+  display: block;
+}

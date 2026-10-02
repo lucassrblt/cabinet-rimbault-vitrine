@@ -13,6 +13,7 @@ import {
   propertyTitle,
 } from "@/lib/property";
 import { cn } from "@/lib/utils";
+import { LienAppuye } from "./Action";
 import { CardCarousel } from "./CardCarousel";
 
 const href = (p: Property) => `/maquettes/biens/${p.reference}`;
@@ -113,12 +114,9 @@ export function ListeBiens({ items }: { items: Property[] }) {
                 </p>
               )}
 
-              <Link
-                href={href(p)}
-                className="lien mt-6 inline-block text-[0.9375rem]"
-              >
+              <LienAppuye href={href(p)} className="mt-6">
                 Voir le bien
-              </Link>
+              </LienAppuye>
             </div>
           </article>
         );
@@ -176,10 +174,13 @@ export function TitreBiens({ items }: { items: Property[] }) {
   ].filter(([, v]) => v) as [string, string][];
   return (
     <div data-reveal="monte">
-      <h1 className="titre text-[4rem] leading-[0.92] tracking-[-0.03em] md:text-[8.5rem]">
+      <h1 className="titre-geant titre text-[4rem] leading-[0.92] tracking-[-0.03em] md:text-[8.5rem]">
         Nos biens
       </h1>
-      <dl className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 md:mt-14 md:grid-cols-4 md:gap-x-10">
+      <p className="reperes-ligne mt-4 hidden text-gris">
+        {facts.map(([, v]) => v).join(", ")}
+      </p>
+      <dl className="reperes mt-10 grid grid-cols-2 gap-x-6 gap-y-6 md:mt-14 md:grid-cols-4 md:gap-x-10">
         {facts.map(([k, v]) => (
           <div key={k} className="border-t border-encre pt-3">
             <dt className="text-mention text-gris">{k}</dt>

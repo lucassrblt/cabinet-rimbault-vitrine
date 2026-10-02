@@ -338,7 +338,7 @@ export default async function FicheBienMaquette({ params }: Params) {
           <h2 className="titre text-section" data-reveal="monte">
             D’autres biens
           </h2>
-          <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-10">
+          <div className="grille-decalee mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-10">
             {similar.slice(0, 3).map((s, i) => (
               <PropertyCard
                 key={s.id}

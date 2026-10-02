@@ -33,7 +33,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: script statique, sans donnée utilisateur
           dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js')",
+            // Classe « js » et style de comparaison des maquettes, avant le rendu.
+            __html:
+              "document.documentElement.classList.add('js');try{var q=new URLSearchParams(location.search).get('style');if(q)localStorage.setItem('style-maquette',q);var s=q||localStorage.getItem('style-maquette');if(s&&s!=='actuelle')document.documentElement.dataset.style=s}catch(e){}",
           }}
         />
       </head>

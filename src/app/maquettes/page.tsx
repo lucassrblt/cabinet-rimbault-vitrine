@@ -87,7 +87,7 @@ export default async function AccueilMaquette() {
             Voir les {properties.length} biens
           </LienAppuye>
         </div>
-        <div className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-10">
+        <div className="grille-decalee mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-10">
           {first && (
             <PropertyCard
               property={first}
@@ -133,7 +133,7 @@ export default async function AccueilMaquette() {
               <h2 id="avis" className="sr-only">
                 Avis clients
               </h2>
-              <p className="titre text-[4.5rem] leading-none md:text-[5.5rem]">
+              <p className="note-geante titre text-[4.5rem] leading-none md:text-[5.5rem]">
                 {rating}
               </p>
               <p className="mt-2 text-gris">sur 5, {count} avis Google</p>
@@ -160,7 +160,7 @@ export default async function AccueilMaquette() {
         className="mt-24 scroll-mt-32 md:mt-36 md:grid md:grid-cols-12 md:items-center md:gap-10"
       >
         <div className="px-4 md:col-span-7 md:col-start-2 md:px-0">
-          <ul className="titre space-y-5 text-[1.375rem] leading-snug md:text-[1.75rem]">
+          <ul className="escalier titre space-y-5 text-[1.375rem] leading-snug md:text-[1.75rem]">
             <li data-reveal="monte">Nous refusons les estimations gonflées.</li>
             <li
               className="md:pl-12"
