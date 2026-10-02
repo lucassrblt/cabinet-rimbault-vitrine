@@ -2,14 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import {
-  FinCarte,
-  HeadCompteur,
-  HeadPhrase,
-  ListeAlternee,
-  ListeCarrousel,
-  ListeDecalee,
-  ListeMosaique,
-} from "@/components/site/ListingVariants";
+  ListeBiens,
+  TitrePhrase,
+  TitreQuartiers,
+  TitreSommaire,
+} from "@/components/site/Listing";
+import { FinCarte } from "@/components/site/ListingVariants";
 import { getProperties } from "@/lib/api/properties";
 import type { Property } from "@/lib/api/types";
 import { cn } from "@/lib/utils";
@@ -18,41 +16,27 @@ export const metadata: Metadata = {
   title: "Nos biens à vendre à Asnières-sur-Seine",
 };
 
-// Compositions complètes à comparer : en-tête de page + liste.
-// La fin de liste (carte recherche) est validée et commune à toutes.
+// La liste (alternée avec carrousel) et la fin de liste sont validées.
+// Reste à choisir l'en-tête de page.
 const VARIANTES: {
   id: string;
   name: string;
   head: (items: Property[]) => ReactNode;
-  list: (items: Property[]) => ReactNode;
 }[] = [
   {
     id: "1",
-    name: "Phrase + carrousel",
-    head: (items) => (
-      <HeadPhrase count={items.length} latest={items[0]?.createdAt} />
-    ),
-    list: (items) => <ListeCarrousel items={items} />,
+    name: "La phrase",
+    head: (items) => <TitrePhrase items={items} />,
   },
   {
     id: "2",
-    name: "Phrase + liste alternée",
-    head: (items) => (
-      <HeadPhrase count={items.length} latest={items[0]?.createdAt} />
-    ),
-    list: (items) => <ListeAlternee items={items} />,
+    name: "Le sommaire",
+    head: (items) => <TitreSommaire items={items} />,
   },
   {
     id: "3",
-    name: "Compteur + grille décalée",
-    head: (items) => <HeadCompteur count={items.length} />,
-    list: (items) => <ListeDecalee items={items} />,
-  },
-  {
-    id: "4",
-    name: "Compteur + mosaïque",
-    head: (items) => <HeadCompteur count={items.length} />,
-    list: (items) => <ListeMosaique items={items} />,
+    name: "Les quartiers",
+    head: (items) => <TitreQuartiers items={items} />,
   },
 ];
 
@@ -72,7 +56,7 @@ export default async function NosBiens({
         {items.length === 0 ? (
           <p className="max-w-[52ch]">Aucun bien en ligne en ce moment.</p>
         ) : (
-          current.list(items)
+          <ListeBiens items={items} />
         )}
       </div>
       <div className="mt-24 md:mt-32">
