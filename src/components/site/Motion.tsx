@@ -1,6 +1,5 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 /**
@@ -10,13 +9,9 @@ import { useEffect } from "react";
  * - pose `data-scrolled` sur l'en-tête dès qu'on a défilé.
  */
 export function Motion() {
-  const pathname = usePathname();
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: le changement de page doit relancer l'observation des nouveaux blocs
+  // Observe aussi les blocs ajoutés après coup (changement de page ou de
+  // variante sans rechargement) grâce à un MutationObserver.
   useEffect(() => {
-    const targets = document.querySelectorAll<HTMLElement>(
-      "[data-reveal]:not([data-visible])",
-    );
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -27,9 +22,21 @@ export function Motion() {
       },
       { rootMargin: "0px 0px -12% 0px", threshold: 0.12 },
     );
-    for (const el of targets) observer.observe(el);
-    return () => observer.disconnect();
-  }, [pathname]);
+    const scan = () => {
+      for (const el of document.querySelectorAll(
+        "[data-reveal]:not([data-visible])",
+      )) {
+        observer.observe(el);
+      }
+    };
+    scan();
+    const mutations = new MutationObserver(scan);
+    mutations.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      mutations.disconnect();
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const header = document.querySelector<HTMLElement>(".en-tete");
