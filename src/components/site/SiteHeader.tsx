@@ -1,11 +1,11 @@
 "use client";
 
-import { Menu, Phone, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { agency } from "@/lib/agency";
 import { cn } from "@/lib/utils";
+import { CallButton } from "./CallButton";
 
 /**
  * En-tête éditorial : le nom, la navigation en texte simple (page active en
@@ -59,13 +59,9 @@ export function SiteHeader({ base }: { base: string }) {
           ))}
         </nav>
 
-        <a
-          href={agency.phone.href}
-          className="bouton bouton-secondaire hidden min-h-10 px-4 md:inline-flex"
-        >
-          <Phone size={16} aria-hidden />
-          {agency.phone.display}
-        </a>
+        <div className="hidden md:block">
+          <CallButton variant="discret" />
+        </div>
 
         <button
           type="button"
@@ -108,13 +104,7 @@ export function SiteHeader({ base }: { base: string }) {
                 {l.label}
               </Link>
             ))}
-            <a
-              href={agency.phone.href}
-              className="bouton bouton-principal mt-6"
-            >
-              <Phone size={17} aria-hidden />
-              Appeler le {agency.phone.display}
-            </a>
+            <CallButton className="mt-6" />
           </nav>
         </div>
       </div>

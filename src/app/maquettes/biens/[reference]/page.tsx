@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { CallButton } from "@/components/site/CallButton";
 import { EnergyCompact } from "@/components/site/EnergyCompact";
 import { Gallery } from "@/components/site/Gallery";
 import { OpeningNote } from "@/components/site/OpeningNote";
@@ -107,10 +108,7 @@ export default async function FicheBienMaquette({ params }: Params) {
 
   const contactActions = (
     <>
-      <a href={agency.phone.href} className="bouton bouton-principal">
-        <Phone size={17} aria-hidden />
-        Appeler l’agence
-      </a>
+      <CallButton />
       {agency.whatsapp && (
         <a href={agency.whatsapp} className="bouton bouton-secondaire">
           <MessageCircle size={17} aria-hidden />
@@ -315,7 +313,7 @@ export default async function FicheBienMaquette({ params }: Params) {
                 <span className="lien">Politique de confidentialité</span>
               </p>
               <div className="sm:col-span-2">
-                <button type="button" className="bouton bouton-sombre">
+                <button type="button" className="bouton bouton-principal">
                   Envoyer la demande
                 </button>
               </div>

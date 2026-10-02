@@ -344,7 +344,7 @@ export function FinCarte() {
         <p className="text-[0.75rem] text-gris md:col-span-2">
           Votre numéro sert uniquement à vous rappeler.
         </p>
-        <span className="bouton bouton-sombre md:col-span-2 md:justify-self-start">
+        <span className="bouton bouton-principal md:col-span-2 md:justify-self-start">
           Être rappelé
         </span>
       </form>

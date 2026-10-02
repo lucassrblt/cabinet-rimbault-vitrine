@@ -2,6 +2,7 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type React from "react";
+import { CallButton } from "@/components/site/CallButton";
 import { Plaque } from "@/components/site/Logo";
 import { PropertyCard } from "@/components/site/PropertyCard";
 import { ReviewCard } from "@/components/site/ReviewCard";
@@ -234,12 +235,10 @@ export default async function AccueilMaquette() {
             ))}
           </dl>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href={agency.phone.href} className="bouton bouton-sombre">
-              Appeler
-            </a>
+            <CallButton />
             <a
               href={agency.mapsDirections}
-              className="bouton bouton-secondaire"
+              className="lien self-center text-[0.9375rem]"
             >
               Itinéraire
             </a>

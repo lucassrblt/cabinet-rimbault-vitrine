@@ -113,7 +113,10 @@ export function ListeBiens({ items }: { items: Property[] }) {
                 </p>
               )}
 
-              <Link href={href(p)} className="bouton bouton-secondaire mt-6">
+              <Link
+                href={href(p)}
+                className="lien mt-6 inline-block text-[0.9375rem]"
+              >
                 Voir le bien
               </Link>
             </div>
