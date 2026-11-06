@@ -2,7 +2,7 @@
 // de la refonte (`src/app/(site)/vendre/page.tsx`), mot pour mot ; seuls les
 // intitulés courts des cartels sont nouveaux. Pur, partagé serveur et client.
 
-export const VENDRE = "/galerie/vendre";
+export const VENDRE = "/vendre";
 export const ESTIMATION = `${VENDRE}/estimation`;
 
 export const DEROULE = [

@@ -12,6 +12,25 @@ const nextConfig: NextConfig = {
   },
   // Tests sur téléphone via le réseau local (dev uniquement).
   allowedDevOrigins: ["10.207.238.*", "192.168.*.*"],
+  // Bascule vers la Galerie : anciennes adresses (liens déjà partagés).
+  // Temporaires tant que l'arborescence n'est pas figée.
+  async redirects() {
+    return [
+      // La Galerie n'a pas de page Louer : la demande passe par le contact.
+      { source: "/louer", destination: "/contact", permanent: false },
+      // Le tunnel d'estimation vit désormais sous Vendre.
+      {
+        source: "/estimation",
+        destination: "/vendre/estimation",
+        permanent: false,
+      },
+      // Banc de démonstration `/galerie/...` devenu le site principal.
+      // `/galerie` seul : règle explicite (avec `:path*` vide, l'adresse de
+      // destination sortirait vide).
+      { source: "/galerie", destination: "/", permanent: false },
+      { source: "/galerie/:path+", destination: "/:path+", permanent: false },
+    ];
+  },
   images: {
     remotePatterns: [
       new URL(

@@ -21,7 +21,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { submitEstimation } from "@/app/(tunnel)/estimation/actions";
+import { submitEstimation } from "@/app/(galerie)/vendre/estimation/actions";
 import { fr } from "@/components/owners/typo";
 import { agency } from "@/lib/agency";
 import { estimationStateToFormData } from "@/lib/estimation/form-data";
@@ -744,7 +744,7 @@ function Confirmation({ state }: { state: EstimationState }) {
           <Link className={s.u} href={VENDRE}>
             Revenir à la page Vendre
           </Link>
-          <Link className={s.u} href="/galerie/biens">
+          <Link className={s.u} href="/biens">
             Voir les biens en vente
           </Link>
         </p>

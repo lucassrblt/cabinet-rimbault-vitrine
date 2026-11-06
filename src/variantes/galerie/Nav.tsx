@@ -8,8 +8,6 @@ import { useEffect, useState } from "react";
 import { agency } from "@/lib/agency";
 import s from "./base.module.css";
 
-const BASE = "/galerie";
-
 export function Nav({ count }: { count: number | null }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -38,7 +36,7 @@ export function Nav({ count }: { count: number | null }) {
 
   return (
     <header className={`${s.w} ${s.g} ${s.nav}`}>
-      <Link className={s.brand} href={BASE}>
+      <Link className={s.brand} href="/">
         {agency.name}
       </Link>
       <button
@@ -54,10 +52,7 @@ export function Nav({ count }: { count: number | null }) {
       <nav aria-label="Navigation principale" style={{ display: "contents" }}>
         <ul id="chaude-menu" className={s.navList} data-open={open}>
           <li>
-            <Link
-              href={`${BASE}/biens`}
-              aria-current={current(`${BASE}/biens`)}
-            >
+            <Link href="/biens" aria-current={current("/biens")}>
               Biens
               {count ? (
                 <sup className={s.num}>
@@ -68,26 +63,20 @@ export function Nav({ count }: { count: number | null }) {
             </Link>
           </li>
           <li>
-            <Link
-              href={`${BASE}/vendre`}
-              aria-current={current(`${BASE}/vendre`)}
-            >
+            <Link href="/vendre" aria-current={current("/vendre")}>
               Vendre
             </Link>
           </li>
           <li>
             <Link
-              href={`${BASE}/le-cabinet`}
-              aria-current={current(`${BASE}/le-cabinet`, true)}
+              href="/le-cabinet"
+              aria-current={current("/le-cabinet", true)}
             >
               Le cabinet
             </Link>
           </li>
           <li>
-            <Link
-              href={`${BASE}/contact`}
-              aria-current={current(`${BASE}/contact`)}
-            >
+            <Link href="/contact" aria-current={current("/contact")}>
               Contact
             </Link>
           </li>

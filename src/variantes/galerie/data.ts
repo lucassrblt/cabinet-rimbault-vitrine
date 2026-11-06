@@ -1,4 +1,4 @@
-// Données de la variante « Galerie chaude » : uniquement des dérivés de
+// Données de la Galerie : uniquement des dérivés de
 // l'API (`getProperties`, `toPropertyView`) et d'`agency.ts`. Rien n'est
 // inventé : une valeur absente disparaît de l'affichage.
 import "server-only";
@@ -11,11 +11,8 @@ import {
 } from "@/lib/property/view";
 import { type GoogleReview, getGoogleReviews } from "@/lib/reviews/google";
 
-/** Base des URL internes de la variante. */
-export const BASE = "/galerie";
-
 export function ficheHref(reference: string): string {
-  return `${BASE}/biens/${encodeURIComponent(reference)}`;
+  return `/biens/${encodeURIComponent(reference)}`;
 }
 
 /** Biens visibles, dans l'ordre de la liste ; `null` si l'API ne répond pas. */

@@ -1,4 +1,5 @@
-// Polices de la variante « Galerie chaude » (maquette v4).
+// Polices du site (thème Galerie, maquette v4), posées sur <html> par le
+// layout racine et sur le mur par le cadre.
 // Host Grotesk : texte, cartels, interface (11,5 à 13 px).
 // Newsreader 300 : la voix du cabinet (phrase d'accueil, prix, texte de salle).
 // next/font/google auto-héberge les fichiers : aucun appel à Google au runtime.

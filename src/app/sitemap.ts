@@ -2,18 +2,17 @@ import type { MetadataRoute } from "next";
 import { getProperties } from "@/lib/api/properties";
 import { getSiteUrl } from "@/lib/seo/metadata";
 
-// Plan du site (doc 04 §4.4) : les 10 pages fixes, puis chaque fiche visible.
+// Plan du site (doc 04 §4.4) : les 9 pages fixes, puis chaque fiche visible.
 // Si l'API est indisponible, le plan sort quand même avec les pages fixes.
 
 const PAGES: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
   { path: "/biens", priority: 0.9 },
-  { path: "/estimation", priority: 0.8 },
   { path: "/vendre", priority: 0.8 },
-  { path: "/louer", priority: 0.7 },
+  { path: "/vendre/estimation", priority: 0.8 },
   { path: "/le-cabinet", priority: 0.6 },
-  { path: "/honoraires", priority: 0.5 },
   { path: "/contact", priority: 0.6 },
+  { path: "/honoraires", priority: 0.5 },
   { path: "/mentions-legales", priority: 0.1 },
   { path: "/confidentialite", priority: 0.1 },
 ];

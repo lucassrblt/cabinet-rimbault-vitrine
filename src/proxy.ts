@@ -5,7 +5,7 @@ import { type NextRequest, NextResponse } from "next/server";
 // `__next_error__` au corps vide, que seul le client remplit. Une URL sans
 // page statique, elle, est rendue en HTML complet. Le proxy vérifie donc la
 // référence AVANT le rendu et, si elle est inconnue, réécrit vers la page
-// statique `(site)/biens-introuvable` (« Ce bien n'est plus en ligne. »,
+// statique `(galerie)/biens-introuvable` (« Ce bien n'est plus en ligne. »,
 // noindex) avec le statut 404 ; l'URL affichée reste celle de la fiche.
 //
 // Écart à la décision (en-tête `x-bien-introuvable` lu par `app/not-found.tsx`

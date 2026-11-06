@@ -24,7 +24,7 @@ import {
 import {
   envoyerContact,
   type ResultatContact,
-} from "@/app/galerie/contact/actions";
+} from "@/app/(galerie)/contact/actions";
 import { Honeypot } from "@/components/forms/Honeypot";
 import { agency } from "@/lib/agency";
 import { CONTACT_MESSAGE_MAX } from "@/lib/forms/contact-schema";
@@ -242,7 +242,7 @@ export function FormulaireContact({
         {values.objet === "vente" ? (
           <p className={f.aide}>
             Vous souhaitez faire estimer un bien ? La page{" "}
-            <Link className={s.u} href="/galerie/vendre">
+            <Link className={s.u} href="/vendre">
               Vendre
             </Link>{" "}
             est plus adaptée.

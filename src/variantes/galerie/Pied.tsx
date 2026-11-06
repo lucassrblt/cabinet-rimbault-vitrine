@@ -4,7 +4,6 @@
 import Link from "next/link";
 import { agency, agencyAddressLine } from "@/lib/agency";
 import s from "./base.module.css";
-import { BASE } from "./data";
 
 export function Pied() {
   const { legal } = agency;
@@ -35,19 +34,19 @@ export function Pied() {
           )}
         </div>
         <div className={s.piedCol}>
-          <Link className={s.u} href={`${BASE}/biens`}>
+          <Link className={s.u} href="/biens">
             Les biens en vente
           </Link>
-          <Link className={s.u} href={`${BASE}/vendre`}>
+          <Link className={s.u} href="/vendre">
             Vendre avec nous
           </Link>
-          <Link className={s.u} href={`${BASE}/vendre/estimation`}>
+          <Link className={s.u} href="/vendre/estimation">
             Estimer mon bien
           </Link>
-          <Link className={s.u} href={`${BASE}/le-cabinet`}>
+          <Link className={s.u} href="/le-cabinet">
             Le cabinet
           </Link>
-          <Link className={s.u} href={`${BASE}/contact`}>
+          <Link className={s.u} href="/contact">
             Contact
           </Link>
         </div>
