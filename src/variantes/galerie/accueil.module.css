@@ -531,7 +531,10 @@ h2.blocT {
     font-size: 20px;
   }
 
-  .petit {
+  /* Classe doublée : passe devant la grille 12 colonnes de `.g`
+     (base.module.css), de même spécificité, quel que soit l'ordre de
+     chargement des feuilles en production. */
+  .petit.petit {
     margin-top: 48px;
     display: grid;
     grid-template-columns: minmax(0, 1fr);

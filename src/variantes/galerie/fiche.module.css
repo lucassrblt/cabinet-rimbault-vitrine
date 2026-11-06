@@ -565,7 +565,8 @@
     padding-bottom: 24px;
   }
 
-  .sub {
+  /* Classe doublée : passe devant `.g` (base.module.css), voir accueil. */
+  .sub.sub {
     display: flex;
     justify-content: space-between;
     padding-top: 12px;
