@@ -282,6 +282,12 @@ a:hover > .u::after {
   font-size: 11px;
 }
 
+/* place dans la salle, devant la référence */
+.place {
+  margin-right: 1em;
+  color: var(--gris);
+}
+
 .ti {
   margin: 0 0 4px;
   color: var(--encre);

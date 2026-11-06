@@ -14,7 +14,12 @@ import {
   toPropertyView,
 } from "@/lib/property/view";
 import s from "@/variantes/galerie/base.module.css";
-import { BASE, listViews, serifSpaces } from "@/variantes/galerie/data";
+import {
+  BASE,
+  listViews,
+  photosFiche,
+  serifSpaces,
+} from "@/variantes/galerie/data";
 import { Energie } from "@/variantes/galerie/Energie";
 import f from "@/variantes/galerie/fiche.module.css";
 import { Galerie } from "@/variantes/galerie/Galerie";
@@ -198,7 +203,7 @@ export default async function FicheChaude({ params }: Props) {
       </div>
 
       <div className={`${s.w} ${s.g} ${f.mur}`} data-rv>
-        <Galerie images={view.images} />
+        <Galerie images={photosFiche(view)} />
 
         <div className={`${f.cartelD} ${s.num}`}>
           <span className={`${f.ref} ${s.up}`} style={i(1)}>

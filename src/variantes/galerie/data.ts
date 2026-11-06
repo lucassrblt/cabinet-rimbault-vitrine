@@ -87,6 +87,15 @@ export function photoAccrochage(
   );
 }
 
+/** Photos de la fiche : celle de l'accrochage d'abord, pour que la fiche
+ * s'ouvre sur l'image cliquée dans la salle, puis les autres dans l'ordre. */
+export function photosFiche(
+  view: PropertyView,
+): PropertyView["images"][number][] {
+  const une = photoAccrochage(view);
+  return une ? [une, ...view.images.filter((img) => img !== une)] : [];
+}
+
 /** Titre de cartel : le titre de l'agent remis en casse, sinon le titre composé. */
 export function titreCartel(view: PropertyView): string {
   return view.subtitle ?? view.head;
