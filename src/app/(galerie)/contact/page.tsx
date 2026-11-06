@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import type { CSSProperties } from "react";
 import { agency } from "@/lib/agency";
 import { getProperty } from "@/lib/api/properties";
@@ -19,10 +18,10 @@ import { isObjet, type Objet } from "@/variantes/galerie/contact/sujets";
 import { ficheHref, serifSpaces } from "@/variantes/galerie/data";
 
 // Contact : une seule salle. La phrase serif et le numéro en grand (le plus
-// simple est d'appeler), puis la devanture en vraie couleur dans son
+// simple est d’appeler), puis l’enseigne du cabinet dans son
 // passe-partout crème, avec son cartel « passez nous voir » (adresse,
 // horaires, itinéraire), et le formulaire en lignes fines.
-// Sous 900 px : appeler, écrire, puis la devanture.
+// Sous 900 px : appeler, écrire, puis l’enseigne.
 // Depuis une fiche (`?ref=10.131`) : l'objet « Un bien en particulier » est
 // choisi, la référence et le message de visite remplis, le bien rappelé en
 // petit au-dessus du formulaire. `?objet=` (bien, vente, location, autre)
@@ -126,14 +125,18 @@ export default async function ContactGalerie({
 
       <div className={`${s.w} ${s.g} ${f.corps}`}>
         <section className={f.mur} aria-labelledby="devanture" data-rv>
-          <div className={`${f.cadre} ${s.fade}`}>
-            <div className={`${s.ph} ${f.photo}`}>
-              <Image
-                src="/devanture.jpg"
-                alt={`La devanture grenat du cabinet, ${agency.address.street}`}
-                fill
-                sizes="(min-width: 900px) 26vw, 70vw"
-              />
+          {/* La seule photo du cabinet est à l'accueil et sur « Le cabinet » :
+              ici, son enseigne grenat composée en lettres, dans le même
+              passe-partout. */}
+          <div className={`${f.cadre} ${s.fade}`} aria-hidden>
+            <div className={`${f.photo} ${f.enseigne}`}>
+              <span className={f.enseigneNom}>{agency.name}</span>
+              <span className={`${f.enseigneRue} ${s.num}`}>
+                {agency.address.street}
+              </span>
+              <span className={`${f.enseigneDepuis} ${s.num}`}>
+                Depuis {agency.since}
+              </span>
             </div>
           </div>
           <div className={`${s.cartel} ${s.num} ${f.cartel}`}>

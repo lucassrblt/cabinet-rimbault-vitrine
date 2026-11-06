@@ -65,7 +65,7 @@ export default function VendreGalerie() {
         aria-labelledby="deroule"
         data-rv
       >
-        <h2 id="deroule" className={`${v.titre} ${s.up}`}>
+        <h2 id="deroule" className={`${v.titre} ${s.up} ${s.flotte}`}>
           Comment se passe une vente
         </h2>
         <ol className={v.etapes}>
@@ -86,7 +86,7 @@ export default function VendreGalerie() {
         aria-labelledby="estimation"
         data-rv
       >
-        <h2 id="estimation" className={`${v.titre} ${s.up}`}>
+        <h2 id="estimation" className={`${v.titre} ${s.up} ${s.flotte}`}>
           Notre estimation
         </h2>
         <div className={`${v.prose} ${s.up}`} style={i(1)}>
@@ -115,7 +115,7 @@ export default function VendreGalerie() {
         aria-labelledby="honoraires"
         data-rv
       >
-        <h2 id="honoraires" className={`${v.titre} ${s.up}`}>
+        <h2 id="honoraires" className={`${v.titre} ${s.up} ${s.flotte}`}>
           Nos honoraires de vente
         </h2>
         <div className={`${v.prose} ${s.up}`} style={i(1)}>
@@ -142,7 +142,7 @@ export default function VendreGalerie() {
         aria-labelledby="questions"
         data-rv
       >
-        <h2 id="questions" className={`${v.titre} ${s.up}`}>
+        <h2 id="questions" className={`${v.titre} ${s.up} ${s.flotte}`}>
           Questions fréquentes
         </h2>
         <div className={`${v.faq} ${s.up}`} style={i(1)}>

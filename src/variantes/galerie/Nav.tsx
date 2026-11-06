@@ -1,6 +1,6 @@
 "use client";
 
-// En-tête : marque, quatre liens, téléphone. Sur mobile, un bouton « Menu »
+// En-tête : marque, cinq liens, téléphone. Sur mobile, un bouton « Menu »
 // déplie la liste (fermée à chaque changement de page).
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -51,6 +51,11 @@ export function Nav({ count }: { count: number | null }) {
       </button>
       <nav aria-label="Navigation principale" style={{ display: "contents" }}>
         <ul id="galerie-menu" className={s.navList} data-open={open}>
+          <li>
+            <Link href="/" aria-current={current("/", true)}>
+              Accueil
+            </Link>
+          </li>
           <li>
             <Link href="/biens" aria-current={current("/biens")}>
               Biens

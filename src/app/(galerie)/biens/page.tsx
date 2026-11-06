@@ -18,6 +18,7 @@ import {
   titreCartel,
   villesPhrase,
 } from "@/variantes/galerie/data";
+import { Revele } from "@/variantes/galerie/Revele";
 
 // Page Biens : la salle d'exposition. Les biens sont accrochés selon un motif
 // de cinq positions qui se répète (voir accrochage.ts), puis la liste des
@@ -96,7 +97,9 @@ export default async function BiensGalerie() {
   const n = views?.length ?? 0;
 
   return (
-    <div className={b.salle}>
+    // Zone d'apparitions locale : la page est diffusée derrière loading.tsx.
+    <div className={b.salle} data-rv-local>
+      <Revele />
       <div className={`${s.w} ${s.g} ${b.salleT}`} data-rv>
         <h1 className={s.up}>
           Biens en vente

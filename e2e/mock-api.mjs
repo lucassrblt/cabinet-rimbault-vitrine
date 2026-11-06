@@ -15,6 +15,7 @@
 //   POST   /__mock/scenario {"name": "..."}     -> default | empty | error | edge
 //                                                  | n1 | n2 | n4 | n5 | n12 (volumes)
 //   POST   /__mock/fail-next {"path": "/evaluation", "status": 500[, "body": {…}]}
+//   POST   /__mock/delay {"ms": 3000}             -> ralentit /api/public (0 = normal)
 //
 // Statuts, comme l'API réelle (lib/public-properties + route properties) :
 // les listes ne montrent par défaut que DISPONIBLE, SOUS_OFFRE et
@@ -44,7 +45,12 @@ const LIST = loadJson("properties.json").properties;
 const DETAILS = loadJson("details.json").properties;
 const EDGE = loadJson("edge-cases.json").properties;
 
-const state = { scenario: "default", requests: [], failNext: new Map() };
+const state = {
+  scenario: "default",
+  requests: [],
+  failNext: new Map(),
+  delayMs: 0,
+};
 
 const VISIBLE_STATUSES = ["DISPONIBLE", "SOUS_OFFRE", "SOUS_COMPROMIS"];
 const PUBLIC_STATUSES = [...VISIBLE_STATUSES, "VENDU", "LOUE"];
@@ -386,6 +392,11 @@ async function handleControl(req, res, url) {
     });
     return send(res, 200, { ok: true });
   }
+  if (path === "/__mock/delay" && req.method === "POST") {
+    const { json } = await readBody(req);
+    state.delayMs = Math.max(0, Number(json?.ms ?? 0));
+    return send(res, 200, { ok: true, delayMs: state.delayMs });
+  }
   return send(res, 404, { error: "Route de pilotage inconnue" });
 }
 
@@ -396,6 +407,8 @@ const server = createServer(async (req, res) => {
       return await handleControl(req, res, url);
     if (!url.pathname.startsWith(PREFIX))
       return send(res, 404, { error: "Hors /api/public" });
+    if (state.delayMs > 0)
+      await new Promise((r) => setTimeout(r, state.delayMs));
 
     if (req.headers["x-api-key"] !== API_KEY)
       return send(res, 401, {
