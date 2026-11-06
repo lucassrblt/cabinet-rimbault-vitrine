@@ -4,6 +4,7 @@
 // reprise, rien ne casse.
 
 import type { EstimationState } from "@/lib/forms/estimation-schema";
+import { type Echeance, isEcheance } from "./echeance";
 import { sanitizeEstimationState } from "./form-data";
 
 export const STORAGE_KEY = "cr:estimation:v1";
@@ -15,6 +16,10 @@ export type SavedEstimation = {
   startedAt: number;
   /** Page interne d'entrée dans le tunnel (`/vendre`), ou « ». */
   referer: string;
+  /** Échéance du projet (question hors de `EstimationState`). */
+  echeance: Echeance;
+  /** Question affichée au moment de la sauvegarde. */
+  question: number;
 };
 
 type Stored = SavedEstimation & { v: 1; savedAt: number };
@@ -35,6 +40,11 @@ export function loadEstimation(now = Date.now()): SavedEstimation | null {
       state,
       startedAt: typeof data.startedAt === "number" ? data.startedAt : now,
       referer: typeof data.referer === "string" ? data.referer : "",
+      echeance: isEcheance(data.echeance) ? data.echeance : "",
+      question:
+        typeof data.question === "number" && Number.isInteger(data.question)
+          ? data.question
+          : 1,
     };
   } catch {
     return null;

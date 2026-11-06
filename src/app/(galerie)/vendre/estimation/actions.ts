@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { ApiConfigError, ApiError } from "@/lib/api/client";
 import { postEvaluation } from "@/lib/api/evaluation";
 import type { ApiErrorBody } from "@/lib/api/types";
+import { ECHEANCE_FIELD, isEcheance } from "@/lib/estimation/echeance";
 import { buildEstimationPayload } from "@/lib/estimation/payload";
 import {
   type EstimationResult,
@@ -75,9 +76,12 @@ export async function submitEstimation(
     return { status: "success", at };
 
   const userAgent = (await headers()).get("user-agent")?.slice(0, 500);
+  // Échéance : facultative pour l'API, ignorée si elle n'est pas dans la liste.
+  const echeance = formString(form.get(ECHEANCE_FIELD));
   const payload = buildEstimationPayload(state, {
     userAgent: userAgent || undefined,
     referer: safeReferer(form.get(REFERER_FIELD)),
+    echeance: isEcheance(echeance) ? echeance : "",
   });
 
   try {

@@ -4,7 +4,7 @@ import { pageMetadata } from "@/lib/seo/metadata";
 import s from "@/variantes/galerie/base.module.css";
 import { Tunnel } from "@/variantes/galerie/vendre/Tunnel";
 
-// Tunnel d'estimation de la Galerie : cinq questions, envoi par la Server
+// Tunnel d'estimation de la Galerie : six questions, envoi par la Server
 // Action de la refonte (`submitEstimation` → `POST /evaluation`). Sans
 // JavaScript, le téléphone du cabinet.
 

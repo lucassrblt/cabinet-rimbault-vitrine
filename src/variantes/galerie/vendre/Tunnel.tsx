@@ -1,14 +1,20 @@
 "use client";
 
-// Tunnel d'estimation de la Galerie : cinq questions, une par écran, puis la
-// confirmation. Il réutilise tel quel le tunnel de la refonte côté données :
-// état `EstimationState`, validation `validateEstimationStep`, envoi par la
-// Server Action `submitEstimation` (anti-spam, revalidation, `postEvaluation`).
-// L'échéance, absente du modèle, part dans le champ `message`.
+// Tunnel d'estimation de la Galerie : six questions, une par écran, puis la
+// confirmation (audit du site en ligne, §2.4). Côté données, il réutilise le
+// tunnel de la refonte : état `EstimationState`, validation
+// `validateEstimationStep`, envoi par la Server Action `submitEstimation`
+// (anti-spam, revalidation, `postEvaluation`). L'échéance, hors de l'état,
+// part à part et finit dans la colonne `timeframe` de l'API.
 //
-// Chaque question est une entrée d'historique (`?question=n`) : le retour du
-// navigateur revient à la question précédente. Le focus va au titre de la
-// question à chaque changement ; un envoi en cours bloque tout second envoi.
+// Repris du tunnel de main : une phrase d'aide sous chaque question, la saisie
+// automatique de l'adresse, la question de l'état du bien, le mot libre, le
+// brouillon de session (24 h, « Recommencer ») et l'avance au clic sur les
+// questions à choix unique (à la souris seulement : au clavier, les flèches
+// ne font que changer le choix, Entrée passe à la suite).
+// Gardé de la Galerie : chaque question est une entrée d'historique
+// (`?question=n`), le focus va au titre de la question, un envoi en cours
+// bloque tout second envoi, et aucun prix n'est promis sans visite.
 
 import Link from "next/link";
 import {
@@ -24,7 +30,16 @@ import {
 import { submitEstimation } from "@/app/(galerie)/vendre/estimation/actions";
 import { fr } from "@/components/owners/typo";
 import { agency } from "@/lib/agency";
-import { estimationStateToFormData } from "@/lib/estimation/form-data";
+import {
+  ECHEANCE_FIELD,
+  ECHEANCES,
+  type Echeance,
+  echeanceLabel,
+} from "@/lib/estimation/echeance";
+import {
+  estimationStateToFormData,
+  hasAnswers,
+} from "@/lib/estimation/form-data";
 import { placeLabel } from "@/lib/estimation/recap";
 import {
   INITIAL_RESULT,
@@ -32,6 +47,12 @@ import {
   SENT_AT_FIELD,
 } from "@/lib/estimation/result";
 import {
+  clearEstimation,
+  loadEstimation,
+  saveEstimation,
+} from "@/lib/estimation/storage";
+import {
+  type Condition,
   type EstimationErrors,
   type EstimationField,
   type EstimationPropertyType,
@@ -49,20 +70,19 @@ import {
 import { HONEYPOT_FIELD, STARTED_AT_FIELD } from "@/lib/forms/spam";
 import { MESSAGES, normalizeEmail } from "@/lib/forms/validators";
 import s from "../base.module.css";
-import {
-  ECHEANCES,
-  type Echeance,
-  echeanceLabel,
-  echeanceMessage,
-  VENDRE,
-} from "./contenu";
+import { Adresse } from "./Adresse";
+import { ETATS, etatLabel, VENDRE } from "./contenu";
 import t from "./tunnel.module.css";
 
-type Question = 1 | 2 | 3 | 4 | 5;
+type Question = 1 | 2 | 3 | 4 | 5 | 6;
 type Field = EstimationField | "echeance";
 type Errors = Partial<Record<Field, string>>;
 
-const TOTAL = 5;
+const TOTAL = 6;
+const NUMEROS = [1, 2, 3, 4, 5, 6] as const;
+
+/** Pause entre le clic sur un choix et la question suivante : le choix se voit. */
+const AVANCE_MS = 280;
 
 const i = (n: number) => ({ "--i": n }) as CSSProperties;
 
@@ -70,8 +90,19 @@ const QUESTIONS: Record<Question, string> = {
   1: "Quel bien souhaitez-vous vendre ?",
   2: "Où se trouve-t-il ?",
   3: "Quelle est sa surface, et combien a-t-il de pièces ?",
-  4: "Quand pensez-vous vendre ?",
-  5: "Comment vous recontacter ?",
+  4: "Dans quel état est-il ?",
+  5: "Quand pensez-vous vendre ?",
+  6: "Comment vous recontacter ?",
+};
+
+/** Phrase d'aide sous chaque question (tunnel de main, au ton de la Galerie). */
+const AIDES: Record<Question, string> = {
+  1: "Cela oriente notre comparaison avec les biens vendus près de chez vous.",
+  2: "Nous nous appuyons sur les ventes récentes de la même rue ou du même secteur. L'adresse exacte reste confidentielle.",
+  3: "La surface et le nombre de pièces sont les principaux facteurs de prix. Une surface approximative suffit.",
+  4: "Votre impression suffit : nous le verrons ensemble.",
+  5: "Aucun engagement à cette étape.",
+  6: "Nous vous rappelons pour convenir d'une visite.",
 };
 
 /** Champs de chaque question, dans l'ordre de l'écran. */
@@ -79,17 +110,19 @@ const FIELDS: Record<Question, readonly Field[]> = {
   1: ["propertyType"],
   2: ["address", "postalCode", "city"],
   3: ["surface", "rooms"],
-  4: ["echeance"],
-  5: ["firstName", "lastName", "email", "phone", "rgpd"],
+  4: ["condition"],
+  5: ["echeance"],
+  6: ["firstName", "lastName", "email", "phone", "message", "rgpd"],
 };
 
+const ETAT_REQUIS = "Choisissez l’état qui s’en approche le plus.";
 const ECHEANCE_REQUISE = "Choisissez une échéance, même approximative.";
 
 function questionOf(field: Field): Question {
-  for (const q of [1, 2, 3, 4, 5] as const) {
+  for (const q of NUMEROS) {
     if (FIELDS[q].includes(field)) return q;
   }
-  return 5;
+  return 6;
 }
 
 /** Erreurs d'une question : la validation du site, ramenée à ses champs. */
@@ -98,7 +131,8 @@ function validate(
   state: EstimationState,
   echeance: Echeance,
 ): Errors {
-  if (q === 4) return echeance === "" ? { echeance: ECHEANCE_REQUISE } : {};
+  if (q === 4) return state.condition === "" ? { condition: ETAT_REQUIS } : {};
+  if (q === 5) return echeance === "" ? { echeance: ECHEANCE_REQUISE } : {};
   const all: EstimationErrors = {
     ...validateEstimationStep(1, state),
     ...validateEstimationStep(2, state),
@@ -114,15 +148,20 @@ function validate(
 }
 
 function firstInvalid(state: EstimationState, echeance: Echeance): Question {
-  for (const q of [1, 2, 3, 4] as const) {
+  for (const q of [1, 2, 3, 4, 5] as const) {
     if (Object.keys(validate(q, state, echeance)).length > 0) return q;
   }
-  return 5;
+  return 6;
+}
+
+function asQuestion(n: number): Question {
+  return n >= 1 && n <= TOTAL ? (n as Question) : 1;
 }
 
 function questionFromUrl(): Question {
-  const n = Number(new URLSearchParams(window.location.search).get("question"));
-  return n >= 1 && n <= TOTAL ? (n as Question) : 1;
+  return asQuestion(
+    Number(new URLSearchParams(window.location.search).get("question")),
+  );
 }
 
 function urlOf(q: Question): string {
@@ -140,6 +179,10 @@ function internalReferrer(): string {
   return window.location.pathname;
 }
 
+function reducedMotion(): boolean {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 const fieldId = (field: Field) => `estimer-${field}`;
 
 export function Tunnel() {
@@ -149,6 +192,7 @@ export function Tunnel() {
   );
   const [echeance, setEcheance] = useState<Echeance>("");
   const [errors, setErrors] = useState<Errors>({});
+  const [repris, setRepris] = useState(false);
   const [result, dispatch, pending] = useActionState(
     submitEstimation,
     INITIAL_RESULT,
@@ -161,8 +205,13 @@ export function Tunnel() {
   const [enCours, setEnCours] = useState(false);
   const lastAt = useRef(0);
   const meta = useRef({ startedAt: 0, referer: "" });
+  const pret = useRef(false);
+  const haut = useRef<HTMLDivElement>(null);
   const titre = useRef<HTMLHeadingElement>(null);
   const moved = useRef(false);
+  const avance = useRef<number | undefined>(undefined);
+  const qActuelle = useRef<Question>(1);
+  qActuelle.current = q;
 
   const update = (patch: Partial<EstimationState>) => {
     setState((prev) => ({ ...prev, ...patch }));
@@ -174,19 +223,55 @@ export function Tunnel() {
     });
   };
 
-  // Arrivée : horodatage anti-spam, page d'origine, URL ramenée à la question 1
-  // (les réponses ne sont pas conservées d'une visite à l'autre).
+  // Arrivée : brouillon de la session s'il y en a un (reprise à la question
+  // où l'on s'était arrêté, jamais au-delà de la première incomplète), sinon
+  // question 1. Horodatage anti-spam et page d'origine.
   useEffect(() => {
-    meta.current = { startedAt: Date.now(), referer: internalReferrer() };
-    if (window.location.search)
-      window.history.replaceState(null, "", window.location.pathname);
+    const saved = loadEstimation();
+    if (saved && (hasAnswers(saved.state) || saved.echeance !== "")) {
+      // L'accord se redonne à chaque visite.
+      const restored = { ...saved.state, rgpd: false };
+      const target = Math.min(
+        asQuestion(saved.question),
+        firstInvalid(restored, saved.echeance),
+      ) as Question;
+      meta.current = {
+        startedAt: saved.startedAt,
+        referer: saved.referer || internalReferrer(),
+      };
+      setState(restored);
+      setEcheance(saved.echeance);
+      setQ(target);
+      setRepris(true);
+      window.history.replaceState(null, "", urlOf(target));
+    } else {
+      meta.current = { startedAt: Date.now(), referer: internalReferrer() };
+      if (window.location.search)
+        window.history.replaceState(null, "", window.location.pathname);
+    }
+    pret.current = true;
+    return () => window.clearTimeout(avance.current);
   }, []);
+
+  // Brouillon : chaque réponse est gardée dans la session (24 h au plus).
+  useEffect(() => {
+    if (!pret.current || sent) return;
+    if (!hasAnswers(state) && echeance === "") return;
+    saveEstimation({
+      state: { ...state, rgpd: false },
+      echeance,
+      question: q,
+      startedAt: meta.current.startedAt,
+      referer: meta.current.referer,
+    });
+  }, [state, echeance, q, sent]);
 
   // Retour et avance du navigateur : jamais au-delà de la première question
   // incomplète.
   useEffect(() => {
     const onPop = () => {
       if (sent) return;
+      window.clearTimeout(avance.current);
       const wanted = questionFromUrl();
       setQ(Math.min(wanted, firstInvalid(state, echeance)) as Question);
       setErrors({});
@@ -196,12 +281,19 @@ export function Tunnel() {
     return () => window.removeEventListener("popstate", onPop);
   }, [state, echeance, sent]);
 
-  // Focus sur le titre de la question affichée (pas au premier affichage).
+  // À chaque question : la colonne remonte en haut de l'écran si la question
+  // n'y est plus (mobile), puis le focus va au titre (pas au premier affichage).
   // biome-ignore lint/correctness/useExhaustiveDependencies: à chaque changement de question
   useEffect(() => {
     if (!moved.current) return;
     moved.current = false;
-    titre.current?.focus();
+    const top = haut.current?.getBoundingClientRect().top ?? 0;
+    if (top < 0 || top > window.innerHeight * 0.4)
+      haut.current?.scrollIntoView({
+        block: "start",
+        behavior: reducedMotion() ? "auto" : "smooth",
+      });
+    titre.current?.focus({ preventScroll: true });
   }, [q]);
 
   // Résultat de l'envoi, traité une fois.
@@ -211,6 +303,7 @@ export function Tunnel() {
     sending.current = false;
     setEnCours(false);
     if (result.status === "success") {
+      clearEstimation();
       setSent(state);
       window.history.replaceState(null, "", window.location.pathname);
       return;
@@ -219,7 +312,7 @@ export function Tunnel() {
       const fields = Object.keys(result.errors) as EstimationField[];
       const target = fields.length
         ? (Math.min(...fields.map(questionOf)) as Question)
-        : 5;
+        : 6;
       setErrors(result.errors);
       if (target !== q) {
         setQ(target);
@@ -241,14 +334,38 @@ export function Tunnel() {
   }
 
   function goTo(next: Question) {
+    window.clearTimeout(avance.current);
     setErrors({});
+    setRepris(false);
     setQ(next);
     moved.current = true;
     window.history.pushState(null, "", urlOf(next));
   }
 
+  /** Choix fait à la souris ou au doigt : la question suivante, après une pause. */
+  function avancer(depuis: Question) {
+    window.clearTimeout(avance.current);
+    avance.current = window.setTimeout(() => {
+      if (qActuelle.current === depuis) goTo((depuis + 1) as Question);
+    }, AVANCE_MS);
+  }
+
+  function recommencer() {
+    window.clearTimeout(avance.current);
+    clearEstimation();
+    setState(emptyEstimationState("ESTIMATION_VENTE"));
+    setEcheance("");
+    setErrors({});
+    setRepris(false);
+    meta.current = { ...meta.current, startedAt: Date.now() };
+    setQ(1);
+    moved.current = true;
+    window.history.replaceState(null, "", window.location.pathname);
+  }
+
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    window.clearTimeout(avance.current);
     const found = validate(q, state, echeance);
     if (Object.keys(found).length > 0) {
       setErrors(found);
@@ -262,10 +379,8 @@ export function Tunnel() {
     if (sending.current || pending) return;
     sending.current = true;
     setEnCours(true);
-    const data = estimationStateToFormData({
-      ...state,
-      message: echeanceMessage(echeance),
-    });
+    const data = estimationStateToFormData(state);
+    data.set(ECHEANCE_FIELD, echeance);
     const trap = event.currentTarget.elements.namedItem(HONEYPOT_FIELD);
     data.set(
       HONEYPOT_FIELD,
@@ -281,9 +396,10 @@ export function Tunnel() {
 
   const busy = pending || enCours;
   const failed = result.status === "error" && !busy;
+  const commence = hasAnswers(state) || echeance !== "";
 
-  const describedBy = (field: Field, extra?: string) =>
-    [errors[field] ? `${fieldId(field)}-erreur` : null, extra ?? null]
+  const describedBy = (field: Field, ...extra: string[]) =>
+    [errors[field] ? `${fieldId(field)}-erreur` : null, ...extra]
       .filter(Boolean)
       .join(" ") || undefined;
 
@@ -303,21 +419,45 @@ export function Tunnel() {
 
       <div className={t.colonne}>
         <h1 className={t.h1}>Faire estimer votre bien</h1>
-        <div className={t.progres}>
+        {q === 1 && !repris ? (
+          <p className={t.intro}>
+            {fr(
+              "Six questions, deux minutes. Nous vous rappelons pour convenir d'une visite : un prix sérieux demande de voir le bien. Sans engagement.",
+            )}
+          </p>
+        ) : null}
+        <div className={t.progres} ref={haut}>
           <div className={t.traits} aria-hidden>
-            {[1, 2, 3, 4, 5].map((n) => (
+            {NUMEROS.map((n) => (
               <i key={n} data-fait={n <= q || undefined} />
             ))}
           </div>
-          <p className={s.num}>
-            Question {q}&nbsp;sur&nbsp;{TOTAL}
-          </p>
+          <div className={t.etat}>
+            <p className={s.num}>
+              Question {q}&nbsp;sur&nbsp;{TOTAL}
+            </p>
+            {commence ? (
+              <button
+                type="button"
+                className={`${s.u} ${t.recommencer}`}
+                onClick={recommencer}
+              >
+                Recommencer
+              </button>
+            ) : null}
+          </div>
+          <output className={t.repris}>
+            {repris
+              ? "Nous avons repris vos réponses là où vous les aviez laissées."
+              : ""}
+          </output>
         </div>
 
         <form
           noValidate
           onSubmit={onSubmit}
           aria-labelledby="estimer-question"
+          aria-describedby="estimer-aide"
           className={t.form}
         >
           <h2
@@ -329,21 +469,38 @@ export function Tunnel() {
           >
             {fr(QUESTIONS[q])}
           </h2>
+          <p id="estimer-aide" className={t.consigne} key={`aide-${q}`}>
+            {fr(AIDES[q])}
+          </p>
 
           {q === 1 ? (
-            <Choix
-              name="propertyType"
-              options={PROPERTY_TYPES.map((value) => ({
-                value,
-                label: PROPERTY_TYPE_LABELS[value],
-              }))}
-              value={state.propertyType}
-              onChange={(value) =>
-                update({ propertyType: value as EstimationPropertyType })
-              }
-              error={err("propertyType")}
-              describedBy={describedBy("propertyType")}
-            />
+            <>
+              <Choix
+                name="propertyType"
+                options={PROPERTY_TYPES.map((value) => ({
+                  value,
+                  label: PROPERTY_TYPE_LABELS[value],
+                }))}
+                value={state.propertyType}
+                onChange={(value) =>
+                  update({ propertyType: value as EstimationPropertyType })
+                }
+                onPick={() => avancer(1)}
+                error={err("propertyType")}
+                describedBy={describedBy("propertyType")}
+              />
+              <p className={t.autre}>
+                Un terrain, un local, un immeuble&#8239;? Appelez-nous au{" "}
+                <a
+                  className={`${s.u} ${s.num}`}
+                  href={agency.phone.href}
+                  style={{ whiteSpace: "nowrap" }}
+                >
+                  {agency.phone.display}
+                </a>
+                .
+              </p>
+            </>
           ) : null}
 
           {q === 2 ? (
@@ -354,16 +511,22 @@ export function Tunnel() {
                 optional
                 error={err("address")}
               >
-                <input
+                <Adresse
                   id={fieldId("address")}
-                  name="address"
-                  autoComplete="street-address"
-                  maxLength={LIMITS.address}
                   value={state.address}
-                  aria-invalid={errors.address ? true : undefined}
-                  aria-describedby={describedBy("address")}
-                  onChange={(e) => update({ address: e.target.value })}
+                  maxLength={LIMITS.address}
+                  invalid={Boolean(errors.address)}
+                  describedBy={describedBy(
+                    "address",
+                    `${fieldId("address")}-aide`,
+                  )}
+                  onChange={(address) => update({ address })}
+                  onPick={(picked) => update(picked)}
                 />
+                <p id={`${fieldId("address")}-aide`} className={t.note}>
+                  Le numéro et la rue&#8239;; des adresses vous sont proposées
+                  au fil de la saisie.
+                </p>
               </Champ>
               <div className={t.ligne}>
                 <Champ
@@ -454,6 +617,18 @@ export function Tunnel() {
 
           {q === 4 ? (
             <Choix
+              name="condition"
+              options={ETATS}
+              value={state.condition}
+              onChange={(value) => update({ condition: value as Condition })}
+              onPick={() => avancer(4)}
+              error={err("condition")}
+              describedBy={describedBy("condition")}
+            />
+          ) : null}
+
+          {q === 5 ? (
+            <Choix
               name="echeance"
               options={ECHEANCES}
               value={echeance}
@@ -461,12 +636,13 @@ export function Tunnel() {
                 setEcheance(value as Echeance);
                 setErrors({});
               }}
+              onPick={() => avancer(5)}
               error={err("echeance")}
               describedBy={describedBy("echeance")}
             />
           ) : null}
 
-          {q === 5 ? (
+          {q === 6 ? (
             <div className={t.champs}>
               <div className={t.ligne}>
                 <Champ
@@ -530,9 +706,38 @@ export function Tunnel() {
                   autoComplete="tel"
                   value={state.phone}
                   aria-invalid={errors.phone ? true : undefined}
-                  aria-describedby={describedBy("phone")}
+                  aria-describedby={describedBy(
+                    "phone",
+                    `${fieldId("phone")}-aide`,
+                  )}
                   onChange={(e) => update({ phone: e.target.value })}
                 />
+                <p id={`${fieldId("phone")}-aide`} className={t.note}>
+                  Le plus simple pour convenir d’une visite.
+                </p>
+              </Champ>
+              <Champ
+                field="message"
+                label="Un mot à ajouter ?"
+                optional
+                error={err("message")}
+              >
+                <textarea
+                  id={fieldId("message")}
+                  name="message"
+                  rows={3}
+                  maxLength={LIMITS.message}
+                  value={state.message}
+                  aria-invalid={errors.message ? true : undefined}
+                  aria-describedby={describedBy(
+                    "message",
+                    `${fieldId("message")}-aide`,
+                  )}
+                  onChange={(e) => update({ message: e.target.value })}
+                />
+                <p id={`${fieldId("message")}-aide`} className={t.note}>
+                  Travaux récents, copropriété, particularités…
+                </p>
               </Champ>
               <div className={t.accord}>
                 <label className={t.case}>
@@ -625,22 +830,31 @@ export function Tunnel() {
   );
 }
 
-/** Choix exclusif : boutons radio natifs, l'étiquette entière est cliquable. */
+/**
+ * Choix exclusif : boutons radio natifs, l'étiquette entière est cliquable.
+ * Un choix fait au pointeur (souris, doigt) appelle `onPick`, même s'il était
+ * déjà coché ; au clavier, les flèches et Espace ne font que choisir.
+ */
 function Choix({
   name,
   options,
   value,
   onChange,
+  onPick,
   error,
   describedBy,
 }: {
   name: string;
-  options: readonly { value: string; label: string }[];
+  options: readonly { value: string; label: string; aide?: string }[];
   value: string;
   onChange: (value: string) => void;
+  onPick: () => void;
   error: ReactNode;
   describedBy?: string;
 }) {
+  // Heure du dernier appui au pointeur : un appui sans clic (défilement au
+  // doigt) ne doit pas faire avancer un choix fait ensuite au clavier.
+  const pointeur = useRef(0);
   return (
     <div
       role="radiogroup"
@@ -649,7 +863,22 @@ function Choix({
       className={t.choix}
     >
       {options.map((option, n) => (
-        <label key={option.value} className={t.option}>
+        // biome-ignore lint/a11y/useKeyWithClickEvents: au clavier, le choix ne fait pas avancer (Entrée envoie l'écran)
+        <label
+          key={option.value}
+          className={t.option}
+          onPointerDown={() => {
+            pointeur.current = Date.now();
+          }}
+          onClick={() => {
+            // Un clic sur l'étiquette en déclenche un second sur le radio :
+            // seul le premier compte.
+            if (Date.now() - pointeur.current > 1500) return;
+            pointeur.current = 0;
+            onChange(option.value);
+            onPick();
+          }}
+        >
           <input
             type="radio"
             id={n === 0 ? fieldId(name as Field) : undefined}
@@ -659,7 +888,12 @@ function Choix({
             aria-invalid={error ? true : undefined}
             onChange={() => onChange(option.value)}
           />
-          <span>{option.label}</span>
+          <span className={t.libelle}>
+            {option.label}
+            {option.aide ? (
+              <span className={t.precision}>{option.aide}</span>
+            ) : null}
+          </span>
         </label>
       ))}
       {error}
@@ -685,7 +919,7 @@ function Champ({
   return (
     <div className={`${t.champ} ${className ?? ""}`}>
       <label htmlFor={fieldId(field)}>
-        {label}
+        {fr(label)}
         {optional ? <span className={t.facultatif}> (facultatif)</span> : null}
       </label>
       {children}
@@ -704,10 +938,12 @@ function Recap({
 }) {
   const lines = [
     state.propertyType ? PROPERTY_TYPE_LABELS[state.propertyType] : "",
+    state.address.trim(),
     placeLabel(state),
     [formatSurface(state.surface), formatRooms(state.rooms)]
       .filter(Boolean)
       .join(", "),
+    etatLabel(state.condition),
     echeanceLabel(echeance),
   ].filter((line) => line.trim() !== "");
   if (lines.length === 0)
@@ -746,6 +982,17 @@ function Confirmation({ state }: { state: EstimationState }) {
             elle repose.
           </li>
         </ol>
+        <p className={`${t.chapo} ${t.repli} ${s.up}`} style={i(3)}>
+          Une question d’ici là&#8239;? Appelez-nous au{" "}
+          <a
+            className={`${s.u} ${s.num}`}
+            href={agency.phone.href}
+            style={{ whiteSpace: "nowrap" }}
+          >
+            {agency.phone.display}
+          </a>
+          .
+        </p>
         <p className={`${t.liens} ${s.up}`} style={i(3)}>
           <Link className={s.u} href={VENDRE}>
             Revenir à la page Vendre

@@ -20,6 +20,7 @@ import {
   parseDecimalFR,
   toApiDecimal,
 } from "@/lib/forms/validators";
+import { type Echeance, echeancePayload } from "./echeance";
 
 export const PRECISIONS_HEADING = "[Précisions saisies sur le site]";
 export const MESSAGE_HEADING = "[Message]";
@@ -107,11 +108,21 @@ export function buildEstimationMessage(state: EstimationState): string {
 const optional = (value: string): string | undefined =>
   isBlank(value) ? undefined : value;
 
+/**
+ * Corps envoyé par la Galerie : celui de la refonte, plus l'échéance dans ses
+ * vraies colonnes (`timeframe`, `situation`), acceptées par l'API déployée
+ * (`origin/main`) comme par la nouvelle (`parseEvaluationBody`).
+ */
+export type EstimationPayload = EvaluationPayload & {
+  timeframe?: string;
+  situation?: "vente" | "renseignement";
+};
+
 /** Corps complet. L'état doit avoir passé `validateEstimation` (type de bien renseigné). */
 export function buildEstimationPayload(
   state: EstimationState,
-  meta: { userAgent?: string; referer?: string } = {},
-): EvaluationPayload {
+  meta: { userAgent?: string; referer?: string; echeance?: Echeance } = {},
+): EstimationPayload {
   if (state.propertyType === "") throw new Error("propertyType manquant");
   const surface = parseDecimalFR(state.surface);
   const address = [state.address, state.city].filter((p) => !isBlank(p));
@@ -134,6 +145,7 @@ export function buildEstimationPayload(
     hasParking: state.hasParking,
     condition: state.condition === "" ? undefined : state.condition,
     intent: state.intent,
+    ...echeancePayload(meta.echeance ?? ""),
     firstName: state.firstName,
     lastName: state.lastName,
     email: normalizeEmail(state.email),

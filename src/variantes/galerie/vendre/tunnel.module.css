@@ -1,5 +1,5 @@
 /* Tunnel d'estimation : une colonne étroite au centre du mur, une question en
-   serif par écran, une progression en cinq traits. À gauche, sur grand écran,
+   serif par écran, une progression en six traits. À gauche, sur grand écran,
    un cartel qui se remplit à mesure des réponses. Champs à 16 px (pas de zoom
    sur iPhone), contours au gris du site (contraste 3:1 sur le mur). */
 
@@ -30,9 +30,19 @@
   color: var(--gris);
 }
 
+/* Une ligne de présentation, sous le titre de page, à la question 1. */
+.intro {
+  margin: 14px 0 0;
+  max-width: 52ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--gris);
+}
+
 /* ---------- Progression ---------- */
 .progres {
   margin-top: 28px;
+  scroll-margin-top: 24px;
   display: grid;
   gap: 8px;
   font-size: 11.5px;
@@ -43,9 +53,33 @@
   margin: 0;
 }
 
+.etat {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+}
+
+.recommencer {
+  background: none;
+  border: 0;
+  padding-top: 0;
+  font: inherit;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.repris:empty {
+  display: none;
+}
+
+.repris {
+  color: var(--encre);
+}
+
 .traits {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 6px;
 }
 
@@ -74,6 +108,14 @@
   color: var(--encre);
   text-wrap: balance;
   animation: arrivee 0.5s var(--out) both;
+}
+
+.consigne {
+  margin: -20px 0 28px;
+  max-width: 52ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--gris);
 }
 
 .question:focus {
@@ -121,6 +163,23 @@
 .option:has(input:checked) {
   border-color: var(--grenat);
   background: var(--poudre);
+}
+
+.libelle {
+  display: grid;
+  gap: 2px;
+  padding: 10px 0;
+}
+
+.precision {
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.autre {
+  margin: 24px 0 0;
+  font-size: 12.5px;
+  color: var(--gris);
 }
 
 .option input,
@@ -172,7 +231,8 @@
   color: var(--gris);
 }
 
-.champ input {
+.champ input,
+.champ textarea {
   height: 48px;
   width: 100%;
   padding: 0 14px;
@@ -184,18 +244,88 @@
   font-size: 16px;
 }
 
-.champ input:focus-visible {
+.champ textarea {
+  height: auto;
+  min-height: 96px;
+  padding: 12px 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.champ input:focus-visible,
+.champ textarea:focus-visible {
   outline: 1px solid var(--grenat);
   outline-offset: 0;
   border-color: var(--grenat);
 }
 
-.champ input[aria-invalid] {
+.champ input[aria-invalid],
+.champ textarea[aria-invalid] {
   border-color: var(--grenat);
 }
 
 .court {
   max-width: 220px;
+}
+
+.note {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+/* ---------- Adresse à saisie automatique ---------- */
+.combo {
+  position: relative;
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% - 1px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--grenat);
+  background: #fffdf9;
+}
+
+.suggestions[hidden] {
+  display: none;
+}
+
+.suggestion {
+  display: grid;
+  gap: 1px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.suggestion + .suggestion {
+  border-top: 1px solid var(--filet);
+}
+
+.suggestion:hover,
+.suggestion[aria-selected="true"] {
+  background: var(--poudre);
+}
+
+.commune {
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.annonce {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: var(--encre);
+}
+
+.annonce:empty {
+  display: none;
 }
 
 .groupe {
@@ -367,6 +497,10 @@
   margin-top: 56px;
 }
 
+.colonne > .repli {
+  margin-top: 28px;
+}
+
 .etapes {
   margin: 14px 0 0;
   padding: 0;
@@ -417,6 +551,15 @@
     margin-bottom: 24px;
   }
 
+  .consigne {
+    margin-top: -14px;
+  }
+
+  /* Sous l'en-tête collant du mobile (52 px). */
+  .progres {
+    scroll-margin-top: 68px;
+  }
+
   .form {
     margin-top: 32px;
   }
@@ -441,5 +584,9 @@
 @media (prefers-reduced-motion: reduce) {
   .question {
     animation: none;
+  }
+
+  .traits i {
+    transition: none;
   }
 }

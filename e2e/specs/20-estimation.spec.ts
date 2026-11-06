@@ -2,18 +2,24 @@ import { expect, type Locator, type Page, test } from "@playwright/test";
 import { mock } from "../mock-client";
 import { attendreAntiSpam, hydrate } from "../support/galerie";
 
-// Tunnel d'estimation (/vendre/estimation) : cinq questions, une par écran,
+// Tunnel d'estimation (/vendre/estimation) : six questions, une par écran,
 // puis la Server Action `submitEstimation` → POST /evaluation (mock privé).
 // Les envois attendent 4 s après l'affichage : plus tôt, la Server Action
 // répond « succès » sans appeler l'API (anti-spam, MIN_FILL_MS).
+//
+// La saisie automatique de l'adresse appelle la Géoplateforme de l'IGN depuis
+// le navigateur : elle est interceptée ici (réponse figée, ou panne simulée),
+// aucun appel ne sort.
 
 const URL = "/vendre/estimation";
+const IGN = "https://data.geopf.fr/geocodage/**";
 
 const MESSAGES = {
   propertyType: "Choisissez le type de bien.",
   postalCode: /Indiquez un code postal à 5\schiffres/,
   surface: /Indiquez la surface en m²/,
   rooms: "Indiquez le nombre de pièces.",
+  condition: "Choisissez l’état qui s’en approche le plus.",
   echeance: "Choisissez une échéance, même approximative.",
   email: /Indiquez une adresse e-mail valide/,
   rgpd: "Votre accord est nécessaire pour que nous puissions vous recontacter.",
@@ -21,8 +27,26 @@ const MESSAGES = {
     /Votre demande n’a pas pu être envoyée\. Vos réponses sont conservées/,
 };
 
-test.beforeEach(async ({ request }) => {
+/** Réponse de la Géoplateforme : la voie seule, sans numéro (cas réel). */
+const VOIE_SEULE = {
+  type: "FeatureCollection",
+  features: [
+    {
+      type: "Feature",
+      properties: {
+        id: "92004_essai",
+        name: "Rue de l’Essai",
+        postcode: "92600",
+        city: "Asnières-sur-Seine",
+        type: "street",
+      },
+    },
+  ],
+};
+
+test.beforeEach(async ({ request, page }) => {
   await mock.reset(request);
+  await page.route(IGN, (route) => route.fulfill({ json: VOIE_SEULE }));
 });
 
 const question = (page: Page) => page.locator("#estimer-question");
@@ -35,13 +59,23 @@ const titre = (t: string) =>
   new RegExp(
     `^${t
       .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-      .replace(/-/g, "-\u2060?")
+      .replace(/-/g, "-⁠?")
       .replace(/ /g, "\\s")}$`,
   );
+const Q = {
+  1: titre("Quel bien souhaitez-vous vendre ?"),
+  2: titre("Où se trouve-t-il ?"),
+  3: /Quelle est sa surface/,
+  4: titre("Dans quel état est-il ?"),
+  5: titre("Quand pensez-vous vendre ?"),
+  6: titre("Comment vous recontacter ?"),
+};
 const continuer = (page: Page) =>
   page.getByRole("button", { name: "Continuer" });
 const envoyer = (page: Page) =>
   page.getByRole("button", { name: /^(Envoyer ma demande|Envoi en cours…)$/ });
+const choix = (page: Page, nom: string | RegExp) =>
+  page.getByRole("radio", { name: nom });
 
 async function ouvrir(page: Page) {
   await page.goto(URL);
@@ -58,20 +92,26 @@ async function tabVers(page: Page, cible: Locator, max = 20) {
   await expect(cible, "atteint au clavier").toBeFocused();
 }
 
-/** Questions 1 à 4 remplies à la souris (Appartement, 92600, 48,5 m², 2 p.). */
-async function questions1a4(page: Page) {
-  await page.getByRole("radio", { name: "Appartement" }).check();
-  await continuer(page).click();
-  await page.getByLabel("Adresse").fill("12 rue de l’Essai");
+/**
+ * Questions 1 à 5 à la souris : un clic sur un choix unique passe à la
+ * question suivante (Appartement, 92600, 48,5 m², 2 p., à rafraîchir, dès que
+ * possible).
+ */
+async function questions1a5(page: Page) {
+  await choix(page, "Appartement").click();
+  await expect(question(page)).toHaveText(Q[2]);
   await page.getByLabel("Code postal").fill("92600");
   await page.getByLabel("Commune").fill("Asnières-sur-Seine");
   await continuer(page).click();
+  await expect(question(page)).toHaveText(Q[3]);
   await page.getByLabel("Surface habitable, en m²").fill("48,5");
-  await page.getByRole("radio", { name: "2", exact: true }).check();
+  await choix(page, "2").click();
   await continuer(page).click();
-  await page.getByRole("radio", { name: "Dès que possible" }).check();
-  await continuer(page).click();
-  await expect(question(page)).toHaveText(titre("Comment vous recontacter ?"));
+  await expect(question(page)).toHaveText(Q[4]);
+  await choix(page, /^À rafraîchir/).click();
+  await expect(question(page)).toHaveText(Q[5]);
+  await choix(page, "Dès que possible").click();
+  await expect(question(page)).toHaveText(Q[6]);
 }
 
 async function coordonnees(page: Page, email: string, accord = true) {
@@ -89,47 +129,66 @@ test("parcours complet au clavier, charge utile vérifiée", async ({
   const debut = await ouvrir(page);
   const k = page.keyboard;
 
-  // Question 1 : on part du titre de la question.
+  // Question 1 : au clavier, Espace choisit sans faire avancer.
   await question(page).focus();
-  await tabVers(page, page.getByRole("radio", { name: "Appartement" }));
+  await tabVers(page, choix(page, "Appartement"));
   await k.press("Space");
-  await expect(page.getByRole("radio", { name: "Appartement" })).toBeChecked();
+  await expect(choix(page, "Appartement")).toBeChecked();
+  await page.waitForTimeout(500);
+  await expect(question(page)).toHaveText(Q[1]);
   await tabVers(page, continuer(page));
   await k.press("Enter");
 
-  // Question 2 : le focus va au titre ; Entrée dans un champ envoie l'écran.
-  await expect(question(page)).toHaveText(titre("Où se trouve-t-il ?"));
+  // Question 2 : saisie automatique au clavier ; le numéro tapé est gardé
+  // même si le service ne propose que la voie.
+  await expect(question(page)).toHaveText(Q[2]);
   await expect(question(page)).toBeFocused();
   await k.press("Tab");
+  const adresse = page.getByRole("combobox", { name: /Adresse/ });
+  await expect(adresse).toBeFocused();
   await k.type("12 rue de l’Essai");
-  await k.press("Tab");
-  await k.type("92600");
-  await k.press("Tab");
-  await k.type("Asnières-sur-Seine");
+  const option = page.getByRole("option", { name: /12 Rue de l’Essai/ });
+  await expect(option).toBeVisible();
+  await k.press("ArrowDown");
+  await expect(option).toHaveAttribute("aria-selected", "true");
+  await k.press("Enter");
+  await expect(adresse).toHaveValue("12 Rue de l’Essai");
+  await expect(page.getByLabel("Code postal")).toHaveValue("92600");
+  await expect(page.getByLabel("Commune")).toHaveValue("Asnières-sur-Seine");
   await k.press("Enter");
 
   // Question 3 : surface, puis pièces aux flèches.
-  await expect(question(page)).toHaveText(/Quelle est sa surface/);
+  await expect(question(page)).toHaveText(Q[3]);
   await expect(question(page)).toBeFocused();
   await k.press("Tab");
   await k.type("48,5");
-  await tabVers(page, page.getByRole("radio", { name: "1", exact: true }));
+  await tabVers(page, choix(page, "1"));
   await k.press("ArrowRight");
-  await expect(
-    page.getByRole("radio", { name: "2", exact: true }),
-  ).toBeChecked();
+  await expect(choix(page, "2")).toBeChecked();
   await tabVers(page, continuer(page));
   await k.press("Enter");
 
-  // Question 4 : échéance.
-  await expect(question(page)).toHaveText(titre("Quand pensez-vous vendre ?"));
-  await tabVers(page, page.getByRole("radio", { name: "Dès que possible" }));
-  await k.press("Space");
+  // Question 4 : les flèches changent l'état sans faire avancer.
+  await expect(question(page)).toHaveText(Q[4]);
+  await tabVers(page, choix(page, /^Neuf ou refait/));
+  await k.press("ArrowDown");
+  await k.press("ArrowDown");
+  await expect(choix(page, /^À rafraîchir/)).toBeChecked();
+  await page.waitForTimeout(500);
+  await expect(question(page)).toHaveText(Q[4]);
   await tabVers(page, continuer(page));
   await k.press("Enter");
 
-  // Question 5 : coordonnées et accord.
-  await expect(question(page)).toHaveText(titre("Comment vous recontacter ?"));
+  // Question 5 : échéance.
+  await expect(question(page)).toHaveText(Q[5]);
+  await tabVers(page, choix(page, "Dès que possible"));
+  await k.press("ArrowDown");
+  await expect(choix(page, "Dans les trois mois")).toBeChecked();
+  await tabVers(page, continuer(page));
+  await k.press("Enter");
+
+  // Question 6 : coordonnées, mot libre et accord.
+  await expect(question(page)).toHaveText(Q[6]);
   await k.press("Tab");
   await k.type("Camille");
   await k.press("Tab");
@@ -138,6 +197,9 @@ test("parcours complet au clavier, charge utile vérifiée", async ({
   await k.type(email);
   await k.press("Tab");
   await k.type("06 12 34 56 78");
+  await k.press("Tab");
+  await expect(page.getByLabel(/Un mot à ajouter/)).toBeFocused();
+  await k.type("Parquet refait.");
   await tabVers(page, page.getByRole("checkbox"));
   await k.press("Space");
   await expect(page.getByRole("checkbox")).toBeChecked();
@@ -146,8 +208,9 @@ test("parcours complet au clavier, charge utile vérifiée", async ({
   if (info.project.name === "desktop") {
     const recap = page.getByRole("complementary", { name: "Votre bien" });
     await expect(recap).toContainText("Appartement");
-    await expect(recap).toContainText("92600");
-    await expect(recap).toContainText("Dès que possible");
+    await expect(recap).toContainText("12 Rue de l’Essai");
+    await expect(recap).toContainText("À rafraîchir");
+    await expect(recap).toContainText("Dans les trois mois");
   }
 
   await attendreAntiSpam(page, debut);
@@ -163,26 +226,121 @@ test("parcours complet au clavier, charge utile vérifiée", async ({
   await expect(page.getByRole("main")).toContainText(
     `estimation-${info.project.name}@example.com`,
   );
+  await expect(page.getByRole("main")).toContainText(
+    /Une question d’ici là\s?\?\sAppelez-nous au 01\s73\s64\s56\s10/,
+  );
 
   const recus = await mock.requests(page.request, "/evaluation");
   expect(recus).toHaveLength(1);
   expect(recus[0].body).toMatchObject({
     propertyType: "APPARTEMENT",
     postalCode: "92600",
-    address: "12 rue de l’Essai, Asnières-sur-Seine",
+    address: "12 Rue de l’Essai, Asnières-sur-Seine",
     surface: "48.5",
     rooms: "2",
+    condition: "A_RAFRAICHIR",
+    timeframe: "Dans les trois mois",
+    situation: "vente",
+    intent: "ESTIMATION_VENTE",
     firstName: "Camille",
     lastName: "Essai",
     email: `estimation-${info.project.name}@example.com`,
     phone: "06 12 34 56 78",
+    message: "[Message]\nParquet refait.",
     rgpd: true,
     source: "vitrine/estimation",
     referer: URL,
   });
-  expect((recus[0].body as { message: string }).message).toContain(
-    "Échéance du projet : dès que possible",
+  // L'échéance n'est plus recopiée dans le message.
+  expect(JSON.stringify(recus[0].body)).not.toContain("Échéance du projet");
+  // Le brouillon est effacé après l'envoi.
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("cr:estimation:v1")),
+  ).toBeNull();
+});
+
+test("souris : un clic avance, retour possible, la question reste à l'écran", async ({
+  page,
+}) => {
+  await ouvrir(page);
+  await choix(page, "Maison").click();
+  await expect(question(page)).toHaveText(Q[2]);
+  await expect(page).toHaveURL(/\?question=2$/);
+  await expect(question(page)).toBeFocused();
+
+  // Retour du navigateur : la réponse est gardée ; recliquer le même choix
+  // fait de nouveau avancer.
+  await page.goBack();
+  await expect(question(page)).toHaveText(Q[1]);
+  await expect(choix(page, "Maison")).toBeChecked();
+  await choix(page, "Maison").click();
+  await expect(question(page)).toHaveText(Q[2]);
+
+  await page.getByLabel("Code postal").fill("92600");
+  await continuer(page).click();
+  await page.getByLabel("Surface habitable, en m²").fill("120");
+  await choix(page, "5 ou plus").click();
+  await continuer(page).click();
+  await choix(page, /^Bon état/).click();
+  await expect(question(page)).toHaveText(Q[5]);
+  // Sur mobile comme sur grand écran, la nouvelle question est visible.
+  await expect(question(page)).toBeInViewport();
+  await page.getByRole("button", { name: "Question précédente" }).click();
+  await expect(question(page)).toHaveText(Q[4]);
+  await expect(choix(page, /^Bon état/)).toBeChecked();
+});
+
+test("brouillon : gardé au rechargement, effacé par « Recommencer »", async ({
+  page,
+}) => {
+  await ouvrir(page);
+  await choix(page, "Appartement").click();
+  await page.getByLabel("Code postal").fill("92600");
+  await continuer(page).click();
+  await page.getByLabel("Surface habitable, en m²").fill("48,5");
+  await choix(page, "2").click();
+  await continuer(page).click();
+  await expect(question(page)).toHaveText(Q[4]);
+
+  await page.reload();
+  await hydrate(continuer(page));
+  await expect(question(page)).toHaveText(Q[4]);
+  await expect(page).toHaveURL(/\?question=4$/);
+  await expect(
+    page.getByText("Nous avons repris vos réponses là où vous les aviez"),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Question précédente" }).click();
+  await expect(question(page)).toHaveText(Q[3]);
+  await expect(page.getByLabel("Surface habitable, en m²")).toHaveValue("48,5");
+  await expect(choix(page, "2")).toBeChecked();
+
+  await page.getByRole("button", { name: "Recommencer" }).click();
+  await expect(question(page)).toHaveText(Q[1]);
+  await expect(choix(page, "Appartement")).not.toBeChecked();
+  expect(
+    await page.evaluate(() => sessionStorage.getItem("cr:estimation:v1")),
+  ).toBeNull();
+  await page.reload();
+  await hydrate(continuer(page));
+  await expect(question(page)).toHaveText(Q[1]);
+  await expect(page.getByRole("button", { name: "Recommencer" })).toHaveCount(
+    0,
   );
+});
+
+test("adresse : service indisponible, saisie à la main", async ({ page }) => {
+  await page.unroute(IGN);
+  await page.route(IGN, (route) => route.abort());
+  await ouvrir(page);
+  await choix(page, "Appartement").click();
+  await page.getByRole("combobox", { name: /Adresse/ }).fill("12 rue Voltaire");
+  await expect(
+    page.getByText("La saisie automatique ne répond pas"),
+  ).toBeVisible();
+  await expect(page.getByRole("option")).toHaveCount(0);
+  await page.getByLabel("Code postal").fill("92600");
+  await continuer(page).click();
+  await expect(question(page)).toHaveText(Q[3]);
 });
 
 test("validation : erreurs sur les champs requis, focus sur le premier", async ({
@@ -193,13 +351,10 @@ test("validation : erreurs sur les champs requis, focus sur le premier", async (
   // Question 1 sans choix.
   await continuer(page).click();
   await expect(page.getByText(MESSAGES.propertyType)).toBeVisible();
-  await expect(page.getByRole("radio", { name: "Appartement" })).toBeFocused();
-  await expect(question(page)).toHaveText(
-    titre("Quel bien souhaitez-vous vendre ?"),
-  );
-  await page.getByRole("radio", { name: "Maison" }).check();
-  await expect(page.getByText(MESSAGES.propertyType)).toHaveCount(0);
-  await continuer(page).click();
+  await expect(choix(page, "Appartement")).toBeFocused();
+  await expect(question(page)).toHaveText(Q[1]);
+  await choix(page, "Maison").click();
+  await expect(question(page)).toHaveText(Q[2]);
 
   // Question 2 : code postal manquant puis invalide.
   await continuer(page).click();
@@ -221,19 +376,24 @@ test("validation : erreurs sur les champs requis, focus sur le premier", async (
   await page.getByLabel("Surface habitable, en m²").fill("90");
   await continuer(page).click();
   await expect(page.getByText(MESSAGES.rooms)).toBeVisible();
-  await expect(
-    page.getByRole("radio", { name: "1", exact: true }),
-  ).toBeFocused();
-  await page.getByRole("radio", { name: "4", exact: true }).check();
+  await expect(choix(page, "1")).toBeFocused();
+  await choix(page, "4").check();
   await continuer(page).click();
 
-  // Question 4 : échéance.
+  // Question 4 : état.
+  await continuer(page).click();
+  await expect(page.getByText(MESSAGES.condition)).toBeVisible();
+  await expect(choix(page, /^Neuf ou refait/)).toBeFocused();
+  await choix(page, /^À rénover/).click();
+  await expect(question(page)).toHaveText(Q[5]);
+
+  // Question 5 : échéance.
   await continuer(page).click();
   await expect(page.getByText(MESSAGES.echeance)).toBeVisible();
-  await page.getByRole("radio", { name: "Je ne sais pas encore" }).check();
-  await continuer(page).click();
+  await choix(page, "Je ne sais pas encore").click();
+  await expect(question(page)).toHaveText(Q[6]);
 
-  // Question 5 : e-mail manquant, premier champ en erreur.
+  // Question 6 : e-mail manquant, premier champ en erreur.
   await page.getByLabel("Prénom").fill("Camille");
   await page.getByLabel("Nom", { exact: true }).fill("Essai");
   await envoyer(page).click();
@@ -241,19 +401,17 @@ test("validation : erreurs sur les champs requis, focus sur le premier", async (
   await expect(page.getByText(MESSAGES.rgpd)).toBeVisible();
   await expect(page.getByLabel("E-mail")).toBeFocused();
 
-  // Retour du navigateur : question précédente, réponse conservée.
+  // Retour : question précédente, réponse conservée.
   await page.getByRole("button", { name: "Question précédente" }).click();
-  await expect(question(page)).toHaveText(titre("Quand pensez-vous vendre ?"));
-  await expect(
-    page.getByRole("radio", { name: "Je ne sais pas encore" }),
-  ).toBeChecked();
+  await expect(question(page)).toHaveText(Q[5]);
+  await expect(choix(page, "Je ne sais pas encore")).toBeChecked();
 
   expect(await mock.requests(page.request, "/evaluation")).toHaveLength(0);
 });
 
 test("consentement RGPD obligatoire", async ({ page }, info) => {
   const debut = await ouvrir(page);
-  await questions1a4(page);
+  await questions1a5(page);
   await coordonnees(page, `rgpd-${info.project.name}@example.com`, false);
   await attendreAntiSpam(page, debut);
   await envoyer(page).click();
@@ -272,12 +430,17 @@ test("consentement RGPD obligatoire", async ({ page }, info) => {
   ).toBeVisible();
   const recus = await mock.requests(page.request, "/evaluation");
   expect(recus).toHaveLength(1);
-  expect(recus[0].body).toMatchObject({ rgpd: true });
+  expect(recus[0].body).toMatchObject({
+    rgpd: true,
+    condition: "A_RAFRAICHIR",
+    timeframe: "Dès que possible",
+    situation: "vente",
+  });
 });
 
 test("double clic : un seul envoi", async ({ page }, info) => {
   const debut = await ouvrir(page);
-  await questions1a4(page);
+  await questions1a5(page);
   await coordonnees(page, `double-${info.project.name}@example.com`);
   await attendreAntiSpam(page, debut);
   await envoyer(page).dblclick();
@@ -295,7 +458,7 @@ test("échec de l'API : message d'erreur, saisie conservée, nouvel essai", asyn
   const email = `echec-${info.project.name}@example.com`;
   await mock.failNext(page.request, "/evaluation", 500);
   const debut = await ouvrir(page);
-  await questions1a4(page);
+  await questions1a5(page);
   await coordonnees(page, email);
   await attendreAntiSpam(page, debut);
   await envoyer(page).click();
@@ -303,7 +466,7 @@ test("échec de l'API : message d'erreur, saisie conservée, nouvel essai", asyn
   await expect(page.getByRole("main").getByRole("alert")).toContainText(
     MESSAGES.sendFailed,
   );
-  await expect(question(page)).toHaveText(titre("Comment vous recontacter ?"));
+  await expect(question(page)).toHaveText(Q[6]);
   await expect(page.getByLabel("Prénom")).toHaveValue("Camille");
   await expect(page.getByLabel("E-mail")).toHaveValue(email);
   await expect(page.getByLabel("Téléphone")).toHaveValue("0612345678");

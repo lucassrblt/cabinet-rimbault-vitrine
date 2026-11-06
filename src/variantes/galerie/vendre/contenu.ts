@@ -38,28 +38,23 @@ export const DEROULE = [
 ] as const;
 
 /**
- * Échéance du projet (question 4 du tunnel). Absente du modèle `Evaluation` :
- * elle part en tête du champ `message`, sous la forme « Échéance du projet : … ».
- * [à confirmer] : liste à valider par l'agent.
+ * État du bien (question 4 du tunnel) : les quatre choix du tunnel de main
+ * (`StepCondition.tsx`), libellés et aides repris, rangés sur l'enum
+ * `PropertyCondition` de l'API.
  */
-export const ECHEANCES = [
-  { value: "des-que-possible", label: "Dès que possible" },
-  { value: "3-mois", label: "Dans les trois mois" },
-  { value: "3-6-mois", label: "Dans trois à six mois" },
-  { value: "plus-tard", label: "Dans plus de six mois" },
-  { value: "je-ne-sais-pas", label: "Je ne sais pas encore" },
+export const ETATS = [
+  { value: "NEUF", label: "Neuf ou refait", aide: "Rien à prévoir" },
+  { value: "BON_ETAT", label: "Bon état", aide: "Quelques petits travaux" },
+  {
+    value: "A_RAFRAICHIR",
+    label: "À rafraîchir",
+    aide: "Peintures, sols, cuisine…",
+  },
+  { value: "A_RENOVER", label: "À rénover", aide: "Travaux importants" },
 ] as const;
 
-export type Echeance = (typeof ECHEANCES)[number]["value"] | "";
+export type Etat = (typeof ETATS)[number]["value"];
 
-export function echeanceLabel(value: Echeance): string {
-  return ECHEANCES.find((e) => e.value === value)?.label ?? "";
-}
-
-/** Ligne ajoutée au message envoyé à l'agent. */
-export function echeanceMessage(value: Echeance): string {
-  const label = echeanceLabel(value);
-  return label === ""
-    ? ""
-    : `Échéance du projet : ${label.charAt(0).toLowerCase()}${label.slice(1)}`;
+export function etatLabel(value: string): string {
+  return ETATS.find((e) => e.value === value)?.label ?? "";
 }
