@@ -1,34 +1,11 @@
 import type { Metadata } from "next";
 import { agency } from "@/lib/agency";
+import { getSiteUrl, isIndexable } from "@/lib/site-url";
 
 // Aides de métadonnées (doc 04 §4.4). Next fusionne les métadonnées des segments
 // de façon SUPERFICIELLE : une page qui définit `openGraph` ou `robots` remplace
 // entièrement ceux du layout. `pageMetadata` reconstruit donc tout le bloc.
-
-/** URL publique du site. `SITE_URL` (domaine à confirmer, brief §10-4). */
-export function getSiteUrl(): URL {
-  const raw = process.env.SITE_URL?.trim();
-  if (raw) {
-    try {
-      return new URL(raw);
-    } catch {
-      // Valeur illisible : on retombe sur l'URL locale (check-launch la signale).
-    }
-  }
-  return new URL(`http://localhost:${process.env.PORT ?? "3000"}`);
-}
-
-/**
- * Seule la production est indexable (`SITE_ENV=production`), et jamais tant
- * que la porte de maintenance est posée (`MAINTENANCE_MODE=on`, `src/proxy.ts`) :
- * `robots.txt`, le plan du site et les balises `robots` restent alors fermés.
- */
-export function isIndexable(): boolean {
-  return (
-    process.env.SITE_ENV === "production" &&
-    process.env.MAINTENANCE_MODE !== "on"
-  );
-}
+// URL publique et indexation : `@/lib/site-url` (source unique).
 
 export const SITE_NAME = agency.name;
 

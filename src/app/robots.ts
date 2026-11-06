@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
-import { getSiteUrl, isIndexable } from "@/lib/seo/metadata";
+import { absoluteUrl, isIndexable } from "@/lib/site-url";
 
-// Production (`SITE_ENV=production`, porte de maintenance levée) : tout est
-// ouvert, avec le plan du site.
-// Partout ailleurs (local, préproduction) : rien n'est indexable.
+// Indexation ouverte (`NEXT_PUBLIC_ALLOW_INDEXING=true`, porte de maintenance
+// levée, contexte Netlify `production`) : tout est ouvert, avec le plan du site.
+// Partout ailleurs (local, deploy previews, porte posée) : `Disallow: /`.
 
 export default function robots(): MetadataRoute.Robots {
   if (!isIndexable()) {
@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
   }
   return {
     rules: { userAgent: "*", allow: "/" },
-    sitemap: new URL("/sitemap.xml", getSiteUrl()).toString(),
+    sitemap: absoluteUrl("/sitemap.xml"),
   };
 }

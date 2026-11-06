@@ -18,6 +18,8 @@ import { defineConfig, devices } from "@playwright/test";
 //   (`allowedDevOrigins`) ; sur 127.0.0.1, rien ne s'hydrate. Le mock, lui, est
 //   un serveur Node joint de serveur à serveur : il écoute sur 127.0.0.1
 //   seulement (pas de résolution `localhost` vers ::1 côté Node).
+// - NEXT_PUBLIC_SITE_URL vaut l'adresse locale du banc : obligatoire pour le
+//   `next build` du mode prod (aucun repli sur localhost en production).
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 // Port du mock exporté dans l'environnement : les workers le relisent
@@ -84,6 +86,10 @@ export default defineConfig({
         PUBLIC_API_URL: `${MOCK_URL}/api/public`,
         PUBLIC_API_KEY: MOCK_KEY,
         NEXT_DIST_DIR: DIST_DIR,
+        // URL publique du site (`src/lib/site-url.ts`) : un build de production
+        // (E2E_SERVEUR=prod) sans elle échoue, il n'y a plus de repli sur
+        // localhost hors développement.
+        NEXT_PUBLIC_SITE_URL: SITE_URL,
         ...(SERVEUR_PROD
           ? { NEXT_TSCONFIG_PATH: "e2e/tsconfig.build.json" }
           : {}),
