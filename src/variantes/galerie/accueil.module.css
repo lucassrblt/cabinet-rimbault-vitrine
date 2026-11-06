@@ -1,6 +1,6 @@
 /* Accueil : le parcours d'une galerie. L'agence et sa devanture à l'entrée,
-   un petit accrochage des biens, puis trois salles de texte (métiers, façon
-   de travailler, avis) et l'adresse. Une seule phrase serif agrandie par
+   un petit accrochage des biens, puis deux salles de texte (vendre avec nous,
+   avis) et l'adresse. Une seule phrase serif agrandie par
    section ; le vide sépare les salles, les murs changent de ton (blanc chaud,
    crème, poudré), jamais de grenat ici : il reste au cabinet et au pied. */
 
@@ -199,35 +199,58 @@ h2.blocT {
   text-wrap: balance;
 }
 
-.blocLien {
-  grid-column: 4 / 13;
-  justify-self: start;
-  margin-top: 32px;
+/* 3. Vendre avec nous : la phrase serif et l'estimation à gauche, trois
+   cartels à droite, calés en haut sur le titre */
+.vendreT {
+  grid-column: 1 / 6;
+  min-width: 0;
 }
 
-/* 3. Ce que nous faisons : trois cartels côte à côte */
-.metiers,
-.avis {
-  grid-column: 4 / 13;
+.vendreT h2 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.phrase {
+  margin: 18px 0 0;
+  max-width: 18ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.vendreTexte {
+  margin: 20px 0 0;
+  max-width: 42ch;
+  color: var(--gris);
+  text-wrap: pretty;
+}
+
+.metiers {
+  grid-column: 7 / 13;
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 40px 24px;
+  gap: 0;
+  border-bottom: 1px solid var(--filet);
 }
 
 .metiers li {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   align-content: start;
   justify-items: start;
   border-top: 1px solid var(--filet);
-  padding-top: 16px;
+  padding-block: 18px 22px;
 }
 
-.metiers h3,
-.engagements h3 {
+.metiers h3 {
   margin: 0;
   font-weight: 500;
   font-size: 13px;
@@ -236,42 +259,64 @@ h2.blocT {
 }
 
 .metiers p {
-  margin: 0 0 8px;
-  max-width: 34ch;
-  text-wrap: pretty;
-}
-
-/* 4. Notre façon de travailler : l'engagement, puis ce qu'il veut dire */
-.engagements {
-  grid-column: 4 / 13;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-bottom: 1px solid var(--filet);
-}
-
-.engagements li {
-  display: grid;
-  grid-template-columns: repeat(9, minmax(0, 1fr));
-  column-gap: 24px;
-  padding-block: 18px 22px;
-  border-top: 1px solid var(--filet);
-}
-
-.engagements h3 {
-  grid-column: 1 / 5;
-  max-width: 30ch;
-}
-
-.engagements p {
-  grid-column: 5 / 10;
   margin: 0;
   max-width: 52ch;
   color: var(--gris);
   text-wrap: pretty;
 }
 
-/* 5. Ce que disent nos clients */
+.metiers .u {
+  margin-top: 6px;
+}
+
+/* 4. Ce que disent nos clients : un avis en grand, deux à côté */
+.une {
+  grid-column: 4 / 9;
+  margin: 0;
+  min-width: 0;
+}
+
+.une blockquote {
+  margin: 0;
+}
+
+.une blockquote p {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.4;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.une figcaption {
+  margin-top: 16px;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.uneNote {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.cote {
+  grid-column: 10 / 13;
+  min-width: 0;
+}
+
+.avis {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 28px;
+}
+
 .noteAvis {
   margin: 12px 0 0;
   max-width: 26ch;
@@ -289,29 +334,23 @@ h2.blocT {
 
 .avis blockquote p {
   margin: 0;
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 300;
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.55;
   white-space: pre-line;
   text-wrap: pretty;
 }
 
 .avis figcaption {
-  margin-top: 12px;
+  margin-top: 8px;
   font-size: 11.5px;
   color: var(--gris);
 }
 
 .avisPied {
-  grid-column: 4 / 13;
-  margin-top: 40px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px 24px;
+  margin-top: 32px;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
 }
 
 .avisPied p {
@@ -320,7 +359,7 @@ h2.blocT {
   color: var(--gris);
 }
 
-/* 6. Passez nous voir */
+/* 5. Passez nous voir */
 .venir {
   padding-bottom: 120px;
 }
@@ -336,6 +375,10 @@ h2.blocT {
 
 .adresse .u {
   margin-top: 10px;
+}
+
+.adresse .u + .u {
+  margin-top: 4px;
 }
 
 .venir > :nth-child(2) {
@@ -398,17 +441,25 @@ h2.blocT {
     grid-column: 5 / 7;
   }
 
+  .vendreT {
+    grid-column: 1 / 7;
+  }
+
+  .metiers {
+    grid-column: 8 / 13;
+  }
+
   .blocT {
     grid-column: 1 / -1;
     margin-bottom: 32px;
   }
 
-  .metiers,
-  .avis,
-  .engagements,
-  .blocLien,
-  .avisPied {
-    grid-column: 1 / -1;
+  .une {
+    grid-column: 1 / 8;
+  }
+
+  .cote {
+    grid-column: 9 / 13;
   }
 
   .venir > :nth-child(2) {
@@ -525,33 +576,28 @@ h2.blocT {
     font-size: 20px;
   }
 
+  .vendreT,
   .metiers,
-  .avis,
-  .engagements,
-  .blocLien,
-  .avisPied {
+  .une,
+  .cote {
     grid-column: 1 / -1;
   }
 
-  .metiers,
-  .avis {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 32px;
+  .phrase,
+  .uneNote {
+    font-size: 25px;
   }
 
-  .engagements li {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: 8px;
+  .metiers {
+    margin-top: 48px;
   }
 
-  .engagements h3,
-  .engagements p {
-    grid-column: 1 / -1;
+  .une blockquote p {
+    font-size: 19px;
   }
 
-  .avisPied {
-    flex-direction: column;
-    align-items: flex-start;
+  .cote {
+    margin-top: 40px;
   }
 
   .venir {

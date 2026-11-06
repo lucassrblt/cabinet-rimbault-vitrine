@@ -170,7 +170,7 @@ export default async function FicheChaude({ params }: Props) {
           appelez le cabinet.
         </p>
         <div className={f.ctasRow}>
-          <Link className={s.btn} href="/contact">
+          <Link className={s.btn} href={`${BASE}/contact`}>
             Demander une visite
           </Link>
           <a
@@ -236,7 +236,7 @@ export default async function FicheChaude({ params }: Props) {
           ) : null}
           <Specs items={specsCartel(view)} className={s.up} />
           <div className={`${f.ctas} ${s.up}`} style={i(4)}>
-            <Link className={s.btn} href="/contact">
+            <Link className={s.btn} href={`${BASE}/contact`}>
               Demander une visite
             </Link>
             <a
@@ -273,7 +273,7 @@ export default async function FicheChaude({ params }: Props) {
 
       {/* Mobile : la demande de visite et l'appel restent en bas de l'écran. */}
       <div className={f.mCta} data-barre-fixe>
-        <Link className={s.btn} href="/contact">
+        <Link className={s.btn} href={`${BASE}/contact`}>
           Demander une visite
         </Link>
         <a className={`${s.btn} ${s.ghost}`} href={agency.phone.href}>

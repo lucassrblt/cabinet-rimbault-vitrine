@@ -38,11 +38,14 @@ export function Pied() {
           <Link className={s.u} href={`${BASE}/biens`}>
             Les biens en vente
           </Link>
-          <Link className={s.u} href="/estimation">
-            Estimer mon bien
+          <Link className={s.u} href={`${BASE}/vendre`}>
+            Vendre, faire estimer
           </Link>
           <Link className={s.u} href={`${BASE}/le-cabinet`}>
             Le cabinet
+          </Link>
+          <Link className={s.u} href={`${BASE}/contact`}>
+            Contact
           </Link>
         </div>
         <div className={s.piedCol}>
