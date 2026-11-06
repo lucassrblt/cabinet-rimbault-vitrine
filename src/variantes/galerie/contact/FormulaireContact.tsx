@@ -8,6 +8,8 @@
 // - Un seul envoi à la fois ; échec de l'API : saisie conservée, téléphone donné.
 // - Confirmation en place, focus sur son titre. Aucun délai de réponse annoncé.
 // - Sans JavaScript : envoi par `action`, champ référence ouvert par la CSS (:has).
+// - Bien cité depuis une fiche (`?ref=`) : sa vignette tient lieu de champ
+//   « Référence du bien », envoyé en champ caché.
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -85,11 +87,14 @@ const ID: Record<Champ, string> = {
 const entier = new Intl.NumberFormat("fr-FR");
 
 export function FormulaireContact({
+  objets = OBJETS,
   objet,
   reference,
   message,
   bien,
 }: {
+  /** Objets proposés (sans la location quand aucun bien n'est à louer). */
+  objets?: readonly Objet[];
   objet?: Objet;
   reference?: string;
   message?: string;
@@ -225,7 +230,7 @@ export function FormulaireContact({
       >
         <legend>Objet de votre message</legend>
         <div className={f.pastilles}>
-          {OBJETS.map((o) => (
+          {objets.map((o) => (
             <label key={o} className={f.pastille}>
               <input
                 type="radio"
@@ -250,27 +255,40 @@ export function FormulaireContact({
         ) : null}
       </fieldset>
 
+      {/* Bien cité en vignette : sa référence part dans un champ caché. */}
+      {citeBien ? (
+        <input
+          type="hidden"
+          name="propertyReference"
+          value={values.propertyReference}
+        />
+      ) : null}
+
       <div className={f.lignes}>
-        {/* Affiché pour « Un bien en particulier » : par l'état React, et
-            par la CSS (:has) quand JavaScript manque. */}
-        <Ligne
-          field="propertyReference"
-          label="Référence du bien"
-          optional
-          hint="Elle figure sur l’annonce, par exemple 10.131."
-          errors={errors}
-          className={`${f.reference} ${values.objet === "bien" ? f.ouverte : ""}`}
-        >
-          <input
-            {...champ("propertyReference")}
-            className={`${f.champ} ${f.court} ${s.num}`}
-            name="propertyReference"
-            autoComplete="off"
-            spellCheck={false}
-            value={values.propertyReference}
-            onChange={(e) => update("propertyReference", e.currentTarget.value)}
-          />
-        </Ligne>
+        {/* Affiché pour « Un bien en particulier » sans bien cité : par
+            l'état React, et par la CSS (:has) quand JavaScript manque. */}
+        {citeBien ? null : (
+          <Ligne
+            field="propertyReference"
+            label="Référence du bien"
+            optional
+            hint="Elle figure sur l’annonce, par exemple 10.131."
+            errors={errors}
+            className={`${f.reference} ${values.objet === "bien" ? f.ouverte : ""}`}
+          >
+            <input
+              {...champ("propertyReference")}
+              className={`${f.champ} ${f.court} ${s.num}`}
+              name="propertyReference"
+              autoComplete="off"
+              spellCheck={false}
+              value={values.propertyReference}
+              onChange={(e) =>
+                update("propertyReference", e.currentTarget.value)
+              }
+            />
+          </Ligne>
+        )}
 
         <div className={f.deux}>
           <Ligne field="firstName" label="Prénom" errors={errors}>

@@ -13,6 +13,9 @@ import {
   listViews,
   majuscule,
   moisCourant,
+  type Offre,
+  offreDe,
+  offreVerbes,
   photoAccrochage,
   serifSpaces,
   titreCartel,
@@ -24,12 +27,28 @@ import { Revele } from "@/variantes/galerie/Revele";
 // de cinq positions qui se répète (voir accrochage.ts), puis la liste des
 // biens ferme la salle.
 
-export const metadata: Metadata = pageMetadata({
-  title: "Nos biens à vendre et à louer à Asnières-sur-Seine",
-  description:
-    "Tous les appartements et maisons que nous proposons en ce moment à la vente et à la location, à Asnières-sur-Seine et alentour.",
-  path: "/biens",
-});
+// Titre, description et h1 suivent l'offre publiée (`offreDe`) : la location
+// n'y figure que si au moins un bien en location est en ligne.
+export async function generateMetadata(): Promise<Metadata> {
+  const offre = offreDe(await listViews());
+  const marche =
+    offre.vente && offre.location
+      ? "à la vente et à la location"
+      : offre.location
+        ? "à la location"
+        : "à la vente";
+  return pageMetadata({
+    title: `Nos biens ${offreVerbes(offre)} à Asnières-sur-Seine`,
+    description: `Tous les appartements et maisons que nous proposons en ce moment ${marche}, à Asnières-sur-Seine et alentour.`,
+    path: "/biens",
+  });
+}
+
+/** « Biens en vente », « Biens en location », « Biens en vente et en location ». */
+function titreSalle({ vente, location }: Offre): string {
+  if (vente && location) return "Biens en vente et en location";
+  return location ? "Biens en location" : "Biens en vente";
+}
 
 const i = (n: number) => ({ "--i": n }) as CSSProperties;
 
@@ -95,6 +114,7 @@ export default async function BiensGalerie() {
   const views = await listViews();
   const pieces = views ? accrocher(views) : [];
   const n = views?.length ?? 0;
+  const offre = offreDe(views);
 
   return (
     // Zone d'apparitions locale : la page est diffusée derrière loading.tsx.
@@ -102,7 +122,7 @@ export default async function BiensGalerie() {
       <Revele />
       <div className={`${s.w} ${s.g} ${b.salleT}`} data-rv>
         <h1 className={s.up}>
-          Biens en vente
+          {titreSalle(offre)}
           <small className={s.num}>
             {n === 0
               ? moisCourant()
