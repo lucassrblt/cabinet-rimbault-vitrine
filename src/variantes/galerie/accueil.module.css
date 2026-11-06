@@ -676,3 +676,26 @@ h2.blocT {
     grid-column: 1 / -1;
   }
 }
+
+/* ---------- Téléphone : les biens juste après l'accroche ----------
+   Sous 768 px, la devanture de l'entrée est masquée et sa copie, placée
+   dans le DOM après « Nos biens du moment », est affichée : l'ordre de
+   lecture suit l'ordre visuel. Au-delà, la copie est masquée. */
+.devantureMobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .devantureLarge {
+    display: none;
+  }
+
+  .devantureMobile {
+    display: grid;
+    padding-bottom: 88px;
+  }
+
+  .entree {
+    padding-bottom: 72px;
+  }
+}

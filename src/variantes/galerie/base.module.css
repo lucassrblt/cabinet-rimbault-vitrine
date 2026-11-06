@@ -186,6 +186,10 @@ a:hover > .u {
   display: none;
 }
 
+.appel {
+  display: none;
+}
+
 .site[data-mur="grenat"] .navList a {
   color: var(--sur-g-2);
 }
@@ -521,13 +525,29 @@ a:hover > .u {
     display: none;
   }
 
+  /* Bouton d'appel : cible de 44 × 44 px, collé au bouton « Menu ». */
+  .appel {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    margin-right: 4px;
+    color: var(--grenat);
+  }
+
+  .site[data-mur="grenat"] .appel {
+    color: var(--sur-g);
+  }
+
   .menuBtn {
     display: inline-block;
+    min-height: 44px;
     font: inherit;
     color: var(--gris);
     background: none;
     border: 0;
-    padding: 8px 0 8px 16px;
+    padding: 8px 0 8px 12px;
     cursor: pointer;
   }
 
