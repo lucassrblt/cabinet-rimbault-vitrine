@@ -17,13 +17,15 @@ import {
   photoAccrochage,
 } from "@/variantes/galerie/data";
 
-// Accueil de la Galerie chaude, composé comme le parcours d'une galerie :
+// Accueil de la Galerie, composé comme le parcours d'une galerie :
 // 1. l'agence d'abord : texte d'entrée et devanture accrochée avec son cartel ;
 // 2. l'exposition en cours : trois biens au plus en petit accrochage ;
-// 3. ce que nous faisons : trois cartels textuels (mur crème) ;
-// 4. notre façon de travailler : les engagements d'`agency.ts` ;
-// 5. ce que disent nos clients : avis Google réels (mur poudré) ;
-// 6. passez nous voir : adresse, téléphone, horaires, itinéraire.
+// 3. vendre avec nous (mur crème) : le premier engagement d'`agency.ts` en
+//    phrase serif, l'estimation vers /galerie/vendre/estimation, les deux autres
+//    engagements et la location (vers /galerie/contact) en cartels ;
+// 4. ce que disent nos clients (mur poudré) : un avis Google réel en grand,
+//    deux à côté ; sans avis, la note seule ;
+// 5. passez nous voir : adresse, téléphone, horaires, itinéraire, écrire.
 // Puis le pied grenat. Le mur grenat reste réservé à la page Le cabinet.
 //
 // Textes : repris du site existant sans changer les faits (accueil
@@ -32,30 +34,12 @@ import {
 
 const i = (n: number) => ({ "--i": n }) as CSSProperties;
 
-/** Trois métiers : textes de `src/components/home/Services.tsx`. */
-const METIERS = [
-  {
-    titre: "Vente",
-    texte:
-      "Nous vendons des appartements et des maisons à Asnières-sur-Seine et dans les communes voisines, de la première visite jusqu’à la signature chez le notaire.",
-    href: "/vendre",
-    lien: "Vendre avec nous",
-  },
-  {
-    titre: "Location",
-    texte:
-      "Pour les propriétaires, nous estimons le loyer, trouvons le locataire et préparons le bail.",
-    href: "/louer",
-    lien: "Louer avec nous",
-  },
-  {
-    titre: "Estimation",
-    texte:
-      "Nous ne donnons pas de prix en ligne. Nous venons voir votre bien, puis nous vous disons à quel prix nous pensons pouvoir le vendre, ou à quel loyer le louer.",
-    href: "/estimation",
-    lien: "Faire estimer",
-  },
-] as const;
+/** Location : texte de `src/components/home/Services.tsx`. */
+const LOCATION = {
+  titre: "Location",
+  texte:
+    "Pour les propriétaires, nous estimons le loyer, trouvons le locataire et préparons le bail.",
+} as const;
 
 /** Positions du petit accrochage (trois biens au plus). */
 const PETIT = ["pa", "pb", "pc"] as const;
@@ -68,7 +52,8 @@ export default async function AccueilChaude() {
     ? google.rating.toFixed(1).replace(".", ",")
     : agency.google.rating;
   const nombre = google?.totalCount ?? agency.google.count;
-  const avis = google ? pickReviews(google.reviews, 3) : [];
+  const [une, ...suite] = google ? pickReviews(google.reviews, 3) : [];
+  const [premier, ...autres] = commitments;
   const avisHref =
     google?.sourceUrl || agency.google.profileUrl || agency.google.href;
   const expo = views?.slice(0, 3) ?? [];
@@ -94,7 +79,7 @@ export default async function AccueilChaude() {
             rendez-vous à la signature.
           </p>
           <div className={`${a.actions} ${s.up}`} style={i(2)}>
-            <Link className={s.btn} href="/estimation">
+            <Link className={s.btn} href={`${BASE}/vendre/estimation`}>
               Faire estimer votre bien
             </Link>
             <Link className={s.u} href={`${BASE}/biens`}>
@@ -180,51 +165,47 @@ export default async function AccueilChaude() {
         </section>
       ) : null}
 
-      {/* 3. Ce que nous faisons */}
-      <section className={`${a.mur} ${a.creme}`} aria-labelledby="metiers-t">
+      {/* 3. Vendre avec nous */}
+      <section className={`${a.mur} ${a.creme}`} aria-labelledby="vendre-t">
         <div className={`${s.w} ${s.g} ${a.bloc}`} data-rv>
-          <h2 id="metiers-t" className={`${a.blocT} ${s.up}`}>
-            Ce que nous faisons
-          </h2>
+          <div className={a.vendreT}>
+            <h2 id="vendre-t" className={s.up}>
+              Vendre avec nous
+            </h2>
+            <p className={`${a.phrase} ${s.up}`} style={i(1)}>
+              {premier.title}
+            </p>
+            <p className={`${a.vendreTexte} ${s.up}`} style={i(2)}>
+              {premier.text}
+            </p>
+            <div className={`${a.actions} ${s.up}`} style={i(3)}>
+              <Link className={s.btn} href={`${BASE}/vendre/estimation`}>
+                Faire estimer votre bien
+              </Link>
+              <Link className={s.u} href={`${BASE}/le-cabinet`}>
+                Mieux connaître le cabinet
+              </Link>
+            </div>
+          </div>
           <ul className={a.metiers}>
-            {METIERS.map((m, k) => (
-              <li key={m.titre} className={s.up} style={i(k + 1)}>
-                <h3>{m.titre}</h3>
-                <p>{m.texte}</p>
-                <Link className={s.u} href={m.href}>
-                  {m.lien}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* 4. Notre façon de travailler */}
-      <section className={a.mur} aria-labelledby="facon-t">
-        <div className={`${s.w} ${s.g} ${a.bloc}`} data-rv>
-          <h2 id="facon-t" className={`${a.blocT} ${s.up}`}>
-            Notre façon de travailler
-          </h2>
-          <ul className={a.engagements}>
-            {commitments.map((c, k) => (
-              <li key={c.title} className={s.up} style={i(k + 1)}>
+            {autres.map((c, k) => (
+              <li key={c.title} className={s.up} style={i(k + 2)}>
                 <h3>{c.title}</h3>
                 <p>{c.text}</p>
               </li>
             ))}
+            <li className={s.up} style={i(4)}>
+              <h3>{LOCATION.titre}</h3>
+              <p>{LOCATION.texte}</p>
+              <Link className={s.u} href={`${BASE}/contact`}>
+                Nous écrire
+              </Link>
+            </li>
           </ul>
-          <Link
-            className={`${s.u} ${s.up} ${a.blocLien}`}
-            style={i(4)}
-            href={`${BASE}/le-cabinet`}
-          >
-            Mieux connaître le cabinet
-          </Link>
         </div>
       </section>
 
-      {/* 5. Ce que disent nos clients */}
+      {/* 4. Ce que disent nos clients */}
       <section className={`${a.mur} ${a.poudre}`} aria-labelledby="avis-t">
         <div className={`${s.w} ${s.g} ${a.bloc}`} data-rv>
           <div className={a.blocT}>
@@ -236,38 +217,58 @@ export default async function AccueilChaude() {
               {integer.format(nombre)} avis.
             </p>
           </div>
-          {avis.length > 0 ? (
-            <ul className={a.avis}>
-              {avis.map((r, k) => (
-                <li key={r.id} className={s.up} style={i(k + 1)}>
-                  <figure>
-                    <blockquote>
-                      <p>« {r.excerpt} »</p>
-                    </blockquote>
-                    <figcaption className={s.num}>
-                      {r.authorName}, {r.rating} sur 5
-                      {r.relativeTime ? `, ${r.relativeTime}` : ""}
-                    </figcaption>
-                  </figure>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          <div className={`${a.avisPied} ${s.up}`} style={i(4)}>
-            {avis.length > 0 ? (
-              <p>
-                Extraits des avis que Google affiche en premier, cités sans
-                retouche et parfois abrégés […].
-              </p>
+          {une ? (
+            <figure className={`${a.une} ${s.up}`} style={i(1)}>
+              <blockquote>
+                <p>« {une.excerpt} »</p>
+              </blockquote>
+              <figcaption className={s.num}>
+                {une.authorName}, {une.rating} sur 5
+                {une.relativeTime ? `, ${une.relativeTime}` : ""}
+              </figcaption>
+            </figure>
+          ) : (
+            <p
+              className={`${a.une} ${a.uneNote} ${s.num} ${s.up}`}
+              style={i(1)}
+            >
+              {note} sur 5
+            </p>
+          )}
+          <div className={a.cote}>
+            {suite.length > 0 ? (
+              <ul className={a.avis}>
+                {suite.map((r, k) => (
+                  <li key={r.id} className={s.up} style={i(k + 2)}>
+                    <figure>
+                      <blockquote>
+                        <p>« {r.excerpt} »</p>
+                      </blockquote>
+                      <figcaption className={s.num}>
+                        {r.authorName}, {r.rating} sur 5
+                        {r.relativeTime ? `, ${r.relativeTime}` : ""}
+                      </figcaption>
+                    </figure>
+                  </li>
+                ))}
+              </ul>
             ) : null}
-            <a className={s.u} href={avisHref}>
-              Lire tous les avis sur Google
-            </a>
+            <div className={`${a.avisPied} ${s.up}`} style={i(4)}>
+              {une ? (
+                <p>
+                  Extraits des avis que Google affiche en premier, cités sans
+                  retouche et parfois abrégés […].
+                </p>
+              ) : null}
+              <a className={s.u} href={avisHref}>
+                Lire tous les avis sur Google
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 6. Passez nous voir */}
+      {/* 5. Passez nous voir */}
       <section className={a.mur} aria-labelledby="venir-t">
         <div className={`${s.w} ${s.g} ${a.bloc} ${a.venir}`} data-rv>
           <h2 id="venir-t" className={`${a.blocT} ${s.up}`}>
@@ -287,6 +288,9 @@ export default async function AccueilChaude() {
             <a className={a.telGrand} href={agency.phone.href}>
               {agency.phone.display}
             </a>
+            <Link className={s.u} href={`${BASE}/contact`}>
+              Nous écrire
+            </Link>
           </div>
           <div className={`${a.adresse} ${s.num} ${s.up}`} style={i(3)}>
             <span className={a.lab}>Horaires</span>

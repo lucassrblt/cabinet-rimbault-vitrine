@@ -42,7 +42,7 @@
 }
 
 .mur {
-  padding-top: 104px;
+  padding-top: 88px;
 }
 
 .oeuvre {
@@ -61,7 +61,12 @@
 /* ---------- Accrochage desktop ---------- */
 @media (min-width: 900px) {
   .piece + .piece {
-    margin-top: clamp(112px, 11vw, 176px);
+    margin-top: clamp(88px, 8vw, 128px);
+  }
+
+  /* la grande photo et son cartel tiennent ensemble dans l'écran */
+  .grande .ph {
+    max-width: calc(72svh * 4 / 3);
   }
 
   .oeuvre {
@@ -146,7 +151,7 @@
 
   .duoA {
     grid-column: 1 / 7;
-    padding-top: 150px;
+    padding-top: 120px;
   }
 
   .duoA .ph {
@@ -247,9 +252,9 @@
   }
 
   .mur {
-    padding-top: 72px;
+    padding-top: 56px;
     display: grid;
-    gap: 72px;
+    gap: 64px;
   }
 
   .piece {
@@ -277,11 +282,11 @@
   }
 
   .oeuvre[data-m="2"] {
-    width: 62%;
+    width: 72%;
   }
 
   .oeuvre[data-m="3"] {
-    width: 52%;
+    width: 68%;
     justify-self: end;
   }
 
@@ -294,9 +299,58 @@
   }
 }
 
+/* ---------- Tablette : le cartel revient à côté de la photo ---------- */
+@media (min-width: 600px) and (max-width: 899px) {
+  .oeuvre {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 30%);
+    align-items: end;
+    column-gap: 20px;
+  }
+
+  .oeuvre[data-m="0"] {
+    width: 100%;
+  }
+
+  .oeuvre[data-m="1"] {
+    width: 88%;
+  }
+
+  .oeuvre[data-m="2"] {
+    width: 82%;
+  }
+
+  .oeuvre[data-m="3"] {
+    width: 66%;
+  }
+
+  .oeuvre[data-m="4"] {
+    width: 92%;
+  }
+
+  /* photo à droite, cartel à gauche, au fer à droite */
+  .oeuvre[data-m="1"],
+  .oeuvre[data-m="3"] {
+    grid-template-columns: minmax(160px, 30%) minmax(0, 1fr);
+  }
+
+  .oeuvre[data-m="1"] .cartel,
+  .oeuvre[data-m="3"] .cartel {
+    grid-row: 1;
+    grid-column: 1;
+    text-align: right;
+    justify-self: end;
+  }
+
+  .oeuvre[data-m="1"] .ph,
+  .oeuvre[data-m="3"] .ph {
+    grid-row: 1;
+    grid-column: 2;
+  }
+}
+
 /* ---------- La liste ferme la salle ---------- */
 .liste {
-  padding-top: 176px;
+  padding-top: 136px;
   padding-bottom: 96px;
 }
 
@@ -378,7 +432,7 @@
 
 @media (max-width: 899px) {
   .liste {
-    padding-top: 112px;
+    padding-top: 96px;
     padding-bottom: 64px;
   }
 

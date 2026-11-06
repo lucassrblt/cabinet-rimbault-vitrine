@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 import { agency } from "@/lib/agency";
 import s from "@/variantes/galerie/base.module.css";
 import c from "@/variantes/galerie/cabinet.module.css";
-import { avisGoogle } from "@/variantes/galerie/data";
+import { avisGoogle, BASE } from "@/variantes/galerie/data";
 import { Note } from "@/variantes/galerie/Note";
 
 // Le cabinet : le seul mur grenat du site. La devanture en vraie couleur dans
@@ -111,7 +111,7 @@ export default async function CabinetChaude() {
               <figcaption className={s.tbc}>[avis exemple]</figcaption>
             </figure>
           )}
-          <Link className={s.u} href="/vendre">
+          <Link className={s.u} href={`${BASE}/vendre`}>
             Nous confier votre bien
           </Link>
         </div>

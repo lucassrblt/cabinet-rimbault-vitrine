@@ -1,5 +1,5 @@
 // Cartel d'une œuvre (un bien) : référence, titre, lieu, mesures, prix,
-// statut et exclusivité, « Voir le bien ». Seules les valeurs connues sont écrites.
+// statut et exclusivité, « Voir le bien » ; dans la salle, sa place (« 2 / 5 »). Seules les valeurs connues sont écrites.
 import type { CSSProperties } from "react";
 import { type PropertyView, referenceLabel } from "@/lib/property/view";
 import s from "./base.module.css";
@@ -10,18 +10,31 @@ export function Cartel({
   className,
   delay = 2,
   voir = true,
+  place,
 }: {
   view: PropertyView;
   className?: string;
   /** Rang de départ de la cascade d'apparition. */
   delay?: number;
   voir?: boolean;
+  /** Place dans la salle (« 2 / 5 »), pour s'y retrouver. */
+  place?: { n: number; total: number };
 }) {
   const mesures = mesuresCartel(view);
   const step = (k: number) => ({ "--i": delay + k }) as CSSProperties;
   return (
     <div className={`${s.cartel} ${s.num} ${className ?? ""}`}>
       <span className={`${s.ref} ${s.up}`} style={step(0)}>
+        {place && place.total > 1 ? (
+          <span className={s.place}>
+            <span aria-hidden>
+              {place.n} / {place.total}
+            </span>
+            <span className={s.sr}>
+              Bien {place.n} sur {place.total},
+            </span>
+          </span>
+        ) : null}
         {referenceLabel(view.reference)}
       </span>
       <span className={`${s.ti} ${s.up}`} style={step(0)}>

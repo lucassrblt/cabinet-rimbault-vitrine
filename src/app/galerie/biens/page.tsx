@@ -39,11 +39,13 @@ function Oeuvre({
   className,
   sizes,
   rang,
+  total,
 }: {
   view: PropertyView;
   className: string;
   sizes: string;
   rang: number;
+  total: number;
 }) {
   const photo = photoAccrochage(view);
   return (
@@ -60,7 +62,7 @@ function Oeuvre({
         sizes={sizes}
         eager={rang === 0}
       />
-      <Cartel view={view} className={b.cartel} />
+      <Cartel view={view} className={b.cartel} place={{ n: rang + 1, total }} />
     </Link>
   );
 }
@@ -125,12 +127,14 @@ export default async function BiensChaude() {
                 className={b.duoA}
                 sizes={SIZES.duo}
                 rang={p.rang}
+                total={n}
               />
               <Oeuvre
                 view={p.items[1]}
                 className={b.duoB}
                 sizes="(min-width: 900px) 24vw, 60vw"
                 rang={p.rang + 1}
+                total={n}
               />
             </div>
           ) : (
@@ -144,6 +148,7 @@ export default async function BiensChaude() {
                 className={b.seule}
                 sizes={SIZES[p.forme]}
                 rang={p.rang}
+                total={n}
               />
             </div>
           ),
