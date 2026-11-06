@@ -110,14 +110,40 @@ test("fiche d'un bien retiré (scénario empty) : 404 « bien disparu »", async
   }
 });
 
+// Anciennes adresses du site de main (audit du site en ligne, §3.1) et du
+// banc `/galerie/...`. `/cookies` vise l'ancre `#cookies` : le fragment ne
+// part pas au serveur, seul le chemin est comparé ici.
 const REDIRECTIONS = [
-  ["/louer", "/contact"],
+  ["/acheter", "/biens"],
+  ["/louer", "/biens"],
+  ["/bien/10.131", "/biens/10.131"],
+  ["/agence", "/le-cabinet"],
+  ["/politique-de-confidentialite", "/confidentialite"],
+  ["/cookies", "/confidentialite"],
   ["/estimation", "/vendre/estimation"],
   ["/galerie", "/"],
   ["/galerie/biens", "/biens"],
   ["/galerie/biens/10.131", "/biens/10.131"],
   ["/galerie/le-cabinet", "/le-cabinet"],
 ] as const;
+
+test("redirection 307 · /cookies → /confidentialite#cookies", async ({
+  request,
+}) => {
+  const res = await request.get("/cookies", { maxRedirects: 0 });
+  expect(res.status()).toBe(307);
+  expect(res.headers().location).toMatch(/\/confidentialite#cookies$/);
+});
+
+test("redirection 307 · /acheter garde la requête", async ({ request }) => {
+  const res = await request.get("/acheter?commune=Asnieres", {
+    maxRedirects: 0,
+  });
+  expect(res.status()).toBe(307);
+  const cible = new URL(res.headers().location, "http://x");
+  expect(cible.pathname).toBe("/biens");
+  expect(cible.searchParams.get("commune")).toBe("Asnieres");
+});
 
 for (const [depuis, vers] of REDIRECTIONS) {
   test(`redirection 307 · ${depuis} → ${vers}`, async ({ request, page }) => {

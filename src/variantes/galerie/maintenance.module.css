@@ -1,0 +1,85 @@
+/* Page de maintenance (`app/maintenance`) : en-tête simplifié, phrase serif,
+   cartel adresse et téléphone, devanture. Variables de `.site` (base). */
+
+.tel {
+  grid-column: 9 / 13;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.salle {
+  align-content: center;
+  align-items: center;
+  row-gap: 48px;
+  padding-block: 96px 120px;
+}
+
+.texte {
+  grid-column: 2 / 7;
+  min-width: 0;
+}
+
+.texte h1 {
+  margin: 0;
+  max-width: 14em;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.texte p {
+  margin: 20px 0 0;
+  max-width: 32em;
+  font-size: 14px;
+}
+
+.texte .bientot {
+  margin-top: 8px;
+  color: var(--gris);
+}
+
+.cartel {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid var(--filet);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cartel h2 {
+  margin: 0;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gris);
+}
+
+.cartel address {
+  font-style: normal;
+}
+
+.photo {
+  grid-column: 8 / 12;
+  aspect-ratio: 4 / 5;
+}
+
+@media (max-width: 899px) {
+  .salle {
+    padding-block: 48px 88px;
+  }
+
+  .texte,
+  .photo {
+    grid-column: 1 / -1;
+  }
+
+  .photo {
+    max-width: 420px;
+  }
+}

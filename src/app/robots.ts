@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { getSiteUrl, isIndexable } from "@/lib/seo/metadata";
 
-// Production (`SITE_ENV=production`) : tout est ouvert, avec le plan du site.
+// Production (`SITE_ENV=production`, porte de maintenance levée) : tout est
+// ouvert, avec le plan du site.
 // Partout ailleurs (local, préproduction) : rien n'est indexable.
 
 export default function robots(): MetadataRoute.Robots {

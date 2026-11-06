@@ -18,6 +18,9 @@ const PAGES: { path: string; priority: number }[] = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Porte de maintenance posée (`src/proxy.ts`) : plan vide, comme sur main.
+  // `sitemap.xml` échappe au proxy, il ne doit rien dévoiler du site fermé.
+  if (process.env.MAINTENANCE_MODE === "on") return [];
   const base = getSiteUrl();
   const url = (path: string) => new URL(path, base).toString();
 

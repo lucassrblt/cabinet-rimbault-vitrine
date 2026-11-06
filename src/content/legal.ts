@@ -28,11 +28,19 @@ export type Provider = {
 };
 
 /**
- * Hébergeur du site (Netlify ou Vercel, brief §10-4). Mention obligatoire
- * (LCEN, art. 1-1) : tant qu'il vaut `null`, la phrase est masquée et la mise
- * en production doit être refusée par `check-launch`.
+ * Hébergeur du site (brief §10-4). Mention obligatoire (LCEN, art. 1-1) : si
+ * elle vaut `null`, la phrase est masquée et `check-launch` refuse la mise en
+ * production. Netlify : en-têtes `server: Netlify` du site en ligne ; raison
+ * sociale et adresse des conditions de Netlify, lues le 06/11/2026 (le site de
+ * main citait une ancienne adresse, 44 Montgomery Street). Netlify ne publie
+ * pas de numéro de téléphone, que la LCEN demande : `phone` reste `null`.
  */
-export const siteHost: Provider | null = null;
+export const siteHost: Provider | null = {
+  name: "Netlify, Inc.",
+  address: "101 2nd Street, San Francisco, CA 94105, États-Unis",
+  phone: null,
+  url: "netlify.com",
+};
 
 /**
  * Prestataires qui traitent les données des formulaires pour le compte du
@@ -96,6 +104,8 @@ export const DATABASE_LOCATION = "en Irlande, dans l’Union européenne";
  * énonce le critère de durée (RGPD art. 13-2-a) sans chiffre, et la mise en
  * production doit être refusée par `check-launch`.
  */
+// Proposition issue du site en ligne, à valider par le client :
+// "trois ans après notre dernier échange"
 export const dataRetention: string | null = null;
 
 /** Brouillon du tunnel d'estimation dans le navigateur (doc 04 §3.5). */

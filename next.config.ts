@@ -16,8 +16,27 @@ const nextConfig: NextConfig = {
   // Temporaires tant que l'arborescence n'est pas figée.
   async redirects() {
     return [
-      // La Galerie n'a pas de page Louer : la demande passe par le contact.
-      { source: "/louer", destination: "/contact", permanent: false },
+      // Adresses du site de main (audit du site en ligne, §3.1). La
+      // redirection garde la requête (`/acheter?commune=…`).
+      { source: "/acheter", destination: "/biens", permanent: false },
+      // La Galerie n'a pas de page Louer : la salle liste aussi les locations.
+      { source: "/louer", destination: "/biens", permanent: false },
+      {
+        source: "/bien/:reference",
+        destination: "/biens/:reference",
+        permanent: false,
+      },
+      { source: "/agence", destination: "/le-cabinet", permanent: false },
+      {
+        source: "/politique-de-confidentialite",
+        destination: "/confidentialite",
+        permanent: false,
+      },
+      {
+        source: "/cookies",
+        destination: "/confidentialite#cookies",
+        permanent: false,
+      },
       // Le tunnel d'estimation vit désormais sous Vendre.
       {
         source: "/estimation",

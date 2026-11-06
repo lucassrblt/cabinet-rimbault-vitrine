@@ -18,9 +18,16 @@ export function getSiteUrl(): URL {
   return new URL(`http://localhost:${process.env.PORT ?? "3000"}`);
 }
 
-/** Seule la production est indexable (`SITE_ENV=production`). */
+/**
+ * Seule la production est indexable (`SITE_ENV=production`), et jamais tant
+ * que la porte de maintenance est posée (`MAINTENANCE_MODE=on`, `src/proxy.ts`) :
+ * `robots.txt`, le plan du site et les balises `robots` restent alors fermés.
+ */
 export function isIndexable(): boolean {
-  return process.env.SITE_ENV === "production";
+  return (
+    process.env.SITE_ENV === "production" &&
+    process.env.MAINTENANCE_MODE !== "on"
+  );
 }
 
 export const SITE_NAME = agency.name;
