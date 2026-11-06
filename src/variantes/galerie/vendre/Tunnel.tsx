@@ -154,7 +154,11 @@ export function Tunnel() {
     INITIAL_RESULT,
   );
   const [sent, setSent] = useState<EstimationState | null>(null);
+  // Garde synchrone contre le double clic (ref) et état d'envoi affiché
+  // (state) : remettre la ref à zéro dans un effet ne redessine rien, et le
+  // bouton restait « Envoi en cours… » après un échec de l'API.
   const sending = useRef(false);
+  const [enCours, setEnCours] = useState(false);
   const lastAt = useRef(0);
   const meta = useRef({ startedAt: 0, referer: "" });
   const titre = useRef<HTMLHeadingElement>(null);
@@ -205,6 +209,7 @@ export function Tunnel() {
     if (result.status === "idle" || result.at === lastAt.current) return;
     lastAt.current = result.at;
     sending.current = false;
+    setEnCours(false);
     if (result.status === "success") {
       setSent(state);
       window.history.replaceState(null, "", window.location.pathname);
@@ -256,6 +261,7 @@ export function Tunnel() {
     }
     if (sending.current || pending) return;
     sending.current = true;
+    setEnCours(true);
     const data = estimationStateToFormData({
       ...state,
       message: echeanceMessage(echeance),
@@ -273,7 +279,7 @@ export function Tunnel() {
 
   if (sent) return <Confirmation state={sent} />;
 
-  const busy = pending || sending.current;
+  const busy = pending || enCours;
   const failed = result.status === "error" && !busy;
 
   const describedBy = (field: Field, extra?: string) =>

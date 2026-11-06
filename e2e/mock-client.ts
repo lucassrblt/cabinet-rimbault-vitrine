@@ -3,7 +3,7 @@ import type { APIRequestContext } from "@playwright/test";
 
 // Mock joint de serveur à serveur : 127.0.0.1 (il n'écoute pas sur ::1).
 // Les PAGES, elles, s'ouvrent toujours sur localhost (voir playwright.config.ts).
-export const MOCK_URL = `http://127.0.0.1:${process.env.MOCK_API_PORT ?? 3101}`;
+export const MOCK_URL = `http://127.0.0.1:${process.env.MOCK_API_PORT ?? 3111}`;
 
 export type MockRecord = {
   at: string;

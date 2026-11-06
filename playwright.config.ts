@@ -1,13 +1,18 @@
 import { defineConfig, devices } from "@playwright/test";
 
-// Banc de test de bout en bout (Maldini). Voir docs/refonte/02-donnees-et-tests-maldini.md.
+// Banc de test de bout en bout de la Galerie (specs : e2e/specs).
 // - La vitrine tourne en `next dev` sur le port 3100, dans un distDir isolé
 //   (.next-e2e) pour ne pas entrer en conflit avec le verrou d'un autre `next dev`.
-// - Elle parle au mock e2e/mock-api.mjs (port 3101) : aucun POST ne part vers l'API réelle.
+// - Elle parle au mock e2e/mock-api.mjs, lancé par Playwright sur un port
+//   PRIVÉ (MOCK_API_PORT, 3111 par défaut) : la suite change le scénario du
+//   mock et vide son journal, ce qui ne doit jamais toucher l'API factice
+//   partagée des serveurs de démonstration (3101). Aucun POST ne part vers
+//   l'API réelle.
 // - E2E_SERVEUR=prod : `next build` puis `next start` (distDir .next-e2e-prod) au
-//   lieu de `next dev`. Indispensable pour les contrôles sans JavaScript : en dev,
-//   un notFound() levé dans une page renvoie l'enveloppe `__next_error__`, que
-//   seul le client remplit (page blanche sans JavaScript). Voir 30-sans-javascript.
+//   lieu de `next dev`, pour passer la même suite sur le serveur de production.
+//   (En dev, un notFound() levé dans une page renvoie l'enveloppe
+//   `__next_error__`, que seul le client remplit ; les 404 de la Galerie n'en
+//   dépendent pas : voir 40-404-redirections.)
 // - Les pages sont TOUJOURS ouvertes sur `localhost`, jamais sur `127.0.0.1` :
 //   Next 16 n'autorise que `localhost` à charger les ressources de dev
 //   (`allowedDevOrigins`) ; sur 127.0.0.1, rien ne s'hydrate. Le mock, lui, est
@@ -15,7 +20,10 @@ import { defineConfig, devices } from "@playwright/test";
 //   seulement (pas de résolution `localhost` vers ::1 côté Node).
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
-const MOCK_PORT = Number(process.env.MOCK_API_PORT ?? 3101);
+// Port du mock exporté dans l'environnement : les workers le relisent
+// (e2e/mock-client.ts) pour piloter le même mock que la vitrine.
+process.env.MOCK_API_PORT ??= "3111";
+const MOCK_PORT = Number(process.env.MOCK_API_PORT);
 const MOCK_KEY = "e2e-test-key";
 export const MOCK_URL = `http://127.0.0.1:${MOCK_PORT}`;
 export const SERVEUR_PROD = process.env.E2E_SERVEUR === "prod";
