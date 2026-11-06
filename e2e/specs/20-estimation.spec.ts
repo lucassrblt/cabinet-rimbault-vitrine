@@ -246,13 +246,14 @@ test("parcours complet au clavier, charge utile vérifiée", async ({
     lastName: "Essai",
     email: `estimation-${info.project.name}@example.com`,
     phone: "06 12 34 56 78",
-    message: "[Message]\nParquet refait.",
+    // Échéance dans `timeframe` ET recopiée en tête du message, tant que
+    // l'admin et la notification n'affichent pas `timeframe`.
+    message:
+      "Échéance du projet : Dans les trois mois\n\n[Message]\nParquet refait.",
     rgpd: true,
     source: "vitrine/estimation",
     referer: URL,
   });
-  // L'échéance n'est plus recopiée dans le message.
-  expect(JSON.stringify(recus[0].body)).not.toContain("Échéance du projet");
   // Le brouillon est effacé après l'envoi.
   expect(
     await page.evaluate(() => sessionStorage.getItem("cr:estimation:v1")),

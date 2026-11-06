@@ -126,7 +126,16 @@ export function buildEstimationPayload(
   if (state.propertyType === "") throw new Error("propertyType manquant");
   const surface = parseDecimalFR(state.surface);
   const address = [state.address, state.city].filter((p) => !isBlank(p));
-  const message = buildEstimationMessage(state);
+  const echeance = echeancePayload(meta.echeance ?? "");
+  // Recopie provisoire de l'échéance dans `message` (06/11/2026) : ni l'admin
+  // ni l'e-mail de notification n'affichent encore `timeframe`. À retirer dès
+  // que l'un des deux le montre à l'agent.
+  const message = [
+    echeance.timeframe ? `Échéance du projet : ${echeance.timeframe}` : "",
+    buildEstimationMessage(state),
+  ]
+    .filter((block) => block !== "")
+    .join("\n\n");
   return {
     propertyType: state.propertyType,
     postalCode: state.postalCode.trim(),
@@ -145,7 +154,7 @@ export function buildEstimationPayload(
     hasParking: state.hasParking,
     condition: state.condition === "" ? undefined : state.condition,
     intent: state.intent,
-    ...echeancePayload(meta.echeance ?? ""),
+    ...echeance,
     firstName: state.firstName,
     lastName: state.lastName,
     email: normalizeEmail(state.email),
