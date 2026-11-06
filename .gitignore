@@ -32,7 +32,6 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
-!.env.local.example
 
 # vercel
 .vercel
@@ -40,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# e2e (Playwright)
+/.next-e2e/
+/.next-e2e-prod/
+/.next-agent-*/
+/e2e/.results/
+/e2e/.report/
+/playwright/.cache/
+
+# Builds de démonstration et captures de travail (lourdes, régénérables)
+/.next-*/
+/docs/**/captures/
+/docs/variantes/recette/*.png
+/docs/refonte/illustrations-*/
+/docs/refonte/logotypes/

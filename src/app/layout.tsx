@@ -1,57 +1,28 @@
-import type { Metadata } from "next";
-import { Familjen_Grotesk, Manrope } from "next/font/google";
-import NextTopLoader from "nextjs-toploader";
-import { AGENT } from "@/lib/config/agent";
-import { Providers } from "./providers";
-import "lenis/dist/lenis.css";
+import type { Metadata, Viewport } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { realEstateAgentJsonLd } from "@/lib/seo/jsonld";
+import { baseMetadata } from "@/lib/seo/metadata";
+import { galerieFonts } from "@/variantes/galerie/fonts";
 import "./globals.css";
 
-const familjenGrotesk = Familjen_Grotesk({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-familjen",
-});
+// Layout racine. L'en-tête et le pied de la Galerie sont posés par le layout
+// du groupe (galerie) et par la 404 racine (`not-found.tsx`).
 
-const manrope = Manrope({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-manrope",
-});
+export const metadata: Metadata = baseMetadata();
 
-export function generateMetadata(): Metadata {
-  return {
-    title: {
-      default: `Agence immobilière à ${AGENT.address.city} — Cabinet Rimbault`,
-      template: "%s | Cabinet Rimbault",
-    },
-    description: `Cabinet Rimbault — ${AGENT.title} à ${AGENT.address.city}. Vente, location, estimation et accompagnement personnalisé.`,
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
-}
+export const viewport: Viewport = {
+  themeColor: "#FAF7F2",
+  colorScheme: "light",
+};
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="fr"
-      className={`${familjenGrotesk.variable} ${manrope.variable} lenis lenis-scrolling lenis-smooth h-full antialiased`}
-    >
-      <body className="flex min-h-full flex-col">
-        <NextTopLoader
-          color="#720110"
-          height={2}
-          showSpinner={false}
-          shadow="0 0 8px #720110, 0 0 4px #720110"
-          crawlSpeed={180}
-          speed={220}
-        />
-        <Providers>{children}</Providers>
+    <html lang="fr" className={galerieFonts} data-scroll-behavior="smooth">
+      <body>
+        {children}
+        <JsonLd data={realEstateAgentJsonLd()} />
       </body>
     </html>
   );

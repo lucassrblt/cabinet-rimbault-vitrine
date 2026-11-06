@@ -1,0 +1,25 @@
+// Polices du site (thème Galerie, maquette v4), posées sur <html> par le
+// layout racine et sur le mur par le cadre.
+// Host Grotesk : texte, cartels, interface (11,5 à 13 px).
+// Newsreader 300 : la voix du cabinet (phrase d'accueil, prix, texte de salle).
+// next/font/google auto-héberge les fichiers : aucun appel à Google au runtime.
+import { Host_Grotesk, Newsreader } from "next/font/google";
+
+export const hostGrotesk = Host_Grotesk({
+  weight: ["400", "500"],
+  subsets: ["latin"],
+  display: "swap",
+  fallback: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+  variable: "--galerie-sans",
+});
+
+export const newsreader = Newsreader({
+  weight: ["300"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+  fallback: ["Iowan Old Style", "Palatino Linotype", "Georgia", "serif"],
+  variable: "--galerie-serif",
+});
+
+export const galerieFonts = `${hostGrotesk.variable} ${newsreader.variable}`;

@@ -1,0 +1,705 @@
+<title>Cabinet Rimbault Galerie chaude</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300;400;500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&display=swap">
+<style>
+/* Grille 12 colonnes alignée à gauche, comme Duotone ; la chaleur vient des aplats (crème, poudré, grenat), du grain et des photos en vraie couleur. Un seul élément agrandi par écran. */
+:root{
+  color-scheme: light;
+  --blanc:#FBF7F2;      /* fond des pages, blanc chaud */
+  --creme:#F3E8DC;      /* aplat crème, hautes lumières */
+  --poudre:#F5E6E2;     /* rose poudré très pâle, fond de section */
+  --rose:#C9948F;       /* tons moyens */
+  --grenat:#6E1A26;     /* devanture, aplats francs */
+  --grenat-2:#56131E;   /* pied de page */
+  --encre:#2E0A11;      /* texte */
+  --voile:#8E6A6E;      /* texte secondaire */
+  --voile-g:#D9B9B4;    /* texte secondaire sur grenat */
+  --filet:rgba(110,26,38,.15);
+  --filet-g:rgba(243,232,220,.22);
+  --socle:#E7E1DB;      /* fond de la planche */
+  --sans:"Host Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"Newsreader","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --out:cubic-bezier(.22,.61,.36,1);
+  --io:cubic-bezier(.65,0,.35,1);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--socle);color:var(--encre);font:400 13px/1.5 var(--sans);
+  -webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;
+  overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--grenat);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+.tbc{color:var(--grenat);font-size:.85em;white-space:nowrap}
+.on-g .tbc{color:var(--voile-g)}
+
+/* ---------- Planche ---------- */
+.board{max-width:1240px;margin:0 auto}
+.intro{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;padding-block:56px 64px;border-bottom:1px solid var(--filet)}
+.intro .who{grid-column:1/5;display:flex;flex-direction:column;gap:14px}
+.intro .who b{font-weight:500;font-size:15px}
+.intro .who p{margin:0;max-width:40ch}
+.intro .who small{color:var(--voile);font-size:12px}
+.intro dl{grid-column:6/13;margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px 20px;font-size:12px}
+.intro dt{color:var(--voile)}
+.intro dd{margin:0;min-width:0}
+.sw{display:flex;flex-wrap:wrap;gap:6px 16px}
+.sw span{display:inline-flex;align-items:center;gap:7px}
+.sw i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(46,10,17,.14)}
+.list{margin:0;padding:0 0 0 14px;display:grid;gap:4px}
+.list li::marker{color:var(--voile)}
+.intro .serif{font-family:var(--serif);font-size:14px}
+
+.shot{padding-top:72px}
+.cap{display:flex;justify-content:space-between;gap:16px;padding-top:14px;font-size:12px;color:var(--voile)}
+.cap b{font-weight:500;color:var(--encre)}
+.cap button{color:var(--grenat);border-bottom:1px solid currentColor;white-space:nowrap;align-self:start}
+
+.stage{position:relative;width:100%;overflow:hidden}
+.screen{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--blanc);overflow:hidden;
+  box-shadow:0 1px 0 rgba(46,10,17,.06),0 30px 60px -30px rgba(46,10,17,.25)}
+/* grain papier, très léger, sur tout l'écran */
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:20;opacity:.32;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .43 0 0 0 0 .1 0 0 0 0 .15 0 0 0 .55 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.chrome{height:28px;display:flex;align-items:center;gap:6px;padding:0 12px;background:#F2ECE6;border-bottom:1px solid var(--filet);font-size:10px;color:var(--voile)}
+.chrome i{width:7px;height:7px;border-radius:50%;background:var(--filet)}
+.chrome span{margin-inline:auto;transform:translateX(-14px)}
+
+.mobiles{display:grid;grid-template-columns:375px 375px minmax(0,1fr);gap:40px;align-items:start}
+.mobiles .note{padding-top:8px;font-size:12px;color:var(--voile);max-width:34ch;display:grid;gap:10px}
+.mobiles .note b{color:var(--encre);font-weight:500}
+@media (max-width:900px){.mobiles{grid-template-columns:minmax(0,375px)}.intro .who,.intro dl{grid-column:1/-1}}
+@media (max-width:520px){.intro dl{grid-template-columns:minmax(0,1fr);gap:4px 0}.intro dd{margin-bottom:10px}.cap{flex-direction:column;gap:6px}}
+
+/* ---------- Site : socle ---------- */
+.site{position:absolute;inset:28px 0 0 0;color:var(--encre);font-size:13px;overflow:hidden}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:20px;padding:0 40px}
+.nav{height:64px;align-items:center}
+.nav .brand{grid-column:1/4;font-weight:500}
+.nav ul{grid-column:5/10;display:flex;gap:28px;margin:0;padding:0;list-style:none}
+.nav li a{color:var(--voile);transition:color .3s}
+.nav li a:hover,.nav li a[aria-current]{color:var(--encre)}
+.nav li a sup{font-size:9px;margin-left:2px;color:var(--grenat)}
+.nav .tel{grid-column:10/13;justify-self:end}
+
+/* souligné qui se trace */
+.u{position:relative;display:inline-block;padding-bottom:3px;color:var(--grenat)}
+.u::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform-origin:right;transform:scaleX(.3);transition:transform .55s var(--io)}
+.u:hover::after,.u:focus-visible::after{transform:scaleX(1);transform-origin:left}
+
+/* ---------- Photos : vraie couleur, étalonnage commun ---------- */
+.ph{position:relative;margin:0;overflow:hidden;background:var(--creme);isolation:isolate}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;max-width:none;
+  filter:saturate(.86) contrast(1.07) brightness(.94) sepia(.07)}
+/* voile crème en multiply : les blancs brûlés de l'iPhone deviennent crème */
+.ph::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:#F4DCC8;mix-blend-mode:multiply;opacity:.32}
+/* assombrissement au survol, rien ne bouge */
+.ph::before{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:var(--encre);opacity:0;transition:opacity .4s var(--out)}
+/* fondu enchaîné au clic */
+.ph img.next{opacity:0;transition:opacity .55s var(--out)}
+.ph img.next.show{opacity:1}
+
+/* duotone, réservé à la devanture */
+.duo img{filter:url(#duo)}
+.duo::after{background:none}
+
+/* ---------- Apparitions ---------- */
+html.js .rv .up{opacity:0;transform:translateY(12px);transition:opacity .6s var(--out),transform .6s var(--out);transition-delay:calc(var(--i,0) * 70ms)}
+html.js .rv.in .up{opacity:1;transform:none}
+.l{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.l>span{display:inline-block}
+html.js .rv .l>span{transform:translateY(105%);transition:transform .7s var(--out);transition-delay:calc(var(--i,0) * 80ms)}
+html.js .rv.in .l>span{transform:none}
+
+/* ---------- 1 Accueil ---------- */
+.home .main{padding-top:32px;height:566px;row-gap:0;grid-template-rows:auto 1fr auto}
+.home .lede{grid-column:1/5;grid-row:1;margin:0;color:var(--voile);max-width:30ch}
+.home h1{grid-column:1/6;grid-row:2;align-self:end;margin:0;font-weight:300;font-size:44px;line-height:1.05;letter-spacing:-.025em;padding-bottom:28px;text-wrap:balance}
+.home .vit{grid-column:1/3;grid-row:3;margin:0;display:grid;gap:8px;font-size:11px;color:var(--voile)}
+.home .vit .ph{aspect-ratio:3/4;width:100%}
+.home .vit-t{grid-column:3/6;grid-row:3;align-self:end;margin:0;font-family:var(--serif);font-style:italic;font-weight:300;font-size:17px;line-height:1.35;color:var(--encre);max-width:24ch}
+.home .hero{grid-column:6/13;grid-row:1/4;margin:0;display:grid;gap:10px;align-content:start}
+.home .hero .ph{aspect-ratio:4/3;width:100%}
+.home .hero figcaption{display:flex;justify-content:space-between;gap:16px;font-size:11px;color:var(--voile)}
+.home .bande{position:absolute;left:0;right:0;bottom:0;height:64px;background:var(--poudre);align-items:center;font-size:12px}
+.home .bande>*{grid-column:span 3}
+.home .bande>:last-child{justify-self:end}
+.home .bande .muted{color:var(--voile)}
+
+/* ---------- 2 Biens ---------- */
+.idx .bar{height:76px;align-items:end;padding-bottom:14px;margin:0 40px;padding-left:0;padding-right:0;border-bottom:1px solid var(--filet)}
+.idx .bar h2{grid-column:1/7;margin:0;font-weight:400;font-size:13px}
+.idx .bar h2 span{color:var(--voile);margin-left:8px}
+.toggle{grid-column:7/13;justify-self:end;display:flex;gap:18px}
+.toggle button{position:relative;color:var(--voile);padding-bottom:3px;transition:color .3s}
+.toggle button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--encre);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--io)}
+.toggle button[aria-pressed="true"]{color:var(--encre)}
+.toggle button[aria-pressed="true"]::after{transform:scaleX(1)}
+.views{position:relative}
+.view{transition:opacity .32s var(--out)}
+.view.out{opacity:0}
+
+.cards{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:44px 20px;padding:32px 40px 0}
+.card{grid-column:span 2;display:grid;gap:12px;cursor:pointer}
+.card.w{grid-column:span 3}
+.card .ph{aspect-ratio:4/3;width:100%}
+.card.w .ph{aspect-ratio:16/10}
+.leg{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 16px;padding-bottom:10px;font-size:12px}
+.leg::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--grenat);transform:scaleX(0);transform-origin:left;transition:transform .6s var(--io)}
+.leg .t{font-size:13px;display:flex;align-items:center;gap:8px}
+.leg .t svg{width:14px;height:10px;opacity:0;transform:translateX(-4px);transition:opacity .35s var(--out),transform .45s var(--out);color:var(--grenat)}
+.leg .p{font-family:var(--serif);font-size:17px;line-height:1.1;justify-self:end;align-self:baseline}
+.leg .s{color:var(--voile)}
+.leg .r{color:var(--voile);justify-self:end}
+.leg em{font-style:normal;color:var(--grenat);margin-left:6px}
+.card:hover .ph::before,.card.hover .ph::before,.card:focus-visible .ph::before{opacity:.14}
+.card:hover .leg::after,.card.hover .leg::after,.card:focus-visible .leg::after{transform:scaleX(1)}
+.card:hover .leg .t svg,.card.hover .leg .t svg,.card:focus-visible .leg .t svg{opacity:1;transform:none}
+
+.head{height:40px;align-items:center;font-size:11px;color:var(--voile)}
+.rows{margin:0;padding:0;list-style:none}
+.row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:20px;align-items:center;height:64px;padding:0 40px;cursor:pointer;
+  background:linear-gradient(var(--poudre),var(--poudre)) no-repeat 0 0/100% 0%;transition:background-size .45s var(--out)}
+.row>*{position:relative}
+.row+.row{box-shadow:inset 0 1px 0 var(--filet)}
+.row:hover,.row.hover{background-size:100% 100%}
+.c-ref{grid-column:1/2;color:var(--voile)}.c-type{grid-column:2/5}.c-surf{grid-column:5/7}.c-ext{grid-column:7/9}.c-ville{grid-column:9/11}
+.c-prix{grid-column:11/13;justify-self:end;display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:16px}
+.c-prix svg{width:14px;height:10px;color:var(--grenat);opacity:0;transform:translateX(-4px);transition:opacity .3s,transform .45s var(--out)}
+.row:hover .c-prix svg,.row.hover .c-prix svg{opacity:1;transform:none}
+.row em{font-style:normal;color:var(--grenat);font-size:11px;margin-left:8px}
+
+/* ---------- 3 Fiche ---------- */
+.fiche .sub{height:48px;align-items:center;font-size:12px;color:var(--voile)}
+.fiche .sub>:first-child{grid-column:1/4;justify-self:start}
+.fiche .sub>:last-child{grid-column:8/13;justify-self:end}
+.fiche .top{align-items:start}
+.gal{grid-column:1/8;display:grid;gap:12px}
+.gal .ph{aspect-ratio:16/10;width:100%;cursor:pointer}
+.thumbs{display:flex;align-items:center;gap:8px}
+.thumbs button{position:relative;width:84px;aspect-ratio:4/3;padding:0}
+.thumbs button .ph{display:block;width:100%;height:100%;aspect-ratio:auto}
+.thumbs button::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--grenat);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--io)}
+.thumbs button[aria-current="true"]::after{transform:scaleX(1)}
+.thumbs button:not([aria-current="true"]) .ph::before{opacity:.18}
+.thumbs button:hover .ph::before{opacity:0}
+.thumbs .count{margin-left:auto;font-size:11px;color:var(--voile)}
+.side{grid-column:9/13;display:grid;gap:18px;align-content:start}
+.side .ref{font-size:12px;color:var(--voile)}
+.side h2{margin:0;font-weight:400;font-size:15px;line-height:1.35;max-width:26ch}
+.prix{margin:0;font-family:var(--serif);font-weight:300;font-size:42px;line-height:1;letter-spacing:-.01em}
+.prix+p{margin:-8px 0 0;font-size:12px;color:var(--voile)}
+.specs{margin:0;display:grid;grid-template-columns:96px minmax(0,1fr);font-size:12px}
+.specs dt,.specs dd{margin:0;padding:7px 0;border-top:1px solid var(--filet)}
+.specs dt{color:var(--voile)}
+.ctas{display:flex;gap:8px;flex-wrap:wrap}
+.btn{height:42px;padding:0 18px;display:inline-grid;place-items:center;font-size:13px;background:var(--grenat);color:var(--creme);transition:background-color .3s}
+.btn:hover{background:var(--grenat-2)}
+.btn.ghost{background:transparent;color:var(--grenat);box-shadow:inset 0 0 0 1px var(--grenat)}
+.btn.ghost:hover{background:var(--poudre)}
+
+.tabzone{margin-top:26px;min-height:250px;background:var(--blanc);transition:background-color .55s var(--out);border-top:1px solid var(--filet)}
+.tabzone[data-bg="creme"]{background:var(--creme)}
+.tabzone[data-bg="poudre"]{background:var(--poudre)}
+.tabs{grid-column:1/9;display:flex;gap:28px;padding-top:18px;height:56px}
+.tabs button{position:relative;color:var(--voile);padding-bottom:4px;align-self:start;transition:color .3s}
+.tabs button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:var(--encre);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--io)}
+.tabs button[aria-selected="true"]{color:var(--encre)}
+.tabs button[aria-selected="true"]::after{transform:scaleX(1)}
+.panels{grid-column:1/8;grid-row:2;position:relative}
+.panel{transition:opacity .4s var(--out)}
+.panel.out{opacity:0}
+.panel p{margin:0 0 10px;max-width:60ch}
+.panel .specs{max-width:460px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;max-width:520px}
+.form label{display:grid;gap:4px;font-size:11px;color:var(--voile)}
+.form input{font:inherit;font-size:13px;color:var(--encre);background:var(--blanc);border:0;border-bottom:1px solid var(--grenat);padding:8px 10px;border-radius:0}
+.form .full{grid-column:1/-1;display:flex;align-items:center;gap:16px;font-size:11px;color:var(--voile)}
+.energy{grid-column:9/13;grid-row:1/3;padding-top:18px;display:grid;gap:12px;align-content:start;font-size:11px}
+.energy h3{margin:0;font-weight:400;font-size:12px;color:var(--voile)}
+.scale{display:flex;align-items:center;gap:3px}
+.scale .lab{width:30px;color:var(--voile)}
+.scale span:not(.lab){width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:10px;font-weight:500}
+.scale span.act{width:auto;padding:0 8px;height:28px;font-size:12px;outline:1px solid var(--encre);outline-offset:2px}
+.scale span.act small{font-weight:400;margin-left:6px;font-size:10px}
+.legal{font-size:10px;color:var(--voile);line-height:1.45}
+/* échelles officielles (couleurs réglementaires, hors palette) */
+.d-a{background:#088748;color:#fff}.d-b{background:#61ad2f;color:#fff}.d-c{background:#cbda0d;color:#323232}.d-d{background:#f7ee02;color:#323232}.d-e{background:#eba903;color:#323232}.d-f{background:#e38102;color:#323232}.d-g{background:#d74301;color:#fff}
+.g-a{background:#91d9fa;color:#323232}.g-b{background:#80bddd;color:#323232}.g-c{background:#71a0c2;color:#fff}.g-d{background:#587598;color:#fff}.g-e{background:#48597c;color:#fff}.g-f{background:#363b61;color:#fff}.g-g{background:#1f1138;color:#fff}
+
+/* ---------- 4 Mobiles ---------- */
+.m .site{inset:0}
+.m-scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-top{position:sticky;top:0;z-index:6;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:color-mix(in srgb,var(--blanc) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:13px}
+.m-top b{font-weight:500}
+.m-top span{color:var(--voile)}
+.m-lede{padding:22px 20px 28px;display:grid;gap:14px}
+.m-lede h1{margin:0;font-weight:300;font-size:30px;line-height:1.07;letter-spacing:-.02em}
+.m-lede p{margin:0;color:var(--voile);font-size:12px}
+.m-hero{padding:0 20px;display:grid;gap:8px;font-size:11px;color:var(--voile)}
+.m-hero .ph{aspect-ratio:4/5}
+.m-vit{display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;align-items:end;padding:28px 20px 32px}
+.m-vit .ph{aspect-ratio:3/4}
+.m-vit p{margin:0;font-family:var(--serif);font-style:italic;font-weight:300;font-size:16px;line-height:1.35}
+.m-vit small{display:block;margin-top:8px;font:400 11px/1.4 var(--sans);font-style:normal;color:var(--voile)}
+.m-list{background:var(--poudre);display:grid;gap:30px;padding:26px 20px 34px}
+.m-list h2{margin:0;font-weight:400;font-size:13px}
+.m-list h2 span{color:var(--voile);margin-left:6px}
+.m-list .card{gap:10px}
+.m-list .card .ph{aspect-ratio:4/3}
+.m-foot{background:var(--grenat);color:var(--creme);padding:26px 20px 40px;display:grid;gap:4px;font-size:12px}
+.m-foot span{color:var(--voile-g)}
+.m-gal{position:relative}
+.m-gal .ph{aspect-ratio:4/5}
+.m-meta{display:flex;justify-content:space-between;padding:10px 20px 0;font-size:11px;color:var(--voile)}
+.m-dots{display:flex;gap:6px;align-items:center}
+.m-dots i{width:14px;height:1px;background:var(--filet);transition:background-color .4s}
+.m-dots i.on{background:var(--grenat)}
+.m-body{padding:24px 20px 130px;display:grid;gap:18px}
+.m-body .prix{font-size:36px}
+.m-body .energy{grid-column:auto;grid-row:auto}
+.m-body h2{margin:0;font-weight:400;font-size:14px}
+.m-cta{position:absolute;left:12px;right:12px;bottom:12px;z-index:6;display:flex;gap:8px}
+.m-cta .btn{flex:1;height:46px}
+.m-cta .btn.ghost{flex:0 0 44%;background:var(--blanc)}
+
+/* ---------- 5 Le cabinet + pied ---------- */
+.cab{background:var(--grenat);color:var(--creme)}
+.cab .nav .brand,.cab .nav .tel{color:var(--creme)}
+.cab .nav li a{color:var(--voile-g)}
+.cab .nav li a[aria-current],.cab .nav li a:hover{color:var(--creme)}
+.cab .nav li a sup{color:var(--rose)}
+.cab .body{padding-top:44px;align-items:start}
+.cab .ph{grid-column:1/5;aspect-ratio:3/4;background:var(--grenat-2)}
+.cab .ph+figcaption{display:none}
+.cab .vfig{grid-column:1/4;margin:0;display:grid;gap:10px;font-size:11px;color:var(--voile-g)}
+.cab .vfig .ph{grid-column:auto;width:100%}
+.cab .txt{grid-column:5/13;display:grid;gap:30px;align-content:start;padding-top:6px}
+.cab .k{font-size:12px;color:var(--voile-g)}
+.cab blockquote{margin:0;font-family:var(--serif);font-weight:300;font-size:30px;line-height:1.22;letter-spacing:-.005em;max-width:24ch;text-wrap:balance}
+.cab .facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;border-top:1px solid var(--filet-g);padding-top:16px;font-size:12px}
+.cab .facts b{display:block;font-weight:400;font-size:22px;letter-spacing:-.01em;margin-bottom:2px}
+.cab .facts span{color:var(--voile-g)}
+.cab .avis{margin:0;font-size:12px;color:var(--voile-g);max-width:52ch}
+.cab .avis q{color:var(--creme);font-family:var(--serif);font-style:italic;font-size:15px;quotes:"« " " »"}
+.cab .u{color:var(--creme)}
+.pied{margin-top:56px;background:var(--grenat-2);color:var(--creme);padding-block:26px 30px;font-size:12px;row-gap:6px}
+.pied>div{grid-column:span 3;display:grid;gap:4px;align-content:start}
+.pied span{color:var(--voile-g)}
+.pied a{justify-self:start}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;transition-delay:0ms!important}
+  html.js .rv .up,html.js .rv .l>span{transform:none;opacity:1}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="duo" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values=".2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  0 0 0 1 0"/>
+    <feComponentTransfer>
+      <feFuncR type="linear" slope="1.15" intercept="-.06"/>
+      <feFuncG type="linear" slope="1.15" intercept="-.06"/>
+      <feFuncB type="linear" slope="1.15" intercept="-.06"/>
+    </feComponentTransfer>
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues=".18 .43 .79 .955"/>
+      <feFuncG type="table" tableValues=".04 .10 .58 .91"/>
+      <feFuncB type="table" tableValues=".07 .15 .56 .865"/>
+    </feComponentTransfer>
+  </filter>
+  <symbol id="arr" viewBox="0 0 14 10"><path d="M0 5h12.5M8.5 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+</svg>
+
+<main class="board">
+  <header class="intro">
+    <div class="who">
+      <b>Galerie chaude</b>
+      <p>La même galerie que Duotone, mais habitée : les photos retrouvent leurs vraies couleurs sous un étalonnage commun, et la chaleur vient des aplats crème, poudré et grenat plutôt que du mouvement. Le grenat de la devanture reste la seule couleur forte ; il habille la vitrine en duotone, le bandeau du cabinet et le pied de page.</p>
+      <small>Cabinet Rimbault, maquettes de novembre 2026, 3e passe</small>
+    </div>
+    <dl>
+      <dt>Palette</dt>
+      <dd class="sw">
+        <span><i style="background:#FBF7F2"></i>Blanc #FBF7F2</span>
+        <span><i style="background:#F3E8DC"></i>Crème #F3E8DC</span>
+        <span><i style="background:#F5E6E2"></i>Poudré #F5E6E2</span>
+        <span><i style="background:#6E1A26"></i>Grenat #6E1A26</span>
+        <span><i style="background:#56131E"></i>Grenat profond #56131E</span>
+        <span><i style="background:#2E0A11"></i>Encre #2E0A11</span>
+      </dd>
+      <dt>Typographie</dt>
+      <dd>Host Grotesk 300, 400, 500 pour tout le texte (12 à 13 px, accroche à 44 px). <span class="serif">Newsreader 300</span> pour trois choses seulement : les prix, la phrase de la vitrine et la citation du cabinet.</dd>
+      <dt>Photos</dt>
+      <dd>Vraie couleur, étalonnage CSS commun : saturation −14 %, contraste +6 %, luminosité −5 %, voile crème en produit pour ramener les blancs brûlés. Duotone grenat réservé à la devanture. Grain papier fixe sur tout l'écran.</dd>
+      <dt>Animations</dt>
+      <dd><ul class="list">
+        <li>Apparition en fondu avec 12 px de montée, une seule fois, en cascade de 70 ms (600 ms).</li>
+        <li>Accroche d'accueil révélée ligne par ligne (700 ms).</li>
+        <li>Survol d'un bien : filet grenat qui se trace sous la légende, photo assombrie de 14 %, flèche qui glisse de 4 px.</li>
+        <li>Survol d'une ligne d'index : le fond poudré monte, flèche au prix.</li>
+        <li>Grille et index : fondu enchaîné de 320 ms au clic.</li>
+        <li>Fiche : photo suivante en fondu enchaîné au clic (550 ms), filet sous la vignette active.</li>
+        <li>Onglets de la fiche : le fond passe du blanc au crème puis au poudré (550 ms), contenu en fondu.</li>
+        <li>Note Google qui compte jusqu'à 4,9 une fois ; soulignés qui se tracent sur tous les liens.</li>
+      </ul></dd>
+      <dt>Retiré de Duotone</dt>
+      <dd>Le duotone sur toutes les photos, la couleur qui se répand sous le curseur, le halo de l'accueil, la photo flottante inclinée de l'index, la galerie qui défile seule, le zoom des photos au survol, la coloration au défilement sur mobile, la photo qui grandit pendant la transition de page, la démonstration automatique.</dd>
+    </dl>
+  </header>
+
+  <!-- 1 Accueil -->
+  <section class="shot" id="s1">
+    <div class="stage"><div class="screen" data-w="1160" data-h="740">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr</span></div>
+      <div class="site home">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2">Biens<sup>5</sup></a></li><li><a href="#s1">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 main rv">
+          <p class="lede up" style="--i:0">Agent immobilier indépendant, au 117 boulevard Voltaire à Asnières-sur-Seine depuis 2009.</p>
+          <h1><span class="l"><span style="--i:1">Cinq appartements</span></span><span class="l"><span style="--i:2">en vente, à Asnières</span></span><span class="l"><span style="--i:3">et à Levallois.</span></span></h1>
+          <figure class="vit up" style="--i:5">
+            <div class="ph duo"><img src="img/devanture.jpg" alt="La devanture grenat du cabinet, boulevard Voltaire"></div>
+          </figure>
+          <p class="vit-t up" style="--i:6">Poussez la porte grenat du boulevard Voltaire : les biens sont aussi en vitrine.</p>
+          <figure class="hero up" style="--i:2">
+            <div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin arboré du bien 10.129"></div>
+            <figcaption><span>Réf. 10.129, le jardin, quartier des Impressionnistes</span><a class="u" href="#s3">Voir le bien</a></figcaption>
+          </figure>
+        </div>
+        <div class="g12 bande">
+          <span class="muted">117 bd Voltaire, 92600 Asnières</span>
+          <span><span class="num">4,9/5</span> <span class="muted">sur Google, 32 avis</span></span>
+          <span class="muted">Vous vendez ? Parlons-en au cabinet.</span>
+          <a class="u" href="#s2">Voir les cinq biens</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>1 Accueil.</b> Le jardin en vraie couleur, la vitrine en duotone grenat comme image signature, un bandeau poudré pour les repères.</span><button type="button" data-replay="s1">Rejouer</button></div>
+  </section>
+
+  <!-- 2 Biens -->
+  <section class="shot" id="s2">
+    <div class="stage"><div class="screen" data-w="1160" data-h="1000">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens</span></div>
+      <div class="site idx">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s2">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 bar">
+          <h2>Biens en vente<span class="num">5</span></h2>
+          <div class="toggle"><button type="button" aria-pressed="true" data-view="grid">Grille</button><button type="button" aria-pressed="false" data-view="index">Index</button></div>
+        </div>
+        <div class="views">
+          <div class="view" id="v-grid">
+            <div class="cards num rv">
+              <a class="card w up" style="--i:0" href="#s3" id="demo-card"><div class="ph"><img src="img/bien-10129-1.jpg" alt="Terrasse et jardin du bien 10.129"></div>
+                <div class="leg"><span class="t">5 pièces, 92,2 m²<svg aria-hidden="true"><use href="#arr"/></svg></span><span class="p">644 000 €</span><span class="s">Asnières, deux terrasses et jardins</span><span class="r">Réf. 10.129</span></div></a>
+              <a class="card w up" style="--i:1" href="#s3"><div class="ph"><img src="img/bien-10130-2.jpg" alt="Séjour et cuisine du bien 10.130"></div>
+                <div class="leg"><span class="t">3 pièces, 59,5 m²<svg aria-hidden="true"><use href="#arr"/></svg></span><span class="p">375 000 €</span><span class="s">Asnières, terrasse de 37,8 m²</span><span class="r">Réf. 10.130</span></div></a>
+              <a class="card up" style="--i:2" href="#s3"><div class="ph"><img src="img/bien-10131-2.jpg" alt="Séjour du bien 10.131"></div>
+                <div class="leg"><span class="t">2 pièces, 46,6 m²<svg aria-hidden="true"><use href="#arr"/></svg></span><span class="p">300 000 €</span><span class="s">Asnières, terrasse de 23,6 m²</span><span class="r">Réf. 10.131</span></div></a>
+              <a class="card up" style="--i:3" href="#s3"><div class="ph"><img src="img/bien-09345-2.jpg" alt="Pièce principale du bien 09.345"></div>
+                <div class="leg"><span class="t">2 pièces, 35,65 m²<svg aria-hidden="true"><use href="#arr"/></svg></span><span class="p">280 000 €</span><span class="s">Levallois, dernier étage<em>Exclusivité</em></span><span class="r">Réf. 09.345</span></div></a>
+              <a class="card up" style="--i:4" href="#s3"><div class="ph"><img src="img/bien-09362-1.jpg" alt="Séjour du studio 09.362"></div>
+                <div class="leg"><span class="t">Studio, 33,16 m²<svg aria-hidden="true"><use href="#arr"/></svg></span><span class="p">198 000 €</span><span class="s">Asnières, balcon<em>Exclusivité</em></span><span class="r">Réf. 09.362</span></div></a>
+            </div>
+          </div>
+          <div class="view" id="v-index" hidden>
+            <div class="g12 head"><span class="c-ref">Réf.</span><span class="c-type">Bien</span><span class="c-surf">Surface</span><span class="c-ext">Extérieur</span><span class="c-ville">Ville</span><span class="c-prix" style="font:inherit">Prix</span></div>
+            <ul class="rows num">
+              <li class="row"><span class="c-ref">10.129</span><span class="c-type">5 pièces, 4 chambres</span><span class="c-surf">92,2 m²</span><span class="c-ext">2 terrasses, jardins</span><span class="c-ville">Asnières</span><span class="c-prix">644 000 €<svg aria-hidden="true"><use href="#arr"/></svg></span></li>
+              <li class="row"><span class="c-ref">10.130</span><span class="c-type">3 pièces</span><span class="c-surf">59,5 m²</span><span class="c-ext">Terrasse 37,8 m²</span><span class="c-ville">Asnières</span><span class="c-prix">375 000 €<svg aria-hidden="true"><use href="#arr"/></svg></span></li>
+              <li class="row"><span class="c-ref">10.131</span><span class="c-type">2 pièces</span><span class="c-surf">46,6 m²</span><span class="c-ext">Terrasse 23,6 m²</span><span class="c-ville">Asnières</span><span class="c-prix">300 000 €<svg aria-hidden="true"><use href="#arr"/></svg></span></li>
+              <li class="row"><span class="c-ref">09.345</span><span class="c-type">2 pièces, dernier étage<em>Exclusivité</em></span><span class="c-surf">35,65 m²</span><span class="c-ext">Rue Collange</span><span class="c-ville">Levallois-Perret</span><span class="c-prix">280 000 €<svg aria-hidden="true"><use href="#arr"/></svg></span></li>
+              <li class="row"><span class="c-ref">09.362</span><span class="c-type">Studio<em>Exclusivité</em></span><span class="c-surf">33,16 m²</span><span class="c-ext">Balcon</span><span class="c-ville">Asnières</span><span class="c-prix">198 000 €<svg aria-hidden="true"><use href="#arr"/></svg></span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>2 Biens.</b> Grille aérée, deux grands puis trois ; au survol, filet sous la légende, photo un peu assombrie, flèche. Index en lignes fines au choix.</span><span>Le premier bien est montré survolé</span></div>
+  </section>
+
+  <!-- 3 Fiche -->
+  <section class="shot" id="s3">
+    <div class="stage"><div class="screen" data-w="1160" data-h="868">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens/10129</span></div>
+      <div class="site fiche">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s3">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 sub"><a class="u" href="#s2">Retour aux biens</a><span class="num">Réf. 10.129, Asnières-sur-Seine, quartier des Impressionnistes</span></div>
+        <div class="g12 top rv">
+          <div class="gal up" style="--i:0">
+            <div class="ph" id="gmain" role="button" tabindex="0" aria-label="Photo suivante"><img src="img/bien-10129-2.jpg" alt="Séjour du bien 10.129"></div>
+            <div class="thumbs" id="gthumbs">
+              <button type="button" aria-current="true" data-src="img/bien-10129-2.jpg" data-alt="Séjour"><span class="ph"><img src="img/bien-10129-2.jpg" alt=""></span></button>
+              <button type="button" data-src="img/bien-10129-1.jpg" data-alt="Terrasse et jardin"><span class="ph"><img src="img/bien-10129-1.jpg" alt=""></span></button>
+              <button type="button" data-src="img/bien-10129-3.jpg" data-alt="Jardin arboré"><span class="ph"><img src="img/bien-10129-3.jpg" alt=""></span></button>
+              <button type="button" data-src="img/bien-10129-4.jpg" data-alt="Terrasse et pelouse"><span class="ph"><img src="img/bien-10129-4.jpg" alt=""></span></button>
+              <span class="count num" id="gcount">1 / 4</span>
+            </div>
+          </div>
+          <div class="side">
+            <span class="ref up num" style="--i:1">Appartement, Asnières-sur-Seine</span>
+            <h2 class="up" style="--i:1">Cinq pièces ouvertes sur deux terrasses et des jardins</h2>
+            <p class="prix num up" style="--i:2">644 000 €</p>
+            <p class="up" style="--i:2">Prix honoraires inclus <span class="tbc">[à confirmer]</span></p>
+            <dl class="specs num up" style="--i:3">
+              <dt>Pièces</dt><dd>5, dont 4 chambres</dd>
+              <dt>Surface</dt><dd>92,2 m²</dd>
+              <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+              <dt>Quartier</dt><dd>Les Impressionnistes</dd>
+            </dl>
+            <div class="ctas up" style="--i:4"><a class="btn" href="#s3" data-tab="2">Demander une visite</a><a class="btn ghost num" href="#s3">01 73 64 56 10</a></div>
+          </div>
+        </div>
+        <div class="tabzone" id="tabzone" data-bg="blanc">
+          <div class="g12">
+            <div class="tabs" role="tablist">
+              <button type="button" role="tab" aria-selected="true" data-bg="blanc">Description</button>
+              <button type="button" role="tab" aria-selected="false" data-bg="creme">Pièces et surfaces</button>
+              <button type="button" role="tab" aria-selected="false" data-bg="poudre">Demander une visite</button>
+            </div>
+            <div class="panels">
+              <div class="panel" role="tabpanel">
+                <p>Cinq pièces, dont quatre chambres, sur 92,2 m². Le séjour ouvre sur deux terrasses, prolongées par des jardins arborés, au calme du quartier des Impressionnistes.</p>
+                <p>Nous faisons visiter nous-mêmes, sur rendez-vous, en semaine comme le samedi <span class="tbc">[à confirmer]</span>.</p>
+              </div>
+              <div class="panel" role="tabpanel" hidden>
+                <dl class="specs num">
+                  <dt>Séjour</dt><dd>Ouvert sur terrasse <span class="tbc">[surface à confirmer]</span></dd>
+                  <dt>Chambres</dt><dd>4</dd>
+                  <dt>Surface</dt><dd>92,2 m² loi Carrez <span class="tbc">[à confirmer]</span></dd>
+                  <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+                </dl>
+              </div>
+              <div class="panel" role="tabpanel" hidden>
+                <form class="form" id="visite">
+                  <label for="f-nom">Nom<input id="f-nom" name="nom" value="Camille Durand"></label>
+                  <label for="f-tel">Téléphone<input id="f-tel" name="tel" value="06 12 34 56 78"></label>
+                  <div class="full"><button class="btn" type="submit">Envoyer la demande</button><span id="f-msg">Nous vous rappelons pour fixer un créneau.</span></div>
+                </form>
+              </div>
+            </div>
+            <div class="energy num">
+              <h3>Performance énergétique</h3>
+              <div class="scale" aria-label="DPE classe D, 189 kWh par m² et par an"><span class="lab">DPE</span><span class="d-a">A</span><span class="d-b">B</span><span class="d-c">C</span><span class="d-d act">D<small>189 kWh/m²/an</small></span><span class="d-e">E</span><span class="d-f">F</span><span class="d-g">G</span></div>
+              <div class="scale" aria-label="GES classe B"><span class="lab">GES</span><span class="g-a">A</span><span class="g-b act">B</span><span class="g-c">C</span><span class="g-d">D</span><span class="g-e">E</span><span class="g-f">F</span><span class="g-g">G</span></div>
+              <p class="legal">Échelles officielles en couleur. Estimation des coûts annuels d'énergie <span class="tbc">[à renseigner]</span>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>3 Fiche.</b> Clic sur la photo ou une vignette : la suivante arrive en fondu. Les onglets font passer le fond du blanc au crème puis au poudré.</span><span>Essayez « Demander une visite »</span></div>
+  </section>
+
+  <!-- 4 Mobiles -->
+  <section class="shot" id="s4">
+    <div class="mobiles">
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="760">
+          <div class="site"><div class="m-scroll" id="mscroll1">
+            <div class="m-top"><b>Cabinet Rimbault</b><span>Menu</span></div>
+            <div class="m-lede rv">
+              <h1><span class="l"><span style="--i:0">Cinq appartements</span></span><span class="l"><span style="--i:1">en vente, à Asnières</span></span><span class="l"><span style="--i:2">et à Levallois.</span></span></h1>
+              <p class="up" style="--i:3">Agent immobilier indépendant, 117 boulevard Voltaire, depuis 2009.</p>
+            </div>
+            <figure class="m-hero rv" style="margin:0"><div class="ph up"><img src="img/bien-10129-3.jpg" alt="Jardin du 10.129"></div><figcaption class="up" style="--i:1">Réf. 10.129, le jardin</figcaption></figure>
+            <div class="m-vit rv"><div class="ph duo up"><img src="img/devanture.jpg" alt="Devanture du cabinet"></div><p class="up" style="--i:1">Les biens sont aussi en vitrine, boulevard Voltaire.<small>Ouvert du mardi au samedi <span class="tbc">[à confirmer]</span></small></p></div>
+            <div class="m-list num rv">
+              <h2 class="up">Biens en vente<span>5</span></h2>
+              <a class="card up" style="--i:1" href="#s4"><div class="ph"><img src="img/bien-10130-2.jpg" alt="Bien 10.130"></div><div class="leg"><span class="t">3 pièces, 59,5 m²</span><span class="p">375 000 €</span><span class="s">Asnières, terrasse</span><span class="r">10.130</span></div></a>
+              <a class="card up" style="--i:2" href="#s4"><div class="ph"><img src="img/bien-10131-2.jpg" alt="Bien 10.131"></div><div class="leg"><span class="t">2 pièces, 46,6 m²</span><span class="p">300 000 €</span><span class="s">Asnières, terrasse</span><span class="r">10.131</span></div></a>
+              <a class="card up" href="#s4"><div class="ph"><img src="img/bien-09345-2.jpg" alt="Bien 09.345"></div><div class="leg"><span class="t">2 pièces, 35,65 m²</span><span class="p">280 000 €</span><span class="s">Levallois<em>Exclusivité</em></span><span class="r">09.345</span></div></a>
+            </div>
+            <div class="m-foot"><b style="font-weight:400" class="num">01 73 64 56 10</b><span>117 bd Voltaire, 92600 Asnières-sur-Seine</span></div>
+          </div></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="760">
+          <div class="site"><div class="m-scroll">
+            <div class="m-top"><b>Retour</b><span class="num">Réf. 10.129</span></div>
+            <div class="m-gal"><div class="ph" id="mmain" role="button" tabindex="0" aria-label="Photo suivante"><img src="img/bien-10129-1.jpg" alt="Terrasse et jardin du 10.129"></div></div>
+            <div class="m-meta num"><span>Touchez la photo pour la suivante</span><span class="m-dots" id="mdots"><i class="on"></i><i></i><i></i><i></i></span></div>
+            <div class="m-body rv">
+              <p class="prix num up">644 000 €</p>
+              <h2 class="up" style="--i:1">5 pièces, 92,2 m², deux terrasses et jardins, Asnières</h2>
+              <dl class="specs num up" style="--i:2">
+                <dt>Pièces</dt><dd>5, dont 4 chambres</dd>
+                <dt>Surface</dt><dd>92,2 m²</dd>
+                <dt>Quartier</dt><dd>Les Impressionnistes</dd>
+              </dl>
+              <div class="energy num up" style="--i:3;padding:0">
+                <div class="scale"><span class="lab">DPE</span><span class="d-a">A</span><span class="d-b">B</span><span class="d-c">C</span><span class="d-d act">D<small>189</small></span><span class="d-e">E</span><span class="d-f">F</span><span class="d-g">G</span></div>
+                <div class="scale"><span class="lab">GES</span><span class="g-a">A</span><span class="g-b act">B</span><span class="g-c">C</span><span class="g-d">D</span><span class="g-e">E</span><span class="g-f">F</span><span class="g-g">G</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="m-cta"><a class="btn" href="#s4">Demander une visite</a><a class="btn ghost num" href="#s4">Appeler</a></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="note">
+        <span><b>4 Mobile.</b> Mêmes photos en vraie couleur, la vitrine en duotone comme signature, la liste des biens sur fond poudré et le pied de page en grenat.</span>
+        <span>Sur la fiche, toucher la photo fait venir la suivante en fondu ; la demande de visite et l'appel restent en bas de l'écran.</span>
+        <span>Faites défiler le premier écran.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Le cabinet -->
+  <section class="shot" id="s5">
+    <div class="stage"><div class="screen" data-w="1160" data-h="664">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/le-cabinet</span></div>
+      <div class="site cab on-g">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2">Biens<sup>5</sup></a></li><li><a href="#s5">Vendre</a></li><li><a href="#s5" aria-current="page">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 body rv">
+          <figure class="vfig up">
+            <div class="ph duo"><img src="img/devanture.jpg" alt="La devanture grenat du cabinet"></div>
+            <figcaption>117 boulevard Voltaire, Asnières-sur-Seine</figcaption>
+          </figure>
+          <div class="txt">
+            <span class="k up" style="--i:1">Le cabinet</span>
+            <blockquote class="up" style="--i:2">Une vitrine boulevard Voltaire depuis 2009, et jamais plus d'une dizaine de biens à la fois.</blockquote>
+            <div class="facts num up" style="--i:3">
+              <div><b>2009</b><span>au 117 boulevard Voltaire</span></div>
+              <div><b><span id="note" style="color:inherit">4,9</span>/5</b><span>sur Google, 32 avis</span></div>
+              <div><b>Indépendant</b><span>agent immobilier à Asnières</span></div>
+            </div>
+            <p class="avis up" style="--i:4"><q>Des visites préparées, des réponses le jour même.</q> <span class="tbc">[avis exemple]</span></p>
+            <a class="u up" style="--i:5;justify-self:start" href="#s1">Nous confier votre bien</a>
+          </div>
+        </div>
+        <footer class="g12 pied num">
+          <div><b style="font-weight:500">Cabinet Rimbault</b><span>117 bd Voltaire, 92600 Asnières-sur-Seine</span></div>
+          <div><a class="u" href="#s5">01 73 64 56 10</a><span>Horaires <span class="tbc">[à confirmer]</span></span></div>
+          <div><a class="u" href="#s2">Les biens en vente</a><a class="u" href="#s5">Estimer mon bien</a></div>
+          <div><a class="u" href="#s5">Mentions légales et honoraires</a><span>Médiateur de la consommation <span class="tbc">[à renseigner]</span></span></div>
+        </footer>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>5 Le cabinet et pied de page.</b> Aplat grenat franc, la devanture en duotone, la phrase en serif ; la note compte jusqu'à 4,9 une fois.</span><button type="button" data-replay="s5">Rejouer</button></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const html = document.documentElement;
+  html.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* cadres mis à l'échelle de la planche */
+  const fit = () => $$('.stage').forEach(st => {
+    const sc = st.firstElementChild, w = +sc.dataset.w, h = +sc.dataset.h;
+    const k = Math.min(1, st.clientWidth / w);
+    sc.style.width = w + 'px'; sc.style.height = h + 'px';
+    sc.style.transform = `scale(${k})`; st.style.height = h * k + 'px';
+  });
+  fit(); new ResizeObserver(fit).observe(document.body);
+
+  /* note Google : compte une fois jusqu'à 4,9 */
+  const note = $('#note');
+  const count = () => {
+    if (reduce) { note.textContent = '4,9'; return; }
+    const t0 = performance.now(), D = 900;
+    const step = now => { const p = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - p, 3);
+      note.textContent = (4.9 * e).toFixed(1).replace('.', ','); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  };
+
+  /* apparitions : une fois, à l'entrée dans l'écran */
+  const reveal = el => { el.classList.add('in'); if (el.contains(note)) count(); };
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { reveal(en.target); io.unobserve(en.target); } }), { threshold: .15 });
+    $$('.rv').forEach(el => io.observe(el));
+  } else $$('.rv').forEach(reveal);
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => {
+    $$('#' + b.dataset.replay + ' .rv').forEach(el => { el.classList.remove('in'); void el.offsetWidth; requestAnimationFrame(() => reveal(el)); });
+  }));
+
+  /* état survolé de démonstration sur le premier bien, retiré au premier vrai survol */
+  const demo = $('#demo-card'); demo.classList.add('hover');
+  $('#v-grid').addEventListener('pointerover', () => demo.classList.remove('hover'), { once: true });
+
+  /* grille / index : fondu enchaîné */
+  const views = { grid: $('#v-grid'), index: $('#v-index') };
+  $$('.toggle button').forEach(b => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') === 'true') return;
+    $$('.toggle button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    const to = views[b.dataset.view], from = to === views.grid ? views.index : views.grid;
+    from.classList.add('out');
+    setTimeout(() => {
+      from.hidden = true; from.classList.remove('out');
+      to.classList.add('out'); to.hidden = false; void to.offsetWidth; to.classList.remove('out');
+    }, reduce ? 0 : 320);
+  }));
+
+  /* photo suivante en fondu enchaîné, au clic seulement */
+  const crossfade = (box, src, alt) => {
+    const cur = box.querySelector('img:not(.next)');
+    if (cur.getAttribute('src') === src) return;
+    const nx = document.createElement('img'); nx.className = 'next'; nx.alt = alt || ''; nx.src = src;
+    box.appendChild(nx);
+    const go = () => requestAnimationFrame(() => requestAnimationFrame(() => nx.classList.add('show')));
+    nx.decode ? nx.decode().then(go, go) : go();
+    setTimeout(() => { cur.remove(); nx.classList.remove('next', 'show'); }, reduce ? 0 : 600);
+  };
+  const thumbs = $$('#gthumbs button'), gmain = $('#gmain');
+  let gi = 0;
+  const show = i => { gi = (i + thumbs.length) % thumbs.length; const t = thumbs[gi];
+    thumbs.forEach(x => x.setAttribute('aria-current', String(x === t)));
+    crossfade(gmain, t.dataset.src, t.dataset.alt); $('#gcount').textContent = (gi + 1) + ' / ' + thumbs.length; };
+  thumbs.forEach((t, i) => t.addEventListener('click', () => show(i)));
+  gmain.addEventListener('click', () => show(gi + 1));
+  gmain.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(gi + 1); } });
+
+  const msrc = ['img/bien-10129-1.jpg', 'img/bien-10129-2.jpg', 'img/bien-10129-3.jpg', 'img/bien-10129-4.jpg'];
+  const mmain = $('#mmain'), dots = $$('#mdots i'); let mi = 0;
+  const mnext = () => { mi = (mi + 1) % msrc.length; crossfade(mmain, msrc[mi]); dots.forEach((d, j) => d.classList.toggle('on', j === mi)); };
+  mmain.addEventListener('click', mnext);
+  mmain.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mnext(); } });
+
+  /* onglets de la fiche : le fond change doucement */
+  const zone = $('#tabzone'), tabs = $$('.tabs button'), panels = $$('.panel');
+  let busy = false;
+  const select = i => {
+    const t = tabs[i]; if (busy || t.getAttribute('aria-selected') === 'true') return;
+    tabs.forEach(x => x.setAttribute('aria-selected', String(x === t)));
+    zone.dataset.bg = t.dataset.bg;
+    const from = panels.find(p => !p.hidden), to = panels[i];
+    busy = true; from.classList.add('out');
+    setTimeout(() => {
+      from.hidden = true; from.classList.remove('out');
+      to.classList.add('out'); to.hidden = false; void to.offsetWidth; to.classList.remove('out'); busy = false;
+    }, reduce ? 0 : 240);
+  };
+  tabs.forEach((t, i) => t.addEventListener('click', () => select(i)));
+  $$('[data-tab]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); select(+a.dataset.tab); }));
+  $('#visite').addEventListener('submit', e => { e.preventDefault(); $('#f-msg').textContent = 'Demande prête. Dans la maquette, rien n’est envoyé.'; });
+
+  document.addEventListener('click', e => { const a = e.target.closest('.site a[href^="#"]'); if (a && a.closest('.screen')) e.preventDefault(); });
+})();
+</script>

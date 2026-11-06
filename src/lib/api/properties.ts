@@ -1,112 +1,69 @@
-import { cache } from "react";
-import { type ApiFetchOptions, apiFetch, type QueryValue } from "./client";
+import "server-only";
+import { ApiError, apiFetch, REVALIDATE } from "./client";
 import type {
-  ApiItemResponse,
-  ApiListResponse,
-  ListFilters,
+  ArchivedPropertyStatus,
   Property,
-  SearchFilters,
+  PropertyDetailResponse,
+  PropertyListResponse,
 } from "./types";
 
-const LIST_TAG = "properties";
-const propertyTag = (reference: string) => `property:${reference}`;
+const ARCHIVE_STATUSES: readonly ArchivedPropertyStatus[] = ["VENDU", "LOUE"];
 
-type QueryRecord = Record<string, QueryValue>;
-
-export async function listSaleProperties(
-  filters: ListFilters = {},
-  options: ApiFetchOptions = {},
-): Promise<ApiListResponse<Property>> {
-  return apiFetch<ApiListResponse<Property>>(
-    "/properties/sale",
-    filters as QueryRecord,
-    { tags: [LIST_TAG, "properties:sale"], ...options },
+/** Tous les biens visibles (disponibles, sous offre, sous compromis). */
+export async function getProperties(): Promise<Property[]> {
+  const { data } = await apiFetch<PropertyListResponse>(
+    "/properties?limit=100",
+    { revalidate: REVALIDATE.list, tags: ["properties"] },
   );
+  return data;
 }
 
-export async function listRentProperties(
-  filters: ListFilters = {},
-  options: ApiFetchOptions = {},
-): Promise<ApiListResponse<Property>> {
-  return apiFetch<ApiListResponse<Property>>(
-    "/properties/rent",
-    filters as QueryRecord,
-    { tags: [LIST_TAG, "properties:rent"], ...options },
-  );
+/** Fiche complète, ou `null` si la référence est inconnue (404). */
+export async function getProperty(reference: string): Promise<Property | null> {
+  try {
+    const { data } = await apiFetch<PropertyDetailResponse>(
+      `/properties/${encodeURIComponent(reference)}`,
+      { revalidate: REVALIDATE.detail, tags: [`property:${reference}`] },
+    );
+    return data;
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 404) return null;
+    throw error;
+  }
 }
 
-export async function listRecentProperties(
-  limit?: number,
-  options: ApiFetchOptions = {},
-): Promise<ApiListResponse<Property>> {
-  return apiFetch<ApiListResponse<Property>>(
-    "/properties/recent",
-    limit ? { limit } : undefined,
-    { tags: [LIST_TAG, "properties:recent"], ...options },
-  );
-}
-
-export async function searchProperties(
-  filters: SearchFilters = {},
-  options: ApiFetchOptions = {},
-): Promise<ApiListResponse<Property>> {
-  return apiFetch<ApiListResponse<Property>>(
-    "/properties",
-    filters as QueryRecord,
-    { tags: [LIST_TAG], ...options },
-  );
-}
-
-// Mémoïsé par requête avec cache() : generateMetadata + le composant page
-// appellent tous deux getPropertyByReference(reference). Le timeout d'abort de
-// apiFetch désactive la dedup fetch native de Next, d'où le double appel réseau
-// que cache() élimine (request-scoped ; le Data Cache revalidate: 600 gère, lui,
-// l'inter-requêtes).
-export const getPropertyByReference = cache(
-  async function getPropertyByReference(
-    reference: string,
-    options: ApiFetchOptions = {},
-  ): Promise<Property | null> {
-    try {
-      const response = await apiFetch<ApiItemResponse<Property>>(
-        `/properties/${encodeURIComponent(reference)}`,
-        undefined,
-        { revalidate: 600, tags: [propertyTag(reference)], ...options },
-      );
-      return response.data;
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        "status" in error &&
-        (error as { status: number }).status === 404
-      ) {
-        return null;
-      }
-      throw error;
-    }
-  },
-);
-
+/** Biens proches ; `[]` en cas d'erreur (section masquée). */
 export async function getSimilarProperties(
   reference: string,
   limit = 3,
-  options: ApiFetchOptions = {},
 ): Promise<Property[]> {
   try {
-    const res = await apiFetch<ApiListResponse<Property>>(
-      `/properties/${encodeURIComponent(reference)}/similar`,
-      limit ? { limit } : undefined,
-      { revalidate: 600, tags: [propertyTag(reference), LIST_TAG], ...options },
+    const { data } = await apiFetch<PropertyListResponse>(
+      `/properties/${encodeURIComponent(reference)}/similar?limit=${limit}`,
+      { revalidate: REVALIDATE.detail, tags: [`property:${reference}`] },
     );
-    return res.data ?? [];
-  } catch (error) {
-    if (
-      error instanceof Error &&
-      "status" in error &&
-      (error as { status: number }).status === 404
-    ) {
-      return [];
-    }
-    throw error;
+    return data;
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Archive « Récemment vendus et loués » (A14). `[]` en cas d'erreur : la
+ * section est conditionnelle. Le statut est re-filtré ici par prudence
+ * (le mock e2e ignore le paramètre `status`).
+ */
+export async function getArchivedProperties(limit = 12): Promise<Property[]> {
+  try {
+    const query = ARCHIVE_STATUSES.map((s) => `status=${s}`).join("&");
+    const { data } = await apiFetch<PropertyListResponse>(
+      `/properties?${query}&limit=${limit}`,
+      { revalidate: REVALIDATE.archive, tags: ["properties:archive"] },
+    );
+    return data.filter((p) =>
+      (ARCHIVE_STATUSES as readonly string[]).includes(p.status),
+    );
+  } catch {
+    return [];
   }
 }

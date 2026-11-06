@@ -1,0 +1,925 @@
+<title>Couleur vivante</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Urbanist:wght@300;400;500;600&display=swap">
+<style>
+/* Planche : intro en tête, puis mini-écrans posés sur un fond neutre légèrement rosé, chacun mis à l'échelle de la colonne. */
+:root {
+  /* Palette du site (identique dans les deux thèmes : ce sont des écrans) */
+  --grenat: #6e1a26;
+  --rose: #f2dcd7;
+  --sauge: #cfd8c6;
+  --sable: #ecdcc3;
+  --nuit: #3f0c15;
+  --pivoine: #e59a8e;
+  --encre: #2e1117;
+  --ivoire: #fbeee9;
+  --chrome: #f3efee;
+  --chrome-dot: #dcd3d2;
+  --chrome-text: #7a6b6d;
+  --shell: #231a1c;
+
+  /* Planche */
+  --board-bg: #e9e4e3;
+  --board-ink: #2e1117;
+  --board-mute: #75666a;
+  --board-line: rgba(46, 17, 23, .14);
+  --board-shadow: rgba(63, 12, 21, .28);
+
+  --sans: "Urbanist", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Bodoni Moda", "Didot", "Bodoni 72", Georgia, serif;
+  --ease: cubic-bezier(.65, 0, .2, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --board-bg: #1c1617; --board-ink: #f1e6e3; --board-mute: #ab9c9e;
+    --board-line: rgba(241, 230, 227, .14); --board-shadow: rgba(0, 0, 0, .55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --board-bg: #1c1617; --board-ink: #f1e6e3; --board-mute: #ab9c9e;
+  --board-line: rgba(241, 230, 227, .14); --board-shadow: rgba(0, 0, 0, .55);
+  color-scheme: dark;
+}
+
+@property --s-bg { syntax: "<color>"; inherits: true; initial-value: #6e1a26; }
+@property --s-fg { syntax: "<color>"; inherits: true; initial-value: #fbeee9; }
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--board-bg); color: var(--board-ink);
+  font-family: var(--sans); font-size: 15px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+.board {
+  max-width: 1260px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 56px 96px;
+  display: grid; gap: 88px;
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--pivoine); outline-offset: 3px; }
+
+/* ---------- Intro de la planche ---------- */
+.intro { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 56px; align-items: start; }
+.intro h1 { margin: 0 0 14px; font-weight: 500; font-size: 30px; letter-spacing: -.01em; line-height: 1.1; }
+.intro h1 small { display: block; font-size: 14px; font-weight: 400; color: var(--board-mute); letter-spacing: 0; margin-bottom: 10px; }
+.intro p { margin: 0; max-width: 44ch; color: var(--board-mute); }
+.spec { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 18px 20px; margin: 0; font-size: 14px; }
+.spec dt { color: var(--board-mute); }
+.spec dd { margin: 0; min-width: 0; }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px 14px; }
+.sw { display: grid; grid-template-columns: 34px auto; column-gap: 10px; align-items: center; }
+.sw i { grid-row: span 2; width: 34px; height: 34px; border-radius: 50% 50% 46% 54% / 55% 45% 55% 45%; box-shadow: inset 0 0 0 1px var(--board-line); }
+.sw b { font-weight: 500; font-size: 13px; line-height: 1.2; }
+.sw span { font-size: 12px; color: var(--board-mute); font-variant-numeric: tabular-nums; line-height: 1.2; }
+.anims { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 28px; }
+.anims li { break-inside: avoid; padding-left: 16px; position: relative; margin-bottom: 4px; }
+.anims li::before { content: ""; position: absolute; left: 0; top: .62em; width: 7px; height: 7px; border-radius: 50%; background: var(--pivoine); }
+.typo-sample { font-family: var(--serif); font-style: italic; font-size: 17px; }
+
+/* ---------- Plaques ---------- */
+.plate { display: grid; gap: 18px; }
+.cap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 24px; font-size: 14px; }
+.cap p { margin: 0; max-width: 78ch; }
+.cap p b { font-weight: 600; }
+.cap .tools { display: flex; gap: 10px; }
+.ghost-btn { background: none; border: 1px solid var(--board-line); border-radius: 999px; padding: 6px 14px; font-size: 13px; cursor: pointer; color: var(--board-ink); }
+.ghost-btn:hover { border-color: var(--board-ink); }
+.row2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; width: 100%; max-width: 960px; margin-inline: auto; }
+.stage { position: relative; margin: 0 auto; }
+.stage > .device { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
+
+.device.desk {
+  width: 1160px; height: 720px; border-radius: 14px; overflow: hidden; background: var(--chrome);
+  box-shadow: 0 50px 90px -40px var(--board-shadow), 0 0 0 1px var(--board-line);
+}
+.device.desk.short { height: 500px; }
+.chrome { height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: var(--chrome); }
+.chrome i { width: 10px; height: 10px; border-radius: 50%; background: var(--chrome-dot); }
+.chrome span { margin: 0 auto; font-size: 12px; color: var(--chrome-text); background: rgba(255,255,255,.7); padding: 3px 60px; border-radius: 7px; }
+.device.phone {
+  width: 395px; height: 800px; padding: 10px; border-radius: 52px; background: var(--shell);
+  box-shadow: 0 50px 90px -40px var(--board-shadow);
+}
+.device.phone::after { content: ""; position: absolute; top: 20px; left: 50%; width: 96px; height: 28px; margin-left: -48px; border-radius: 20px; background: var(--shell); z-index: 30; }
+
+/* ---------- Écran : base ---------- */
+.screen {
+  position: relative; overflow: hidden; height: 684px;
+  background: var(--s-bg); color: var(--s-fg);
+  font-family: var(--sans); font-size: 15px; line-height: 1.5;
+  transition: --s-bg 1.1s var(--ease), --s-fg .8s var(--ease);
+  isolation: isolate;
+}
+.device.desk.short .screen { height: 464px; }
+.device.phone .screen { height: 780px; border-radius: 42px; }
+.screen::after { /* grain */
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 40;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .16; mix-blend-mode: multiply;
+}
+.scroller { position: absolute; inset: 0; overflow-y: auto; scrollbar-width: none; overscroll-behavior: contain; }
+.scroller::-webkit-scrollbar { display: none; }
+
+/* tons de section */
+.screen[data-tone="grenat"] { --s-bg: var(--grenat); --s-fg: var(--ivoire); }
+.screen[data-tone="rose"]   { --s-bg: var(--rose);   --s-fg: var(--encre); }
+.screen[data-tone="sauge"]  { --s-bg: var(--sauge);  --s-fg: var(--encre); }
+.screen[data-tone="sable"]  { --s-bg: var(--sable);  --s-fg: var(--encre); }
+.screen[data-tone="nuit"]   { --s-bg: var(--nuit);   --s-fg: var(--ivoire); }
+.mute { opacity: .68; }
+
+/* en-tête du site */
+.hd { position: sticky; top: 0; z-index: 20; background: var(--s-bg); height: 64px; display: flex; align-items: center; gap: 34px; padding: 0 40px; font-size: 14px; }
+.hd .mark { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: .01em; font-size: 15px; margin-right: auto; text-decoration: none; color: inherit; }
+.hd .mark i { width: 18px; height: 18px; border-radius: 50% 50% 50% 8%; background: var(--s-fg); transition: background .8s; }
+.hd nav { display: flex; gap: 28px; }
+.hd a:not(.pill) { color: inherit; text-decoration: none; }
+.hd .tel { font-variant-numeric: tabular-nums; opacity: .8; }
+
+/* boutons */
+.pill {
+  display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 22px; border-radius: 999px;
+  font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; border: 0;
+  background: var(--s-fg); color: var(--s-bg); will-change: transform;
+  transition: transform .5s cubic-bezier(.2,.9,.25,1.2), background .6s, color .6s;
+}
+.pill.line { background: transparent; color: inherit; box-shadow: inset 0 0 0 1px currentColor; }
+.pill.sm { height: 36px; padding: 0 16px; font-size: 13px; }
+.pill .lbl { display: inline-block; transition: transform .5s cubic-bezier(.2,.9,.25,1.2); }
+.pill.grenat { background: var(--grenat); color: var(--ivoire); }
+.pill.is-near { transition-duration: .18s; }
+.pill.is-near .lbl { transition-duration: .18s; }
+
+/* pastille organique */
+.blob {
+  position: absolute; z-index: 5; width: 92px; height: 92px; display: grid; place-items: center; text-align: center;
+  background: var(--grenat); color: var(--ivoire); font-size: 12px; font-weight: 500; line-height: 1.15;
+  border-radius: 46% 54% 60% 40% / 45% 42% 58% 55%;
+  animation: morph 9s ease-in-out infinite, bob 5s ease-in-out infinite;
+}
+.blob.pv { background: var(--pivoine); color: var(--nuit); }
+@keyframes morph {
+  0%,100% { border-radius: 46% 54% 60% 40% / 45% 42% 58% 55%; }
+  33% { border-radius: 60% 40% 44% 56% / 58% 55% 45% 42%; }
+  66% { border-radius: 40% 60% 55% 45% / 40% 60% 40% 60%; }
+}
+@keyframes bob { 0%,100% { translate: 0 0; rotate: -6deg; } 50% { translate: 0 -5px; rotate: 4deg; } }
+
+/* bandeau défilant */
+.marquee { overflow: hidden; white-space: nowrap; font-size: 13px; letter-spacing: .02em; }
+.marquee .run { display: inline-flex; animation: run 38s linear infinite; }
+.marquee span { padding-right: 34px; }
+.marquee span::after { content: ""; display: inline-block; width: 6px; height: 6px; margin-left: 34px; border-radius: 50%; background: currentColor; opacity: .5; vertical-align: middle; }
+@keyframes run { to { transform: translateX(-50%); } }
+
+/* photos */
+.ph { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(1.06) contrast(1.03); }
+
+/* ---------- Écran 1 : accueil ---------- */
+.hero { display: grid; grid-template-columns: 360px minmax(0, 1fr); gap: 64px; padding: 20px 40px 0; height: 560px; }
+.hero-txt { align-self: end; padding-bottom: 34px; display: grid; gap: 22px; }
+.hero h2 { margin: 0; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 44px; line-height: 1.04; letter-spacing: -.01em; text-wrap: balance; }
+.hero p { margin: 0; max-width: 32ch; font-size: 15px; opacity: .78; }
+.hero .ctas { display: flex; gap: 10px; }
+.hero-ph { position: relative; border-radius: 24px; overflow: hidden; height: 520px; animation: open 1.6s var(--ease) .35s both; }
+.hero-ph img { animation: settle 2.2s var(--ease) .35s both; }
+@keyframes open { from { clip-path: inset(32% 30% 32% 30% round 200px); } to { clip-path: inset(0 0 0 0 round 24px); } }
+@keyframes settle { from { transform: scale(1.18); } to { transform: scale(1); } }
+.chip { position: absolute; left: 18px; bottom: 18px; display: flex; gap: 10px; align-items: center; padding: 8px 16px; border-radius: 999px; background: rgba(251, 238, 233, .78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: var(--encre); font-size: 13px; }
+.chip i { width: 26px; height: 26px; border-radius: 50%; background: var(--sauge); }
+.hero-band { height: 52px; display: flex; align-items: center; padding: 0 40px; opacity: .75; }
+
+.sec { padding: 92px 40px 100px; }
+.sec-hd { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 34px; }
+.sec-hd h3 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -.005em; }
+.sec-hd a { color: inherit; font-size: 14px; text-underline-offset: 4px; }
+.cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.card { position: relative; display: grid; gap: 14px; text-decoration: none; color: inherit; }
+.card .img { position: relative; aspect-ratio: 5 / 4; border-radius: 18px; overflow: hidden; }
+.card .img img { transition: transform 1.1s var(--ease); }
+.card .go { position: absolute; left: 50%; bottom: 16px; translate: -50% 140%; opacity: 0; transition: translate .6s var(--ease), opacity .4s; background: var(--ivoire); color: var(--encre); }
+.card:hover .img img, .card.hover .img img { transform: scale(1.06); }
+.card:hover .go, .card.hover .go { translate: -50% 0; opacity: 1; }
+.card .meta { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.card .meta b { font-weight: 500; font-size: 16px; }
+.card .meta span { font-variant-numeric: tabular-nums; font-size: 16px; }
+.card small { font-size: 13px; opacity: .68; }
+.card .blob { top: -16px; right: -12px; }
+
+.sell { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 80px; align-items: center; }
+.sell .img { height: 380px; border-radius: 160px 160px 18px 18px; overflow: hidden; }
+.sell h3 { margin: 0 0 14px; font-size: 22px; font-weight: 500; }
+.sell p { margin: 0 0 28px; max-width: 40ch; opacity: .78; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; margin-top: 8px; }
+.facts div { display: grid; gap: 6px; padding-top: 18px; border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent); }
+.facts b { font-weight: 300; font-size: 36px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.facts span { font-size: 13px; opacity: .7; }
+.ft { padding: 0 0 36px; min-height: 420px; display: grid; grid-template-rows: auto 1fr; }
+.ft .marquee { font-size: 15px; padding: 26px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.ft-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 40px; padding: 40px 40px 0; font-size: 14px; }
+.ft-grid p { margin: 0; }
+.ft-grid .mute { font-size: 13px; }
+
+/* ---------- Écran 2 : slider ---------- */
+.slide-screen { cursor: none; }
+.slide-screen .hd { position: relative; }
+.sl-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 80px 26px; }
+.sl-top h3 { margin: 0; font-size: 22px; font-weight: 500; }
+.sl-top .ctr { display: flex; align-items: center; gap: 18px; font-variant-numeric: tabular-nums; font-size: 14px; }
+.round { width: 44px; height: 44px; padding: 0; justify-content: center; background: transparent; color: inherit; box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 35%, transparent); }
+.round svg { width: 16px; height: 16px; }
+.track-wrap { position: relative; height: 470px; -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 76px, #000 calc(100% - 30px), transparent); mask-image: linear-gradient(90deg, transparent 0, #000 76px, #000 calc(100% - 30px), transparent); touch-action: pan-y; user-select: none; -webkit-user-select: none; outline: none; }
+.track { position: absolute; left: 80px; top: 0; display: flex; gap: 40px; will-change: transform; }
+.slide { position: relative; width: 600px; flex: 0 0 600px; display: grid; gap: 16px; transform-origin: 50% 40%; }
+.slide .img { height: 400px; border-radius: 22px; overflow: hidden; position: relative; }
+.slide .img img { width: 120%; max-width: none; margin-left: -10%; will-change: transform; }
+.slide .meta { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+.slide .meta b { font-weight: 500; font-size: 17px; }
+.slide .meta small { display: block; font-size: 13px; opacity: .68; font-weight: 400; }
+.slide .meta span { font-size: 17px; font-variant-numeric: tabular-nums; }
+.slide .blob { top: -22px; right: 24px; }
+.follower {
+  position: absolute; z-index: 30; top: 0; left: 0; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 12px; font-weight: 500; pointer-events: none;
+  background: var(--encre); color: var(--ivoire); transition: scale .35s var(--ease), opacity .3s; opacity: 0; scale: .4;
+}
+.follower.on { opacity: 1; scale: 1; }
+.follower.press { scale: .82; }
+.sl-dots { position: absolute; left: 80px; right: 80px; bottom: 24px; height: 2px; background: color-mix(in srgb, currentColor 18%, transparent); border-radius: 2px; }
+.sl-dots i { position: absolute; top: 0; left: 0; height: 2px; width: 20%; border-radius: 2px; background: currentColor; }
+
+/* ---------- Écran 3 : fiche ---------- */
+.fiche { display: grid; grid-template-columns: 660px minmax(0, 1fr); gap: 64px; padding: 8px 56px 0; }
+.crumb { font-size: 13px; opacity: .65; padding: 0 56px 18px; }
+.gal { position: relative; height: 470px; border-radius: 22px; overflow: hidden; }
+.gal img { position: absolute; inset: 0; opacity: 0; transform: scale(1.06); transition: opacity 1s var(--ease), transform 5.5s linear; }
+.gal img.on { opacity: 1; transform: scale(1); }
+.gal-bar { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.gal-bar button { all: unset; cursor: pointer; display: grid; gap: 8px; font-size: 12px; opacity: .6; transition: opacity .3s; }
+.gal-bar button.on, .gal-bar button:hover { opacity: 1; }
+.gal-bar button:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 4px; }
+.gal-bar u { position: relative; display: block; height: 2px; border-radius: 2px; background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
+.gal-bar u::after { content: ""; position: absolute; inset: 0; background: currentColor; transform: scaleX(0); transform-origin: 0 50%; }
+.gal-bar button.done u::after { transform: scaleX(1); }
+.gal-bar button.on u::after { animation: fill var(--dur, 4.5s) linear forwards; }
+@keyframes fill { to { transform: scaleX(1); } }
+.info { display: grid; gap: 22px; align-content: start; padding-top: 4px; }
+.info .where { font-size: 13px; opacity: .7; }
+.info h2 { margin: 6px 0 0; font-size: 26px; line-height: 1.2; font-weight: 500; letter-spacing: -.01em; text-wrap: balance; }
+.info .price { font-size: 22px; font-variant-numeric: tabular-nums; }
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; margin: 0; font-size: 14px; }
+.kv div { display: grid; }
+.kv dt { font-size: 12px; opacity: .62; }
+.kv dd { margin: 0; font-variant-numeric: tabular-nums; }
+.scales { display: grid; gap: 10px; font-size: 12px; }
+.scale { display: grid; grid-template-columns: 34px repeat(7, 1fr); gap: 3px; align-items: end; }
+.scale > span { opacity: .65; }
+.scale i { height: 8px; border-radius: 3px; font-style: normal; font-size: 0; }
+.scale i.hit { height: 22px; font-size: 11px; font-weight: 600; display: grid; place-items: center; color: var(--ivoire); }
+.e1{background:#2f8a5a}.e2{background:#5fa557}.e3{background:#a8c447}.e4{background:#efd23a}.e5{background:#f0aa3c}.e6{background:#e57137}.e7{background:#cd2f2f}
+.g1{background:#d7c9ee}.g2{background:#bea6e2}.g3{background:#a383d4}.g4{background:#8a62c5}.g5{background:#7143b2}.g6{background:#572c95}.g7{background:#3d1a6b}
+.scale i.e4.hit { color: var(--encre); }
+.cta-row { display: flex; gap: 12px; align-items: center; }
+.cta-row .mute { font-size: 13px; font-variant-numeric: tabular-nums; }
+
+/* ---------- Mobile ---------- */
+.m-hd { position: sticky; top: 0; z-index: 20; background: var(--s-bg); height: 92px; padding: 44px 22px 0; display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 600; }
+.m-hd .mark { display: flex; gap: 8px; align-items: center; }
+.m-hd .mark i { width: 16px; height: 16px; border-radius: 50% 50% 50% 8%; background: var(--s-fg); }
+.burger { width: 38px; height: 38px; border-radius: 50%; display: grid; place-content: center; gap: 4px; box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 35%, transparent); }
+.burger b { display: block; width: 14px; height: 1.5px; background: currentColor; }
+.m-hero { padding: 6px 22px 30px; display: grid; gap: 20px; }
+.m-hero .img { height: 360px; border-radius: 20px; overflow: hidden; animation: open 1.6s var(--ease) .5s both; }
+.m-hero h2 { margin: 0; text-wrap: balance; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 32px; line-height: 1.06; }
+.m-hero p { margin: 0; font-size: 14px; opacity: .78; }
+.m-band { padding: 14px 0; font-size: 12px; opacity: .75; }
+.m-sec { padding: 56px 22px 64px; }
+.m-sec h3 { margin: 0 0 20px; font-size: 19px; font-weight: 500; }
+.m-rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 0 -22px; padding: 18px 22px 4px; scrollbar-width: none; }
+.m-rail::-webkit-scrollbar { display: none; }
+.m-rail .card { flex: 0 0 270px; scroll-snap-align: start; scroll-margin-left: 22px; }
+.m-rail .card .blob { width: 78px; height: 78px; font-size: 11px; top: -14px; right: -6px; }
+.m-sell .img { height: 240px; border-radius: 120px 120px 16px 16px; overflow: hidden; margin-bottom: 24px; }
+.m-sell p { margin: 0 0 22px; font-size: 14px; opacity: .78; }
+.m-ft { padding: 0 22px 54px; font-size: 13px; display: grid; gap: 18px; }
+.m-ft .marquee { margin: 0 -22px; padding: 18px 0; font-size: 13px; border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+
+.mf-gal { position: relative; margin: 0 14px; }
+.mf-rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 22px; scrollbar-width: none; }
+.mf-rail::-webkit-scrollbar { display: none; }
+.mf-rail div { flex: 0 0 100%; height: 440px; scroll-snap-align: start; }
+.mf-gal .blob { top: -14px; right: 14px; width: 84px; height: 84px; }
+.mf-dots { position: absolute; bottom: 14px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; }
+.mf-dots i { width: 6px; height: 6px; border-radius: 6px; background: rgba(251,238,233,.6); transition: width .4s var(--ease), background .4s; }
+.mf-dots i.on { width: 22px; background: var(--ivoire); }
+.mf-info { padding: 26px 22px 130px; display: grid; gap: 14px; }
+.mf-info h2 { margin: 0; font-size: 23px; font-weight: 500; line-height: 1.2; }
+.mf-info .where { font-size: 13px; opacity: .7; }
+.mf-info .kv { font-size: 14px; }
+.mf-bar { position: absolute; left: 14px; right: 14px; bottom: 20px; z-index: 25; display: flex; justify-content: space-between; align-items: center; padding: 8px 8px 8px 22px; border-radius: 999px; background: rgba(251,238,233,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color: var(--encre); }
+.mf-bar b { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+/* ---------- Écran 5 : pied de page ---------- */
+.foot { position: absolute; inset: 0; display: grid; grid-template-rows: auto 1fr auto; }
+.foot .marquee { font-size: 15px; padding: 26px 0; border-bottom: 1px solid color-mix(in srgb, currentColor 18%, transparent); }
+.foot-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 60px; padding: 56px 72px 0; align-items: start; }
+.foot-main h3 { margin: 0 0 22px; font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 34px; line-height: 1.1; }
+.foot-main .btns { display: flex; gap: 20px; }
+.quote { margin: 0; display: grid; gap: 12px; max-width: 40ch; font-size: 15px; }
+.quote .stars { display: flex; gap: 3px; color: var(--pivoine); font-size: 14px; letter-spacing: 2px; }
+.quote footer { font-size: 13px; opacity: .66; }
+.foot-base { display: flex; justify-content: space-between; gap: 24px; padding: 0 72px 32px; font-size: 13px; opacity: .72; font-variant-numeric: tabular-nums; }
+
+@media (max-width: 900px) {
+  .intro { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .row2 { grid-template-columns: minmax(0, 1fr); gap: 72px; }
+  .anims { columns: 1; }
+  .spec { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .spec dd { margin-bottom: 14px; }
+  .board { gap: 64px; padding-block: 36px 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001s !important; animation-iteration-count: 1 !important; transition-duration: .2s !important; }
+  .marquee .run { animation: none !important; }
+}
+</style>
+
+<main class="board">
+  <header class="intro">
+    <div>
+      <h1><small>Cabinet Rimbault, maquettes 2e passe, novembre 2026</small>Couleur vivante</h1>
+      <p>Le site change de teinte à mesure qu'on le parcourt : on entre par le grenat de la devanture, on traverse le rose, la sauge et le sable, puis on ressort par le grenat. Les photos ont de la marge, le texte reste petit, et chaque bien teinte la page à sa couleur.</p>
+    </div>
+    <dl class="spec">
+      <dt>Couleurs, dans l'ordre du défilement</dt>
+      <dd class="swatches">
+        <div class="sw"><i style="background:#6e1a26"></i><b>Grenat</b><span>#6e1a26</span></div>
+        <div class="sw"><i style="background:#f2dcd7"></i><b>Rose pâle</b><span>#f2dcd7</span></div>
+        <div class="sw"><i style="background:#cfd8c6"></i><b>Sauge</b><span>#cfd8c6</span></div>
+        <div class="sw"><i style="background:#ecdcc3"></i><b>Sable</b><span>#ecdcc3</span></div>
+        <div class="sw"><i style="background:#3f0c15"></i><b>Grenat nuit</b><span>#3f0c15</span></div>
+        <div class="sw"><i style="background:#e59a8e"></i><b>Pivoine</b><span>#e59a8e</span></div>
+      </dd>
+      <dt>Typographies</dt>
+      <dd>Urbanist pour tout le texte, de 13 à 26 px. <span class="typo-sample">Bodoni Moda italique</span> pour une phrase par écran, jamais plus.</dd>
+      <dt>Animations</dt>
+      <dd>
+        <ul class="anims">
+          <li>Fond qui change de couleur au défilement</li>
+          <li>Ouverture de la photo par un masque arrondi</li>
+          <li>Slider de biens : glisser, inertie, ressort</li>
+          <li>Fond teinté par la photo active</li>
+          <li>Pastille « Exclusivité » qui respire</li>
+          <li>Boutons magnétiques</li>
+          <li>Bandeau « Asnières · Levallois · depuis 2009 »</li>
+          <li>Galerie en fondu avec barre de progression</li>
+        </ul>
+      </dd>
+    </dl>
+  </header>
+
+  <!-- 1. Accueil -->
+  <section class="plate" aria-label="Ouverture de l'accueil">
+    <div class="cap">
+      <p><b>Ouverture de l'accueil.</b> Faites défiler dans le cadre : le fond glisse du grenat au rose, à la sauge, au sable, et revient au grenat en pied de page. La première carte de bien est montrée survolée.</p>
+      <div class="tools"><button class="ghost-btn" id="replay-home" type="button">Rejouer le défilement</button></div>
+    </div>
+    <div class="stage" data-w="1160" data-h="720">
+      <div class="device desk">
+        <div class="chrome"><i></i><i></i><i></i><span>cabinetrimbault.fr</span></div>
+        <div class="screen" data-tone="grenat" id="home">
+          <div class="scroller tonescroll" id="home-scroll">
+            <header class="hd">
+              <a class="mark" href="#home"><i></i>Cabinet Rimbault</a>
+              <nav><a href="#home">Biens</a><a href="#home">Vendre</a><a href="#home">Le cabinet</a><a href="#home">Contact</a></nav>
+              <span class="tel">01 73 64 56 10</span>
+              <a class="pill sm magnet" href="#home"><span class="lbl">Faire estimer</span></a>
+            </header>
+            <section data-tone="grenat">
+              <div class="hero">
+                <div class="hero-txt">
+                  <h2>De part et d'autre de la Seine.</h2>
+                  <p>Une dizaine d'appartements à vendre à Asnières et à Levallois. Nous les avons tous visités, et c'est nous qui vous les faisons visiter.</p>
+                  <div class="ctas">
+                    <a class="pill magnet" href="#home"><span class="lbl">Voir les biens</span></a>
+                    <a class="pill line magnet" href="#home"><span class="lbl">Faire estimer</span></a>
+                  </div>
+                </div>
+                <div class="hero-ph">
+                  <img class="ph" src="img/bien-10129-3.jpg" alt="Jardin arboré d'un appartement à Asnières" draggable="false">
+                  <div class="chip">5 pièces avec jardins, Asnières, 644 000 €</div>
+                </div>
+              </div>
+              <div class="hero-band marquee"><div class="run"><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span></div></div>
+            </section>
+            <section data-tone="rose" class="sec">
+              <div class="sec-hd"><h3>Cinq biens à vendre</h3><a href="#home">Tout voir</a></div>
+              <div class="cards">
+                <a class="card hover" href="#home">
+                  <div class="img"><img class="ph" src="img/bien-10130-2.jpg" alt="" draggable="false"><span class="pill sm go">Voir le bien</span></div>
+                  <div class="meta"><b>3 pièces, terrasse de 37,8 m²</b><span>375 000 €</span></div>
+                  <small>Asnières-sur-Seine, 59,5 m²</small>
+                </a>
+                <a class="card" href="#home">
+                  <span class="blob">Exclu&shy;sivité</span>
+                  <div class="img"><img class="ph" src="img/bien-09345-1.jpg" alt="" draggable="false"><span class="pill sm go">Voir le bien</span></div>
+                  <div class="meta"><b>2 pièces au dernier étage</b><span>280 000 €</span></div>
+                  <small>Levallois-Perret, rue Collange, 35,65 m²</small>
+                </a>
+                <a class="card" href="#home">
+                  <div class="img"><img class="ph" src="img/bien-10131-2.jpg" alt="" draggable="false"><span class="pill sm go">Voir le bien</span></div>
+                  <div class="meta"><b>2 pièces, terrasse de 23,6 m²</b><span>300 000 €</span></div>
+                  <small>Asnières-sur-Seine, 46,6 m²</small>
+                </a>
+              </div>
+            </section>
+            <section data-tone="sauge" class="sec">
+              <div class="sell">
+                <div class="img"><img class="ph" style="object-position:50% 20%" src="img/devanture.jpg" alt="La devanture grenat du cabinet, boulevard Voltaire" draggable="false"></div>
+                <div>
+                  <h3>Vendre avec nous</h3>
+                  <p>La personne qui estime votre appartement est celle qui le fait visiter, qui négocie et qui vous accompagne jusque chez le notaire.</p>
+                  <a class="pill magnet" href="#home"><span class="lbl">Demander une estimation</span></a>
+                </div>
+              </div>
+            </section>
+            <section data-tone="sable" class="sec">
+              <div class="sec-hd"><h3>Le cabinet</h3><a href="#home">Nous trouver</a></div>
+              <div class="facts">
+                <div><b>2009</b><span>ouverture, boulevard Voltaire</span></div>
+                <div><b>4,9/5</b><span>sur 32 avis Google</span></div>
+                <div><b>10</b><span>biens au plus, en même temps</span></div>
+              </div>
+            </section>
+            <section data-tone="nuit" class="ft">
+              <div class="marquee"><div class="run"><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span></div></div>
+              <div class="ft-grid">
+                <div><p>117 boulevard Voltaire</p><p>92600 Asnières-sur-Seine</p></div>
+                <div><p>01 73 64 56 10</p><p class="mute">Avis Google 4,9/5</p></div>
+                <div><p>Biens</p><p>Vendre</p><p>Mentions légales</p></div>
+                <a class="pill magnet" href="#home"><span class="lbl">Nous appeler</span></a>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Slider -->
+  <section class="plate" aria-label="Présentation des biens">
+    <div class="cap">
+      <p><b>Les biens.</b> Attrapez une photo et lancez-la : le slider garde l'élan puis se pose. Le fond prend la teinte de la photo au centre.</p>
+    </div>
+    <div class="stage" data-w="1160" data-h="720">
+      <div class="device desk">
+        <div class="chrome"><i></i><i></i><i></i><span>cabinetrimbault.fr/biens</span></div>
+        <div class="screen slide-screen" id="slider" style="--s-bg:#d5dfcf;--s-fg:#2e1117">
+          <header class="hd">
+            <a class="mark" href="#slider"><i></i>Cabinet Rimbault</a>
+            <nav><a href="#slider">Biens</a><a href="#slider">Vendre</a><a href="#slider">Le cabinet</a><a href="#slider">Contact</a></nav>
+            <span class="tel">01 73 64 56 10</span>
+            <a class="pill sm magnet" href="#slider"><span class="lbl">Faire estimer</span></a>
+          </header>
+          <div class="sl-top">
+            <h3>Cinq biens à vendre</h3>
+            <div class="ctr">
+              <span id="sl-count">1 sur 5</span>
+              <button class="pill round magnet" id="sl-prev" type="button" aria-label="Bien précédent"><span class="lbl"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10 3 5 8l5 5"/></svg></span></button>
+              <button class="pill round magnet" id="sl-next" type="button" aria-label="Bien suivant"><span class="lbl"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 3 5 5-5 5"/></svg></span></button>
+            </div>
+          </div>
+          <div class="track-wrap" id="track-wrap" tabindex="0" aria-label="Biens, utilisez les flèches du clavier">
+            <div class="track" id="track">
+              <article class="slide" data-tint="#d5dfcf">
+                <div class="img"><img class="ph" src="img/bien-10129-1.jpg" alt="" draggable="false"></div>
+                <div class="meta"><b>5 pièces, deux terrasses et jardins<small>Asnières, quartier des Impressionnistes, 92,2 m²</small></b><span>644 000 €</span></div>
+              </article>
+              <article class="slide" data-tint="#d8dfea">
+                <span class="blob">Exclu&shy;sivité</span>
+                <div class="img"><img class="ph" src="img/bien-09345-1.jpg" alt="" draggable="false" style="object-position:50% 30%"></div>
+                <div class="meta"><b>2 pièces au dernier étage<small>Levallois-Perret, rue Collange, 35,65 m²</small></b><span>280 000 €</span></div>
+              </article>
+              <article class="slide" data-tint="#eadfd1">
+                <div class="img"><img class="ph" src="img/bien-10130-2.jpg" alt="" draggable="false"></div>
+                <div class="meta"><b>3 pièces, terrasse de 37,8 m²<small>Asnières-sur-Seine, 59,5 m²</small></b><span>375 000 €</span></div>
+              </article>
+              <article class="slide" data-tint="#f0dcd6">
+                <span class="blob">Exclu&shy;sivité</span>
+                <div class="img"><img class="ph" src="img/bien-09362-1.jpg" alt="" draggable="false"></div>
+                <div class="meta"><b>Studio avec balcon<small>Asnières, Gabriel-Péri, 33,16 m²</small></b><span>198 000 €</span></div>
+              </article>
+              <article class="slide" data-tint="#e4e1d6">
+                <div class="img"><img class="ph" src="img/bien-10131-2.jpg" alt="" draggable="false"></div>
+                <div class="meta"><b>2 pièces, terrasse de 23,6 m²<small>Asnières-sur-Seine, 46,6 m²</small></b><span>300 000 €</span></div>
+              </article>
+            </div>
+          </div>
+          <div class="sl-dots"><i id="sl-prog"></i></div>
+          <div class="follower" id="follower">Glisser</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Fiche -->
+  <section class="plate" aria-label="Extrait de fiche bien">
+    <div class="cap">
+      <p><b>Fiche bien.</b> La galerie avance seule en fondu ; à chaque photo, le fond se recolore légèrement.</p>
+    </div>
+    <div class="stage" data-w="1160" data-h="720">
+      <div class="device desk">
+        <div class="chrome"><i></i><i></i><i></i><span>cabinetrimbault.fr/biens/10129</span></div>
+        <div class="screen" id="fiche" style="--s-bg:#dfe2d3;--s-fg:#2e1117">
+          <header class="hd">
+            <a class="mark" href="#fiche"><i></i>Cabinet Rimbault</a>
+            <nav><a href="#fiche">Biens</a><a href="#fiche">Vendre</a><a href="#fiche">Le cabinet</a><a href="#fiche">Contact</a></nav>
+            <span class="tel">01 73 64 56 10</span>
+            <a class="pill sm magnet" href="#fiche"><span class="lbl">Faire estimer</span></a>
+          </header>
+          <div class="crumb">Biens, réf. 10129</div>
+          <div class="fiche">
+            <div>
+              <div class="gal" id="gal">
+                <img class="ph on" src="img/bien-10129-1.jpg" alt="Terrasse ouvrant sur le jardin" data-tint="#dfe2d3" draggable="false">
+                <img class="ph" src="img/bien-10129-2.jpg" alt="Séjour" data-tint="#ebe2d6" draggable="false">
+                <img class="ph" src="img/bien-10129-3.jpg" alt="Jardin arboré" data-tint="#d3dfd0" draggable="false">
+                <img class="ph" src="img/bien-10129-4.jpg" alt="Seconde terrasse le long du jardin" data-tint="#e3e6cf" draggable="false">
+              </div>
+              <div class="gal-bar" id="gal-bar">
+                <button type="button" class="on"><u></u>Terrasse</button>
+                <button type="button"><u></u>Séjour</button>
+                <button type="button"><u></u>Jardin</button>
+                <button type="button"><u></u>Seconde terrasse</button>
+              </div>
+            </div>
+            <div class="info">
+              <div>
+                <div class="where">Asnières-sur-Seine, quartier des Impressionnistes</div>
+                <h2>5 pièces avec deux terrasses et jardins</h2>
+              </div>
+              <div class="price">644 000 €</div>
+              <dl class="kv">
+                <div><dt>Surface</dt><dd>92,2 m²</dd></div>
+                <div><dt>Pièces</dt><dd>5, dont 4 chambres</dd></div>
+                <div><dt>Extérieurs</dt><dd>2 terrasses, jardins</dd></div>
+                <div><dt>Référence</dt><dd>10129</dd></div>
+              </dl>
+              <div class="scales">
+                <div class="scale"><span>DPE</span><i class="e1">A</i><i class="e2">B</i><i class="e3">C</i><i class="e4 hit">D</i><i class="e5">E</i><i class="e6">F</i><i class="e7">G</i></div>
+                <div class="scale"><span>GES</span><i class="g1">A</i><i class="g2 hit">B</i><i class="g3">C</i><i class="g4">D</i><i class="g5">E</i><i class="g6">F</i><i class="g7">G</i></div>
+                <span class="mute">189 kWh/m²/an</span>
+              </div>
+              <div class="cta-row">
+                <a class="pill grenat magnet" href="#fiche"><span class="lbl">Demander une visite</span></a>
+                <span class="mute">ou 01 73 64 56 10</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Mobiles -->
+  <section class="plate" aria-label="Écrans mobiles">
+    <div class="cap">
+      <p><b>Mobile.</b> À gauche, l'accueil (faites défiler, les biens glissent du doigt). À droite, une exclusivité : le fond reprend le bleu ardoise de la façade.</p>
+    </div>
+    <div class="row2">
+      <div class="stage" data-w="395" data-h="800">
+        <div class="device phone">
+          <div class="screen" data-tone="grenat">
+            <div class="scroller tonescroll" id="m-scroll">
+              <header class="m-hd"><span class="mark"><i></i>Cabinet Rimbault</span><span class="burger" aria-hidden="true"><b></b><b></b></span></header>
+              <section data-tone="grenat">
+                <div class="m-hero">
+                  <div class="img"><img class="ph" src="img/bien-10129-3.jpg" alt="" draggable="false"></div>
+                  <h2>De part et d'autre de la Seine.</h2>
+                  <p>Une dizaine d'appartements à vendre à Asnières et à Levallois, tous visités par nous.</p>
+                  <div><a class="pill" href="#m-scroll"><span class="lbl">Voir les biens</span></a></div>
+                </div>
+                <div class="m-band marquee"><div class="run"><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span></div></div>
+              </section>
+              <section data-tone="rose" class="m-sec">
+                <h3>Cinq biens à vendre</h3>
+                <div class="m-rail">
+                  <a class="card" href="#m-scroll"><span class="blob">Exclu&shy;sivité</span><div class="img"><img class="ph" src="img/bien-09345-2.jpg" alt="" draggable="false"></div><div class="meta"><b>2 pièces, Levallois</b><span>280 000 €</span></div></a>
+                  <a class="card" href="#m-scroll"><div class="img"><img class="ph" src="img/bien-10130-2.jpg" alt="" draggable="false"></div><div class="meta"><b>3 pièces, Asnières</b><span>375 000 €</span></div></a>
+                  <a class="card" href="#m-scroll"><div class="img"><img class="ph" src="img/bien-10131-2.jpg" alt="" draggable="false"></div><div class="meta"><b>2 pièces, Asnières</b><span>300 000 €</span></div></a>
+                </div>
+              </section>
+              <section data-tone="sauge" class="m-sec m-sell">
+                <div class="img"><img class="ph" src="img/devanture.jpg" alt="" draggable="false"></div>
+                <h3>Vendre avec nous</h3>
+                <p>La personne qui estime votre appartement est celle qui le fait visiter et qui négocie.</p>
+                <a class="pill" href="#m-scroll"><span class="lbl">Demander une estimation</span></a>
+              </section>
+              <section data-tone="sable" class="m-sec">
+                <h3>Le cabinet</h3>
+                <div class="facts" style="grid-template-columns:1fr 1fr;gap:20px"><div><b style="font-size:30px">2009</b><span>ouverture</span></div><div><b style="font-size:30px">4,9/5</b><span>32 avis Google</span></div></div>
+              </section>
+              <section data-tone="nuit" class="m-ft">
+                <div class="marquee"><div class="run"><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span></div></div>
+                <div><p style="margin:0">117 boulevard Voltaire<br>92600 Asnières-sur-Seine</p></div>
+                <p style="margin:0">01 73 64 56 10</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage" data-w="395" data-h="800">
+        <div class="device phone">
+          <div class="screen" id="mfiche" style="--s-bg:#d8dfea;--s-fg:#2e1117">
+            <div class="scroller">
+              <header class="m-hd"><span class="mark"><i></i>Cabinet Rimbault</span><span class="burger" aria-hidden="true"><b></b><b></b></span></header>
+              <div class="mf-gal">
+                <span class="blob">Exclu&shy;sivité</span>
+                <div class="mf-rail" id="mf-rail">
+                  <div data-tint="#d8dfea"><img class="ph" src="img/bien-09345-1.jpg" alt="Façade de l'immeuble, rue Collange" draggable="false"></div>
+                  <div data-tint="#e6e1dc"><img class="ph" src="img/bien-09345-2.jpg" alt="Intérieur" draggable="false"></div>
+                </div>
+                <div class="mf-dots" id="mf-dots"><i class="on"></i><i></i></div>
+              </div>
+              <div class="mf-info">
+                <div class="where">Levallois-Perret, rue Collange</div>
+                <h2>2 pièces au dernier étage</h2>
+                <dl class="kv">
+                  <div><dt>Surface</dt><dd>35,65 m²</dd></div>
+                  <div><dt>Référence</dt><dd>09.345</dd></div>
+                </dl>
+              </div>
+            </div>
+            <div class="mf-bar"><b>280 000 €</b><a class="pill grenat sm" href="#mfiche"><span class="lbl">Demander une visite</span></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Pied de page -->
+  <section class="plate" aria-label="Détail signature, pied de page">
+    <div class="cap">
+      <p><b>Pied de page.</b> Le bandeau défile lentement ; approchez la souris des boutons, ils viennent à vous.</p>
+    </div>
+    <div class="stage" data-w="1160" data-h="500">
+      <div class="device desk short">
+        <div class="chrome"><i></i><i></i><i></i><span>cabinetrimbault.fr</span></div>
+        <div class="screen" data-tone="nuit" id="foot">
+          <div class="foot">
+            <div class="marquee"><div class="run"><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span><span>Asnières</span><span>Levallois</span><span>depuis 2009</span></div></div>
+            <div class="foot-main">
+              <div>
+                <h3>Passez nous voir, boulevard Voltaire.</h3>
+                <div class="btns">
+                  <a class="pill magnet" href="#foot"><span class="lbl">Nous appeler</span></a>
+                  <a class="pill line magnet" href="#foot"><span class="lbl">Faire estimer</span></a>
+                </div>
+              </div>
+              <blockquote class="quote">
+                <span class="stars" aria-label="5 étoiles">★★★★★</span>
+                <p style="margin:0">Visites bien préparées, réponses rapides, et la même personne du premier rendez-vous à la signature.</p>
+                <footer>[avis exemple], note Google du cabinet 4,9/5 sur 32 avis</footer>
+              </blockquote>
+            </div>
+            <div class="foot-base">
+              <span>117 boulevard Voltaire, 92600 Asnières-sur-Seine</span>
+              <span>01 73 64 56 10</span>
+              <span>Mentions légales</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Mise à l'échelle des cadres ---- */
+  const stages = [...document.querySelectorAll('.stage')];
+  function fit() {
+    stages.forEach(st => {
+      const w = +st.dataset.w, h = +st.dataset.h;
+      const avail = st.parentElement.clientWidth;
+      const s = Math.min(1, avail / w);
+      st._s = s;
+      st.style.width = (w * s) + 'px';
+      st.style.height = (h * s) + 'px';
+      st.firstElementChild.style.transform = `scale(${s})`;
+    });
+  }
+  fit(); addEventListener('resize', fit);
+  const scaleOf = el => (el.closest('.stage') || {})._s || 1;
+
+  /* ---- Fond qui change au défilement ---- */
+  document.querySelectorAll('.tonescroll').forEach(sc => {
+    const screen = sc.closest('.screen');
+    const secs = [...sc.querySelectorAll('section[data-tone]')];
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const y = sc.scrollTop + sc.clientHeight * 0.55;
+      let tone = secs[0].dataset.tone;
+      secs.forEach(s => { if (s.offsetTop <= y) tone = s.dataset.tone; });
+      if (sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 4) tone = secs[secs.length - 1].dataset.tone;
+      if (screen.dataset.tone !== tone) screen.dataset.tone = tone;
+    };
+    sc.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+    update();
+  });
+
+  /* ---- Démo de défilement du cadre 1 ---- */
+  const hs = document.getElementById('home-scroll');
+  let demo = null;
+  function ease(t) { return t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
+  function glide(to, ms) {
+    return new Promise(res => {
+      const from = hs.scrollTop, t0 = performance.now();
+      const step = now => {
+        if (!demo) return res();
+        const t = Math.min(1, (now - t0) / ms);
+        hs.scrollTop = from + (to - from) * ease(t);
+        t < 1 ? requestAnimationFrame(step) : res();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  async function playDemo() {
+    if (reduce) return;
+    const token = {}; demo = token;
+    const secs = [...hs.querySelectorAll('section[data-tone]')];
+    for (let i = 1; i < secs.length && demo === token; i++) {
+      await glide(Math.min(secs[i].offsetTop - 64, hs.scrollHeight - hs.clientHeight), 1500);
+      await wait(1100);
+    }
+    if (demo === token) { await glide(0, 2200); }
+    if (demo === token) demo = null;
+  }
+  ['wheel', 'pointerdown', 'touchstart', 'keydown'].forEach(ev => hs.addEventListener(ev, () => { demo = null; hs.dataset.touched = '1'; }, { passive: true }));
+  document.getElementById('replay-home').addEventListener('click', () => { demo = null; hs.scrollTop = 0; setTimeout(playDemo, 300); });
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting) { io.disconnect(); setTimeout(() => { if (!hs.dataset.touched) playDemo(); }, 2200); }
+  }), { threshold: .6 });
+  io.observe(hs);
+
+  /* ---- Boutons magnétiques ---- */
+  const hasHover = matchMedia('(hover: hover)').matches;
+  if (hasHover && !reduce) {
+    document.querySelectorAll('.magnet').forEach(btn => {
+      const lbl = btn.querySelector('.lbl');
+      const zone = btn.closest('.screen') || document.body;
+      zone.addEventListener('pointermove', e => {
+        const r = btn.getBoundingClientRect();
+        const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        const dx = e.clientX - cx, dy = e.clientY - cy;
+        const s = scaleOf(btn);
+        const reach = (Math.max(r.width, r.height) / 2 + 44 * s);
+        if (Math.hypot(dx, dy) < reach) {
+          btn.classList.add('is-near');
+          btn.style.transform = `translate(${dx * .24 / s}px, ${dy * .34 / s}px)`;
+          if (lbl) lbl.style.transform = `translate(${dx * .07 / s}px, ${dy * .07 / s}px)`;
+        } else if (btn.classList.contains('is-near')) {
+          btn.classList.remove('is-near'); btn.style.transform = ''; if (lbl) lbl.style.transform = '';
+        }
+      });
+      zone.addEventListener('pointerleave', () => { btn.classList.remove('is-near'); btn.style.transform = ''; if (lbl) lbl.style.transform = ''; });
+    });
+  }
+
+  /* ---- Slider à inertie ---- */
+  const screen = document.getElementById('slider');
+  const wrap = document.getElementById('track-wrap');
+  const track = document.getElementById('track');
+  const slides = [...track.children];
+  const follower = document.getElementById('follower');
+  const count = document.getElementById('sl-count');
+  const prog = document.getElementById('sl-prog');
+  const STEP = 640, N = slides.length;
+  let x = 0, v = 0, target = 0, dragging = false, mode = 'spring';
+  let lastX = 0, lastT = 0, startX = 0, startPX = 0, active = -1;
+  const minX = -(N - 1) * STEP, maxX = 0;
+
+  function setActive(i) {
+    if (i === active) return; active = i;
+    screen.style.setProperty('--s-bg', slides[i].dataset.tint);
+    count.textContent = `${i + 1} sur ${N}`;
+    prog.style.transform = `translateX(${i * 100}%)`;
+  }
+  function render() {
+    track.style.transform = `translate3d(${x}px,0,0)`;
+    slides.forEach((sl, i) => {
+      const d = (x + i * STEP) / STEP;            // 0 = au centre de lecture
+      const ad = Math.min(Math.abs(d), 1.4);
+      sl.style.transform = `scale(${1 - ad * 0.07})`;
+      sl.style.opacity = 1 - Math.min(ad, 1) * 0.42;
+      sl.querySelector('img').style.transform = `translate3d(${-d * 46}px,0,0)`;
+    });
+    setActive(Math.max(0, Math.min(N - 1, Math.round(-x / STEP))));
+  }
+  function loop() {
+    if (!dragging) {
+      if (mode === 'glide') {
+        x += v; v *= 0.95;
+        if (x > maxX || x < minX || Math.abs(v) < 2.2) {
+          mode = 'spring';
+          target = Math.max(minX, Math.min(maxX, Math.round(x / STEP) * STEP));
+        }
+      } else {
+        v += (target - x) * 0.05; v *= 0.8; x += v;
+      }
+    }
+    render();
+    requestAnimationFrame(loop);
+  }
+  const goto = i => { target = -Math.max(0, Math.min(N - 1, i)) * STEP; mode = 'spring'; };
+
+  wrap.addEventListener('pointerdown', e => {
+    dragging = true; wrap.setPointerCapture(e.pointerId);
+    startPX = e.clientX; startX = x; lastX = e.clientX; lastT = performance.now(); v = 0;
+    follower.classList.add('press');
+  });
+  wrap.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const s = scaleOf(wrap);
+    let nx = startX + (e.clientX - startPX) / s;
+    if (nx > maxX) nx = maxX + (nx - maxX) * .35;
+    if (nx < minX) nx = minX + (nx - minX) * .35;
+    const now = performance.now(), dt = Math.max(1, now - lastT);
+    const inst = ((e.clientX - lastX) / s) / dt * 16.7;
+    v = v * .5 + inst * .5;
+    lastX = e.clientX; lastT = now; x = nx;
+  });
+  const release = () => {
+    if (!dragging) return; dragging = false; follower.classList.remove('press');
+    if (performance.now() - lastT > 90) v = 0;
+    if (Math.abs(v) > 3) { mode = 'glide'; v = Math.max(-70, Math.min(70, v)); }
+    else { mode = 'spring'; target = Math.max(minX, Math.min(maxX, Math.round(x / STEP) * STEP)); }
+  };
+  wrap.addEventListener('pointerup', release);
+  wrap.addEventListener('pointercancel', release);
+  wrap.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { goto(active + 1); e.preventDefault(); }
+    if (e.key === 'ArrowLeft') { goto(active - 1); e.preventDefault(); }
+  });
+  document.getElementById('sl-next').addEventListener('click', () => goto(active + 1));
+  document.getElementById('sl-prev').addEventListener('click', () => goto(active - 1));
+  wrap.addEventListener('wheel', e => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); mode = 'glide'; v = Math.max(-60, Math.min(60, v - e.deltaX * .25)); }
+  }, { passive: false });
+
+  // curseur « Glisser »
+  let fx = 0, fy = 0, tx = 0, ty = 0;
+  screen.addEventListener('pointermove', e => {
+    const r = screen.getBoundingClientRect(), s = scaleOf(screen);
+    tx = (e.clientX - r.left) / s; ty = (e.clientY - r.top) / s;
+    const overTrack = e.target.closest('#track-wrap');
+    follower.classList.toggle('on', !!overTrack && e.pointerType !== 'touch');
+    screen.style.cursor = overTrack ? 'none' : 'auto';
+  });
+  screen.addEventListener('pointerleave', () => follower.classList.remove('on'));
+  (function fl() { fx += (tx - fx) * .2; fy += (ty - fy) * .2; follower.style.transform = `translate(${fx}px,${fy}px)`; requestAnimationFrame(fl); })();
+  window.__slider = { goto, setX: nx => { x = nx; target = nx; v = 0; }, follow: (a, b) => { tx = fx = a; ty = fy = b; follower.classList.add('on'); } };
+
+  render(); loop();
+
+  /* ---- Galerie de la fiche ---- */
+  const fiche = document.getElementById('fiche');
+  const imgs = [...document.querySelectorAll('#gal img')];
+  const btns = [...document.querySelectorAll('#gal-bar button')];
+  let gi = 0, timer = null;
+  const DUR = 4500;
+  function show(i) {
+    gi = (i + imgs.length) % imgs.length;
+    imgs.forEach((im, k) => im.classList.toggle('on', k === gi));
+    btns.forEach((b, k) => {
+      b.classList.toggle('done', k < gi);
+      b.classList.remove('on'); void b.offsetWidth;
+      if (k === gi) b.classList.add('on');
+    });
+    fiche.style.setProperty('--s-bg', imgs[gi].dataset.tint);
+    clearTimeout(timer);
+    if (!reduce) timer = setTimeout(() => show(gi + 1), DUR);
+  }
+  btns.forEach((b, k) => b.addEventListener('click', () => show(k)));
+  show(0);
+
+  /* ---- Fiche mobile : points et teinte ---- */
+  const rail = document.getElementById('mf-rail');
+  const dots = [...document.querySelectorAll('#mf-dots i')];
+  const mf = document.getElementById('mfiche');
+  rail.addEventListener('scroll', () => {
+    const i = Math.round(rail.scrollLeft / rail.clientWidth);
+    dots.forEach((d, k) => d.classList.toggle('on', k === i));
+    mf.style.setProperty('--s-bg', rail.children[i].dataset.tint);
+  }, { passive: true });
+})();
+</script>

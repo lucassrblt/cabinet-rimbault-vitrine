@@ -1,25 +1,16 @@
 import type { MetadataRoute } from "next";
+import { getSiteUrl, isIndexable } from "@/lib/seo/metadata";
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
-  "https://cabinet-rimbault.fr";
+// Production (`SITE_ENV=production`, porte de maintenance levée) : tout est
+// ouvert, avec le plan du site.
+// Partout ailleurs (local, préproduction) : rien n'est indexable.
 
 export default function robots(): MetadataRoute.Robots {
-  // Gate de maintenance actif → bloquer toute indexation.
-  if (process.env.MAINTENANCE_MODE === "on") {
-    return {
-      rules: [{ userAgent: "*", disallow: "/" }],
-    };
+  if (!isIndexable()) {
+    return { rules: { userAgent: "*", disallow: "/" } };
   }
-
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/api/"],
-      },
-    ],
-    sitemap: `${SITE_URL}/sitemap.xml`,
+    rules: { userAgent: "*", allow: "/" },
+    sitemap: new URL("/sitemap.xml", getSiteUrl()).toString(),
   };
 }

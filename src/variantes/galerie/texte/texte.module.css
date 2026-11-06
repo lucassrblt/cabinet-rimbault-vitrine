@@ -1,0 +1,294 @@
+/* Pages de texte de la Galerie : le mur blanc chaud, une colonne de lecture
+   (60 à 70 signes), des intertitres discrets. Aucune photo, aucun aplat. */
+
+.page {
+  flex: 1 0 auto;
+  align-content: start;
+  padding-top: 104px;
+  padding-bottom: 128px;
+  row-gap: 48px;
+}
+
+.tete {
+  grid-column: 2 / 10;
+  min-width: 0;
+}
+
+.tete h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.chapo {
+  margin-top: 16px;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.chapo p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.maj {
+  margin: 14px 0 0;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.sommaire {
+  grid-column: 2 / 5;
+  align-self: start;
+  min-width: 0;
+  font-size: 12px;
+}
+
+.sommaire h2 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gris);
+}
+
+.sommaire ol {
+  margin: 0;
+  padding: 0 0 0 14px;
+  list-style: none;
+  border-left: 1px solid var(--filet);
+  display: grid;
+  gap: 8px;
+}
+
+.sommaire a {
+  color: var(--encre);
+  transition: color 0.3s;
+}
+
+.sommaire a:hover,
+.sommaire a:focus-visible {
+  color: var(--grenat);
+}
+
+.prose {
+  grid-column: 5 / 11;
+  min-width: 0;
+  max-width: 64ch;
+  font-size: 13.5px;
+  line-height: 1.65;
+}
+
+.tete + .prose {
+  grid-column: 2 / 9;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 14px;
+  text-wrap: pretty;
+}
+
+.prose ul {
+  padding: 0;
+  list-style: none;
+}
+
+.prose ul li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 6px;
+}
+
+.prose ul li::before {
+  content: "–";
+  position: absolute;
+  left: 0;
+  color: var(--gris);
+}
+
+.prose h2 {
+  margin: 48px 0 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--filet);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--gris);
+  scroll-margin-top: 24px;
+}
+
+.prose h3 {
+  margin: 24px 0 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.prose a {
+  display: inline;
+}
+
+.insec {
+  white-space: nowrap;
+}
+
+/* Barème : tableaux en lignes fines, chaque rangée en bloc sous 640 px. */
+.prose table {
+  width: 100%;
+  margin: 0 0 18px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose caption {
+  text-align: left;
+  font-size: 12px;
+  color: var(--gris);
+  padding-bottom: 8px;
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px 10px 0;
+  border-top: 1px solid var(--filet);
+  font-weight: 400;
+}
+
+.prose thead th {
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.prose .fin {
+  text-align: right;
+  padding-right: 0;
+}
+
+.boutonTexte {
+  font: inherit;
+  color: var(--grenat);
+  background: none;
+  border: 0;
+  padding: 0 0 3px;
+  cursor: pointer;
+  border-bottom: 1px solid currentColor;
+}
+
+.ecran {
+  margin-top: 0;
+}
+
+/* ---------- 404 ---------- */
+.introuvable {
+  flex: 1 0 auto;
+  align-content: center;
+  padding-block: 120px;
+}
+
+.introuvableTexte {
+  grid-column: 2 / 10;
+  min-width: 0;
+}
+
+.introuvableTexte h1 {
+  margin: 0;
+  max-width: 18em;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.introuvableTexte p {
+  margin: 14px 0 0;
+  font-size: 14px;
+}
+
+.introuvableTexte ul {
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+}
+
+@media (max-width: 899px) {
+  .page {
+    padding-top: 56px;
+    padding-bottom: 88px;
+    row-gap: 32px;
+  }
+
+  .tete,
+  .sommaire,
+  .prose,
+  .tete + .prose,
+  .introuvableTexte {
+    grid-column: 1 / -1;
+  }
+
+  .tete h1,
+  .introuvableTexte h1 {
+    font-size: 26px;
+  }
+
+  .introuvable {
+    padding-block: 72px 96px;
+  }
+}
+
+@media (max-width: 639px) {
+  .prose thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .prose tr {
+    display: block;
+    border-top: 1px solid var(--filet);
+    padding: 8px 0;
+  }
+
+  .prose th,
+  .prose td {
+    display: block;
+    border: 0;
+    padding: 2px 0;
+  }
+
+  .prose .fin {
+    text-align: left;
+  }
+
+  .prose td[data-label]::before {
+    content: attr(data-label) " : ";
+    color: var(--gris);
+  }
+}
+
+@media print {
+  .page {
+    padding: 0;
+  }
+
+  .boutonTexte,
+  .ecran {
+    display: none;
+  }
+}

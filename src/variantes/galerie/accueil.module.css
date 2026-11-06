@@ -1,0 +1,678 @@
+/* Accueil : le parcours d'une galerie. L'agence et sa devanture à l'entrée,
+   un petit accrochage des biens, puis deux salles de texte (vendre avec nous,
+   avis) et l'adresse. Une seule phrase serif agrandie par
+   section ; le vide sépare les salles, les murs changent de ton (blanc chaud,
+   crème, poudré), jamais de grenat ici : il reste au cabinet et au pied. */
+
+.accueil {
+  flex: 1 0 auto;
+}
+
+/* ---------- 1. L'agence d'abord ---------- */
+.insec {
+  white-space: nowrap;
+}
+
+.entree {
+  padding-top: 104px;
+  padding-bottom: 144px;
+  align-items: end;
+}
+
+.entreeTexte {
+  grid-column: 1 / 7;
+  min-width: 0;
+}
+
+.entreeTexte h1 {
+  margin: 0;
+  max-width: 23ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.entreeTexte > p:first-of-type {
+  margin: 22px 0 0;
+  max-width: 46ch;
+  color: var(--gris);
+  text-wrap: pretty;
+}
+
+.actions {
+  margin-top: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+}
+
+.note {
+  margin: 22px 0 0;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.note a {
+  transition: color 0.3s;
+}
+
+.note a:hover {
+  color: var(--encre);
+}
+
+.devanture {
+  grid-column: 8 / 13;
+  margin: 0;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: end;
+}
+
+.cadre {
+  grid-column: 1 / 4;
+  background: var(--creme);
+  padding: clamp(14px, 1.5vw, 22px);
+  box-shadow: inset 0 0 0 1px var(--filet);
+}
+
+.photo {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+}
+
+.devCartel {
+  grid-column: 4 / 6;
+  padding-left: 4px;
+}
+
+/* ---------- 2. L'exposition en cours ---------- */
+.expo {
+  padding-bottom: 152px;
+}
+
+.tete {
+  align-items: end;
+}
+
+.tete h2 {
+  grid-column: 1 / 7;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.tete h2 small {
+  display: block;
+  margin-top: 8px;
+  font: 400 12px / 1.5 var(--sans);
+  color: var(--gris);
+}
+
+.teteLien {
+  grid-column: 10 / 13;
+  justify-self: end;
+}
+
+.petit {
+  margin-top: 64px;
+  align-items: start;
+}
+
+.po {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  align-content: start;
+}
+
+.poPh {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.poCartel {
+  max-width: 220px;
+}
+
+.pa {
+  grid-column: 1 / 5;
+  margin-top: 112px;
+}
+
+.pb {
+  grid-column: 6 / 9;
+}
+
+.pb .poPh {
+  aspect-ratio: 3 / 4;
+}
+
+.pc {
+  grid-column: 10 / 13;
+  margin-top: 208px;
+}
+
+/* un seul bien : il prend la place d'une grande œuvre */
+.petit[data-n="1"] .pa {
+  grid-column: 1 / 8;
+  margin-top: 0;
+}
+
+/* ---------- Salles de texte ---------- */
+.mur {
+  background-color: var(--mur);
+  background-image: var(--grain);
+}
+
+.creme {
+  background-color: var(--creme);
+}
+
+.poudre {
+  background-color: var(--poudre);
+}
+
+.bloc {
+  padding-block: 104px;
+  align-items: start;
+  row-gap: 0;
+}
+
+.blocT {
+  grid-column: 1 / 4;
+  min-width: 0;
+}
+
+.blocT h2,
+h2.blocT {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* 3. Vendre avec nous : la phrase serif et l'estimation à gauche, trois
+   cartels à droite, calés en haut sur le titre */
+.vendreT {
+  grid-column: 1 / 6;
+  min-width: 0;
+}
+
+.vendreT h2 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.phrase {
+  margin: 18px 0 0;
+  max-width: 18ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.vendreTexte {
+  margin: 20px 0 0;
+  max-width: 42ch;
+  color: var(--gris);
+  text-wrap: pretty;
+}
+
+.metiers {
+  grid-column: 7 / 13;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0;
+  border-bottom: 1px solid var(--filet);
+}
+
+.metiers li {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  justify-items: start;
+  border-top: 1px solid var(--filet);
+  padding-block: 18px 22px;
+}
+
+.metiers h3 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--encre);
+}
+
+.metiers p {
+  margin: 0;
+  max-width: 52ch;
+  color: var(--gris);
+  text-wrap: pretty;
+}
+
+.metiers .u {
+  margin-top: 6px;
+}
+
+/* 4. Ce que disent nos clients : un avis en grand, deux à côté */
+.une {
+  grid-column: 4 / 9;
+  margin: 0;
+  min-width: 0;
+}
+
+.une blockquote {
+  margin: 0;
+}
+
+.une blockquote p {
+  margin: 0;
+  max-width: 34ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.4;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.une figcaption {
+  margin-top: 16px;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.uneNote {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+}
+
+.cote {
+  grid-column: 10 / 13;
+  min-width: 0;
+}
+
+.avis {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 28px;
+}
+
+.noteAvis {
+  margin: 12px 0 0;
+  max-width: 26ch;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.avis figure {
+  margin: 0;
+}
+
+.avis blockquote {
+  margin: 0;
+}
+
+.avis blockquote p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.avis figcaption {
+  margin-top: 8px;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.avisPied {
+  margin-top: 32px;
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.avisPied p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--gris);
+}
+
+/* 5. Passez nous voir */
+.venir {
+  padding-bottom: 120px;
+}
+
+.adresse {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  justify-items: start;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.adresse .u {
+  margin-top: 10px;
+}
+
+.adresse .u + .u {
+  margin-top: 4px;
+}
+
+.venir > :nth-child(2) {
+  grid-column: 4 / 7;
+}
+
+.venir > :nth-child(3) {
+  grid-column: 7 / 10;
+}
+
+.venir > :nth-child(4) {
+  grid-column: 10 / 13;
+}
+
+.lab {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--gris);
+}
+
+.telGrand {
+  white-space: nowrap;
+}
+
+.horaires {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.horaires div {
+  display: flex;
+  gap: 12px;
+}
+
+.horaires dt {
+  color: var(--gris);
+}
+
+.horaires dd {
+  margin: 0;
+}
+
+/* ---------- Entre 900 et 1100 px ---------- */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .entreeTexte {
+    grid-column: 1 / 7;
+  }
+
+  .devanture {
+    grid-column: 7 / 13;
+  }
+
+  .cadre {
+    grid-column: 1 / 5;
+  }
+
+  .devCartel {
+    grid-column: 5 / 7;
+  }
+
+  .vendreT {
+    grid-column: 1 / 7;
+  }
+
+  .metiers {
+    grid-column: 8 / 13;
+  }
+
+  .blocT {
+    grid-column: 1 / -1;
+    margin-bottom: 32px;
+  }
+
+  .une {
+    grid-column: 1 / 8;
+  }
+
+  .cote {
+    grid-column: 9 / 13;
+  }
+
+  .venir > :nth-child(2) {
+    grid-column: 1 / 5;
+  }
+
+  .venir > :nth-child(3) {
+    grid-column: 5 / 9;
+  }
+
+  .venir > :nth-child(4) {
+    grid-column: 9 / 13;
+  }
+}
+
+/* ---------- Mobile : une colonne ---------- */
+@media (max-width: 899px) {
+  .entree {
+    padding-top: 40px;
+    padding-bottom: 88px;
+    row-gap: 56px;
+  }
+
+  .entreeTexte,
+  .devanture {
+    grid-column: 1 / -1;
+  }
+
+  .entreeTexte h1 {
+    font-size: 25px;
+  }
+
+  .actions {
+    margin-top: 28px;
+  }
+
+  .devanture {
+    display: grid;
+    grid-template-columns: none;
+    gap: 14px;
+  }
+
+  .cadre {
+    grid-column: auto;
+    width: 74%;
+  }
+
+  .devCartel {
+    grid-column: auto;
+    padding-left: 0;
+    max-width: none;
+  }
+
+  .expo {
+    padding-bottom: 96px;
+  }
+
+  .tete {
+    row-gap: 12px;
+  }
+
+  .tete h2,
+  .teteLien {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .tete h2 {
+    font-size: 20px;
+  }
+
+  .petit {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 64px;
+  }
+
+  .pa,
+  .pb,
+  .pc {
+    grid-column: auto;
+    margin-top: 0;
+  }
+
+  .po {
+    gap: 10px;
+  }
+
+  .po[data-m="1"] {
+    width: 62%;
+    justify-self: end;
+  }
+
+  .po[data-m="2"] {
+    width: 84%;
+  }
+
+  .poCartel {
+    max-width: none;
+  }
+
+  .bloc {
+    padding-block: 72px;
+  }
+
+  .blocT {
+    grid-column: 1 / -1;
+    margin-bottom: 28px;
+  }
+
+  .blocT h2,
+  h2.blocT {
+    font-size: 20px;
+  }
+
+  .vendreT,
+  .metiers,
+  .une,
+  .cote {
+    grid-column: 1 / -1;
+  }
+
+  .phrase,
+  .uneNote {
+    font-size: 25px;
+  }
+
+  .metiers {
+    margin-top: 48px;
+  }
+
+  .une blockquote p {
+    font-size: 19px;
+  }
+
+  .cote {
+    margin-top: 40px;
+  }
+
+  .venir {
+    row-gap: 28px;
+    padding-bottom: 88px;
+  }
+
+  .venir > :nth-child(2),
+  .venir > :nth-child(3),
+  .venir > :nth-child(4) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Tablette : cartels à côté des photos, colonnes de texte ---------- */
+@media (min-width: 600px) and (max-width: 899px) {
+  .devanture {
+    grid-template-columns: minmax(0, 52%) minmax(0, 1fr);
+    align-items: end;
+    column-gap: 20px;
+  }
+
+  .cadre {
+    width: 100%;
+  }
+
+  .po {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 30%);
+    align-items: end;
+    column-gap: 20px;
+  }
+
+  .po[data-m="0"] {
+    width: 92%;
+  }
+
+  .po[data-m="1"] {
+    width: 70%;
+    grid-template-columns: minmax(160px, 34%) minmax(0, 1fr);
+  }
+
+  .po[data-m="1"] .poCartel {
+    grid-row: 1;
+    grid-column: 1;
+    text-align: right;
+    justify-self: end;
+  }
+
+  .po[data-m="1"] .poPh {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .po[data-m="2"] {
+    width: 84%;
+  }
+
+  .avis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .venir > :nth-child(2) {
+    grid-column: 1 / 5;
+  }
+
+  .venir > :nth-child(3) {
+    grid-column: 5 / 9;
+  }
+
+  .venir > :nth-child(4) {
+    grid-column: 9 / 13;
+  }
+
+  .venir > h2 {
+    grid-column: 1 / -1;
+  }
+}

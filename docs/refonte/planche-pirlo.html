@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Système graphique, Cabinet Rimbault</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ====== Jetons (copie conforme de 03-design-system-pirlo.md) ====== */
+:root{
+  --creme:#F8F2E9; --creme-soutenu:#EFE6D7; --lait:#FDFAF5;
+  --grenat:#5F1A24; --grenat-fonce:#47121A; --grenat-pale:#F0E2DC; --grenat-sur-fond:#D8BFB8;
+  --encre:#251C19; --encre-douce:#574A43; --gris:#6F6259;
+  --filet:#DED3C3; --filet-fort:#8C7D70;
+  --erreur:#9A3A22; --succes:#3D5A44;
+  --serif:"Spectral", Georgia, "Times New Roman", serif;
+  --sans:"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px; --s9:96px; --s10:128px;
+  --marge:20px; --gouttiere:16px; --conteneur:1200px;
+  --r-ctrl:3px; --r-badge:2px;
+  --duree:180ms; --courbe:cubic-bezier(.2,0,0,1);
+}
+@media (min-width:768px){ :root{ --marge:32px; --gouttiere:24px; } }
+@media (min-width:1280px){ :root{ --marge:40px; } }
+
+*,*::before,*::after{ box-sizing:border-box; }
+html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+body{ margin:0; background:var(--creme); color:var(--encre); font-family:var(--sans); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; font-kerning:normal; }
+img{ display:block; max-width:100%; }
+::selection{ background:var(--grenat-pale); color:var(--grenat-fonce); }
+:focus-visible{ outline:2px solid var(--encre); outline-offset:3px; }
+
+.conteneur{ max-width:calc(var(--conteneur) + 2*var(--marge)); margin-inline:auto; padding-inline:var(--marge); }
+.grille{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); column-gap:var(--gouttiere); }
+@media (min-width:768px){ .grille{ grid-template-columns:repeat(12,minmax(0,1fr)); } }
+
+/* ====== Typographie ====== */
+.t-display{ font-family:var(--serif); font-weight:300; font-size:40px; line-height:44px; letter-spacing:-.015em; }
+.t-h1{ font-family:var(--serif); font-weight:300; font-size:34px; line-height:40px; letter-spacing:-.01em; }
+.t-h2{ font-family:var(--serif); font-weight:400; font-size:28px; line-height:34px; letter-spacing:-.005em; }
+.t-h3{ font-family:var(--serif); font-weight:500; font-size:21px; line-height:28px; }
+.t-chapo{ font-family:var(--serif); font-weight:400; font-size:19px; line-height:30px; }
+.t-texte{ font-family:var(--serif); font-weight:400; font-size:17px; line-height:28px; }
+.t-ui{ font-family:var(--sans); font-size:16px; line-height:24px; }
+.t-petit{ font-family:var(--sans); font-size:14px; line-height:20px; }
+.t-legal{ font-family:var(--sans); font-size:13px; line-height:20px; }
+@media (min-width:768px){
+  .t-display{ font-size:60px; line-height:64px; }
+  .t-h1{ font-size:48px; line-height:54px; }
+  .t-h2{ font-size:36px; line-height:42px; }
+  .t-h3{ font-size:24px; line-height:30px; }
+  .t-chapo{ font-size:21px; line-height:32px; }
+  .t-texte{ font-size:18px; line-height:30px; }
+}
+.chiffres{ font-variant-numeric:lining-nums tabular-nums; }
+h1,h2,h3,p{ margin:0; }
+.mesure{ max-width:34em; }
+.doux{ color:var(--encre-douce); }
+.gris{ color:var(--gris); }
+
+/* ====== Liens ====== */
+.lien{ color:var(--grenat); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.22em;
+  text-decoration-color:color-mix(in srgb, var(--grenat) 45%, transparent); transition:text-decoration-color var(--duree) var(--courbe); }
+.lien:hover,.lien.is-hover{ text-decoration-color:var(--grenat); }
+.lien-discret{ position:relative; color:inherit; text-decoration:none; padding-bottom:2px; }
+.lien-discret::after{ content:""; position:absolute; bottom:0; left:0; right:0; height:1px; background-color:currentColor; transform:scaleX(0); transform-origin:left; transition:transform var(--duree) var(--courbe); }
+.lien-discret:hover::after,.lien-discret.is-hover::after,.lien-discret[aria-current="page"]::after{ transform:scaleX(1); }
+.lien-discret[aria-current="page"]{ color:var(--grenat); }
+
+/* ====== Boutons ====== */
+.btn{ display:inline-flex; align-items:center; justify-content:center; gap:10px; height:48px; padding:0 22px; border-radius:var(--r-ctrl);
+  font-family:var(--sans); font-weight:500; font-size:16px; line-height:1; letter-spacing:.005em; text-decoration:none; cursor:pointer;
+  border:1px solid transparent; transition:background-color var(--duree) var(--courbe), border-color var(--duree) var(--courbe), color var(--duree) var(--courbe); white-space:nowrap; }
+.btn svg{ width:18px; height:18px; stroke-width:1.5; }
+.btn-principal{ background:var(--grenat); color:var(--creme); }
+.btn-principal:hover,.btn-principal.is-hover{ background:var(--grenat-fonce); }
+.btn-secondaire{ background:transparent; color:var(--encre); border-color:var(--encre); }
+.btn-secondaire:hover,.btn-secondaire.is-hover{ background:var(--encre); color:var(--creme); }
+.btn-tertiaire{ height:auto; padding:0; background:none; color:var(--encre); border:0; border-radius:0; font-weight:500;
+  text-decoration:underline; text-underline-offset:.3em; text-decoration-thickness:1px; text-decoration-color:var(--filet-fort); }
+.btn-tertiaire:hover,.btn-tertiaire.is-hover{ text-decoration-color:var(--encre); }
+.btn.is-focus{ outline:2px solid var(--encre); outline-offset:3px; }
+.btn[disabled],.btn.is-disabled{ background:var(--creme-soutenu); color:var(--gris); border-color:var(--creme-soutenu); cursor:not-allowed; }
+.btn-compact{ height:40px; padding:0 16px; font-size:15px; }
+.sur-grenat .btn-secondaire{ color:var(--creme); border-color:var(--creme); }
+.sur-grenat .btn-secondaire:hover{ background:var(--creme); color:var(--grenat); }
+.sur-grenat :focus-visible{ outline-color:var(--creme); }
+
+/* ====== En-tête ====== */
+.entete{ border-bottom:1px solid var(--filet); background:var(--creme); position:sticky; top:0; z-index:10; }
+@media (min-width:1024px){ .entete{ position:static; } }
+.entete .conteneur{ display:flex; align-items:center; justify-content:space-between; height:64px; gap:var(--s5); }
+.marque{ display:flex; flex-direction:column; text-decoration:none; color:var(--grenat); }
+.marque b{ font-family:var(--serif); font-weight:500; font-size:21px; line-height:24px; letter-spacing:-.005em; }
+.marque span{ font-family:var(--sans); font-size:13px; line-height:16px; color:var(--encre-douce); letter-spacing:.01em; margin-top:2px; }
+.nav{ display:none; gap:28px; font-size:15px; font-weight:500; }
+.nav a{ color:var(--encre); }
+.entete-actions{ display:flex; align-items:center; gap:var(--s5); }
+.tel{ display:none; font-size:15px; font-weight:500; color:var(--encre); text-decoration:none; font-variant-numeric:lining-nums tabular-nums; }
+.menu-btn{ display:inline-flex; align-items:center; justify-content:center; min-width:48px; height:48px; padding:0 4px; margin-right:-4px; background:none; border:0; font:500 15px/1 var(--sans); color:var(--encre); cursor:pointer; }
+.court{ display:none; }
+@media (max-width:379px){ .long{ display:none; } .court{ display:inline; } .entete .conteneur{ gap:var(--s2); } .entete-actions{ gap:var(--s2) !important; } .entete .marque b{ font-size:18px; } .entete .btn-entete{ padding:0 12px !important; } .menu-btn{ margin-right:-8px; } }
+@media (min-width:1024px){
+  .entete .conteneur{ height:80px; }
+  .marque b{ font-size:23px; }
+  .nav{ display:flex; } .tel{ display:inline-flex; align-items:center; gap:8px; } .menu-btn{ display:none; }
+}
+.tel svg{ width:16px; height:16px; stroke-width:1.5; }
+@media (max-width:1023px){ .entete-actions{ gap:var(--s3); } }
+.marque b{ white-space:nowrap; }
+@media (max-width:479px){ .entete .marque span{ display:none; } .marque b{ font-size:20px; } }
+
+/* ====== Sections de la planche ====== */
+.section{ padding-block:var(--s8); border-top:1px solid var(--filet); }
+@media (min-width:768px){ .section{ padding-block:var(--s9); } }
+.section-tete{ grid-column:1/-1; margin-bottom:var(--s7); }
+.section-corps{ grid-column:1/-1; min-width:0; }
+@media (min-width:1024px){ .section-tete{ grid-column:1/4; margin-bottom:0; padding-right:var(--s5); } .section-corps{ grid-column:4/-1; } }
+.section-tete h2{ margin-bottom:var(--s3); }
+.section-tete p{ color:var(--encre-douce); }
+.spec{ font:400 13px/20px var(--sans); color:var(--gris); font-variant-numeric:lining-nums tabular-nums; }
+
+/* Ouverture */
+.ouverture{ padding-block:var(--s8) var(--s8); }
+@media (min-width:768px){ .ouverture{ padding-block:var(--s10) var(--s9); } }
+.ouverture h1{ grid-column:1/-1; max-width:13em; }
+.ouverture .chapo{ grid-column:1/-1; margin-top:var(--s6); max-width:32em; color:var(--encre-douce); }
+@media (min-width:1024px){ .ouverture h1{ grid-column:1/10; } .ouverture .chapo{ grid-column:1/8; } }
+
+/* Couleurs */
+.nuancier{ display:grid; grid-template-columns:1fr; gap:var(--s6) var(--gouttiere); }
+@media (min-width:600px){ .nuancier{ grid-template-columns:repeat(2,1fr); } }
+@media (min-width:1024px){ .nuancier{ grid-template-columns:repeat(3,1fr); } }
+.teinte .pastille{ height:112px; border-radius:2px; display:flex; align-items:flex-end; padding:var(--s3); font:500 13px/1 var(--sans); }
+.teinte.claire .pastille{ box-shadow:inset 0 0 0 1px var(--filet); }
+.teinte h3{ font:500 15px/22px var(--sans); margin-top:var(--s3); }
+.teinte p{ font:400 14px/20px var(--sans); color:var(--encre-douce); }
+.teinte .spec{ margin-top:var(--s1); }
+.proportions{ margin-top:var(--s7); }
+.proportions .barre{ display:flex; height:40px; border-radius:2px; overflow:hidden; border:1px solid var(--filet); }
+.proportions .barre span{ display:block; height:100%; }
+.proportions dl{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--s2) var(--gouttiere); margin:var(--s4) 0 0; }
+@media (min-width:768px){ .proportions dl{ grid-template-columns:repeat(4,1fr); } }
+.proportions dt{ font:500 14px/20px var(--sans); }
+.proportions dd{ margin:0; font:400 13px/20px var(--sans); color:var(--gris); }
+
+/* Contrastes */
+table.contrastes{ width:100%; border-collapse:collapse; margin-top:var(--s7); font:400 14px/20px var(--sans); font-variant-numeric:lining-nums tabular-nums; }
+.contrastes caption{ text-align:left; font:500 15px/22px var(--sans); padding-bottom:var(--s3); }
+.contrastes th,.contrastes td{ text-align:left; padding:10px 12px 10px 0; border-bottom:1px solid var(--filet); vertical-align:baseline; }
+.contrastes th{ font-weight:500; color:var(--encre-douce); }
+.contrastes td.n,.contrastes th.n{ text-align:right; padding-right:32px; }
+.echantillon{ display:inline-block; width:12px; height:12px; border-radius:1px; vertical-align:-1px; margin-right:8px; box-shadow:inset 0 0 0 1px rgba(37,28,25,.15); }
+.table-defile{ overflow-x:auto; }
+
+/* Typo */
+.specimen{ display:grid; grid-template-columns:1fr; gap:var(--s2); padding-block:var(--s5); border-bottom:1px solid var(--filet); }
+.specimen:first-child{ padding-top:0; }
+@media (min-width:768px){ .specimen{ grid-template-columns:200px 1fr; gap:var(--s5); align-items:baseline; } }
+.specimen .spec b{ display:block; font-weight:500; color:var(--encre); font-size:14px; }
+.familles{ display:grid; grid-template-columns:1fr; gap:var(--s6); margin-bottom:var(--s8); }
+@media (min-width:768px){ .familles{ grid-template-columns:1fr 1fr; } }
+.famille .alphabet{ font-size:44px; line-height:1.15; margin:var(--s3) 0 var(--s4); word-break:break-word; }
+.famille.serif .alphabet{ font-family:var(--serif); font-weight:300; }
+.famille.sans .alphabet{ font-family:var(--sans); font-weight:400; }
+.famille h3{ font:500 15px/22px var(--sans); }
+
+/* Composants */
+.bloc{ margin-bottom:var(--s8); }
+.bloc:last-child{ margin-bottom:0; }
+.bloc > h3{ font:500 15px/22px var(--sans); margin-bottom:var(--s5); padding-bottom:var(--s3); border-bottom:1px solid var(--filet); }
+.etats{ display:grid; grid-template-columns:1fr; gap:var(--s5) var(--gouttiere); }
+@media (min-width:480px){ .etats{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (min-width:1280px){ .etats{ grid-template-columns:repeat(4,minmax(0,1fr)); } }
+.etat .spec{ margin-top:var(--s2); }
+.rangee{ display:flex; flex-wrap:wrap; gap:var(--s3); align-items:center; }
+.rangee-large{ gap:var(--s5) var(--s6); }
+
+/* Champs */
+.champ{ display:flex; flex-direction:column; gap:6px; }
+.champ label{ font:500 15px/20px var(--sans); }
+.champ .aide{ font:400 14px/20px var(--sans); color:var(--gris); }
+.champ input,.champ select,.champ textarea{ height:48px; padding:0 14px; border:1px solid var(--filet-fort); border-radius:var(--r-ctrl); background:var(--lait);
+  font:400 16px/24px var(--sans); color:var(--encre); transition:border-color var(--duree) var(--courbe), box-shadow var(--duree) var(--courbe); width:100%; }
+.champ input::placeholder{ color:var(--gris); }
+.champ input:hover,.champ input.is-hover{ border-color:var(--encre-douce); }
+.champ input:focus-visible,.champ input.is-focus{ outline:none; border-color:var(--encre); box-shadow:0 0 0 1px var(--encre); }
+.champ.en-erreur input{ border-color:var(--erreur); box-shadow:0 0 0 1px var(--erreur); }
+.champ .msg-erreur{ display:flex; gap:6px; align-items:flex-start; font:500 14px/20px var(--sans); color:var(--erreur); }
+.champ .msg-erreur svg{ width:16px; height:16px; flex:none; margin-top:2px; stroke-width:1.75; }
+.champ input[disabled]{ background:var(--creme-soutenu); border-color:var(--filet); color:var(--gris); }
+.champs{ display:grid; grid-template-columns:1fr; gap:var(--s5) var(--gouttiere); }
+@media (min-width:768px){ .champs{ grid-template-columns:1fr 1fr; } }
+
+/* Choix (radio en rangées) */
+fieldset{ border:0; margin:0; padding:0; min-width:0; }
+legend{ font:500 15px/20px var(--sans); margin-bottom:var(--s3); padding:0; }
+.choix{ display:grid; grid-template-columns:1fr; gap:var(--s2); }
+/* Deux colonnes : 8 px entre rangées, 24 px entre colonnes, comme les champs (C-P7). */
+@media (min-width:600px){ .choix{ grid-template-columns:1fr 1fr; column-gap:var(--s5); } }
+.option{ position:relative; display:flex; align-items:center; gap:14px; min-height:56px; padding:14px 16px; border:1px solid var(--filet-fort); border-radius:var(--r-ctrl);
+  background:var(--lait); cursor:pointer; font:400 16px/22px var(--sans); transition:border-color var(--duree) var(--courbe), background-color var(--duree) var(--courbe); }
+.option input{ position:absolute; opacity:0; pointer-events:none; }
+.option .rond{ flex:none; width:18px; height:18px; border-radius:50%; border:1px solid var(--filet-fort); background:var(--lait); display:grid; place-items:center; }
+.option:hover{ border-color:var(--encre-douce); }
+.option.coche{ border-color:var(--grenat); box-shadow:inset 0 0 0 1px var(--grenat); background:var(--lait); }
+.option.coche .rond{ border-color:var(--grenat); }
+.option.coche .rond::after{ content:""; width:10px; height:10px; border-radius:50%; background:var(--grenat); }
+.option small{ display:block; font-size:14px; color:var(--gris); }
+
+/* Tunnel */
+.tunnel{ background:var(--lait); border:1px solid var(--filet); border-radius:2px; padding:var(--s5); }
+@media (max-width:767px){ .tunnel{ background:transparent; border:0; padding:0; } }
+@media (min-width:768px){ .tunnel{ padding:var(--s7); } }
+.etapes{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:0 0 var(--s2); padding:0; list-style:none; }
+.etapes li{ height:3px; background:var(--filet); border-radius:1px; }
+.etapes li.fait{ background:var(--encre); }
+.etapes li.encours{ background:var(--grenat); }
+.etapes-libelles{ display:none; grid-template-columns:repeat(4,1fr); gap:6px; font:400 13px/18px var(--sans); color:var(--gris); margin-bottom:var(--s6); }
+.etapes-libelles span.encours{ color:var(--encre); font-weight:500; }
+@media (min-width:768px){ .etapes-libelles{ display:grid; } }
+.etape-mobile{ font:400 14px/20px var(--sans); color:var(--encre-douce); margin-bottom:var(--s5); }
+@media (min-width:768px){ .etape-mobile{ display:none; } }
+.tunnel h4{ font-family:var(--serif); font-weight:400; font-size:28px; line-height:34px; margin:0 0 var(--s2); }
+.tunnel .intro{ color:var(--encre-douce); margin-bottom:var(--s6); }
+.tunnel-pied{ display:flex; justify-content:space-between; align-items:center; gap:var(--s4); margin-top:var(--s7); padding-top:var(--s5); border-top:1px solid var(--filet); }
+.retour{ display:inline-flex; align-items:center; gap:6px; font:500 15px/1 var(--sans); color:var(--encre); background:none; border:0; padding:8px 0; cursor:pointer; }
+.retour svg{ width:16px; height:16px; stroke-width:1.5; }
+
+/* Statuts */
+.statut{ display:inline-flex; align-items:center; height:24px; padding:0 8px; border-radius:var(--r-badge); font:500 13px/1 var(--sans); letter-spacing:.01em; white-space:nowrap; }
+.statut-vente{ border:1px solid var(--encre); color:var(--encre); }
+.statut-location{ border:1px solid var(--encre); color:var(--encre); background:var(--creme-soutenu); }
+.statut-offre{ background:var(--encre); color:var(--creme); }
+.statut-excl{ border:1px solid var(--grenat); color:var(--grenat); }
+.statut-vendu{ background:var(--creme-soutenu); color:var(--encre-douce); }
+
+/* Carte bien */
+.biens{ display:grid; grid-template-columns:1fr; gap:var(--s7) var(--gouttiere); }
+/* PropertyGrid (A21) : 1 colonne sous 768 px ; au-delà, selon le nombre de biens */
+@media (min-width:768px){
+  .biens[data-n="2"], .biens[data-n="4"]{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .biens[data-n="3"], .biens[data-n="5+"]{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .biens[data-n="1"] .bien{ display:grid; grid-template-columns:7fr 5fr; column-gap:var(--gouttiere); align-items:start; }
+  .biens[data-n="1"] .bien .titre{ margin-top:0; font-size:28px; line-height:34px; }
+}
+.bien{ display:block; color:inherit; text-decoration:none; }
+.bien figure{ margin:0; aspect-ratio:4/3; overflow:hidden; background:var(--creme-soutenu); position:relative; }
+.bien img{ width:100%; height:100%; object-fit:cover; transition:transform 600ms var(--courbe); }
+.bien:hover img{ transform:scale(1.02); }
+.bien figure .statut{ position:absolute; left:12px; top:12px; background:var(--creme); }
+.bien .titre{ margin-top:var(--s4); font-family:var(--serif); font-weight:400; font-size:20px; line-height:26px; }
+.bien .lieu{ margin-top:2px; font:400 14px/20px var(--sans); color:var(--encre-douce); }
+.bien:hover .titre{ text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:.2em; text-decoration-color:var(--filet-fort); }
+.bien .prix{ font-family:var(--serif); font-weight:500; font-size:20px; line-height:26px; white-space:nowrap; font-variant-numeric:lining-nums tabular-nums; }
+.bien .l3{ display:flex; justify-content:space-between; align-items:baseline; gap:var(--s4); margin-top:var(--s3); padding-top:var(--s3); border-top:1px solid var(--filet); }
+.bien .ref{ font:400 13px/20px var(--sans); color:var(--gris); font-variant-numeric:lining-nums tabular-nums; white-space:nowrap; }
+
+/* Fiche : prix, copro, énergie */
+.fiche{ display:grid; grid-template-columns:1fr; gap:var(--s7) var(--gouttiere); }
+@media (min-width:1024px){ .fiche{ grid-template-columns:5fr 7fr; } }
+.prix-bloc .montant{ font-family:var(--serif); font-weight:400; font-size:40px; line-height:44px; letter-spacing:-.01em; font-variant-numeric:lining-nums tabular-nums; }
+.prix-bloc .details{ margin-top:var(--s2); font:400 15px/22px var(--sans); color:var(--encre-douce); font-variant-numeric:lining-nums tabular-nums; }
+.prix-bloc .details p + p{ margin-top:2px; }
+.lignes{ margin:var(--s6) 0 0; padding:0; font:400 15px/22px var(--sans); font-variant-numeric:lining-nums tabular-nums; }
+.lignes div{ display:flex; justify-content:space-between; gap:var(--s4); padding:10px 0; border-bottom:1px solid var(--filet); }
+.lignes div:first-child{ border-top:1px solid var(--filet); }
+.lignes dt{ color:var(--encre-douce); }
+.lignes dd{ margin:0; text-align:right; }
+.lignes-titre{ font:500 15px/22px var(--sans); margin-top:var(--s6); }
+.lignes-titre + .lignes{ margin-top:var(--s3); }
+.mention{ font:400 13px/20px var(--sans); color:var(--gris); margin-top:var(--s3); }
+
+.energie{ display:grid; grid-template-columns:1fr; gap:var(--s6) var(--gouttiere); }
+@media (min-width:600px){ .energie{ grid-template-columns:1fr 1fr; } }
+.etiquette h4{ font:500 15px/22px var(--sans); margin:0 0 var(--s3); }
+@media (min-width:600px){ .etiquette h4{ min-height:44px; } }
+.echelle{ list-style:none; margin:0; padding:0; display:grid; gap:3px; }
+.echelle li{ display:flex; align-items:center; gap:10px; height:22px; }
+.echelle .b{ height:100%; display:flex; align-items:center; padding-left:8px; font:600 13px/1 var(--sans); color:#323232; border-radius:1px; }
+.echelle li.actif{ height:34px; }
+.echelle li.actif .b{ font-size:16px; box-shadow:0 0 0 2px var(--encre); }
+.echelle .val{ font:500 14px/1 var(--sans); font-variant-numeric:lining-nums tabular-nums; white-space:nowrap; }
+.echelle .val small{ font-weight:400; color:var(--encre-douce); font-size:13px; }
+.couts{ grid-column:1/-1; padding-top:var(--s5); border-top:1px solid var(--filet); font:400 15px/24px var(--sans); }
+.couts strong{ font-weight:500; font-variant-numeric:lining-nums tabular-nums; }
+.couts p + p{ margin-top:var(--s2); }
+
+/* Nav mobile */
+.cadre-mobile{ width:100%; max-width:375px; border:1px solid var(--filet); background:var(--creme); }
+.menu-plein{ padding:0 var(--marge) var(--s6); }
+.menu-plein .haut{ display:flex; justify-content:space-between; align-items:center; height:64px; margin:0 calc(-1*var(--marge)); padding:0 var(--marge); border-bottom:1px solid var(--filet); }
+.menu-plein ul{ list-style:none; margin:var(--s5) 0 0; padding:0; }
+.menu-plein li a{ display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid var(--filet); font-family:var(--serif); font-size:26px; line-height:32px; color:var(--encre); text-decoration:none; }
+.menu-plein li a[aria-current="page"]{ color:var(--grenat); }
+.menu-plein .bas{ margin-top:var(--s6); display:grid; gap:var(--s3); }
+.menu-plein .bas .btn{ width:100%; }
+.menu-plein address{ font-style:normal; margin-top:var(--s5); font:400 14px/20px var(--sans); color:var(--encre-douce); }
+
+.duo{ display:grid; grid-template-columns:1fr; gap:var(--s7) var(--gouttiere); }
+@media (min-width:1024px){ .duo{ grid-template-columns:375px 1fr; } }
+
+/* Interdits */
+.interdits{ list-style:none; padding:0; margin:0; columns:1; column-gap:var(--gouttiere); }
+@media (min-width:768px){ .interdits{ columns:2; } }
+.interdits li{ break-inside:avoid; padding:10px 0; border-bottom:1px solid var(--filet); font:400 15px/22px var(--sans); }
+
+/* Pied de page */
+.pied{ background:var(--grenat); color:var(--creme); padding-block:var(--s8) var(--s6); }
+@media (min-width:768px){ .pied{ padding-block:var(--s9) var(--s6); } }
+.pied a{ color:var(--creme); }
+.pied .marque-pied{ grid-column:1/-1; font-family:var(--serif); font-weight:400; font-size:28px; line-height:34px; margin-bottom:var(--s7); max-width:16em; }
+@media (min-width:768px){ .pied .marque-pied{ font-size:36px; line-height:42px; } }
+.pied .col{ grid-column:1/-1; margin-bottom:var(--s6); font:400 15px/24px var(--sans); }
+@media (min-width:768px){ .pied .col{ grid-column:span 4; } }
+.pied .col h3{ font:500 15px/24px var(--sans); color:var(--grenat-sur-fond); margin-bottom:var(--s2); }
+.pied .col ul{ list-style:none; margin:0; padding:0; }
+.pied .col li + li{ margin-top:4px; }
+.pied .col a{ text-decoration:none; }
+.pied .col a:hover{ text-decoration:underline; text-underline-offset:.22em; }
+.pied .legal{ grid-column:1/-1; margin-top:var(--s5); padding-top:var(--s5); border-top:1px solid rgba(248,242,233,.22); font:400 13px/20px var(--sans); color:var(--grenat-sur-fond); }
+.pied .legal p + p{ margin-top:var(--s1); }
+.pied .legal h3{ font:500 13px/20px var(--sans); color:var(--grenat-sur-fond); margin-bottom:var(--s1); }
+.pied .copyright{ grid-column:1/-1; margin-top:var(--s5); font:400 13px/20px var(--sans); color:var(--grenat-sur-fond); font-variant-numeric:lining-nums tabular-nums; }
+.pied address{ font-style:normal; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  </defs>
+</svg>
+
+<header class="entete">
+  <div class="conteneur">
+    <a class="marque" href="#">
+      <b>Cabinet Rimbault</b>
+      <span>Asnières-sur-Seine, depuis 2009</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      <a class="lien-discret" href="#" aria-current="page">Nos biens</a>
+      <a class="lien-discret" href="#">Vendre</a>
+      <a class="lien-discret" href="#">Louer</a>
+      <a class="lien-discret" href="#">Le cabinet</a>
+      <a class="lien-discret" href="#">Contact</a>
+    </nav>
+    <div class="entete-actions">
+      <a class="tel" href="tel:+33173645610"><svg aria-hidden="true"><use href="#i-phone"/></svg>01 73 64 56 10</a>
+      <a class="btn btn-secondaire btn-compact btn-entete" href="#"><span class="long">Faire estimer</span><span class="court">Estimer</span></a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-mobile">Menu</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="ouverture conteneur">
+    <div class="grille">
+      <h1 class="t-display">Le système graphique du Cabinet Rimbault, tel qu’il sera construit.</h1>
+      <p class="chapo t-chapo">Un grenat rare, un crème qui sert de page, deux familles de caractères et très peu d’ornements. Chaque valeur ci-dessous est un jeton du fichier <code style="font-family:var(--sans);font-size:.85em">globals.css</code> à venir.</p>
+    </div>
+  </section>
+
+  <!-- COULEURS -->
+  <section class="section" id="couleurs">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Couleurs</h2>
+        <p class="t-petit mesure">Le crème est la page, l’encre est le texte, le grenat signe. Aucune autre couleur n’apparaît hors des étiquettes énergie.</p>
+      </div>
+      <div class="section-corps">
+        <div class="nuancier">
+          <div class="teinte"><div class="pastille" style="background:var(--grenat);color:var(--creme)">Aa</div><h3>Grenat</h3><p>Bouton principal, page active, logotype, pied de page.</p><p class="spec">#5F1A24, sur crème 11,37:1</p></div>
+          <div class="teinte"><div class="pastille" style="background:var(--grenat-fonce);color:var(--creme)">Aa</div><h3>Grenat profond</h3><p>Survol et appui du bouton principal.</p><p class="spec">#47121A, sur crème 13,78:1</p></div>
+          <div class="teinte claire"><div class="pastille" style="background:var(--grenat-pale);color:var(--grenat-fonce)">Aa</div><h3>Grenat pâle</h3><p>Sélection de texte, fond d’option survolée. Jamais en aplat de section.</p><p class="spec">#F0E2DC</p></div>
+          <div class="teinte claire"><div class="pastille" style="background:var(--creme);color:var(--encre)">Aa</div><h3>Crème</h3><p>Fond de toutes les pages.</p><p class="spec">#F8F2E9, encre dessus 14,99:1</p></div>
+          <div class="teinte claire"><div class="pastille" style="background:var(--creme-soutenu);color:var(--encre)">Aa</div><h3>Crème soutenu</h3><p>Section alternée, fond d’illustration, état désactivé.</p><p class="spec">#EFE6D7, encre dessus 13,48:1</p></div>
+          <div class="teinte claire"><div class="pastille" style="background:var(--lait);color:var(--encre)">Aa</div><h3>Lait</h3><p>Intérieur des champs et du tunnel d’estimation.</p><p class="spec">#FDFAF5, encre dessus 16,02:1</p></div>
+          <div class="teinte"><div class="pastille" style="background:var(--encre);color:var(--creme)">Aa</div><h3>Encre</h3><p>Texte courant, titres, bouton secondaire.</p><p class="spec">#251C19</p></div>
+          <div class="teinte"><div class="pastille" style="background:var(--encre-douce);color:var(--creme)">Aa</div><h3>Encre douce</h3><p>Chapôs, texte secondaire, libellés de données.</p><p class="spec">#574A43, sur crème 7,65:1</p></div>
+          <div class="teinte"><div class="pastille" style="background:var(--gris);color:var(--creme)">Aa</div><h3>Gris taupe</h3><p>Aides de champ, références, mentions. Plus clair est interdit pour du texte.</p><p class="spec">#6F6259, sur crème 5,29:1</p></div>
+          <div class="teinte claire"><div class="pastille" style="background:var(--filet);color:var(--encre)">Aa</div><h3>Filet</h3><p>Séparateurs décoratifs uniquement.</p><p class="spec">#DED3C3</p></div>
+          <div class="teinte"><div class="pastille" style="background:var(--filet-fort);color:var(--creme)">Aa</div><h3>Filet fort</h3><p>Bordure des champs et des options (3:1 exigé).</p><p class="spec">#8C7D70, sur crème 3,57:1</p></div>
+          <div class="teinte"><div class="pastille" style="background:var(--erreur);color:var(--creme)">Aa</div><h3>Brique</h3><p>Messages d’erreur, toujours avec une icône et un texte.</p><p class="spec">#9A3A22, sur crème 6,28:1</p></div>
+        </div>
+
+        <div class="proportions">
+          <div class="barre" role="img" aria-label="Proportions : crème 78 %, encre 14 %, crème soutenu 5 %, grenat 3 %">
+            <span style="width:78%;background:var(--creme)"></span>
+            <span style="width:14%;background:var(--encre)"></span>
+            <span style="width:5%;background:var(--creme-soutenu)"></span>
+            <span style="width:3%;background:var(--grenat)"></span>
+          </div>
+          <dl>
+            <div><dt>Crème, 78 %</dt><dd>surface de lecture</dd></div>
+            <div><dt>Encre, 14 %</dt><dd>texte et traits</dd></div>
+            <div><dt>Crème soutenu, 5 %</dt><dd>alternance, illustrations</dd></div>
+            <div><dt>Grenat, 3 %</dt><dd>hors pied de page</dd></div>
+          </dl>
+        </div>
+
+        <div class="table-defile">
+        <table class="contrastes">
+          <caption>Contrastes mesurés (WCAG 2.2, formule de luminance relative)</caption>
+          <thead><tr><th>Texte</th><th>Fond</th><th class="n">Ratio</th><th>Usage autorisé</th></tr></thead>
+          <tbody>
+            <tr><td><span class="echantillon" style="background:#251C19"></span>Encre</td><td>Crème</td><td class="n">14,99:1</td><td>Tout texte</td></tr>
+            <tr><td><span class="echantillon" style="background:#574A43"></span>Encre douce</td><td>Crème soutenu</td><td class="n">6,88:1</td><td>Tout texte</td></tr>
+            <tr><td><span class="echantillon" style="background:#6F6259"></span>Gris taupe</td><td>Crème soutenu</td><td class="n">4,76:1</td><td>Texte ≥ 13 px</td></tr>
+            <tr><td><span class="echantillon" style="background:#5F1A24"></span>Grenat</td><td>Crème</td><td class="n">11,37:1</td><td>Liens, titres</td></tr>
+            <tr><td><span class="echantillon" style="background:#F8F2E9"></span>Crème</td><td>Grenat</td><td class="n">11,37:1</td><td>Bouton, pied de page</td></tr>
+            <tr><td><span class="echantillon" style="background:#D8BFB8"></span>Rosé de pied</td><td>Grenat</td><td class="n">7,27:1</td><td>Mentions du pied</td></tr>
+            <tr><td><span class="echantillon" style="background:#9A3A22"></span>Brique</td><td>Lait</td><td class="n">6,72:1</td><td>Erreurs</td></tr>
+            <tr><td><span class="echantillon" style="background:#8C7D70"></span>Filet fort</td><td>Lait</td><td class="n">3,82:1</td><td>Bordures de champ</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHIE -->
+  <section class="section" id="typographie">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Typographie</h2>
+        <p class="t-petit mesure">Spectral pour ce qui se lit, Hanken Grotesk pour ce qui s’utilise. Échelle classique de Bringhurst, en pixels entiers.</p>
+      </div>
+      <div class="section-corps">
+        <div class="familles">
+          <div class="famille serif">
+            <h3>Spectral, Production Type (Paris), licence OFL</h3>
+            <p class="alphabet">Aa Éé Çç 1 2 3 4 5 6 7 8 9 0</p>
+            <p class="t-petit doux">Titres, textes de présentation, prix, citations d’avis. Graisses 300, 400, 500 ; italique 400 réservée aux citations.</p>
+          </div>
+          <div class="famille sans">
+            <h3>Hanken Grotesk, Alfredo Marco Pradil, licence OFL</h3>
+            <p class="alphabet">Aa Éé Çç 1 2 3 4 5 6 7 8 9 0</p>
+            <p class="t-petit doux">Navigation, boutons, formulaires, données des biens, mentions légales. Graisses 400 et 500, 600 pour l’étiquette énergie.</p>
+          </div>
+        </div>
+
+        <div class="specimen"><p class="spec"><b>Ouverture</b>Spectral 300, 60/64, −1,5 %<br>mobile 40/44</p><p class="t-display">Vendre à Asnières, sans surenchère.</p></div>
+        <div class="specimen"><p class="spec"><b>Titre de page</b>Spectral 300, 48/54, −1 %<br>mobile 34/40</p><p class="t-h1">Appartement de trois pièces aux Impressionnistes</p></div>
+        <div class="specimen"><p class="spec"><b>Titre de section</b>Spectral 400, 36/42<br>mobile 28/34</p><p class="t-h2">Ce que nous vendons en ce moment</p></div>
+        <div class="specimen"><p class="spec"><b>Sous-titre</b>Spectral 500, 24/30<br>mobile 21/28</p><p class="t-h3">Un seul interlocuteur, du premier rendez-vous au notaire.</p></div>
+        <div class="specimen"><p class="spec"><b>Chapô</b>Spectral 400, 21/32<br>mobile 19/30</p><p class="t-chapo doux mesure">Nous estimons, vendons et louons des appartements et des maisons à Asnières-sur-Seine et dans les communes voisines depuis 2009.</p></div>
+        <div class="specimen"><p class="spec"><b>Texte courant</b>Spectral 400, 18/30<br>mobile 17/28, 60 à 72 signes</p><p class="t-texte mesure">La personne qui estime votre bien est celle qui le fait visiter, le négocie et vous suit jusqu’à la signature. Pas de transfert de dossier, pas de standard. Si nous ne croyons pas au prix espéré, nous le disons, quitte à ne pas prendre le mandat.</p></div>
+        <div class="specimen"><p class="spec"><b>Interface</b>Hanken 400 et 500, 16/24</p><p class="t-ui">Votre bien, ses caractéristiques, vos coordonnées. Quatre étapes, environ trois minutes.</p></div>
+        <div class="specimen"><p class="spec"><b>Données</b>Hanken 400, 14/20<br>chiffres alignés</p><p class="t-petit chiffres">Asnières-sur-Seine, Impressionnistes &nbsp; Réf. 10129 &nbsp; 92,2 m² &nbsp; 5 pièces</p></div>
+        <div class="specimen"><p class="spec"><b>Mentions</b>Hanken 400, 13/20<br>jamais en dessous</p><p class="t-legal gris mesure">Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France. Garant financier : LLOYD’S France.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOUTONS -->
+  <section class="section" id="actions">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Boutons et liens</h2>
+        <p class="t-petit mesure">Trois niveaux, un seul bouton grenat par écran, toujours dans le contenu de la page. Le libellé dit ce qui va se passer.</p>
+      </div>
+      <div class="section-corps">
+        <div class="bloc">
+          <h3>Principal, grenat plein</h3>
+          <div class="etats">
+            <div class="etat"><a class="btn btn-principal" href="#">Faire estimer</a><p class="spec">Repos</p></div>
+            <div class="etat"><a class="btn btn-principal is-hover" href="#">Faire estimer</a><p class="spec">Survol, grenat profond</p></div>
+            <div class="etat"><a class="btn btn-principal is-focus" href="#">Faire estimer</a><p class="spec">Focus clavier, contour encre</p></div>
+            <div class="etat"><button class="btn btn-principal" disabled>Envoyer la demande</button><p class="spec">Désactivé</p></div>
+          </div>
+        </div>
+        <div class="bloc">
+          <h3>Secondaire, contour encre</h3>
+          <div class="etats">
+            <div class="etat"><a class="btn btn-secondaire" href="#">Voir nos biens</a><p class="spec">Repos</p></div>
+            <div class="etat"><a class="btn btn-secondaire is-hover" href="#">Voir nos biens</a><p class="spec">Survol, encre pleine</p></div>
+            <div class="etat"><a class="btn btn-secondaire is-focus" href="#">Voir nos biens</a><p class="spec">Focus clavier</p></div>
+            <div class="etat"><a class="btn btn-secondaire btn-compact" href="tel:+33173645610"><svg aria-hidden="true"><use href="#i-phone"/></svg>Appeler</a><p class="spec">Compact 40 px, icône</p></div>
+          </div>
+        </div>
+        <div class="bloc">
+          <h3>Secondaire compact de l’en-tête</h3>
+          <div class="etats">
+            <div class="etat"><a class="btn btn-secondaire btn-compact" href="#">Faire estimer</a><p class="spec">Repos, 40 px, fond transparent</p></div>
+            <div class="etat"><a class="btn btn-secondaire btn-compact is-hover" href="#">Faire estimer</a><p class="spec">Survol, encre pleine, 180 ms</p></div>
+            <div class="etat"><a class="btn btn-secondaire btn-compact is-focus" href="#">Faire estimer</a><p class="spec">Focus clavier</p></div>
+            <div class="etat"><a class="btn btn-secondaire btn-compact" href="#">Estimer</a><p class="spec">Sous 380 px</p></div>
+          </div>
+          <p class="mention">Le bouton d’estimation de l’en-tête n’est jamais grenat : le seul bouton grenat d’un écran appartient au contenu. Il ne devient principal que dans le menu mobile ouvert.</p>
+        </div>
+        <div class="bloc">
+          <h3>Tertiaire et liens</h3>
+          <div class="rangee rangee-large">
+            <a class="btn btn-tertiaire" href="#">Voir les biens vendus</a>
+            <a class="btn btn-tertiaire is-hover" href="#">Voir les biens vendus</a>
+            <p class="t-texte">Le détail figure dans notre <a class="lien" href="#">barème d’honoraires</a>, consultable sans téléchargement.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMULAIRES -->
+  <section class="section" id="formulaires">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Formulaires et tunnel d’estimation</h2>
+        <p class="t-petit mesure">Libellé au-dessus, toujours visible. L’erreur dit quoi corriger. La progression est un vrai déroulé en quatre étapes.</p>
+      </div>
+      <div class="section-corps">
+        <div class="bloc">
+          <h3>Champs</h3>
+          <div class="champs">
+            <div class="champ"><label for="c1">Code postal</label><input id="c1" inputmode="numeric" value="92600"><span class="aide">Cinq chiffres.</span></div>
+            <div class="champ"><label for="c2">Surface habitable</label><input id="c2" class="is-focus" placeholder="en m²"><span class="aide">Loi Carrez si vous la connaissez.</span></div>
+            <div class="champ en-erreur"><label for="c3">Adresse e-mail</label><input id="c3" value="claire.martin@" aria-invalid="true" aria-describedby="e3"><span class="msg-erreur" id="e3"><svg aria-hidden="true"><use href="#i-alert"/></svg>Il manque la fin de l’adresse, par exemple claire.martin@orange.fr.</span></div>
+            <div class="champ"><label for="c4">Ville</label><input id="c4" value="Asnières-sur-Seine" disabled><span class="aide">Déduite du code postal.</span></div>
+          </div>
+        </div>
+
+        <div class="bloc">
+          <h3>Étape du tunnel</h3>
+          <div class="tunnel">
+            <ol class="etapes" aria-label="Progression"><li class="fait"></li><li class="encours" aria-current="step"></li><li></li><li></li></ol>
+            <div class="etapes-libelles" aria-hidden="true"><span>Le bien</span><span class="encours">Ses caractéristiques</span><span>Vous</span><span>Vérification</span></div>
+            <p class="etape-mobile">Étape 2 sur 4, ses caractéristiques</p>
+            <h4>Parlez-nous de l’appartement</h4>
+            <p class="intro t-ui">Ces informations préparent la visite. Rien n’est calculé automatiquement : nous venons voir le bien avant de donner un prix.</p>
+            <fieldset>
+              <legend>Nombre de pièces</legend>
+              <div class="choix">
+                <label class="option"><input type="radio" name="p"><span class="rond"></span><span>1 pièce</span></label>
+                <label class="option"><input type="radio" name="p"><span class="rond"></span><span>2 pièces</span></label>
+                <label class="option coche"><input type="radio" name="p" checked><span class="rond"></span><span>3 pièces</span></label>
+                <label class="option"><input type="radio" name="p"><span class="rond"></span><span>4 pièces ou plus</span></label>
+              </div>
+            </fieldset>
+            <div class="tunnel-pied">
+              <button class="retour" type="button"><svg aria-hidden="true"><use href="#i-left"/></svg>Retour</button>
+              <button class="btn btn-principal" type="button">Continuer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BIENS -->
+  <section class="section" id="biens">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Biens</h2>
+        <p class="t-petit mesure">Pas de carte : une photo 4:3 et trois lignes de texte. Le titre est composé à partir des données, jamais le titre saisi en capitales.</p>
+      </div>
+      <div class="section-corps">
+        <div class="bloc">
+          <h3>Disposition selon le nombre de biens</h3>
+          <p class="mention" style="margin-top:0;margin-bottom:var(--s5)">1 bien : carte horizontale, photo sur 7 colonnes et texte sur 5. 2 biens : deux colonnes de 6. 3 biens : trois colonnes. 4 biens : 2 × 2. 5 et plus : trois colonnes, dernière rangée alignée à gauche. Sous 768 px, toujours une colonne.</p>
+          <h3>Un bien seul</h3>
+            <div class="biens" data-n="1">
+            <a class="bien" href="#">
+              <figure><img src="https://lutylerazlxnfxldziec.supabase.co/storage/v1/object/public/property-files/10129/images/1769247663692-wju86nr-3.jpg" alt="Appartement 5 pièces, Asnières-sur-Seine, photo 1 sur 4"></figure>
+              <div><p class="titre">Appartement 5 pièces, 92,2 m²</p>
+              <p class="lieu">Asnières-sur-Seine, Impressionnistes</p>
+              <p class="l3"><span class="prix">644 000 €</span><span class="ref">Réf. 10129</span></p></div>
+            </a>
+            </div>
+          <h3 style="margin-top:var(--s7)">Deux biens</h3>
+            <div class="biens" data-n="2">
+            <a class="bien" href="#">
+              <figure><img src="https://lutylerazlxnfxldziec.supabase.co/storage/v1/object/public/property-files/10129/images/1769247663692-wju86nr-3.jpg" alt="Appartement 5 pièces, Asnières-sur-Seine, photo 1 sur 4"></figure>
+              <p class="titre">Appartement 5 pièces, 92,2 m²</p>
+              <p class="lieu">Asnières-sur-Seine, Impressionnistes</p>
+              <p class="l3"><span class="prix">644 000 €</span><span class="ref">Réf. 10129</span></p>
+            </a>
+            <a class="bien" href="#">
+              <figure><img src="https://lutylerazlxnfxldziec.supabase.co/storage/v1/object/public/property-files/10.130/images/1769268896555-ucidred-1.jpg" alt="Appartement 3 pièces, Asnières-sur-Seine, photo 1 sur 4"></figure>
+              <p class="titre">Appartement 3 pièces, 59,5 m²</p>
+              <p class="lieu">Asnières-sur-Seine</p>
+              <p class="l3"><span class="prix">375 000 €</span><span class="ref">Réf. 10.130</span></p>
+            </a>
+            </div>
+        </div>
+        <div class="bloc">
+          <h3>Statuts</h3>
+          <div class="rangee">
+            <span class="statut statut-vente">En vente</span>
+            <span class="statut statut-location">À louer</span>
+            <span class="statut statut-offre">Sous offre</span>
+            <span class="statut statut-offre">Sous compromis</span>
+            <span class="statut statut-excl">Exclusivité</span>
+            <span class="statut statut-vendu">Vendu</span>
+            <span class="statut statut-vendu">Loué</span>
+          </div>
+          <p class="mention">« En vente » n’est affiché que dans une liste mêlant vente et location. Un bien disponible ne porte aucun badge sur sa photo. Les badges d’archive « Vendu » et « Loué » ne portent pas d’année : la date de vente n’est pas fournie par l’API publique.</p>
+        </div>
+        <div class="bloc">
+          <h3>Liste de 3 biens, données réelles du 30/10/2026</h3>
+          <div class="biens" data-n="3">
+            <a class="bien" href="#">
+              <figure><img src="https://lutylerazlxnfxldziec.supabase.co/storage/v1/object/public/property-files/10129/images/1769247663692-wju86nr-3.jpg" alt="Appartement 5 pièces, Asnières-sur-Seine, photo 1 sur 4"></figure>
+              <p class="titre">Appartement 5 pièces, 92,2 m²</p>
+              <p class="lieu">Asnières-sur-Seine, Impressionnistes</p>
+              <p class="l3"><span class="prix">644 000 €</span><span class="ref">Réf. 10129</span></p>
+            </a>
+            <a class="bien" href="#">
+              <figure><img src="https://lutylerazlxnfxldziec.supabase.co/storage/v1/object/public/property-files/10.130/images/1769268896555-ucidred-1.jpg" alt="Appartement 3 pièces, Asnières-sur-Seine, photo 1 sur 4"></figure>
+              <p class="titre">Appartement 3 pièces, 59,5 m²</p>
+              <p class="lieu">Asnières-sur-Seine</p>
+              <p class="l3"><span class="prix">375 000 €</span><span class="ref">Réf. 10.130</span></p>
+            </a>
+            <a class="bien" href="#">
+              <figure><img src="https://lutylerazlxnfxldziec.supabase.co/storage/v1/object/public/property-files/09.362/images/1769177248091-pskiydo-1.jpg" alt="Studio, Asnières-sur-Seine, photo 1 sur 4"></figure>
+              <p class="titre">Studio, 33,16 m²</p>
+              <p class="lieu">Asnières-sur-Seine, Gabriel Péri</p>
+              <p class="l3"><span class="prix">198 000 €</span><span class="ref">Réf. 09.362</span></p>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FICHE -->
+  <section class="section" id="fiche">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Fiche : prix, copropriété, énergie</h2>
+        <p class="t-petit mesure">Les mentions obligatoires sont composées comme du contenu, pas reléguées en petits caractères. Exemple : studio réf. 09.362.</p>
+      </div>
+      <div class="section-corps">
+        <div class="fiche">
+          <div>
+            <div class="prix-bloc">
+              <p class="montant">198 000 €</p>
+              <div class="details"><p>Soit 189 000 € honoraires exclus</p><p>Honoraires de 4,76 % TTC à la charge de l’acquéreur</p></div>
+            </div>
+            <p class="lignes-titre">Copropriété</p>
+            <dl class="lignes">
+              <div><dt>Bien soumis au statut de la copropriété</dt><dd>Oui</dd></div>
+              <div><dt>Nombre de lots</dt><dd>96</dd></div>
+              <div><dt>Charges annuelles moyennes</dt><dd>1 124 €</dd></div>
+              <div><dt>Procédure en cours sur la copropriété</dt><dd>Aucune</dd></div>
+              <div><dt>Taxe foncière</dt><dd>1 196 €</dd></div>
+            </dl>
+          </div>
+          <div class="energie">
+            <div class="etiquette">
+              <h4>Consommation d’énergie (DPE)</h4>
+              <ol class="echelle" aria-label="Classe énergie E, 264 kWh par mètre carré et par an">
+                <li><span class="b" style="width:22%;background:#088748;color:#fff">A</span></li>
+                <li><span class="b" style="width:30%;background:#61ad2f">B</span></li>
+                <li><span class="b" style="width:38%;background:#cbda0d">C</span></li>
+                <li><span class="b" style="width:46%;background:#f7ee02">D</span></li>
+                <li class="actif"><span class="b" style="width:54%;background:#eba903">E</span><span class="val">264 <small>kWh/m²/an</small></span></li>
+                <li><span class="b" style="width:62%;background:#e38102">F</span></li>
+                <li><span class="b" style="width:70%;background:#d74301;color:#fff">G</span></li>
+              </ol>
+            </div>
+            <div class="etiquette">
+              <h4>Émissions de gaz à effet de serre (GES)</h4>
+              <ol class="echelle" aria-label="Classe GES B, 8 kg de CO2 par mètre carré et par an">
+                <li><span class="b" style="width:22%;background:#91d9fa">A</span></li>
+                <li class="actif"><span class="b" style="width:30%;background:#80bddd">B</span><span class="val">8 <small>kg CO₂/m²/an</small></span></li>
+                <li><span class="b" style="width:38%;background:#71a0c2">C</span></li>
+                <li><span class="b" style="width:46%;background:#587598;color:#fff">D</span></li>
+                <li><span class="b" style="width:54%;background:#48597c;color:#fff">E</span></li>
+                <li><span class="b" style="width:62%;background:#363b61;color:#fff">F</span></li>
+                <li><span class="b" style="width:70%;background:#1f1138;color:#fff">G</span></li>
+              </ol>
+            </div>
+            <div class="couts">
+              <p>Montant estimé des dépenses annuelles d’énergie pour un usage standard : <strong>entre 200 € et 600 €</strong> par an, abonnements compris (prix de l’énergie de référence : 2026).</p>
+              <p class="mention" style="margin-top:4px">Les coûts sont estimés en fonction des caractéristiques du logement et pour une utilisation standard.</p>
+              <p class="mention">Si les coûts manquent, la ligne reste affichée : « Montant estimé des dépenses annuelles d’énergie pour un usage standard : non communiqué. » Sans date de référence, aucune année n’est écrite.</p>
+              <p class="mention">Les informations sur les risques auxquels ce bien est exposé sont disponibles sur le site <a class="lien" href="https://www.georisques.gouv.fr">Géorisques</a>.</p>
+            </div>
+          </div>
+        </div>
+        <p class="mention" style="margin-top:var(--s6)">L’échelle HTML ci-dessus reprend les couleurs officielles de <code>scale.ts</code>. En production, la vitrine affiche les étiquettes SVG générées par l’admin (<code>dpeImageUrl</code>, <code>gesImageUrl</code>).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAV MOBILE -->
+  <section class="section" id="mobile">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Navigation mobile</h2>
+        <p class="t-petit mesure">Un menu plein écran sur fond crème. Les cinq entrées en serif, puis les deux gestes utiles : estimer, appeler.</p>
+      </div>
+      <div class="section-corps">
+        <div class="duo">
+          <div class="cadre-mobile">
+            <div class="menu-plein" id="menu-mobile">
+              <div class="haut">
+                <span class="marque"><b style="font-size:21px">Cabinet Rimbault</b></span>
+                <button class="menu-btn" style="display:inline-flex" type="button" aria-expanded="true" aria-controls="menu-mobile">Fermer</button>
+              </div>
+              <ul>
+                <li><a href="#" aria-current="page">Nos biens</a></li>
+                <li><a href="#">Vendre</a></li>
+                <li><a href="#">Louer</a></li>
+                <li><a href="#">Le cabinet</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+              <div class="bas">
+                <a class="btn btn-principal" href="#">Faire estimer votre bien</a>
+                <a class="btn btn-secondaire" href="tel:+33173645610"><svg aria-hidden="true"><use href="#i-phone"/></svg>01 73 64 56 10</a>
+              </div>
+              <address>117 boulevard Voltaire<br>92600 Asnières-sur-Seine</address>
+            </div>
+          </div>
+          <div>
+            <p class="t-texte mesure">L’en-tête mobile garde trois éléments sur 64 px : le nom, le bouton « Faire estimer » en secondaire compact, contour encre et sans grenat (« Estimer » sous 380 px) et le mot « Menu », sans icône, sur une cible de 48 × 48. Il reste collé en haut de l’écran en permanence, sans se masquer au défilement, sans changer de fond ni prendre d’ombre. Sur desktop, l’en-tête est statique. Le menu s’ouvre par un fondu de 180 ms, sans glissement, et rend le focus au bouton à la fermeture. Dans le menu ouvert, le contenu de la page est masqué : « Faire estimer votre bien » y redevient le bouton principal grenat.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERDITS -->
+  <section class="section" id="interdits">
+    <div class="conteneur grille">
+      <div class="section-tete">
+        <h2 class="t-h2">Ce que nous ne faisons pas</h2>
+        <p class="t-petit mesure">La liste complète figure dans le document. Les plus fréquents :</p>
+      </div>
+      <div class="section-corps">
+        <ul class="interdits">
+          <li>Un moteur de recherche ou des filtres</li>
+          <li>Une ombre portée sous une photo ou un bloc</li>
+          <li>Un dégradé, une texture papier, un verre dépoli</li>
+          <li>Un sur-titre en capitales espacées</li>
+          <li>Un mot en italique ou en couleur dans un titre</li>
+          <li>Une flèche ajoutée au texte d’un bouton</li>
+          <li>Un chiffre que l’agence ne peut pas prouver</li>
+          <li>Une icône décorative devant un titre</li>
+          <li>Du grenat sur un élément non cliquable, hors logotype et pied</li>
+          <li>De l’or, un deuxième accent de couleur</li>
+          <li>Un carrousel qui défile seul</li>
+          <li>Un texte de mentions en dessous de 13 px</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="pied sur-grenat">
+  <div class="conteneur grille">
+    <p class="marque-pied">Cabinet Rimbault, transactions immobilières à Asnières-sur-Seine depuis 2009.</p>
+    <div class="col">
+      <h3>Nous trouver</h3>
+      <address>117 boulevard Voltaire<br>92600 Asnières-sur-Seine</address>
+      <p style="margin-top:8px"><a href="tel:+33173645610" class="chiffres">01 73 64 56 10</a></p>
+    </div>
+    <div class="col">
+      <h3>Le site</h3>
+      <ul><li><a href="#">Nos biens</a></li><li><a href="#">Vendre</a></li><li><a href="#">Louer</a></li><li><a href="#">Faire estimer</a></li><li><a href="#">Le cabinet</a></li><li><a href="#">Contact</a></li></ul>
+    </div>
+    <div class="col">
+      <h3>Informations</h3>
+      <ul><li><a href="#">Nos honoraires</a></li><li><a href="#">Mentions légales</a></li><li><a href="#">Confidentialité</a></li><li><a href="#">Avis Google : 4,9 sur 5, 32 avis</a></li></ul>
+    </div>
+    <div class="legal">
+      <h3>Mentions professionnelles</h3>
+      <p>Carte professionnelle « Transactions sur immeubles et fonds de commerce » CPI 9201 2018 000 024 838, délivrée par la CCI Paris Île-de-France. Garant financier : LLOYD’S France.</p>
+      <p>SAS au capital de 4 000 €, RCS Nanterre 511 484 586.</p>
+      <p>Médiateur de la consommation : mention en attente de l’agent, bloquante pour la mise en ligne.</p>
+    </div>
+    <p class="copyright">© 2009-2026 Cabinet Rimbault</p>
+  </div>
+</footer>
+</body>
+</html>
