@@ -159,7 +159,7 @@ function Specs({ items, className }: { items: Fact[]; className?: string }) {
   );
 }
 
-export default async function FicheChaude({ params }: Props) {
+export default async function FicheGalerie({ params }: Props) {
   const reference = await readReference(params);
   const property = await load(reference);
   if (property === "erreur") {

@@ -30,7 +30,7 @@ function extrait(text: string, max = 140): string {
   return end > 40 ? cut.slice(0, end + 1) : `${cut.trimEnd()}…`;
 }
 
-export default async function CabinetChaude() {
+export default async function CabinetGalerie() {
   const { note, nombre, avis } = await avisGoogle();
 
   return (
@@ -39,7 +39,7 @@ export default async function CabinetChaude() {
         <div className={`${c.cadre} ${s.fade}`}>
           <div className={`${s.ph} ${c.photo}`}>
             <Image
-              src="/variantes/devanture.jpg"
+              src="/devanture.jpg"
               alt={`La devanture grenat du cabinet, ${agency.address.street}`}
               fill
               sizes="(min-width: 900px) 28vw, 80vw"

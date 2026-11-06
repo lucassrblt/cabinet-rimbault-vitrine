@@ -56,7 +56,7 @@ const PETIT = ["pa", "pb", "pc"] as const;
 
 const integer = new Intl.NumberFormat("fr-FR");
 
-export default async function AccueilChaude() {
+export default async function AccueilGalerie() {
   const [views, google] = await Promise.all([listViews(), getGoogleReviews()]);
   const note = google
     ? google.rating.toFixed(1).replace(".", ",")
@@ -108,7 +108,7 @@ export default async function AccueilChaude() {
           <div className={`${a.cadre} ${s.fade}`}>
             <div className={`${s.ph} ${a.photo}`}>
               <Image
-                src="/variantes/devanture.jpg"
+                src="/devanture.jpg"
                 alt={`La devanture grenat du cabinet, ${street}`}
                 fill
                 sizes="(min-width: 900px) 24vw, 70vw"

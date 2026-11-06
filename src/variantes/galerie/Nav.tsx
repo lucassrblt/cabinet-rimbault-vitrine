@@ -23,7 +23,7 @@ export function Nav({ count }: { count: number | null }) {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       setOpen(false);
-      document.getElementById("chaude-menu-btn")?.focus();
+      document.getElementById("galerie-menu-btn")?.focus();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -41,16 +41,16 @@ export function Nav({ count }: { count: number | null }) {
       </Link>
       <button
         type="button"
-        id="chaude-menu-btn"
+        id="galerie-menu-btn"
         className={s.menuBtn}
         aria-expanded={open}
-        aria-controls="chaude-menu"
+        aria-controls="galerie-menu"
         onClick={() => setOpen((o) => !o)}
       >
         {open ? "Fermer" : "Menu"}
       </button>
       <nav aria-label="Navigation principale" style={{ display: "contents" }}>
-        <ul id="chaude-menu" className={s.navList} data-open={open}>
+        <ul id="galerie-menu" className={s.navList} data-open={open}>
           <li>
             <Link href="/biens" aria-current={current("/biens")}>
               Biens

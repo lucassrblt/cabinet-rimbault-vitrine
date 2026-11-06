@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { amount, cityLine, streetLine } from "@/components/layout/typo";
 import {
-  addressLookup,
   DATABASE_LOCATION,
   dataRetention,
-  ESTIMATION_DRAFT,
   LEGAL_UPDATED_AT,
   PRIVACY_TOC,
   processors,
@@ -74,21 +72,12 @@ export default function Page() {
       <h3>Demande d’estimation</h3>
       <ul>
         <li>
-          ce que vous souhaitez faire estimer : le prix de vente ou le loyer ;
+          votre bien : son type, son code postal, sa surface, son nombre de
+          pièces et, si vous les indiquez, son adresse et sa ville ;
         </li>
+        <li>l’échéance de votre projet de vente ;</li>
         <li>
-          votre bien : son type, son code postal et, si vous les indiquez, son
-          adresse et sa ville ;
-        </li>
-        <li>
-          ses caractéristiques : surface, nombre de pièces et, si vous les
-          indiquez, chambres, salles d’eau, niveaux, étage, ascenseur, surface
-          du terrain, extérieurs et annexes, état général, époque de
-          construction, travaux récents ;
-        </li>
-        <li>
-          vous : prénom, nom, adresse e-mail et, si vous les indiquez,
-          téléphone, façon et moment préférés pour être recontacté, message.
+          vous : prénom, nom, adresse e-mail et, si vous l’indiquez, téléphone.
         </li>
       </ul>
       <h3>Message envoyé depuis la page Contact ou la fiche d’un bien</h3>
@@ -174,13 +163,6 @@ export default function Page() {
         le cadre de protection des données entre l’Union européenne et les
         États-Unis.
       </p>
-      <p>
-        Pendant que vous saisissez l’adresse du bien, ce que vous tapez est
-        envoyé à la {addressLookup.service} de l’{addressLookup.name}{" "}
-        <Insec>({addressLookup.shortName})</Insec>, service public, pour vous
-        proposer des adresses existantes. Aucune autre information du formulaire
-        n’est transmise.
-      </p>
 
       <h2 id="conservation">Durée de conservation</h2>
       {dataRetention ? (
@@ -241,17 +223,6 @@ export default function Page() {
         mesure d’audience : aucun bandeau ne vous demande donc votre accord. Les
         polices de caractères sont servies par le site lui-même, sans appel à un
         service tiers.
-      </p>
-      <p>
-        Pendant que vous remplissez le formulaire d’estimation, vos réponses
-        sont gardées dans le stockage de session de votre navigateur, pour que
-        vous puissiez revenir en arrière sans rien perdre. Elles ne nous sont
-        transmises qu’à l’envoi. Elles sont effacées à la fermeture de l’onglet,
-        dès l’envoi de la demande, ou si vous choisissez{" "}
-        <Insec>« Recommencer »</Insec>. Au-delà de{" "}
-        <Insec>{ESTIMATION_DRAFT.maxHours} heures</Insec>, elles ne sont plus
-        reprises. Ce stockage, strictement nécessaire au service que vous
-        demandez, ne requiert pas votre accord.
       </p>
     </PageTexte>
   );

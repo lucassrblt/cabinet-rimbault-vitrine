@@ -10,7 +10,7 @@ export const hostGrotesk = Host_Grotesk({
   subsets: ["latin"],
   display: "swap",
   fallback: ["Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
-  variable: "--chaude-sans",
+  variable: "--galerie-sans",
 });
 
 export const newsreader = Newsreader({
@@ -19,7 +19,7 @@ export const newsreader = Newsreader({
   subsets: ["latin"],
   display: "swap",
   fallback: ["Iowan Old Style", "Palatino Linotype", "Georgia", "serif"],
-  variable: "--chaude-serif",
+  variable: "--galerie-serif",
 });
 
-export const chaudeFonts = `${hostGrotesk.variable} ${newsreader.variable}`;
+export const galerieFonts = `${hostGrotesk.variable} ${newsreader.variable}`;

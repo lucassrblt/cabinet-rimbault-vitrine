@@ -171,22 +171,16 @@ export default function Page() {
 
       <h2 id="propriete">Propriété intellectuelle et crédits</h2>
       <p>
-        Les textes, le logotype et les illustrations de ce site ont été créés
-        pour le {agency.name}. Les photographies des biens sont publiées dans le
-        cadre des mandats confiés au cabinet. Toute reproduction, même
-        partielle, sans notre autorisation écrite est interdite.
+        Les textes de ce site ont été créés pour le {agency.name}. Les
+        photographies des biens sont publiées dans le cadre des mandats confiés
+        au cabinet. Toute reproduction, même partielle, sans notre autorisation
+        écrite est interdite.
       </p>
       <ul>
         <li>
-          Illustrations : dessins au trait réalisés pour le cabinet, les uns à
-          l’aide d’un outil de génération d’images puis retouchés, les autres
-          tracés directement.
-        </li>
-        <li>
-          Polices de caractères : Spectral et Hanken Grotesk, sous licence SIL
+          Polices de caractères : Host Grotesk et Newsreader, sous licence SIL
           Open Font License <Insec>1.1</Insec>.
         </li>
-        <li>Icônes : Lucide, sous licence ISC.</li>
       </ul>
 
       <h2 id="donnees">Données personnelles</h2>

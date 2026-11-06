@@ -129,7 +129,7 @@ export default async function ContactGalerie({
           <div className={`${f.cadre} ${s.fade}`}>
             <div className={`${s.ph} ${f.photo}`}>
               <Image
-                src="/variantes/devanture.jpg"
+                src="/devanture.jpg"
                 alt={`La devanture grenat du cabinet, ${agency.address.street}`}
                 fill
                 sizes="(min-width: 900px) 26vw, 70vw"

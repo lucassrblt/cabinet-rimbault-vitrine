@@ -1,4 +1,4 @@
-/* Galerie chaude : socle commun (murs, grille, en-tête, pied, cartels,
+/* Galerie : socle commun (murs, grille, en-tête, pied, cartels,
    photos, apparitions). Accrochage sur 12 colonnes, aligné à gauche : chaque
    photo est une œuvre seule sur un mur chaud, son cartel posé à côté. Le
    grenat peint un seul mur (le cabinet) et le pied de page, jamais les photos. */
@@ -15,8 +15,8 @@
   --sur-g: #f2e9dd;
   --sur-g-2: #d6b9b1;
   --filet-g: rgba(242, 233, 221, 0.22);
-  --sans: var(--chaude-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --serif: var(--chaude-serif), "Iowan Old Style", Georgia, serif;
+  --sans: var(--galerie-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --serif: var(--galerie-serif), "Iowan Old Style", Georgia, serif;
   --out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --io: cubic-bezier(0.65, 0, 0.35, 1);
   --marge: clamp(20px, 4.4vw, 72px);

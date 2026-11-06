@@ -90,7 +90,7 @@ function intro(views: PropertyView[]): string {
   return `${lead}Nous faisons visiter chaque bien nous-mêmes, sur rendez-vous.`;
 }
 
-export default async function BiensChaude() {
+export default async function BiensGalerie() {
   const views = await listViews();
   const pieces = views ? accrocher(views) : [];
   const n = views?.length ?? 0;
