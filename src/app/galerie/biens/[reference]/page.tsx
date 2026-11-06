@@ -127,6 +127,8 @@ export default async function FicheChaude({ params }: Props) {
   const visite =
     view.transaction === "LOCATION" ? "Visiter ce logement" : "Visiter ce bien";
 
+  const visiteHref = `${BASE}/contact?ref=${encodeURIComponent(view.reference)}`;
+
   const onglets: Onglet[] = [];
   if (view.paragraphs.length) {
     onglets.push({
@@ -175,7 +177,7 @@ export default async function FicheChaude({ params }: Props) {
           appelez le cabinet.
         </p>
         <div className={f.ctasRow}>
-          <Link className={s.btn} href={`${BASE}/contact`}>
+          <Link className={s.btn} href={visiteHref}>
             Demander une visite
           </Link>
           <a
@@ -241,7 +243,7 @@ export default async function FicheChaude({ params }: Props) {
           ) : null}
           <Specs items={specsCartel(view)} className={s.up} />
           <div className={`${f.ctas} ${s.up}`} style={i(4)}>
-            <Link className={s.btn} href={`${BASE}/contact`}>
+            <Link className={s.btn} href={visiteHref}>
               Demander une visite
             </Link>
             <a
@@ -278,7 +280,7 @@ export default async function FicheChaude({ params }: Props) {
 
       {/* Mobile : la demande de visite et l'appel restent en bas de l'écran. */}
       <div className={f.mCta} data-barre-fixe>
-        <Link className={s.btn} href={`${BASE}/contact`}>
+        <Link className={s.btn} href={visiteHref}>
           Demander une visite
         </Link>
         <a className={`${s.btn} ${s.ghost}`} href={agency.phone.href}>

@@ -21,7 +21,7 @@ import {
 // 1. l'agence d'abord : texte d'entrée et devanture accrochée avec son cartel ;
 // 2. l'exposition en cours : trois biens au plus en petit accrochage ;
 // 3. vendre avec nous (mur crème) : le premier engagement d'`agency.ts` en
-//    phrase serif, l'estimation vers /galerie/vendre, les deux autres
+//    phrase serif, l'estimation vers /galerie/vendre/estimation, les deux autres
 //    engagements et la location (vers /galerie/contact) en cartels ;
 // 4. ce que disent nos clients (mur poudré) : un avis Google réel en grand,
 //    deux à côté ; sans avis, la note seule ;
@@ -79,7 +79,7 @@ export default async function AccueilChaude() {
             rendez-vous à la signature.
           </p>
           <div className={`${a.actions} ${s.up}`} style={i(2)}>
-            <Link className={s.btn} href={`${BASE}/vendre`}>
+            <Link className={s.btn} href={`${BASE}/vendre/estimation`}>
               Faire estimer votre bien
             </Link>
             <Link className={s.u} href={`${BASE}/biens`}>
@@ -179,7 +179,7 @@ export default async function AccueilChaude() {
               {premier.text}
             </p>
             <div className={`${a.actions} ${s.up}`} style={i(3)}>
-              <Link className={s.btn} href={`${BASE}/vendre`}>
+              <Link className={s.btn} href={`${BASE}/vendre/estimation`}>
                 Faire estimer votre bien
               </Link>
               <Link className={s.u} href={`${BASE}/le-cabinet`}>

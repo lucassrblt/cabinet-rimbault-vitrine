@@ -39,7 +39,10 @@ export function Pied() {
             Les biens en vente
           </Link>
           <Link className={s.u} href={`${BASE}/vendre`}>
-            Vendre, faire estimer
+            Vendre avec nous
+          </Link>
+          <Link className={s.u} href={`${BASE}/vendre/estimation`}>
+            Estimer mon bien
           </Link>
           <Link className={s.u} href={`${BASE}/le-cabinet`}>
             Le cabinet
