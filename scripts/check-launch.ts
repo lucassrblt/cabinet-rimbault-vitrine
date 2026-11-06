@@ -6,8 +6,8 @@
 //   node scripts/check-launch.ts --strict   échoue même hors production
 //
 // Exécuté directement par Node (suppression des types native) : aucun import
-// d'alias `@/` ici, `src/lib/agency.ts`, `src/content/legal.ts` et
-// `src/content/honoraires.ts` n'importent rien.
+// d'alias `@/` ici, `src/lib/agency.ts`, `src/lib/site-url.ts`,
+// `src/content/legal.ts` et `src/content/honoraires.ts` n'importent rien.
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -84,20 +84,25 @@ async function main(): Promise<void> {
     "src/lib/agency.ts › email",
   );
 
-  const siteUrl = process.env.SITE_URL?.trim() ?? "";
+  // Même règle que le site (`src/lib/site-url.ts`), mais l'URL doit être
+  // posée explicitement : le domaine public, pas une URL de repli Netlify.
+  const sitePath = pathToFileURL(join(root, "src/lib/site-url.ts")).href;
+  const { isLocalHost } = (await import(sitePath)) as {
+    isLocalHost: (hostname: string) => boolean;
+  };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() ?? "";
   let siteUrlOk = false;
   try {
     const u = new URL(siteUrl);
-    siteUrlOk =
-      u.protocol === "https:" && !/localhost|127\.0\.0\.1/.test(u.hostname);
+    siteUrlOk = u.protocol === "https:" && !isLocalHost(u.hostname);
   } catch {
     siteUrlOk = false;
   }
   add(
-    "SITE_URL (domaine public en https)",
+    "NEXT_PUBLIC_SITE_URL (domaine public en https)",
     siteUrlOk,
     true,
-    "variable d’environnement",
+    "variable d’environnement, figée au build",
   );
 
   add(
@@ -183,6 +188,13 @@ async function main(): Promise<void> {
     Boolean(agency.google.profileUrl),
     false,
     "src/lib/agency.ts › google.profileUrl",
+  );
+
+  add(
+    "Indexation ouverte (NEXT_PUBLIC_ALLOW_INDEXING=true)",
+    process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true",
+    false,
+    "sans elle, le site reste en noindex",
   );
 
   // --- Rapport ----------------------------------------------------------------------

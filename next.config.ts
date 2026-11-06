@@ -1,9 +1,14 @@
 import type { NextConfig } from "next";
+import { netlifyBuildEnv } from "./src/lib/site-url";
 
 const nextConfig: NextConfig = {
   // Banc e2e : distDir isolé (.next-e2e) pour ne pas heurter le verrou
   // `<distDir>/lock` d'un autre `next dev` lancé sur le même projet.
   distDir: process.env.NEXT_DIST_DIR || ".next",
+  // Variables Netlify du build (contexte, URL de production, URL du deploy
+  // preview) figées dans le code : `src/lib/site-url.ts` en tire l'URL publique
+  // et l'indexation, même pour les pages rendues à la demande.
+  env: netlifyBuildEnv(process.env),
   // Banc e2e en production (E2E_SERVEUR=prod) : contrôle de types du build
   // limité à `src/` (e2e/tsconfig.build.json), pour ne pas lire les types
   // périmés des distDir d'autres agents listés dans tsconfig.json.

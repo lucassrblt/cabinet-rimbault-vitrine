@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getProperties } from "@/lib/api/properties";
-import { getSiteUrl } from "@/lib/seo/metadata";
+import { isIndexable, absoluteUrl as url } from "@/lib/site-url";
 
 // Plan du site (doc 04 §4.4) : les 9 pages fixes, puis chaque fiche visible.
 // Si l'API est indisponible, le plan sort quand même avec les pages fixes.
@@ -18,11 +18,10 @@ const PAGES: { path: string; priority: number }[] = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Porte de maintenance posée (`src/proxy.ts`) : plan vide, comme sur main.
-  // `sitemap.xml` échappe au proxy, il ne doit rien dévoiler du site fermé.
-  if (process.env.MAINTENANCE_MODE === "on") return [];
-  const base = getSiteUrl();
-  const url = (path: string) => new URL(path, base).toString();
+  // Site non indexable (porte de maintenance posée, deploy preview, indexation
+  // fermée) : plan vide. `sitemap.xml` échappe au proxy, il ne doit rien
+  // dévoiler du site fermé.
+  if (!isIndexable()) return [];
 
   const pages: MetadataRoute.Sitemap = PAGES.map(({ path, priority }) => ({
     url: url(path),

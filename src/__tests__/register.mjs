@@ -6,6 +6,10 @@
 import { register } from "node:module";
 import "../lib/property/__tests__/register.mjs";
 
+// `node --test` ne pose pas NODE_ENV : sans lui, `src/lib/site-url.ts` refuse
+// le repli localhost (règle de la production). Les tests sont en `test`.
+process.env.NODE_ENV ??= "test";
+
 register(
   `data:text/javascript,${encodeURIComponent(`
 export async function resolve(specifier, context, next) {

@@ -1,5 +1,5 @@
 import { agency } from "@/lib/agency";
-import { getSiteUrl } from "./metadata";
+import { absoluteUrl as absolute } from "@/lib/site-url";
 
 // Constructeurs JSON-LD (doc 04 §4.4). Règles :
 // - pas d'`aggregateRating` (avis auto-déclarés refusés par Google) ;
@@ -12,10 +12,6 @@ export type JsonLdObject = { "@context"?: string; "@type": string } & Record<
   string,
   unknown
 >;
-
-function absolute(path: string): string {
-  return new URL(path, getSiteUrl()).toString();
-}
 
 function postalAddress(input: {
   street?: string;
