@@ -1,45 +1,29 @@
-import type { Metadata } from "next";
-import { Instrument_Sans, Source_Serif_4 } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { realEstateAgentJsonLd } from "@/lib/seo/jsonld";
+import { baseMetadata } from "@/lib/seo/metadata";
+import { fontVariables } from "./fonts";
 import "./globals.css";
 
-const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["opsz"],
-  variable: "--font-source-serif",
-});
+// Layout racine, commun aux groupes (site) et (tunnel).
+// L'en-tête et le pied sont posés par chaque groupe (lot 1).
 
-const instrumentSans = Instrument_Sans({
-  subsets: ["latin"],
-  variable: "--font-instrument-sans",
-});
+export const metadata: Metadata = baseMetadata();
 
-export const metadata: Metadata = {
-  title: {
-    default: "Cabinet Rimbault, agence immobilière à Asnières-sur-Seine",
-    template: "%s | Cabinet Rimbault",
-  },
+export const viewport: Viewport = {
+  themeColor: "#F8F2E9",
+  colorScheme: "light",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="fr"
-      className={`${sourceSerif.variable} ${instrumentSans.variable}`}
-      // La classe « js » est posée avant l'hydratation (cf. script ci-dessous).
-      suppressHydrationWarning
-    >
-      <head>
-        <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: script statique, sans donnée utilisateur
-          dangerouslySetInnerHTML={{
-            // Classe « js » posée avant le rendu.
-            __html:
-              "document.documentElement.classList.add('js');try{localStorage.removeItem('style-maquette')}catch(e){}",
-          }}
-        />
-      </head>
-      <body>{children}</body>
+    <html lang="fr" className={fontVariables} data-scroll-behavior="smooth">
+      <body>
+        {children}
+        <JsonLd data={realEstateAgentJsonLd()} />
+      </body>
     </html>
   );
 }

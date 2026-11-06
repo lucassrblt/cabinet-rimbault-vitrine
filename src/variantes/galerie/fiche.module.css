@@ -1,0 +1,680 @@
+/* Fiche : la photo au mur, le cartel détaillé, puis la zone d'onglets dont
+   le mur change de couleur. Étiquettes DPE et GES sur l'échelle 2021. */
+
+.fiche {
+  flex: 1 0 auto;
+}
+
+.sub {
+  min-height: 40px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.sub > :first-child {
+  grid-column: 1 / 4;
+  justify-self: start;
+}
+
+.sub > :last-child:not(:first-child) {
+  grid-column: 7 / 13;
+  justify-self: end;
+}
+
+.mur {
+  padding-top: 72px;
+  align-items: end;
+}
+
+/* ---------- Galerie ---------- */
+.gal {
+  grid-column: 1 / 9;
+  justify-self: end;
+  width: 100%;
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.main {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+}
+
+.cur {
+  opacity: 0;
+  transition: opacity 0.55s var(--out);
+}
+
+.cur.show {
+  opacity: 1;
+}
+
+.next {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.next:focus-visible {
+  outline-offset: -4px;
+}
+
+.thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.thumbs button {
+  position: relative;
+  width: 52px;
+  aspect-ratio: 4 / 3;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.thumbs button > span {
+  width: 100%;
+  height: 100%;
+}
+
+.thumbs button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -7px;
+  height: 1px;
+  background: var(--grenat);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--io);
+}
+
+.thumbs button[aria-current="true"]::after {
+  transform: scaleX(1);
+}
+
+.count {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--gris);
+}
+
+.mMeta {
+  display: none;
+}
+
+/* ---------- Cartel détaillé ---------- */
+.cartelD {
+  grid-column: 10 / 13;
+  display: grid;
+  gap: 14px;
+  align-content: end;
+  padding-bottom: 46px;
+  min-width: 0;
+}
+
+.ref {
+  font-size: 11px;
+  color: var(--gris);
+}
+
+.ref em {
+  font-style: normal;
+  color: var(--grenat);
+  margin-left: 6px;
+}
+
+.cartelD h1 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.sousTitre {
+  margin: -10px 0 0;
+  color: var(--gris);
+  font-size: 12px;
+}
+
+.lieu {
+  margin: -8px 0 0;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.prix {
+  margin: 6px 0 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.prix small {
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.fees {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11px;
+  color: var(--gris);
+  display: grid;
+  gap: 2px;
+}
+
+.specs {
+  margin: 0;
+  display: grid;
+  font-size: 12px;
+}
+
+.specs > div {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  border-top: 1px solid var(--filet);
+}
+
+.specs dt,
+.specs dd {
+  margin: 0;
+  padding: 6px 0;
+}
+
+.specs dt {
+  color: var(--gris);
+}
+
+.ctas {
+  display: grid;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ---------- Onglets : le mur change de couleur ---------- */
+.tabzone {
+  margin-top: 112px;
+  padding-bottom: 64px;
+  background-color: var(--mur);
+  background-image: var(--grain);
+  transition: background-color 0.55s var(--out);
+}
+
+.tabzone[data-bg="creme"] {
+  background-color: var(--creme);
+}
+
+.tabzone[data-bg="poudre"] {
+  background-color: var(--poudre);
+}
+
+.tabgrid {
+  grid-template-rows: auto 1fr;
+}
+
+.tabs {
+  grid-column: 1 / 8;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 30px;
+  padding-top: 28px;
+  min-height: 76px;
+  border-top: 1px solid var(--filet);
+}
+
+.tabs button {
+  position: relative;
+  font: inherit;
+  color: var(--gris);
+  background: none;
+  border: 0;
+  padding: 0 0 4px;
+  align-self: start;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.tabs button::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--encre);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s var(--io);
+}
+
+.court {
+  display: none;
+}
+
+.tabs button:hover,
+.tabs button[aria-selected="true"] {
+  color: var(--encre);
+}
+
+.tabs button[aria-selected="true"]::after {
+  transform: scaleX(1);
+}
+
+.panels {
+  grid-column: 1 / 8;
+  grid-row: 2;
+  min-height: 150px;
+}
+
+.panel {
+  transition: opacity 0.4s var(--out);
+}
+
+.panel:focus-visible {
+  outline-offset: 8px;
+}
+
+.panel[data-out] {
+  opacity: 0;
+}
+
+.texte p {
+  margin: 0 0 12px;
+  max-width: 60ch;
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.6;
+  font-weight: 300;
+  text-wrap: pretty;
+}
+
+.caract {
+  max-width: 460px;
+}
+
+.caract h3 {
+  margin: 28px 0 8px;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.caract .specs > div {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.ctasRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* ---------- Étiquettes énergie (échelle 2021) ---------- */
+.energie {
+  grid-column: 9 / 13;
+  grid-row: 1 / 3;
+  padding-top: 28px;
+  display: grid;
+  gap: 22px;
+  align-content: start;
+  font-size: 11px;
+  border-top: 1px solid var(--filet);
+}
+
+.energie h2 {
+  margin: 0 0 -8px;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.etq {
+  display: grid;
+  gap: 3px;
+}
+
+.etqT {
+  font-size: 11px;
+  color: var(--gris);
+  margin-bottom: 4px;
+}
+
+.etqVide {
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.r {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 17px;
+}
+
+.r[data-act] {
+  height: 24px;
+}
+
+.b {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: #1d1d1d;
+  transform-origin: left;
+  transition: transform 0.6s var(--out);
+  transition-delay: calc(var(--k) * 45ms);
+}
+
+[data-rv] .b {
+  transform: scaleX(0);
+}
+
+[data-rv][data-in] .b {
+  transform: none;
+}
+
+.r[data-act] .b {
+  font-size: 12px;
+  box-shadow:
+    0 0 0 1px var(--mur),
+    0 0 0 2px var(--encre);
+}
+
+.val {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.legal {
+  font-size: 10.5px;
+  color: var(--gris);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 48ch;
+}
+
+.b[data-k="dpe1"] {
+  background: #009c6d;
+  color: #fff;
+  width: 28%;
+}
+.b[data-k="dpe2"] {
+  background: #52b153;
+  color: #fff;
+  width: 36%;
+}
+.b[data-k="dpe3"] {
+  background: #78bd76;
+  width: 44%;
+}
+.b[data-k="dpe4"] {
+  background: #f4e70f;
+  width: 52%;
+}
+.b[data-k="dpe5"] {
+  background: #f0b50f;
+  width: 60%;
+}
+.b[data-k="dpe6"] {
+  background: #eb8235;
+  width: 68%;
+}
+.b[data-k="dpe7"] {
+  background: #d7221f;
+  color: #fff;
+  width: 76%;
+}
+.b[data-k="ges1"] {
+  background: #f6edfd;
+  width: 28%;
+  box-shadow: inset 0 0 0 1px rgba(138, 25, 223, 0.18);
+}
+.b[data-k="ges2"] {
+  background: #e4c7fb;
+  width: 36%;
+}
+.b[data-k="ges3"] {
+  background: #d4a9f6;
+  width: 44%;
+}
+.b[data-k="ges4"] {
+  background: #cb95f3;
+  width: 52%;
+}
+.b[data-k="ges5"] {
+  background: #ba72ef;
+  color: #fff;
+  width: 60%;
+}
+.b[data-k="ges6"] {
+  background: #a74deb;
+  color: #fff;
+  width: 68%;
+}
+.b[data-k="ges7"] {
+  background: #8a19df;
+  color: #fff;
+  width: 76%;
+}
+
+/* ---------- Visiter ce bien ---------- */
+.contact {
+  padding-top: 56px;
+  align-items: end;
+}
+
+.contact h2 {
+  grid-column: 1 / 4;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.contact p {
+  grid-column: 4 / 9;
+  margin: 0;
+  color: var(--gris);
+  max-width: 48ch;
+}
+
+.tel {
+  grid-column: 10 / 13;
+  justify-self: end;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  color: var(--grenat);
+  white-space: nowrap;
+}
+
+.mCta {
+  display: none;
+}
+
+.erreur {
+  padding-block: 120px;
+}
+
+.erreur h1 {
+  margin: 0 0 12px;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 25px;
+}
+
+@media (max-width: 419px) {
+  .long {
+    display: none;
+  }
+
+  .court {
+    display: inline;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1100px) {
+  .gal {
+    grid-column: 1 / 8;
+  }
+
+  .cartelD {
+    grid-column: 9 / 13;
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 899px) {
+  .fiche {
+    padding-bottom: 24px;
+  }
+
+  .sub {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 12px;
+  }
+
+  .mur {
+    padding-top: 20px;
+    row-gap: 40px;
+  }
+
+  .gal,
+  .cartelD {
+    grid-column: 1 / -1;
+  }
+
+  .gal {
+    gap: 12px;
+  }
+
+  .thumbs {
+    display: none;
+  }
+
+  .mMeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: var(--gris);
+  }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .dots i {
+    width: 14px;
+    height: 1px;
+    background: var(--filet);
+    transition: background-color 0.4s;
+  }
+
+  .dots i[data-on] {
+    background: var(--grenat);
+  }
+
+  .cartelD {
+    padding-bottom: 0;
+    gap: 16px;
+  }
+
+  .prix {
+    font-size: 32px;
+  }
+
+  .ctas {
+    display: none;
+  }
+
+  .tabzone {
+    margin-top: 64px;
+  }
+
+  .tabgrid {
+    grid-template-rows: none;
+  }
+
+  .tabs,
+  .panels,
+  .energie {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .tabs {
+    gap: 8px 22px;
+    padding-top: 20px;
+    min-height: 0;
+    padding-bottom: 20px;
+  }
+
+  .tabs button {
+    white-space: nowrap;
+  }
+
+  .energie {
+    margin-top: 40px;
+    padding-top: 20px;
+  }
+
+  .contact {
+    row-gap: 10px;
+  }
+
+  .contact h2,
+  .contact p,
+  .tel {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .mCta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+    background-color: var(--mur);
+    border-top: 1px solid var(--filet);
+  }
+
+  .mCta > * {
+    flex: 1;
+    height: 46px;
+  }
+
+  .mCta > :last-child {
+    flex: 0 0 38%;
+    background: var(--mur);
+  }
+}

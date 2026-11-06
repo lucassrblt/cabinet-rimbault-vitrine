@@ -1,0 +1,687 @@
+<meta charset="utf-8">
+<title>Cabinet Rimbault Duotone</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300;0,400;0,500;1,300&display=swap">
+<style>
+/* Grille suisse 12 colonnes, alignement à gauche, une seule couleur (grenat) déclinée sur blanc chaud ; un seul élément agrandi par écran. */
+:root{
+  color-scheme: light;
+  --blanc:#FBF8F5;      /* fond des écrans */
+  --creme:#F1E6DA;      /* hautes lumières du duotone */
+  --rose:#C9948F;       /* tons moyens clairs */
+  --grenat:#6E1A26;     /* devanture */
+  --encre:#2E0A11;      /* ombres du duotone, texte */
+  --voile:#94656B;      /* texte secondaire */
+  --filet:rgba(110,26,38,.16);
+  --socle:#E6E2DE;      /* fond de la planche */
+  --font:"Host Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --ease:cubic-bezier(.65,0,.35,1);
+  --out:cubic-bezier(.2,.7,0,1);
+}
+@property --r{ syntax:'<length>'; inherits:false; initial-value:0px; }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--socle);color:var(--encre);font:400 13px/1.5 var(--font);
+  font-feature-settings:"ss01";-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;
+  overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--grenat);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- Planche ---------- */
+.board{max-width:1240px;margin:0 auto}
+.intro{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;padding-block:56px 64px;border-bottom:1px solid var(--filet)}
+.intro .who{grid-column:1/5;display:flex;flex-direction:column;gap:14px}
+.intro .who b{font-weight:500;font-size:15px;letter-spacing:-.005em}
+.intro .who p{margin:0;max-width:38ch;color:var(--encre);font-size:13px}
+.intro .who small{color:var(--voile);font-size:12px}
+.intro dl{grid-column:6/13;margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:14px 20px;font-size:12px}
+.intro dt{color:var(--voile)}
+.intro dd{margin:0;min-width:0}
+.sw{display:flex;flex-wrap:wrap;gap:6px 16px}
+.sw span{display:inline-flex;align-items:center;gap:7px}
+.sw i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(46,10,17,.12)}
+.anims{margin:0;padding:0;list-style:none;display:grid;gap:4px;counter-reset:a}
+.anims li{display:grid;grid-template-columns:18px minmax(0,1fr)}
+.anims li::before{counter-increment:a;content:counter(a);color:var(--voile)}
+
+.shot{padding-top:72px}
+.cap{display:flex;justify-content:space-between;gap:16px;padding-top:14px;font-size:12px;color:var(--voile)}
+.cap b{font-weight:500;color:var(--encre)}
+.cap button{color:var(--grenat);border-bottom:1px solid currentColor;white-space:nowrap}
+
+.stage{position:relative;width:100%;overflow:hidden}
+.screen{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--blanc);overflow:hidden;
+  box-shadow:0 1px 0 rgba(46,10,17,.06),0 30px 60px -30px rgba(46,10,17,.25)}
+.chrome{height:28px;display:flex;align-items:center;gap:6px;padding:0 12px;background:#F3EFEB;border-bottom:1px solid var(--filet);font-size:10px;color:var(--voile)}
+.chrome i{width:7px;height:7px;border-radius:50%;background:var(--filet)}
+.chrome span{margin-left:auto;margin-right:auto;transform:translateX(-14px)}
+
+.mobiles{display:grid;grid-template-columns:375px 375px minmax(0,1fr);gap:40px;align-items:start}
+.mobiles .note{padding-top:8px;font-size:12px;color:var(--voile);max-width:34ch;display:grid;gap:10px}
+.mobiles .note b{color:var(--encre);font-weight:500}
+@media (max-width:900px){.mobiles{grid-template-columns:minmax(0,375px)}.intro .who,.intro dl{grid-column:1/-1}}
+@media (max-width:520px){.intro dl{grid-template-columns:minmax(0,1fr);gap:4px 0}.intro dd{margin-bottom:10px}}
+
+/* ---------- Site : socle commun ---------- */
+.site{position:absolute;inset:28px 0 0 0;color:var(--encre);font-size:13px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:20px;padding:0 36px}
+.nav{height:64px;align-items:center}
+.nav .brand{grid-column:1/4;font-weight:500;letter-spacing:-.005em}
+.nav ul{grid-column:5/10;display:flex;gap:28px;margin:0;padding:0;list-style:none}
+.nav li a{position:relative;color:var(--voile);transition:color .3s}
+.nav li a:hover,.nav li a[aria-current]{color:var(--encre)}
+.nav li a sup{font-size:9px;margin-left:2px;color:var(--grenat)}
+.nav .tel{grid-column:10/13;justify-self:end}
+.link{justify-self:start;position:relative;display:inline-block;padding-bottom:3px;color:var(--grenat)}
+.link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform-origin:right;transform:scaleX(.25);transition:transform .6s var(--ease)}
+.link:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* ---------- Duotone ---------- */
+.duo{position:relative;margin:0;overflow:hidden;background:var(--encre);isolation:isolate}
+.duo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;max-width:none}
+.duo .c{transform:scale(1.04);transition:transform 1.4s var(--out)}
+.duo .d{filter:url(#duo);
+  -webkit-mask-image:radial-gradient(circle at var(--x,50%) var(--y,50%),transparent calc(var(--r) - 70px),#000 var(--r));
+          mask-image:radial-gradient(circle at var(--x,50%) var(--y,50%),transparent calc(var(--r) - 70px),#000 var(--r));
+  transition:--r 1.15s var(--ease)}
+.duo::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.2;mix-blend-mode:multiply;transition:opacity 1s;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .04 0 0 0 0 .07 0 0 0 1.6 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.duo.on .d{--r:var(--R,1400px)}
+.duo.on .c{transform:scale(1)}
+.duo.on::after{opacity:.07}
+.duo.full .d{opacity:0}
+.duo.full .c{transform:none}
+.duo.snap .d{transition:none}
+.hov{cursor:crosshair}
+
+/* lampe */
+.lamp .d{--r:200px;-webkit-mask-image:radial-gradient(circle at var(--lx,60%) var(--ly,40%),transparent calc(var(--r) - 120px),#000 var(--r));
+          mask-image:radial-gradient(circle at var(--lx,60%) var(--ly,40%),transparent calc(var(--r) - 120px),#000 var(--r))}
+.lamp.on .d{--r:1500px}
+
+/* ---------- Révélation ligne par ligne ---------- */
+.l{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+.l>span{display:inline-block}
+html.js .rv .l>span{transform:translateY(108%);transition:transform 1.1s var(--out);transition-delay:calc(var(--i,0) * 90ms + var(--d,0ms))}
+html.js .rv.in .l>span{transform:none}
+.fade{transition:opacity 1s var(--out) .5s}
+html.js .rv .fade{opacity:0}
+html.js .rv.in .fade{opacity:1}
+
+/* ---------- 1 Accueil ---------- */
+.home .hero{position:relative;height:calc(100% - 64px)}
+.home .lede{grid-column:1/5;grid-row:1;padding-top:44px;color:var(--voile);font-size:13px;line-height:1.55}
+.home .big{grid-column:1/6;grid-row:2;align-self:end;margin:0;font-weight:300;font-size:46px;line-height:1.04;letter-spacing:-.025em;padding-bottom:30px}
+.home .ph{grid-column:6/13;grid-row:1/3;padding-top:44px;margin:0}
+.home .ph .duo{aspect-ratio:4/3;width:100%}
+.home .ph figcaption{display:flex;justify-content:space-between;padding-top:10px;font-size:11px;color:var(--voile)}
+.home .main{height:560px;grid-template-rows:auto 1fr}
+.home .foot{position:absolute;left:0;right:0;bottom:0;height:60px;align-items:center;border-top:1px solid var(--filet);margin:0 36px;padding:0;font-size:12px}
+.home .foot>*{grid-column:span 3}
+.home .foot>:last-child{justify-self:end}
+.home .foot .muted{color:var(--voile)}
+
+/* ---------- 2 Index ---------- */
+.idx .bar{height:76px;align-items:end;padding-bottom:14px;border-bottom:1px solid var(--filet);margin:0 36px;padding-left:0;padding-right:0}
+.idx .bar h2{grid-column:1/7;margin:0;font-weight:400;font-size:13px}
+.idx .bar h2 span{color:var(--voile);margin-left:8px}
+.idx .toggle{grid-column:7/13;justify-self:end;display:flex;gap:18px}
+.idx .toggle button{color:var(--voile);transition:color .3s}
+.idx .toggle button[aria-pressed="true"]{color:var(--encre);border-bottom:1px solid var(--encre)}
+.idx .head{height:40px;align-items:center;font-size:11px;color:var(--voile)}
+.rows{margin:0;padding:0;list-style:none;position:relative}
+.row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:20px;align-items:center;height:62px;margin:0 36px;border-top:1px solid var(--filet);transition:color .45s var(--out);cursor:pointer}
+.row:last-child{border-bottom:1px solid var(--filet)}
+.c-ref{grid-column:1/2}.c-type{grid-column:2/5}.c-surf{grid-column:5/7}.c-ext{grid-column:7/9}.c-ville{grid-column:9/11}.c-prix{grid-column:11/13;justify-self:end}
+.row .c-type{transition:transform .6s var(--out)}
+.rows.hot .row{color:#C4A9AC}
+.rows.hot .row.is-on{color:var(--encre)}
+.rows.hot .row.is-on .c-type{transform:translateX(10px)}
+.row em{font-style:normal;color:var(--grenat);font-size:10px;margin-left:8px;vertical-align:1px}
+.float{position:absolute;left:0;top:0;width:250px;height:188px;pointer-events:none;z-index:5;opacity:0;transition:opacity .35s var(--out);will-change:transform}
+.float.show{opacity:1}
+.float .duo{width:100%;height:100%;transform:scale(.86);transition:transform .7s var(--out)}
+.float.show .duo{transform:scale(1)}
+.float .tag{position:absolute;left:0;top:100%;padding-top:6px;font-size:10px;color:var(--grenat);white-space:nowrap}
+.gridv{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;padding:28px 36px 0}
+.gridv article{display:grid;gap:10px;font-size:12px}
+.gridv .duo{aspect-ratio:3/4}
+.gridv p{margin:0;display:flex;justify-content:space-between;gap:8px}
+.gridv p span{color:var(--voile)}
+html.js .gridv article{opacity:0;transform:translateY(14px);transition:opacity .8s var(--out),transform .8s var(--out);transition-delay:calc(var(--i)*70ms)}
+html.js .gridv.in article{opacity:1;transform:none}
+
+/* ---------- 3 Fiche ---------- */
+.fiche .sub{height:52px;align-items:center;font-size:12px;color:var(--voile)}
+.fiche .sub>:first-child{grid-column:1/4}
+.fiche .sub>:last-child{grid-column:9/13;justify-self:end}
+.gal{position:relative;height:372px;overflow:hidden;cursor:grab;touch-action:pan-y}
+.gal.drag{cursor:grabbing}
+.track{display:flex;gap:12px;height:100%;will-change:transform;padding-left:36px}
+.track .duo{flex:0 0 auto;height:100%;aspect-ratio:4/3}
+.track .duo:nth-child(4n+2){aspect-ratio:1/1}
+.gal .count{position:absolute;right:36px;bottom:12px;font-size:11px;color:var(--creme);z-index:3;pointer-events:none}
+.fiche .info{padding-top:36px}
+.fiche .prix{grid-column:1/5;display:grid;align-content:start;gap:14px}
+.fiche .prix h3{margin:0;font-weight:300;font-size:44px;line-height:1;letter-spacing:-.03em}
+.fiche .prix p{margin:0;color:var(--voile);font-size:12px}
+.specs{grid-column:5/9;margin:0;display:grid;grid-template-columns:96px minmax(0,1fr);font-size:12px;align-content:start}
+.specs dt,.specs dd{margin:0;padding:7px 0;border-top:1px solid var(--filet)}
+.specs dt{color:var(--voile)}
+.fiche .txt{grid-column:9/13;display:grid;gap:22px;align-content:start;font-size:13px}
+.fiche .txt p{margin:0}
+.energy{display:grid;gap:10px;font-size:11px}
+.scale{display:flex;align-items:center;gap:3px}
+.scale .lab{width:30px;color:var(--voile)}
+.scale span{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:10px;transition:transform .5s var(--out)}
+.scale span.act{width:auto;padding:0 8px;height:26px;font-size:11px;font-weight:500;outline:1px solid var(--encre);outline-offset:2px}
+.scale span.act small{font-weight:400;margin-left:6px;font-size:10px}
+.legal{font-size:10px;color:var(--voile)}
+
+/* ---------- 4 Mobiles ---------- */
+.m .site{inset:0}
+.m-scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-top{position:sticky;top:0;z-index:4;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:color-mix(in srgb,var(--blanc) 86%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:13px}
+.m-top b{font-weight:500}
+.m-top span{color:var(--voile)}
+.m-pad{padding:0 20px}
+.m-lede{padding:28px 20px 36px;display:grid;gap:18px}
+.m-lede .big{margin:0;font-weight:300;font-size:30px;line-height:1.06;letter-spacing:-.02em}
+.m-lede p{margin:0;color:var(--voile);font-size:12px}
+.m-list{display:grid;gap:30px;padding:0 20px 30px}
+.m-list article{display:grid;gap:9px;font-size:12px}
+.m-list .duo{aspect-ratio:4/3}
+.m-list .duo .d{transition-duration:.9s}
+.m-list p{margin:0;display:flex;justify-content:space-between}
+.m-list p span{color:var(--voile)}
+.m-foot{padding:24px 20px 40px;border-top:1px solid var(--filet);display:grid;gap:4px;font-size:12px;color:var(--voile)}
+.m-gal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding:0 20px;scrollbar-width:none}
+.m-gal::-webkit-scrollbar{display:none}
+.m-gal .duo{flex:0 0 86%;aspect-ratio:4/5;scroll-snap-align:center}
+.m-meta{display:flex;justify-content:space-between;padding:10px 20px 0;font-size:11px;color:var(--voile)}
+.m-prix{padding:30px 20px 6px;font-weight:300;font-size:34px;letter-spacing:-.03em;line-height:1}
+.m-sub{padding:0 20px 22px;font-size:12px;color:var(--voile)}
+.m .specs{grid-column:auto;margin:0 20px 22px}
+.m .energy{padding:0 20px 120px}
+.m-cta{position:absolute;left:12px;right:12px;bottom:12px;z-index:6;display:flex;gap:8px}
+.m-cta a{flex:1;height:46px;display:grid;place-items:center;font-size:13px;background:var(--grenat);color:var(--creme)}
+.m-cta a+a{flex:0 0 46%;background:var(--blanc);color:var(--grenat);box-shadow:inset 0 0 0 1px var(--grenat)}
+
+/* ---------- 5 Transition ---------- */
+.vt .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:30px 36px 0}
+.vt .cards button{display:grid;gap:10px;text-align:left;font-size:12px}
+.vt .cards .duo{aspect-ratio:4/3;width:100%}
+.vt .cards p{margin:0;display:flex;justify-content:space-between}
+.vt .cards p span{color:var(--voile)}
+.vt .ref{display:inline-block}
+.vt .open{padding-top:30px;align-items:start}
+.vt .open .duo{grid-column:1/7;aspect-ratio:4/3}
+.vt .open .txt{grid-column:8/13;display:grid;gap:18px;font-size:13px}
+.vt .open .txt h3{margin:0;font-weight:300;font-size:40px;letter-spacing:-.03em;line-height:1}
+.vt .open .specs{grid-column:auto}
+.vt-hint{font-size:11px;color:var(--voile);padding:18px 36px 0}
+
+::view-transition-group(*){animation-duration:.95s;animation-timing-function:cubic-bezier(.7,0,.15,1)}
+::view-transition-old(vt-photo){animation:none;opacity:1}
+::view-transition-new(vt-photo){animation:vt-in .95s cubic-bezier(.6,0,.3,1) both}
+@keyframes vt-in{from{opacity:0}35%{opacity:0}to{opacity:1}}
+:root{view-transition-name:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;transition-delay:0ms!important}
+  html.js .rv .l>span,html.js .rv .fade,html.js .gridv article{transform:none;opacity:1}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="duo" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values=".2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  0 0 0 1 0"/>
+    <feComponentTransfer>
+      <feFuncR type="linear" slope="1.2" intercept="-.08"/>
+      <feFuncG type="linear" slope="1.2" intercept="-.08"/>
+      <feFuncB type="linear" slope="1.2" intercept="-.08"/>
+    </feComponentTransfer>
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues=".16 .43 .79 .955"/>
+      <feFuncG type="table" tableValues=".035 .10 .58 .912"/>
+      <feFuncB type="table" tableValues=".06 .15 .56 .865"/>
+    </feComponentTransfer>
+  </filter>
+</svg>
+
+<main class="board">
+  <header class="intro">
+    <div class="who">
+      <b>Duotone</b>
+      <p>Le site d'une galerie plutôt que d'une agence. Toutes les photos sont tirées dans le grenat de la devanture, ce qui rend les clichés d'iPhone homogènes. Le visiteur fait apparaître les vraies couleurs du bien qui l'intéresse en passant dessus.</p>
+      <small>Cabinet Rimbault, maquettes de novembre 2026, 2e passe</small>
+    </div>
+    <dl>
+      <dt>Palette</dt>
+      <dd class="sw">
+        <span><i style="background:#FBF8F5"></i>Blanc #FBF8F5</span>
+        <span><i style="background:#F1E6DA"></i>Crème #F1E6DA</span>
+        <span><i style="background:#C9948F"></i>Rose #C9948F</span>
+        <span><i style="background:#6E1A26"></i>Grenat #6E1A26</span>
+        <span><i style="background:#2E0A11"></i>Encre #2E0A11</span>
+      </dd>
+      <dt>Typographie</dt>
+      <dd>Host Grotesk en 300, 400 et 500. Texte courant en 12 à 13 px, un seul élément agrandi par écran (prix ou accroche, 30 à 46 px, graisse 300).</dd>
+      <dt>Photos</dt>
+      <dd>Filtre SVG : luminance, léger contraste, puis table à quatre tons encre, grenat, rose, crème. Grain fixe par-dessus.</dd>
+      <dt>Animations</dt>
+      <dd><ol class="anims">
+        <li>La couleur se répand depuis le point d'entrée du curseur et se retire vers son point de sortie.</li>
+        <li>Accueil : un halo de vraies couleurs dérive sur la photo, puis suit le curseur ; un clic colore toute l'image.</li>
+        <li>Index : la photo flotte sous le curseur, s'incline selon sa vitesse et se colore si l'on s'attarde sur la ligne.</li>
+        <li>Fiche : galerie en défilement horizontal continu, qui ralentit au survol et se glisse à la main.</li>
+        <li>Textes révélés ligne par ligne derrière un masque.</li>
+        <li>Transition de page : la vignette devient la photo de la fiche et passe du duotone à la couleur pendant le trajet (View Transitions API, repli FLIP).</li>
+        <li>Mobile : la photo au centre de l'écran se colore pendant le défilement.</li>
+      </ol></dd>
+    </dl>
+  </header>
+
+  <!-- 1 Accueil -->
+  <section class="shot" id="s1">
+    <div class="stage"><div class="screen" data-w="1160" data-h="712">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr</span></div>
+      <div class="site home">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2">Biens<sup>5</sup></a></li><li><a href="#s1">Vendre</a></li><li><a href="#s1">Le cabinet</a></li><li><a href="#s1">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 main rv">
+          <p class="lede"><span class="l"><span style="--i:0">Agent immobilier indépendant</span></span><span class="l"><span style="--i:1">au 117 boulevard Voltaire,</span></span><span class="l"><span style="--i:2">Asnières-sur-Seine, depuis 2009.</span></span></p>
+          <h1 class="big"><span class="l"><span style="--i:3">Cinq biens en vente</span></span><span class="l"><span style="--i:4">à Asnières et Levallois.</span></span></h1>
+          <figure class="ph">
+            <div class="duo lamp" id="lamp" data-src="img/bien-10129-3.jpg" data-alt="Jardin arboré du bien 10.129"></div>
+            <figcaption class="fade"><span>Réf. 10.129, jardin, quartier des Impressionnistes</span><span>Passez sur la photo pour voir ses couleurs</span></figcaption>
+          </figure>
+        </div>
+        <div class="g12 foot">
+          <span class="muted">117 bd Voltaire, 92600 Asnières</span>
+          <span><span class="num">4,9/5</span> <span class="muted">sur Google, 32 avis</span></span>
+          <span class="muted">Estimation de votre bien sur rendez-vous</span>
+          <a class="link" href="#s2">Voir les biens</a>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>1 Accueil.</b> Un halo de vraies couleurs dérive sur la photo du jardin, suit le curseur ; un clic colore toute l'image.</span><button type="button" data-replay="s1">Rejouer</button></div>
+  </section>
+
+  <!-- 2 Index -->
+  <section class="shot" id="s2">
+    <div class="stage"><div class="screen" data-w="1160" data-h="600">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens</span></div>
+      <div class="site idx" id="idx">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s2">Vendre</a></li><li><a href="#s2">Le cabinet</a></li><li><a href="#s2">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 bar">
+          <h2>Biens en vente<span class="num">5</span></h2>
+          <div class="toggle"><button type="button" aria-pressed="true" data-view="index">Index</button><button type="button" aria-pressed="false" data-view="grid">Grille</button></div>
+        </div>
+        <div id="v-index">
+          <div class="g12 head"><span class="c-ref">Réf.</span><span class="c-type">Bien</span><span class="c-surf">Surface</span><span class="c-ext">Extérieur</span><span class="c-ville">Ville</span><span class="c-prix">Prix</span></div>
+          <ul class="rows num" id="rows">
+            <li class="row" data-img="img/bien-10129-1.jpg"><span class="c-ref">10.129</span><span class="c-type">5 pièces, 4 chambres</span><span class="c-surf">92,2 m²</span><span class="c-ext">2 terrasses, jardins</span><span class="c-ville">Asnières</span><span class="c-prix">644 000 €</span></li>
+            <li class="row" data-img="img/bien-10130-2.jpg"><span class="c-ref">10.130</span><span class="c-type">3 pièces</span><span class="c-surf">59,5 m²</span><span class="c-ext">Terrasse 37,8 m²</span><span class="c-ville">Asnières</span><span class="c-prix">375 000 €</span></li>
+            <li class="row" data-img="img/bien-10131-2.jpg"><span class="c-ref">10.131</span><span class="c-type">2 pièces</span><span class="c-surf">46,6 m²</span><span class="c-ext">Terrasse 23,6 m²</span><span class="c-ville">Asnières</span><span class="c-prix">300 000 €</span></li>
+            <li class="row" data-img="img/bien-09345-1.jpg"><span class="c-ref">09.345</span><span class="c-type">2 pièces, dernier étage<em>Exclusivité</em></span><span class="c-surf">35,65 m²</span><span class="c-ext">Rue Collange</span><span class="c-ville">Levallois-Perret</span><span class="c-prix">280 000 €</span></li>
+            <li class="row" data-img="img/bien-09362-1.jpg"><span class="c-ref">09.362</span><span class="c-type">Studio<em>Exclusivité</em></span><span class="c-surf">33,16 m²</span><span class="c-ext">Balcon</span><span class="c-ville">Asnières</span><span class="c-prix">198 000 €</span></li>
+          </ul>
+        </div>
+        <div id="v-grid" class="gridv num" hidden>
+          <article style="--i:0"><div class="duo hov" data-src="img/bien-10129-2.jpg" data-alt="Séjour du 10.129"></div><p>10.129<span>644 000 €</span></p></article>
+          <article style="--i:1"><div class="duo hov" data-src="img/bien-10130-2.jpg" data-alt="Bien 10.130"></div><p>10.130<span>375 000 €</span></p></article>
+          <article style="--i:2"><div class="duo hov" data-src="img/bien-10131-2.jpg" data-alt="Bien 10.131"></div><p>10.131<span>300 000 €</span></p></article>
+          <article style="--i:3"><div class="duo hov" data-src="img/bien-09345-1.jpg" data-alt="Façade du 09.345"></div><p>09.345<span>280 000 €</span></p></article>
+          <article style="--i:4"><div class="duo hov" data-src="img/bien-09362-1.jpg" data-alt="Studio 09.362"></div><p>09.362<span>198 000 €</span></p></article>
+        </div>
+        <div class="float" id="float" aria-hidden="true"><div class="duo" id="floatDuo" data-src="img/bien-10129-1.jpg"></div><span class="tag">Voir la fiche</span></div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>2 Biens.</b> Index en lignes fines : la photo suit le curseur et se colore si l'on reste. Vue grille au choix.</span><span>Démonstration automatique quand la souris est ailleurs</span></div>
+  </section>
+
+  <!-- 3 Fiche -->
+  <section class="shot" id="s3">
+    <div class="stage"><div class="screen" data-w="1160" data-h="730">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens/10129</span></div>
+      <div class="site fiche">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s3">Vendre</a></li><li><a href="#s3">Le cabinet</a></li><li><a href="#s3">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 sub"><a class="link" href="#s2">Retour à l'index</a><span class="num">Réf. 10.129, Asnières-sur-Seine, 4 photos</span></div>
+        <div class="gal" id="gal">
+          <div class="track" id="track">
+            <div class="duo hov" data-src="img/bien-10129-1.jpg" data-alt="Photo 1"></div>
+            <div class="duo hov" data-src="img/bien-10129-2.jpg" data-alt="Séjour"></div>
+            <div class="duo hov" data-src="img/bien-10129-3.jpg" data-alt="Jardin arboré"></div>
+            <div class="duo hov" data-src="img/bien-10129-4.jpg" data-alt="Photo 4"></div>
+          </div>
+        </div>
+        <div class="g12 info rv">
+          <div class="prix">
+            <h3 class="num"><span class="l"><span style="--i:0">644 000 €</span></span></h3>
+            <p class="fade">Prix honoraires inclus</p>
+            <a class="link fade" href="#s3">Demander une visite</a>
+          </div>
+          <dl class="specs num fade">
+            <dt>Pièces</dt><dd>5, dont 4 chambres</dd>
+            <dt>Surface</dt><dd>92,2 m²</dd>
+            <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+            <dt>Quartier</dt><dd>Les Impressionnistes</dd>
+          </dl>
+          <div class="txt">
+            <p><span class="l"><span style="--i:1">Cinq pièces ouvertes sur des jardins</span></span><span class="l"><span style="--i:2">arborés, avec deux terrasses, dans</span></span><span class="l"><span style="--i:3">le quartier des Impressionnistes.</span></span></p>
+            <div class="energy fade num">
+              <div class="scale" aria-label="DPE classe D, 189 kWh par m² et par an"><span class="lab">DPE</span><span style="background:#F1E6DA">A</span><span style="background:#E3C9C0">B</span><span style="background:#C9948F">C</span><span class="act" style="background:#9A4A55;color:#FBF8F5">D<small>189 kWh/m²/an</small></span><span style="background:#6E1A26;color:#F1E6DA">E</span><span style="background:#4C121C;color:#F1E6DA">F</span><span style="background:#2E0A11;color:#F1E6DA">G</span></div>
+              <div class="scale" aria-label="GES classe B"><span class="lab">GES</span><span style="background:#F1E6DA">A</span><span class="act" style="background:#E3C9C0">B</span><span style="background:#C9948F">C</span><span style="background:#9A4A55;color:#FBF8F5">D</span><span style="background:#6E1A26;color:#F1E6DA">E</span><span style="background:#4C121C;color:#F1E6DA">F</span><span style="background:#2E0A11;color:#F1E6DA">G</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>3 Fiche.</b> La galerie défile seule, lentement, ralentit au survol et se glisse à la main ; chaque photo se colore sous le curseur.</span><button type="button" data-replay="s3">Rejouer</button></div>
+  </section>
+
+  <!-- 4 Mobiles -->
+  <section class="shot" id="s4">
+    <div class="mobiles">
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="760">
+          <div class="site"><div class="m-scroll" id="mscroll1">
+            <div class="m-top"><b>Cabinet Rimbault</b><span>Menu</span></div>
+            <div class="m-lede rv">
+              <h1 class="big"><span class="l"><span style="--i:0">Cinq biens en vente</span></span><span class="l"><span style="--i:1">à Asnières</span></span><span class="l"><span style="--i:2">et Levallois.</span></span></h1>
+              <p class="fade">Agent immobilier indépendant, 117 boulevard Voltaire, depuis 2009.</p>
+            </div>
+            <div class="m-list num">
+              <article><div class="duo cen" data-src="img/bien-10129-3.jpg" data-alt="Jardin du 10.129"></div><p>5 pièces, 92,2 m²<span>644 000 €</span></p></article>
+              <article><div class="duo cen" data-src="img/bien-10130-2.jpg" data-alt="Bien 10.130"></div><p>3 pièces, terrasse<span>375 000 €</span></p></article>
+              <article><div class="duo cen" data-src="img/bien-10131-2.jpg" data-alt="Bien 10.131"></div><p>2 pièces, terrasse<span>300 000 €</span></p></article>
+              <article><div class="duo cen" data-src="img/bien-09345-1.jpg" data-alt="Façade du 09.345"></div><p>2 pièces, Levallois<span>280 000 €</span></p></article>
+              <article><div class="duo cen" data-src="img/bien-09362-1.jpg" data-alt="Studio 09.362"></div><p>Studio, balcon<span>198 000 €</span></p></article>
+            </div>
+            <div class="m-foot"><span style="color:var(--encre)">01 73 64 56 10</span><span>117 bd Voltaire, 92600 Asnières-sur-Seine</span></div>
+          </div></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="760">
+          <div class="site"><div class="m-scroll">
+            <div class="m-top"><b>Retour</b><span class="num">Réf. 10.129</span></div>
+            <div class="m-gal" id="mgal">
+              <div class="duo slide" data-src="img/bien-10129-1.jpg" data-alt="Photo 1"></div>
+              <div class="duo slide" data-src="img/bien-10129-2.jpg" data-alt="Séjour"></div>
+              <div class="duo slide" data-src="img/bien-10129-3.jpg" data-alt="Jardin"></div>
+              <div class="duo slide" data-src="img/bien-10129-4.jpg" data-alt="Photo 4"></div>
+            </div>
+            <div class="m-meta num"><span>Asnières, Impressionnistes</span><span id="mcount">1 / 4</span></div>
+            <div class="m-prix num">644 000 €</div>
+            <div class="m-sub">Prix honoraires inclus</div>
+            <dl class="specs num">
+              <dt>Pièces</dt><dd>5, dont 4 chambres</dd>
+              <dt>Surface</dt><dd>92,2 m²</dd>
+              <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+            </dl>
+            <div class="energy num">
+              <div class="scale"><span class="lab">DPE</span><span style="background:#F1E6DA">A</span><span style="background:#E3C9C0">B</span><span style="background:#C9948F">C</span><span class="act" style="background:#9A4A55;color:#FBF8F5">D<small>189</small></span><span style="background:#6E1A26;color:#F1E6DA">E</span><span style="background:#4C121C;color:#F1E6DA">F</span><span style="background:#2E0A11;color:#F1E6DA">G</span></div>
+              <div class="scale"><span class="lab">GES</span><span style="background:#F1E6DA">A</span><span class="act" style="background:#E3C9C0">B</span><span style="background:#C9948F">C</span><span style="background:#9A4A55;color:#FBF8F5">D</span><span style="background:#6E1A26;color:#F1E6DA">E</span><span style="background:#4C121C;color:#F1E6DA">F</span><span style="background:#2E0A11;color:#F1E6DA">G</span></div>
+            </div>
+          </div>
+          <div class="m-cta"><a href="#s4">Demander une visite</a><a href="#s4" class="num">01 73 64 56 10</a></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="note">
+        <span><b>4 Mobile.</b> Sans survol, c'est le défilement qui colore : la photo qui passe au centre de l'écran prend ses vraies couleurs, les autres restent grenat.</span>
+        <span>Sur la fiche, la photo centrée de la galerie à glisser se colore ; l'appel et la demande de visite restent en bas de l'écran.</span>
+        <span>Faites défiler et glisser dans les deux écrans.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Transition -->
+  <section class="shot" id="s5">
+    <div class="stage"><div class="screen" data-w="1160" data-h="620">
+      <div class="chrome"><i></i><i></i><i></i><span id="vt-url">cabinet-rimbault.fr/biens</span></div>
+      <div class="site vt">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s5" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s5">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div id="vt-grid">
+          <div class="cards num">
+            <button type="button" data-i="0"><div class="duo hov" data-src="img/bien-10130-2.jpg" data-alt="Bien 10.130"></div><p><span class="ref">10.130, 3 pièces</span><span>375 000 €</span></p></button>
+            <button type="button" data-i="1"><div class="duo hov" data-src="img/bien-10131-2.jpg" data-alt="Bien 10.131"></div><p><span class="ref">10.131, 2 pièces</span><span>300 000 €</span></p></button>
+            <button type="button" data-i="2"><div class="duo hov" data-src="img/bien-09345-2.jpg" data-alt="Bien 09.345"></div><p><span class="ref">09.345, 2 pièces</span><span>280 000 €</span></p></button>
+          </div>
+          <p class="vt-hint">Cliquez une photo pour ouvrir la fiche.</p>
+        </div>
+        <div id="vt-open" class="g12 open" hidden>
+          <div class="duo full" id="vt-big"></div>
+          <div class="txt rv num" id="vt-txt">
+            <span class="ref" id="vt-ref"></span>
+            <h3><span class="l"><span style="--i:0" id="vt-prix"></span></span></h3>
+            <dl class="specs fade" id="vt-specs"></dl>
+            <button type="button" class="link fade" id="vt-back" style="justify-self:start">Retour à la liste</button>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>5 Transition de page.</b> La vignette grandit jusqu'à la fiche et passe du duotone à la couleur pendant le trajet.</span><button type="button" id="vt-replay">Rejouer</button></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const html = document.documentElement;
+  html.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  /* images duotone : couche couleur dessous, couche filtrée dessus */
+  $$('.duo[data-src]').forEach(f => {
+    f.insertAdjacentHTML('afterbegin', `<img class="c" src="${f.dataset.src}" alt="" decoding="async"><img class="d" src="${f.dataset.src}" alt="${f.dataset.alt || ''}" decoding="async">`);
+  });
+  const setSrc = (f, src) => { f.querySelectorAll('img').forEach(i => { i.src = src; }); };
+
+  /* cadres mis à l'échelle de la planche */
+  const fit = () => $$('.stage').forEach(st => {
+    const sc = st.firstElementChild, w = +sc.dataset.w, h = +sc.dataset.h;
+    const k = Math.min(1, st.clientWidth / w);
+    sc.style.width = w + 'px'; sc.style.height = h + 'px';
+    sc.style.transform = `scale(${k})`; st.style.height = h * k + 'px';
+  });
+  fit(); new ResizeObserver(fit).observe(document.body);
+
+  /* survol : la couleur entre par où le curseur entre */
+  const at = (el, e) => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--x', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+    el.style.setProperty('--y', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    el.style.setProperty('--R', Math.hypot(el.offsetWidth, el.offsetHeight) + 90 + 'px');
+  };
+  document.addEventListener('pointerover', e => {
+    const d = e.target.closest('.duo.hov'); if (!d || d.contains(e.relatedTarget)) return;
+    at(d, e); d.classList.add('on');
+  });
+  document.addEventListener('pointerout', e => {
+    const d = e.target.closest('.duo.hov'); if (!d || d.contains(e.relatedTarget)) return;
+    at(d, e); d.classList.remove('on');
+  });
+
+  /* révélation ligne par ligne à l'entrée dans l'écran */
+  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: .25 });
+  $$('.rv').forEach(el => io.observe(el));
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => {
+    $$('#' + b.dataset.replay + ' .rv').forEach(el => { el.classList.remove('in'); void el.offsetWidth; requestAnimationFrame(() => el.classList.add('in')); });
+  }));
+
+  const visible = new Map();
+  const vio = new IntersectionObserver(es => es.forEach(en => visible.set(en.target, en.isIntersecting)));
+  const watch = el => { visible.set(el, false); vio.observe(el); return el; };
+
+  /* 1 lampe */
+  const lamp = watch($('#lamp'));
+  let lx = .62, ly = .42, tx = lx, ty = ly, userAt = -1e9;
+  lamp.addEventListener('pointermove', e => { const r = lamp.getBoundingClientRect(); tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height; userAt = performance.now(); });
+  lamp.addEventListener('click', () => lamp.classList.toggle('on'));
+  lamp.addEventListener('pointerleave', () => lamp.classList.remove('on'));
+
+  /* 2 index */
+  const idx = watch($('#idx')), screen2 = idx.closest('.screen'), rowsEl = $('#rows'), rows = $$('.row', rowsEl);
+  const float = $('#float'), fduo = $('#floatDuo');
+  let fx = 600, fy = 300, ftx = 600, fty = 300, cur = -1, demoAt = 0, lastUser = -1e9, colorT;
+  const local = e => { const r = screen2.getBoundingClientRect(), k = r.width / screen2.offsetWidth; return [(e.clientX - r.left) / k, (e.clientY - r.top) / k]; };
+  const activate = i => {
+    if (i === cur) return; cur = i;
+    rows.forEach((r, j) => r.classList.toggle('is-on', j === i));
+    rowsEl.classList.toggle('hot', i >= 0);
+    clearTimeout(colorT);
+    if (i < 0) { float.classList.remove('show'); return; }
+    fduo.classList.add('snap'); fduo.classList.remove('on'); void fduo.offsetWidth;
+    setSrc(fduo, rows[i].dataset.img);
+    fduo.style.setProperty('--x', '50%'); fduo.style.setProperty('--y', '50%'); fduo.style.setProperty('--R', '420px');
+    requestAnimationFrame(() => fduo.classList.remove('snap'));
+    float.classList.add('show');
+    colorT = setTimeout(() => fduo.classList.add('on'), reduce ? 0 : 420);
+  };
+  rows.forEach((r, i) => r.addEventListener('pointerenter', e => { lastUser = performance.now(); activate(i); }));
+  rowsEl.addEventListener('pointermove', e => { lastUser = performance.now(); [ftx, fty] = local(e); });
+  rowsEl.addEventListener('pointerleave', () => activate(-1));
+  const demoTarget = i => {
+    const sr = screen2.getBoundingClientRect(), k = sr.width / screen2.offsetWidth, rr = rows[i].getBoundingClientRect();
+    ftx = 470 + (i % 2) * 60; fty = (rr.top - sr.top) / k + rr.height / k / 2;
+  };
+  $$('.toggle button').forEach(b => b.addEventListener('click', () => {
+    const grid = b.dataset.view === 'grid';
+    const go = () => {
+      $$('.toggle button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      $('#v-index').hidden = grid; $('#v-grid').hidden = !grid; activate(-1);
+      const g = $('#v-grid'); g.classList.remove('in'); if (grid) requestAnimationFrame(() => requestAnimationFrame(() => g.classList.add('in')));
+    };
+    go();
+  }));
+
+  /* 3 galerie */
+  const gal = watch($('#gal')), track = $('#track');
+  [...track.children].forEach(n => track.appendChild(n.cloneNode(true)));
+  let gpos = 0, gv = .45, gtarget = .45, dragX = null, setW = 0;
+  const measure = () => { const kids = track.children, half = kids.length / 2; setW = kids[half].offsetLeft - kids[0].offsetLeft; };
+  addEventListener('load', measure); measure();
+  gal.addEventListener('pointerenter', () => gtarget = .06);
+  gal.addEventListener('pointerleave', () => { gtarget = .45; dragX = null; gal.classList.remove('drag'); });
+  gal.addEventListener('pointerdown', e => { dragX = e.clientX; gal.classList.add('drag'); });
+  addEventListener('pointerup', () => { dragX = null; gal.classList.remove('drag'); });
+  gal.addEventListener('pointermove', e => { if (dragX === null) return; const k = gal.getBoundingClientRect().width / gal.offsetWidth; const dx = (e.clientX - dragX) / k; dragX = e.clientX; gpos -= dx; gv = -dx * .6; });
+  gal.addEventListener('wheel', e => { if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); gv += e.deltaX * .04; } }, { passive: false });
+
+  /* boucle unique */
+  const tick = now => {
+    if (visible.get(lamp)) {
+      if (now - userAt > 1400 && !reduce) { const t = now / 1000; tx = .52 + .3 * Math.sin(t * .31); ty = .48 + .26 * Math.sin(t * .47 + 1.2); }
+      lx += (tx - lx) * (reduce ? 1 : .07); ly += (ty - ly) * (reduce ? 1 : .07);
+      lamp.style.setProperty('--lx', (lx * 100).toFixed(2) + '%'); lamp.style.setProperty('--ly', (ly * 100).toFixed(2) + '%');
+    }
+    if (visible.get(idx) && !$('#v-index').hidden) {
+      if (now - lastUser > 2600 && now - demoAt > 1900) { demoAt = now; const n = (cur + 1 + rows.length) % rows.length; activate(n); demoTarget(n); }
+      const px = fx; fx += (ftx - fx) * .12; fy += (fty - fy) * .12;
+      const rot = Math.max(-9, Math.min(9, (fx - px) * .35));
+      float.style.transform = `translate3d(${fx - 125}px,${fy - 94}px,0) rotate(${rot.toFixed(2)}deg)`;
+    }
+    if (visible.get(gal) && setW) {
+      if (dragX === null) { gv += (gtarget - gv) * .04; gpos += reduce ? 0 : gv; }
+      gpos = ((gpos % setW) + setW) % setW;
+      track.style.transform = `translate3d(${-gpos}px,0,0)`;
+    }
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  /* 4 mobile : la photo au centre se colore */
+  const cio = new IntersectionObserver(es => es.forEach(en => {
+    en.target.style.setProperty('--R', '520px');
+    en.target.classList.toggle('on', en.isIntersecting);
+  }), { root: $('#mscroll1'), rootMargin: '-42% 0px -42% 0px' });
+  $$('.duo.cen').forEach(d => cio.observe(d));
+  const gio = new IntersectionObserver(es => es.forEach(en => {
+    en.target.style.setProperty('--R', '560px');
+    en.target.classList.toggle('on', en.isIntersecting);
+    if (en.isIntersecting) $('#mcount').textContent = ($$('.slide').indexOf(en.target) + 1) + ' / 4';
+  }), { root: $('#mgal'), rootMargin: '0px -40% 0px -40%' });
+  $$('.slide').forEach(d => gio.observe(d));
+
+  /* 5 transition de page */
+  const data = [
+    { src: 'img/bien-10130-2.jpg', ref: '10.130, 3 pièces', prix: '375 000 €', url: '10130', specs: [['Surface', '59,5 m²'], ['Terrasse', '37,8 m²'], ['Ville', 'Asnières-sur-Seine']] },
+    { src: 'img/bien-10131-2.jpg', ref: '10.131, 2 pièces', prix: '300 000 €', url: '10131', specs: [['Surface', '46,6 m²'], ['Terrasse', '23,6 m²'], ['Ville', 'Asnières-sur-Seine']] },
+    { src: 'img/bien-09345-2.jpg', ref: '09.345, 2 pièces', prix: '280 000 €', url: '09345', specs: [['Surface', '35,65 m²'], ['Étage', 'Dernier'], ['Adresse', 'Rue Collange, Levallois'], ['Mandat', 'Exclusivité']] }
+  ];
+  const vtGrid = $('#vt-grid'), vtOpen = $('#vt-open'), big = $('#vt-big'), vtTxt = $('#vt-txt'), cards = $$('.vt .cards button');
+  big.insertAdjacentHTML('afterbegin', '<img class="c" alt=""><img class="d" alt="">');
+  let vtCur = 0, busy = false;
+  const name = (el, n) => { el.style.viewTransitionName = n || ''; };
+  const run = (update, from, to) => {
+    if (busy) return; busy = true;
+    if (document.startViewTransition && !reduce) {
+      const t = document.startViewTransition(update);
+      t.finished.finally(() => { busy = false; });
+      return t;
+    }
+    /* repli FLIP */
+    const a = from().getBoundingClientRect(); update(); const tEl = to(), b = tEl.getBoundingClientRect();
+    if (!reduce && tEl.animate) tEl.animate([{ transform: `translate(${a.left - b.left}px,${a.top - b.top}px) scale(${a.width / b.width},${a.height / b.height})`, transformOrigin: '0 0' }, { transform: 'none', transformOrigin: '0 0' }], { duration: 900, easing: 'cubic-bezier(.7,0,.15,1)' });
+    busy = false; return null;
+  };
+  const open = i => {
+    vtCur = i; const card = cards[i], ph = $('.duo', card), d = data[i];
+    name(ph, 'vt-photo'); name($('.ref', card), 'vt-ref');
+    const t = run(() => {
+      name(ph); name($('.ref', card)); ph.classList.remove('on');
+      setSrc(big, d.src); $('#vt-ref').textContent = d.ref; $('#vt-prix').textContent = d.prix;
+      $('#vt-specs').innerHTML = d.specs.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+      $('#vt-url').textContent = 'cabinet-rimbault.fr/biens/' + d.url;
+      vtTxt.classList.remove('in');
+      vtGrid.hidden = true; vtOpen.hidden = false;
+      name(big, 'vt-photo'); name($('#vt-ref'), 'vt-ref');
+    }, () => ph, () => big);
+    const after = () => { name(big); name($('#vt-ref')); requestAnimationFrame(() => vtTxt.classList.add('in')); };
+    t ? t.finished.then(after) : after();
+  };
+  const close = () => {
+    const card = cards[vtCur], ph = $('.duo', card);
+    name(big, 'vt-photo'); name($('#vt-ref'), 'vt-ref');
+    const t = run(() => {
+      name(big); name($('#vt-ref'));
+      vtOpen.hidden = true; vtGrid.hidden = false; $('#vt-url').textContent = 'cabinet-rimbault.fr/biens';
+      name(ph, 'vt-photo'); name($('.ref', card), 'vt-ref');
+    }, () => big, () => ph);
+    const after = () => { name(ph); name($('.ref', card)); };
+    t ? t.finished.then(after) : after();
+  };
+  cards.forEach((c, i) => c.addEventListener('click', () => open(i)));
+  $('#vt-back').addEventListener('click', close);
+  let played = false;
+  const demo = () => { if (vtOpen.hidden) { open(0); setTimeout(close, 3600); } else { close(); setTimeout(() => open(0), 1400); } };
+  $('#vt-replay').addEventListener('click', demo);
+  new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting && !played) { played = true; setTimeout(() => { if (vtOpen.hidden) open(1); }, 900); } }), { threshold: .6 }).observe($('#s5 .stage'));
+})();
+</script>

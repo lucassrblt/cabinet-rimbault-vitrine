@@ -1,0 +1,521 @@
+/* Galerie chaude : socle commun (murs, grille, en-tête, pied, cartels,
+   photos, apparitions). Accrochage sur 12 colonnes, aligné à gauche : chaque
+   photo est une œuvre seule sur un mur chaud, son cartel posé à côté. Le
+   grenat peint un seul mur (le cabinet) et le pied de page, jamais les photos. */
+
+.site {
+  --mur: #faf7f2;
+  --creme: #f2e9dd;
+  --poudre: #f5ece7;
+  --grenat: #6e1a26;
+  --grenat-2: #56131e;
+  --encre: #2a1d1a;
+  --gris: #716561;
+  --filet: rgba(42, 29, 26, 0.13);
+  --sur-g: #f2e9dd;
+  --sur-g-2: #d6b9b1;
+  --filet-g: rgba(242, 233, 221, 0.22);
+  --sans: var(--chaude-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --serif: var(--chaude-serif), "Iowan Old Style", Georgia, serif;
+  --out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --io: cubic-bezier(0.65, 0, 0.35, 1);
+  --marge: clamp(20px, 4.4vw, 72px);
+  --col-gap: 24px;
+  /* grain de plâtre neutre : il est dans le mur, les photos passent dessus */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .36 0 0 0 0 .32 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mur);
+  background-image: var(--grain);
+  color: var(--encre);
+  font-family: var(--sans);
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+  transition: background-color 0.55s var(--out);
+}
+
+.site[data-mur="grenat"] {
+  background-color: var(--grenat);
+  color: var(--sur-g);
+}
+
+:where(.site) a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site :focus-visible {
+  outline: 1px solid var(--grenat);
+  outline-offset: 3px;
+}
+
+.site[data-mur="grenat"] :focus-visible,
+.pied :focus-visible {
+  outline-color: var(--sur-g);
+}
+
+.site ::selection {
+  background: var(--poudre);
+  color: var(--grenat-2);
+}
+
+.main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.tbc {
+  color: var(--grenat);
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+.site[data-mur="grenat"] .tbc,
+.pied .tbc {
+  color: var(--sur-g-2);
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Grille ---------- */
+.w {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: var(--marge);
+}
+
+.g {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+
+/* ---------- Lien souligné qui se trace ---------- */
+.u {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 3px;
+  color: var(--grenat);
+}
+
+.u::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform-origin: right;
+  transform: scaleX(0.3);
+  transition: transform 0.55s var(--io);
+}
+
+.u:hover::after,
+.u:focus-visible::after,
+a:hover > .u::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.site[data-mur="grenat"] .u,
+.pied .u {
+  color: var(--sur-g);
+}
+
+/* ---------- En-tête ---------- */
+.nav {
+  position: relative;
+  z-index: 20;
+  height: 76px;
+  align-items: center;
+}
+
+.brand {
+  grid-column: 1 / 4;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  justify-self: start;
+}
+
+.navList {
+  grid-column: 6 / 11;
+  display: flex;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navList a {
+  color: var(--gris);
+  transition: color 0.3s;
+}
+
+.navList a:hover,
+.navList a[aria-current] {
+  color: var(--encre);
+}
+
+.navList sup {
+  font-size: 9px;
+  margin-left: 2px;
+  color: var(--grenat);
+  position: relative;
+  top: -0.6em;
+  vertical-align: baseline;
+  line-height: 0;
+}
+
+.tel {
+  grid-column: 11 / 13;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+.menuBtn {
+  display: none;
+}
+
+.site[data-mur="grenat"] .navList a {
+  color: var(--sur-g-2);
+}
+
+.site[data-mur="grenat"] .navList a:hover,
+.site[data-mur="grenat"] .navList a[aria-current],
+.site[data-mur="grenat"] .navList sup {
+  color: var(--sur-g);
+}
+
+/* ---------- Photos : vraie couleur ----------
+   Seul réglage : luminosité −2 %, contraste +3 %, saturation −3 %, pour
+   calmer les blancs de l'iPhone. Aucun voile, aucun mélange, aucune teinte. */
+.ph {
+  position: relative;
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  background: #dcd6cf;
+}
+
+.ph img {
+  object-fit: cover;
+  transition: opacity 0.6s var(--out);
+  filter: brightness(0.98) contrast(1.03) saturate(0.97);
+}
+
+/* Photo en attente de chargement : le cadre garde le ton du mur, la photo
+   arrive en fondu (PhotoMur pose `data-loaded`). Sans JavaScript, rien n'est caché. */
+.attente {
+  background: rgba(42, 29, 26, 0.05);
+}
+
+@media (scripting: enabled) {
+  .attente:not([data-loaded]) img {
+    opacity: 0;
+  }
+}
+
+/* ---------- Apparitions (une fois, à l'entrée dans l'écran) ----------
+   `data-rv` est posé côté serveur ; `RevealObserver` ajoute `data-in`.
+   Sans JavaScript, tout reste visible. */
+[data-rv] .up {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.6s var(--out),
+    transform 0.6s var(--out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+[data-rv] .fade {
+  opacity: 0;
+  transition: opacity 0.7s var(--out);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+[data-rv][data-in] .up,
+[data-rv][data-in] .fade {
+  opacity: 1;
+  transform: none;
+}
+
+@media (scripting: none) {
+  [data-rv] .up,
+  [data-rv] .fade {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Cartel ---------- */
+.cartel {
+  display: grid;
+  gap: 3px;
+  align-content: end;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--gris);
+  max-width: 200px;
+  min-width: 0;
+}
+
+.ref {
+  font-size: 11px;
+}
+
+.ti {
+  margin: 0 0 4px;
+  color: var(--encre);
+  font-weight: 400;
+  font-size: 12.5px;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.ti span {
+  background:
+    linear-gradient(var(--grenat), var(--grenat)) no-repeat 0 100% / 0% 1px;
+  padding-bottom: 2px;
+  transition: background-size 0.6s var(--io);
+}
+
+.px {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 17px;
+  color: var(--encre);
+  margin-top: 6px;
+  line-height: 1.1;
+}
+
+.marque {
+  font-style: normal;
+  color: var(--grenat);
+}
+
+.voir {
+  margin-top: 10px;
+  color: var(--gris);
+  transition: color 0.35s var(--out);
+}
+
+.oeuvre {
+  cursor: pointer;
+}
+
+.oeuvre:hover .ti span,
+.oeuvre:focus-visible .ti span {
+  background-size: 100% 1px;
+}
+
+.oeuvre:hover .voir,
+.oeuvre:focus-visible .voir {
+  color: var(--grenat);
+}
+
+/* ---------- Boutons ---------- */
+.btn {
+  height: 42px;
+  padding: 0 18px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 13px;
+  background: var(--grenat);
+  color: var(--sur-g);
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--grenat-2);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--grenat);
+  box-shadow: inset 0 0 0 1px var(--grenat);
+}
+
+.ghost:hover {
+  background: var(--poudre);
+}
+
+/* ---------- Pied de page grenat ---------- */
+.pied {
+  flex-shrink: 0;
+  background: var(--grenat-2);
+  color: var(--sur-g);
+  font-size: 12px;
+}
+
+.piedIn {
+  padding-block: 28px 32px;
+  row-gap: 24px;
+}
+
+.piedCol {
+  grid-column: span 3;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  min-width: 0;
+}
+
+.piedCol b {
+  font-weight: 500;
+}
+
+.piedCol span,
+.piedCol small {
+  color: var(--sur-g-2);
+}
+
+.piedCol .u {
+  justify-self: start;
+}
+
+.legal {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--filet-g);
+  padding-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  font-size: 11px;
+  color: var(--sur-g-2);
+}
+
+/* ---------- Tablette et mobile ---------- */
+@media (max-width: 899px) {
+  .site {
+    --col-gap: 16px;
+  }
+
+  .nav {
+    position: sticky;
+    top: 0;
+    height: 52px;
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--mur);
+    background-image: var(--grain);
+    border-bottom: 1px solid transparent;
+  }
+
+  .site[data-mur="grenat"] .nav,
+  .site[data-mur="grenat"] .navList {
+    background-color: var(--grenat);
+  }
+
+  .tel {
+    display: none;
+  }
+
+  .menuBtn {
+    display: inline-block;
+    font: inherit;
+    color: var(--gris);
+    background: none;
+    border: 0;
+    padding: 8px 0 8px 16px;
+    cursor: pointer;
+  }
+
+  .site[data-mur="grenat"] .menuBtn {
+    color: var(--sur-g-2);
+  }
+
+  .navList {
+    position: absolute;
+    top: 52px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px var(--marge) 20px;
+    background-color: var(--mur);
+    background-image: var(--grain);
+    border-bottom: 1px solid var(--filet);
+    font-size: 15px;
+  }
+
+  .navList[data-open="false"] {
+    display: none;
+  }
+
+  .navList li a {
+    display: block;
+    padding: 10px 0;
+  }
+
+  .navList .navTel {
+    color: var(--grenat);
+  }
+
+  .site[data-mur="grenat"] .navList .navTel {
+    color: var(--sur-g);
+  }
+
+  .piedCol {
+    grid-column: span 6;
+  }
+}
+
+@media (min-width: 900px) {
+  .navTel {
+    display: none;
+  }
+}
+
+/* Fiche sous 900 px : la barre fixe « Demander une visite / Appeler »
+   (data-barre-fixe) ne doit jamais recouvrir le pied. */
+@media (max-width: 899px) {
+  .site:has([data-barre-fixe]) .pied {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 520px) {
+  .piedCol {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site,
+  .site *,
+  .site *::before,
+  .site *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: le mouvement réduit doit l'emporter partout */
+    transition-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: idem */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: idem */
+    transition-delay: 0ms !important;
+  }
+
+  [data-rv] .up,
+  [data-rv] .fade {
+    opacity: 1;
+    transform: none;
+  }
+}

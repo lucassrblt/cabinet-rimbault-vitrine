@@ -1,0 +1,567 @@
+/* Accueil : le parcours d'une galerie. L'agence et sa devanture à l'entrée,
+   un petit accrochage des biens, puis trois salles de texte (métiers, façon
+   de travailler, avis) et l'adresse. Une seule phrase serif agrandie par
+   section ; le vide sépare les salles, les murs changent de ton (blanc chaud,
+   crème, poudré), jamais de grenat ici : il reste au cabinet et au pied. */
+
+.accueil {
+  flex: 1 0 auto;
+}
+
+/* ---------- 1. L'agence d'abord ---------- */
+.insec {
+  white-space: nowrap;
+}
+
+.entree {
+  padding-top: 104px;
+  padding-bottom: 144px;
+  align-items: end;
+}
+
+.entreeTexte {
+  grid-column: 1 / 7;
+  min-width: 0;
+}
+
+.entreeTexte h1 {
+  margin: 0;
+  max-width: 23ch;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.entreeTexte > p:first-of-type {
+  margin: 22px 0 0;
+  max-width: 46ch;
+  color: var(--gris);
+  text-wrap: pretty;
+}
+
+.actions {
+  margin-top: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+}
+
+.note {
+  margin: 22px 0 0;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.note a {
+  transition: color 0.3s;
+}
+
+.note a:hover {
+  color: var(--encre);
+}
+
+.devanture {
+  grid-column: 8 / 13;
+  margin: 0;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: end;
+}
+
+.cadre {
+  grid-column: 1 / 4;
+  background: var(--creme);
+  padding: clamp(14px, 1.5vw, 22px);
+  box-shadow: inset 0 0 0 1px var(--filet);
+}
+
+.photo {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+}
+
+.devCartel {
+  grid-column: 4 / 6;
+  padding-left: 4px;
+}
+
+/* ---------- 2. L'exposition en cours ---------- */
+.expo {
+  padding-bottom: 152px;
+}
+
+.tete {
+  align-items: end;
+}
+
+.tete h2 {
+  grid-column: 1 / 7;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.tete h2 small {
+  display: block;
+  margin-top: 8px;
+  font: 400 12px / 1.5 var(--sans);
+  color: var(--gris);
+}
+
+.teteLien {
+  grid-column: 10 / 13;
+  justify-self: end;
+}
+
+.petit {
+  margin-top: 64px;
+  align-items: start;
+}
+
+.po {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  align-content: start;
+}
+
+.poPh {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.poCartel {
+  max-width: 220px;
+}
+
+.pa {
+  grid-column: 1 / 5;
+  margin-top: 112px;
+}
+
+.pb {
+  grid-column: 6 / 9;
+}
+
+.pb .poPh {
+  aspect-ratio: 3 / 4;
+}
+
+.pc {
+  grid-column: 10 / 13;
+  margin-top: 208px;
+}
+
+/* un seul bien : il prend la place d'une grande œuvre */
+.petit[data-n="1"] .pa {
+  grid-column: 1 / 8;
+  margin-top: 0;
+}
+
+/* ---------- Salles de texte ---------- */
+.mur {
+  background-color: var(--mur);
+  background-image: var(--grain);
+}
+
+.creme {
+  background-color: var(--creme);
+}
+
+.poudre {
+  background-color: var(--poudre);
+}
+
+.bloc {
+  padding-block: 104px;
+  align-items: start;
+  row-gap: 0;
+}
+
+.blocT {
+  grid-column: 1 / 4;
+  min-width: 0;
+}
+
+.blocT h2,
+h2.blocT {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.blocLien {
+  grid-column: 4 / 13;
+  justify-self: start;
+  margin-top: 32px;
+}
+
+/* 3. Ce que nous faisons : trois cartels côte à côte */
+.metiers,
+.avis {
+  grid-column: 4 / 13;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px 24px;
+}
+
+.metiers li {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  justify-items: start;
+  border-top: 1px solid var(--filet);
+  padding-top: 16px;
+}
+
+.metiers h3,
+.engagements h3 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--encre);
+}
+
+.metiers p {
+  margin: 0 0 8px;
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+/* 4. Notre façon de travailler : l'engagement, puis ce qu'il veut dire */
+.engagements {
+  grid-column: 4 / 13;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--filet);
+}
+
+.engagements li {
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  column-gap: 24px;
+  padding-block: 18px 22px;
+  border-top: 1px solid var(--filet);
+}
+
+.engagements h3 {
+  grid-column: 1 / 5;
+  max-width: 30ch;
+}
+
+.engagements p {
+  grid-column: 5 / 10;
+  margin: 0;
+  max-width: 52ch;
+  color: var(--gris);
+  text-wrap: pretty;
+}
+
+/* 5. Ce que disent nos clients */
+.noteAvis {
+  margin: 12px 0 0;
+  max-width: 26ch;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.avis figure {
+  margin: 0;
+}
+
+.avis blockquote {
+  margin: 0;
+}
+
+.avis blockquote p {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 1.5;
+  white-space: pre-line;
+  text-wrap: pretty;
+}
+
+.avis figcaption {
+  margin-top: 12px;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.avisPied {
+  grid-column: 4 / 13;
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.avisPied p {
+  margin: 0;
+  font-size: 11px;
+  color: var(--gris);
+}
+
+/* 6. Passez nous voir */
+.venir {
+  padding-bottom: 120px;
+}
+
+.adresse {
+  display: grid;
+  gap: 2px;
+  align-content: start;
+  justify-items: start;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.adresse .u {
+  margin-top: 10px;
+}
+
+.venir > :nth-child(2) {
+  grid-column: 4 / 7;
+}
+
+.venir > :nth-child(3) {
+  grid-column: 7 / 10;
+}
+
+.venir > :nth-child(4) {
+  grid-column: 10 / 13;
+}
+
+.lab {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  color: var(--gris);
+}
+
+.telGrand {
+  white-space: nowrap;
+}
+
+.horaires {
+  margin: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.horaires div {
+  display: flex;
+  gap: 12px;
+}
+
+.horaires dt {
+  color: var(--gris);
+}
+
+.horaires dd {
+  margin: 0;
+}
+
+/* ---------- Entre 900 et 1100 px ---------- */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .entreeTexte {
+    grid-column: 1 / 7;
+  }
+
+  .devanture {
+    grid-column: 7 / 13;
+  }
+
+  .cadre {
+    grid-column: 1 / 5;
+  }
+
+  .devCartel {
+    grid-column: 5 / 7;
+  }
+
+  .blocT {
+    grid-column: 1 / -1;
+    margin-bottom: 32px;
+  }
+
+  .metiers,
+  .avis,
+  .engagements,
+  .blocLien,
+  .avisPied {
+    grid-column: 1 / -1;
+  }
+
+  .venir > :nth-child(2) {
+    grid-column: 1 / 5;
+  }
+
+  .venir > :nth-child(3) {
+    grid-column: 5 / 9;
+  }
+
+  .venir > :nth-child(4) {
+    grid-column: 9 / 13;
+  }
+}
+
+/* ---------- Mobile : une colonne ---------- */
+@media (max-width: 899px) {
+  .entree {
+    padding-top: 40px;
+    padding-bottom: 88px;
+    row-gap: 56px;
+  }
+
+  .entreeTexte,
+  .devanture {
+    grid-column: 1 / -1;
+  }
+
+  .entreeTexte h1 {
+    font-size: 25px;
+  }
+
+  .actions {
+    margin-top: 28px;
+  }
+
+  .devanture {
+    display: grid;
+    grid-template-columns: none;
+    gap: 14px;
+  }
+
+  .cadre {
+    grid-column: auto;
+    width: 74%;
+  }
+
+  .devCartel {
+    grid-column: auto;
+    padding-left: 0;
+    max-width: none;
+  }
+
+  .expo {
+    padding-bottom: 96px;
+  }
+
+  .tete {
+    row-gap: 12px;
+  }
+
+  .tete h2,
+  .teteLien {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .tete h2 {
+    font-size: 20px;
+  }
+
+  .petit {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 64px;
+  }
+
+  .pa,
+  .pb,
+  .pc {
+    grid-column: auto;
+    margin-top: 0;
+  }
+
+  .po {
+    gap: 10px;
+  }
+
+  .po[data-m="1"] {
+    width: 62%;
+    justify-self: end;
+  }
+
+  .po[data-m="2"] {
+    width: 84%;
+  }
+
+  .poCartel {
+    max-width: none;
+  }
+
+  .bloc {
+    padding-block: 72px;
+  }
+
+  .blocT {
+    grid-column: 1 / -1;
+    margin-bottom: 28px;
+  }
+
+  .blocT h2,
+  h2.blocT {
+    font-size: 20px;
+  }
+
+  .metiers,
+  .avis,
+  .engagements,
+  .blocLien,
+  .avisPied {
+    grid-column: 1 / -1;
+  }
+
+  .metiers,
+  .avis {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .engagements li {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+
+  .engagements h3,
+  .engagements p {
+    grid-column: 1 / -1;
+  }
+
+  .avisPied {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .venir {
+    row-gap: 28px;
+    padding-bottom: 88px;
+  }
+
+  .venir > :nth-child(2),
+  .venir > :nth-child(3),
+  .venir > :nth-child(4) {
+    grid-column: 1 / -1;
+  }
+}
