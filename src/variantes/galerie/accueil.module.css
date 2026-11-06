@@ -52,7 +52,7 @@
 
 .note {
   margin: 22px 0 0;
-  font-size: 11.5px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -110,7 +110,7 @@
 .tete h2 small {
   display: block;
   margin-top: 8px;
-  font: 400 12px / 1.5 var(--sans);
+  font: 400 15px / 1.45 var(--sans);
   color: var(--gris);
 }
 
@@ -209,7 +209,7 @@ h2.blocT {
 .vendreT h2 {
   margin: 0;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -253,7 +253,7 @@ h2.blocT {
 .metiers h3 {
   margin: 0;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.4;
   color: var(--encre);
 }
@@ -293,7 +293,7 @@ h2.blocT {
 
 .une figcaption {
   margin-top: 16px;
-  font-size: 11.5px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -320,7 +320,7 @@ h2.blocT {
 .noteAvis {
   margin: 12px 0 0;
   max-width: 26ch;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -334,7 +334,7 @@ h2.blocT {
 
 .avis blockquote p {
   margin: 0;
-  font-size: 12.5px;
+  font-size: 15px;
   line-height: 1.55;
   white-space: pre-line;
   text-wrap: pretty;
@@ -342,7 +342,7 @@ h2.blocT {
 
 .avis figcaption {
   margin-top: 8px;
-  font-size: 11.5px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -355,7 +355,7 @@ h2.blocT {
 
 .avisPied p {
   margin: 0;
-  font-size: 11px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -396,7 +396,7 @@ h2.blocT {
 .lab {
   display: block;
   margin-bottom: 6px;
-  font-size: 11px;
+  font-size: 15px;
   color: var(--gris);
 }
 

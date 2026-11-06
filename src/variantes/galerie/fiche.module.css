@@ -8,7 +8,7 @@
 .sub {
   min-height: 40px;
   align-items: center;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -108,7 +108,7 @@
 
 .count {
   margin-left: auto;
-  font-size: 11px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -127,7 +127,7 @@
 }
 
 .ref {
-  font-size: 11px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -140,7 +140,7 @@
 .cartelD h1 {
   margin: 0;
   font-weight: 400;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.4;
   text-wrap: pretty;
 }
@@ -148,12 +148,12 @@
 .sousTitre {
   margin: -10px 0 0;
   color: var(--gris);
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .lieu {
   margin: -8px 0 0;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -175,7 +175,7 @@
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
-  font-size: 11px;
+  font-size: 15px;
   color: var(--gris);
   display: grid;
   gap: 2px;
@@ -184,12 +184,12 @@
 .specs {
   margin: 0;
   display: grid;
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .specs > div {
   display: grid;
-  grid-template-columns: 84px minmax(0, 1fr);
+  grid-template-columns: 112px minmax(0, 1fr);
   border-top: 1px solid var(--filet);
 }
 
@@ -313,7 +313,7 @@
 .caract h3 {
   margin: 28px 0 8px;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -336,14 +336,14 @@
   display: grid;
   gap: 22px;
   align-content: start;
-  font-size: 11px;
+  font-size: 15px;
   border-top: 1px solid var(--filet);
 }
 
 .energie h2 {
   margin: 0 0 -8px;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -353,25 +353,25 @@
 }
 
 .etqT {
-  font-size: 11px;
+  font-size: 15px;
   color: var(--gris);
   margin-bottom: 4px;
 }
 
 .etqVide {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 15px;
 }
 
 .r {
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 17px;
+  height: 20px;
 }
 
 .r[data-act] {
-  height: 24px;
+  height: 28px;
 }
 
 .b {
@@ -379,12 +379,12 @@
   display: flex;
   align-items: center;
   padding-left: 6px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 500;
   color: #1d1d1d;
   transform-origin: left;
-  transition: transform 0.6s var(--out);
-  transition-delay: calc(var(--k) * 45ms);
+  transition: transform 0.4s var(--out);
+  transition-delay: calc(var(--k) * 30ms);
 }
 
 [data-rv] .b {
@@ -395,20 +395,33 @@
   transform: none;
 }
 
+/* Sans JavaScript ou en mouvement réduit, les barres sont dessinées d'emblée. */
+@media (scripting: none) {
+  [data-rv] .b {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-rv] .b {
+    transform: none;
+  }
+}
+
 .r[data-act] .b {
-  font-size: 12px;
+  font-size: 14px;
   box-shadow:
     0 0 0 1px var(--mur),
     0 0 0 2px var(--encre);
 }
 
 .val {
-  font-size: 11px;
+  font-size: 15px;
   white-space: nowrap;
 }
 
 .legal {
-  font-size: 10.5px;
+  font-size: 15px;
   color: var(--gris);
   line-height: 1.5;
   margin: 0;
@@ -580,7 +593,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 11px;
+    font-size: 15px;
     color: var(--gris);
   }
 

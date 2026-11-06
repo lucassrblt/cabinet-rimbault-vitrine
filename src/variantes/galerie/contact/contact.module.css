@@ -25,7 +25,7 @@
 .introTexte h1 {
   margin: 0;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -117,7 +117,7 @@
 .enseigneRue,
 .enseigneDepuis {
   justify-self: center;
-  font-size: 11.5px;
+  font-size: 15px;
   letter-spacing: 0.08em;
   color: var(--sur-g-2);
 }
@@ -171,13 +171,13 @@
 .titreForm {
   margin: 0;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
 }
 
 .oblig {
   margin: 0;
-  font-size: 11.5px;
+  font-size: 15px;
   color: var(--gris);
 }
 
@@ -197,7 +197,7 @@
 .objets legend {
   padding: 0;
   margin-bottom: 10px;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .pastilles {
@@ -222,7 +222,7 @@
 .pastille span {
   display: inline-block;
   padding: 8px 13px;
-  font-size: 12.5px;
+  font-size: 15px;
   border: 1px solid var(--filet);
   transition:
     border-color 0.3s,
@@ -241,7 +241,7 @@
 }
 
 .pastille input:focus-visible + span {
-  outline: 1px solid var(--grenat);
+  outline: 2px solid var(--grenat);
   outline-offset: 3px;
 }
 
@@ -266,8 +266,11 @@
   border-bottom: 1px solid var(--filet);
 }
 
+/* Champ actif : le filet passe à l'encre et s'épaissit (repère du focus,
+   le champ lui-même n'ayant pas de contour). */
 .ligne:focus-within {
   border-top-color: var(--encre);
+  box-shadow: inset 0 1px 0 var(--encre);
 }
 
 .ligne[data-erreur] {
@@ -275,13 +278,12 @@
 }
 
 .label {
-  font-size: 11.5px;
+  font-size: 15px;
   color: var(--gris);
 }
 
 .facultatif {
   color: var(--gris);
-  opacity: 0.8;
 }
 
 .champ {
@@ -320,12 +322,12 @@
 
 .aide {
   margin: 0;
-  font-size: 11.5px;
+  font-size: 15px;
   color: var(--gris);
 }
 
 .erreur {
-  font-size: 12px;
+  font-size: 15px;
   color: var(--grenat);
   font-weight: 500;
 }
@@ -351,7 +353,7 @@
   column-gap: 12px;
   row-gap: 4px;
   align-items: start;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
   max-width: 62ch;
 }
@@ -404,7 +406,7 @@
 
 .resume h3 {
   margin: 0 0 6px;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--grenat);
 }
@@ -422,7 +424,7 @@
 }
 
 .resume:focus-visible {
-  outline: 1px solid var(--grenat);
+  outline: 2px solid var(--grenat);
   outline-offset: 3px;
 }
 
@@ -494,7 +496,7 @@
 .merci p:last-child {
   margin: 0;
   max-width: 46ch;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--gris);
 }
 
