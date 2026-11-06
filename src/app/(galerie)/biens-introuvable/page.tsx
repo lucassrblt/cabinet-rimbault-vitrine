@@ -8,8 +8,11 @@ import { Introuvable } from "@/variantes/galerie/Introuvable";
 // Next 16.3). Jamais atteinte directement : le proxy renvoie `/biens-introuvable`
 // tapé tel quel vers la 404 générale. Pas de <main> : celui du cadre Galerie.
 
+// Titre commun à toutes les 404 (décision du 06/11/2026) : servie par la
+// réécriture du proxy avec le statut 404, la page reçoit de toute façon les
+// métadonnées de la 404 générale (Next 16.3). Le corps dit « bien disparu ».
 export const metadata: Metadata = {
-  title: "Bien introuvable",
+  title: "Page introuvable",
   robots: { index: false, follow: false },
 };
 

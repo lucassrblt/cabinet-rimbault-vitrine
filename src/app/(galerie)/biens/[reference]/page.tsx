@@ -94,14 +94,14 @@ function listingType(view: PropertyView): "APPARTEMENT" | "MAISON" | "AUTRE" {
   return "AUTRE";
 }
 
-// Référence inconnue → « Bien introuvable » en noindex ; API en erreur →
+// Référence inconnue → « Page introuvable » (titre commun des 404) en noindex ; API en erreur →
 // titre par défaut en noindex (règle du lot 0, reprise de la refonte).
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const property = await load(await readReference(params));
   if (property === "erreur") return { robots: { index: false, follow: false } };
   if (!property) {
     return {
-      title: "Bien introuvable",
+      title: "Page introuvable",
       robots: { index: false, follow: false },
     };
   }

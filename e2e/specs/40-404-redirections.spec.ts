@@ -82,15 +82,16 @@ test("URL inconnue : titre « Page introuvable »", async ({ page }) => {
   await expect(page).toHaveTitle("Page introuvable | Cabinet Rimbault");
 });
 
-// Défaut signalé : la page `(galerie)/biens-introuvable` déclare le titre
-// « Bien introuvable » (noindex, nofollow), mais servie par la réécriture du
-// proxy avec le statut 404, Next 16.3 résout les métadonnées comme une 404
-// (`is404` dans app-render) : <title> « Page introuvable », robots
-// « noindex ». Constaté en `next dev` ET en `next build` + `next start`.
-// Le corps (h1 « Ce bien n’est plus en ligne. ») est juste.
-test.fixme("fiche inconnue : titre « Bien introuvable »", async ({ page }) => {
+// Titre commun à toutes les 404 (décision du 06/11/2026) : servie par la
+// réécriture du proxy avec le statut 404, la page du bien disparu reçoit les
+// métadonnées de la 404 générale (Next 16.3, `is404` dans app-render). Seul le
+// corps distingue le bien disparu (h1 « Ce bien n’est plus en ligne. »).
+test("fiche inconnue : titre commun « Page introuvable »", async ({ page }) => {
   await page.goto("/biens/ZZ");
-  await expect(page).toHaveTitle("Bien introuvable | Cabinet Rimbault");
+  await expect(page).toHaveTitle("Page introuvable | Cabinet Rimbault");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "Ce bien n’est plus en ligne.",
+  );
 });
 
 test("fiche d'un bien retiré (scénario empty) : 404 « bien disparu »", async ({
