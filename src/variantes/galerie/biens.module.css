@@ -23,7 +23,7 @@
 
 .salleT h1 small {
   display: block;
-  font: 400 12px / 1.5 var(--sans);
+  font: 400 15px / 1.45 var(--sans);
   color: var(--gris);
   margin-top: 8px;
 }
@@ -357,7 +357,7 @@
 .liste h2 {
   margin: 0;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--gris);
   padding-bottom: 12px;
 }
@@ -376,7 +376,7 @@
   align-items: center;
   min-height: 52px;
   padding-block: 8px;
-  font-size: 12.5px;
+  font-size: 15px;
   border-bottom: 1px solid var(--filet);
   background:
     linear-gradient(var(--poudre), var(--poudre)) no-repeat 0 100% / 100% 0%;
@@ -391,7 +391,7 @@
 .row em {
   font-style: normal;
   color: var(--grenat);
-  font-size: 11px;
+  font-size: 15px;
   margin-left: 8px;
   white-space: nowrap;
 }

@@ -181,3 +181,37 @@ test("scénario n12 : douze biens accrochés et listés", async ({
   expect(res?.status()).toBe(200);
   await expect(page.getByRole("main")).toContainText("Réf. 09.345-c6");
 });
+
+test("offre : vente seule tant qu'aucune location n'est publiée", async ({
+  page,
+}) => {
+  await page.goto("/biens");
+  await expect(page).toHaveTitle(
+    "Nos biens à vendre à Asnières-sur-Seine | Cabinet Rimbault",
+  );
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    "content",
+    /à la vente, à Asnières/,
+  );
+  const h1 = page.getByRole("heading", { level: 1 });
+  await expect(h1).toContainText("Biens en vente");
+  await expect(h1).not.toContainText("location");
+});
+
+test("offre : une location publiée (scénario edge) l'ajoute au titre et au h1", async ({
+  page,
+  request,
+}) => {
+  await mock.scenario(request, "edge");
+  await page.goto("/biens");
+  await expect(page).toHaveTitle(
+    "Nos biens à vendre et à louer à Asnières-sur-Seine | Cabinet Rimbault",
+  );
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    "content",
+    /à la vente et à la location/,
+  );
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    "Biens en vente et en location",
+  );
+});

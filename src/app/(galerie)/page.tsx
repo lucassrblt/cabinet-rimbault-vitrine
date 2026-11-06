@@ -19,7 +19,8 @@ import {
 } from "@/variantes/galerie/data";
 
 // Accueil de la Galerie, composé comme le parcours d'une galerie :
-// 1. l'agence d'abord : texte d'entrée et devanture accrochée avec son cartel ;
+// 1. l'agence d'abord : texte d'entrée et devanture accrochée avec son cartel
+//    (sous 768 px, la devanture passe après l'exposition) ;
 // 2. l'exposition en cours : trois biens au plus en petit accrochage ;
 // 3. vendre avec nous (mur crème) : le premier engagement d'`agency.ts` en
 //    phrase serif, l'estimation vers /vendre/estimation, les deux autres
@@ -55,6 +56,45 @@ const LOCATION = {
 const PETIT = ["pa", "pb", "pc"] as const;
 
 const integer = new Intl.NumberFormat("fr-FR");
+
+/** La devanture et son cartel (accroche desktop, ou après les biens sur mobile). */
+function Devanture({
+  className,
+  eager = false,
+}: {
+  className?: string;
+  eager?: boolean;
+}) {
+  const { street, city } = agency.address;
+  return (
+    <figure className={`${a.devanture} ${className ?? ""}`}>
+      <div className={`${a.cadre} ${s.fade}`}>
+        <div className={`${s.ph} ${a.photo}`}>
+          <Image
+            src="/devanture.jpg"
+            alt={`La devanture grenat du cabinet, ${street}`}
+            fill
+            sizes="(min-width: 900px) 24vw, 70vw"
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : undefined}
+          />
+        </div>
+      </div>
+      <figcaption className={`${s.cartel} ${a.devCartel}`}>
+        <span className={`${s.ti} ${s.up}`} style={i(2)}>
+          La devanture
+        </span>
+        <span className={s.up} style={i(2)}>
+          {street}, {city}
+        </span>
+        <span className={s.up} style={i(3)}>
+          Photographie provisoire{" "}
+          <span className={s.tbc}>[nouvelle prise de vue à prévoir]</span>
+        </span>
+      </figcaption>
+    </figure>
+  );
+}
 
 export default async function AccueilGalerie() {
   const [views, google] = await Promise.all([listViews(), getGoogleReviews()]);
@@ -104,32 +144,9 @@ export default async function AccueilGalerie() {
           </p>
         </div>
 
-        <figure className={a.devanture}>
-          <div className={`${a.cadre} ${s.fade}`}>
-            <div className={`${s.ph} ${a.photo}`}>
-              <Image
-                src="/devanture.jpg"
-                alt={`La devanture grenat du cabinet, ${street}`}
-                fill
-                sizes="(min-width: 900px) 24vw, 70vw"
-                loading="eager"
-                fetchPriority="high"
-              />
-            </div>
-          </div>
-          <figcaption className={`${s.cartel} ${a.devCartel}`}>
-            <span className={`${s.ti} ${s.up}`} style={i(2)}>
-              La devanture
-            </span>
-            <span className={s.up} style={i(2)}>
-              {street}, {city}
-            </span>
-            <span className={s.up} style={i(3)}>
-              Photographie provisoire{" "}
-              <span className={s.tbc}>[nouvelle prise de vue à prévoir]</span>
-            </span>
-          </figcaption>
-        </figure>
+        {/* Sous 768 px, la devanture descend après les biens du moment
+            (copie ci-dessous) : une seule des deux est affichée et lue. */}
+        <Devanture className={a.devantureLarge} eager />
       </section>
 
       {/* 2. L'exposition en cours (absente sans bien ou si l'API échoue) */}
@@ -174,6 +191,10 @@ export default async function AccueilGalerie() {
           </div>
         </section>
       ) : null}
+
+      <div className={`${s.w} ${s.g} ${a.devantureMobile}`} data-rv>
+        <Devanture />
+      </div>
 
       {/* 3. Vendre avec nous */}
       <section className={`${a.mur} ${a.creme}`} aria-labelledby="vendre-t">
