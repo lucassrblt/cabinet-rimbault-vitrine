@@ -1,0 +1,60 @@
+<title>Galeries Rimbault</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* Planche de comparaison : barre d'onglets collante, une créa à la fois dans un cadre pleine hauteur. */
+:root{
+  --bg:#f3efec; --fg:#2a1f21; --muted:#7a6c6e; --line:#ddd4d0; --chip:#fbf9f8; --grenat:#6e1a26;
+  --ui:"Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#1b1617; --fg:#efe7e5; --muted:#a8999b; --line:#382f31; --chip:#241e1f; --grenat:#d9909b; color-scheme:dark }
+}
+:root[data-theme="dark"]{ --bg:#1b1617; --fg:#efe7e5; --muted:#a8999b; --line:#382f31; --chip:#241e1f; --grenat:#d9909b; color-scheme:dark }
+html,body{height:100%}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--ui); font-size:14px; display:flex; flex-direction:column}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg)}
+.bar{position:sticky; top:env(safe-area-inset-top,0px); z-index:5; background:var(--bg); border-bottom:1px solid var(--line);
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:10px}
+.bar-in{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+.name{font-weight:600; white-space:nowrap}
+.name span{color:var(--muted); font-weight:400}
+.dot{display:inline-block; width:9px; height:9px; border-radius:50%; background:var(--grenat); margin-right:8px; vertical-align:1px}
+.tabs{display:flex; gap:6px; overflow-x:auto; min-width:0; margin-left:auto; scrollbar-width:none}
+.tabs button{font:inherit; color:inherit; border:1px solid var(--line); background:var(--chip); border-radius:999px; padding:7px 14px; cursor:pointer; white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+.tabs button:focus-visible{outline:2px solid var(--grenat); outline-offset:2px}
+.stage{flex:1; min-height:0; display:flex}
+iframe{flex:1; width:100%; border:0; background:var(--bg); min-height:70vh}
+@media (max-width:640px){ .name span{display:none} .tabs{margin-left:0; width:100%} }
+</style>
+
+<header class="bar"><div class="bar-in">
+  <div class="name"><span class="dot" aria-hidden="true"></span>Cabinet Rimbault <span>quatre variantes de la galerie</span></div>
+  <div class="tabs" role="tablist" aria-label="Directions">
+    <button role="tab" data-id="stricte" aria-selected="true">Galerie stricte</button>
+    <button role="tab" data-id="chaude" aria-selected="false">Galerie chaude</button>
+    <button role="tab" data-id="apercu" aria-selected="false">Index et aperçu</button>
+    <button role="tab" data-id="quartier" aria-selected="false">Galerie de quartier</button>
+  </div>
+</div></header>
+<main class="stage"><iframe id="frame" title="Créa" src="stricte.html"></iframe></main>
+
+<script>
+(function(){
+  var ids=['stricte','chaude','apercu','quartier'], KEY='cr-v3-tab';
+  var frame=document.getElementById('frame'), tabs=[].slice.call(document.querySelectorAll('[data-id]'));
+  function show(id){
+    frame.src=id+'.html';
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.dataset.id===id)); });
+    try{ localStorage.setItem(KEY,id); }catch(e){}
+  }
+  var start='stricte';
+  try{ var s=localStorage.getItem(KEY); if(ids.indexOf(s)>-1) start=s; }catch(e){}
+  var h=(location.hash||'').slice(1); if(ids.indexOf(h)>-1) start=h;
+  show(start);
+  tabs.forEach(function(t){ t.addEventListener('click',function(){ show(t.dataset.id); }); });
+})();
+</script>

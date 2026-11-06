@@ -1,0 +1,672 @@
+<meta charset="utf-8">
+<title>Galerie stricte</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300;400;500&display=swap">
+<style>
+/* Grille suisse 12 colonnes héritée de Duotone v2, alignement à gauche ; photos grenat fixes, la couleur n'arrive que sur demande ; chaleur portée par un aplat crème et un pied grenat. */
+:root{
+  color-scheme: light;
+  --blanc:#FBF8F5;      /* fond des écrans */
+  --creme:#F1E6DA;      /* aplat « le cabinet », hautes lumières du duotone */
+  --rose:#C9948F;       /* tons moyens */
+  --grenat:#6E1A26;     /* devanture, pied de page */
+  --encre:#2E0A11;      /* texte, ombres du duotone */
+  --voile:#8E5F65;      /* texte secondaire */
+  --filet:rgba(110,26,38,.16);
+  --socle:#E6E2DE;      /* fond de la planche */
+  --font:"Host Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --out:cubic-bezier(.2,.7,.1,1);
+  --soft:cubic-bezier(.45,0,.2,1);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--socle);color:var(--encre);font:400 13px/1.5 var(--font);-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 96px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+:focus-visible{outline:1px solid var(--grenat);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- Planche ---------- */
+.board{max-width:1240px;margin:0 auto}
+.intro{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;padding-block:56px 64px;border-bottom:1px solid var(--filet)}
+.intro .who{grid-column:1/5;display:flex;flex-direction:column;gap:14px}
+.intro .who b{font-weight:500;font-size:15px}
+.intro .who p{margin:0;max-width:40ch}
+.intro .who small{color:var(--voile);font-size:12px}
+.intro dl{grid-column:6/13;margin:0;display:grid;grid-template-columns:110px minmax(0,1fr);gap:16px 20px;font-size:12px}
+.intro dt{color:var(--voile)}
+.intro dd{margin:0;min-width:0}
+.sw{display:flex;flex-wrap:wrap;gap:6px 16px}
+.sw span{display:inline-flex;align-items:center;gap:7px}
+.sw i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(46,10,17,.12)}
+.list{margin:0;padding:0;list-style:none;display:grid}
+.list li{padding:5px 0;border-top:1px solid var(--filet)}
+.list li:last-child{border-bottom:1px solid var(--filet)}
+.list.out li{color:var(--voile)}
+
+.shot{padding-top:72px}
+.cap{display:flex;justify-content:space-between;gap:16px;padding-top:14px;font-size:12px;color:var(--voile)}
+.cap b{font-weight:500;color:var(--encre)}
+.cap button{color:var(--grenat);border-bottom:1px solid currentColor;white-space:nowrap;align-self:start}
+.stage{position:relative;width:100%;overflow:hidden}
+.screen{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--blanc);overflow:hidden;
+  box-shadow:0 1px 0 rgba(46,10,17,.06),0 30px 60px -30px rgba(46,10,17,.25)}
+.chrome{height:28px;display:flex;align-items:center;gap:6px;padding:0 12px;background:#F3EFEB;border-bottom:1px solid var(--filet);font-size:10px;color:var(--voile)}
+.chrome i{width:7px;height:7px;border-radius:50%;background:var(--filet)}
+.chrome span{margin-inline:auto;transform:translateX(-14px)}
+.mobiles{display:grid;grid-template-columns:375px 375px minmax(0,1fr);gap:40px;align-items:start}
+.mobiles .note{padding-top:8px;font-size:12px;color:var(--voile);max-width:34ch;display:grid;gap:10px}
+.mobiles .note b{color:var(--encre);font-weight:500}
+@media (max-width:900px){.mobiles{grid-template-columns:minmax(0,375px)}.intro .who,.intro dl{grid-column:1/-1}}
+@media (max-width:520px){.intro dl{grid-template-columns:minmax(0,1fr);gap:4px 0}.intro dd{margin-bottom:12px}.cap{flex-direction:column;gap:6px}}
+
+/* ---------- Site : socle ---------- */
+.site{position:absolute;inset:28px 0 0 0;color:var(--encre);font-size:13px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:20px;padding:0 36px}
+.nav{height:64px;align-items:center}
+.nav .brand{grid-column:1/4;font-weight:500}
+.nav ul{grid-column:5/10;display:flex;gap:28px;margin:0;padding:0;list-style:none}
+.nav li a{color:var(--voile);transition:color .3s}
+.nav li a:hover,.nav li a[aria-current]{color:var(--encre)}
+.nav li a sup{font-size:9px;margin-left:2px;color:var(--grenat)}
+.nav .tel{grid-column:10/13;justify-self:end}
+
+/* souligné qui se trace + flèche qui glisse */
+.u{position:relative;display:inline-flex;align-items:center;gap:8px;padding-bottom:3px;color:var(--grenat);justify-self:start;white-space:nowrap}
+.u::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .45s var(--soft)}
+.u.ruled::after{transform:scaleX(1);opacity:.35}
+.u:hover::after,.u:focus-visible::after{transform:scaleX(1);opacity:1}
+.ar{width:12px;height:10px;flex:none;transition:transform .35s var(--out)}
+.u:hover .ar,.u:focus-visible .ar,.row:hover .ar,.row:focus-visible .ar,.card:hover .ar,.card:focus-visible .ar{transform:translateX(4px)}
+
+/* ---------- Duotone fixe ---------- */
+.duo{position:relative;margin:0;overflow:hidden;background:var(--encre);isolation:isolate}
+.duo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;max-width:none}
+.duo .d{filter:url(#duo);transition:opacity .5s var(--soft)}
+.duo::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;opacity:.14;mix-blend-mode:multiply;transition:opacity .5s var(--soft);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .18 0 0 0 0 .04 0 0 0 0 .07 0 0 0 1.6 -.45'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.color .duo.main .d{opacity:0}
+.color .duo.main::after{opacity:0}
+
+/* ---------- Révélation ligne par ligne (une fois) ---------- */
+.l{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
+.l>span{display:inline-block}
+html.js .rv .l>span{transform:translateY(105%);transition:transform .7s var(--out);transition-delay:calc(var(--i,0) * 80ms)}
+html.js .rv.in .l>span{transform:none}
+html.js .rv .fade{opacity:0;transition:opacity .6s var(--soft) .45s}
+html.js .rv.in .fade{opacity:1}
+
+/* ---------- 1 Accueil ---------- */
+.home .main{height:560px;grid-template-rows:auto 1fr}
+.home .lede{grid-column:1/5;grid-row:1;padding-top:44px;margin:0;color:var(--voile);line-height:1.55}
+.home .big{grid-column:1/6;grid-row:2;align-self:end;margin:0;font-weight:300;font-size:46px;line-height:1.04;letter-spacing:-.025em;padding-bottom:30px;text-wrap:balance}
+.home .ph{grid-column:6/13;grid-row:1/3;padding-top:44px;margin:0}
+.home .ph .duo{aspect-ratio:4/3;width:100%}
+.home .ph figcaption{display:flex;justify-content:space-between;padding-top:10px;font-size:11px;color:var(--voile)}
+.home .foot{position:absolute;left:36px;right:36px;bottom:0;height:60px;align-items:center;border-top:1px solid var(--filet);padding:0;font-size:12px}
+.home .foot>*{grid-column:span 3}
+.home .foot>:last-child{justify-self:end}
+.muted{color:var(--voile)}
+
+/* ---------- 2 Biens ---------- */
+.page{transition:opacity .3s var(--soft)}
+.page.out{opacity:0}
+.idx .bar{height:76px;align-items:end;padding-bottom:14px;border-bottom:1px solid var(--filet);margin:0 36px;padding-inline:0}
+.idx .bar h2{grid-column:1/7;margin:0;font-weight:400;font-size:13px}
+.idx .bar h2 span{color:var(--voile);margin-left:8px}
+.toggle{grid-column:7/13;justify-self:end;display:flex;gap:18px}
+.toggle button{position:relative;color:var(--voile);padding-bottom:2px;transition:color .3s}
+.toggle button::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--encre);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--soft)}
+.toggle button[aria-pressed="true"]{color:var(--encre)}
+.toggle button[aria-pressed="true"]::after,.toggle button:hover::after{transform:scaleX(1)}
+.view{transition:opacity .3s var(--soft)}
+.view.out{opacity:0}
+.ibody{padding-top:0}
+.ilist{grid-column:1/10;min-width:0}
+.sub9{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));column-gap:20px;align-items:center}
+.ihead{height:40px;font-size:11px;color:var(--voile)}
+.rows{margin:0;padding:0;list-style:none}
+.row{position:relative;height:62px;border-top:1px solid var(--filet);color:var(--voile);cursor:pointer;transition:color .3s var(--soft)}
+.row:last-child{border-bottom:1px solid var(--filet)}
+.row::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--encre);transform:scaleX(0);transform-origin:left;transition:transform .45s var(--soft);z-index:1}
+.row:hover,.row:focus-visible,.row.is-on{color:var(--encre);outline:none}
+.row:hover::after,.row:focus-visible::after,.row.is-on::after{transform:scaleX(1)}
+.c-ref{grid-column:1/2}.c-type{grid-column:2/5}.c-ville{grid-column:5/7}.c-surf{grid-column:7/8}.c-prix{grid-column:8/10;justify-self:end;display:inline-flex;align-items:center;gap:12px}
+.ihead .c-prix{padding-right:24px}
+.row em{font-style:normal;color:var(--grenat);font-size:10px;margin-left:8px;vertical-align:1px}
+.row .ar{color:var(--grenat)}
+.pv{grid-column:10/13;padding-top:40px}
+.pv-box{position:relative;height:310px;width:100%;background:var(--creme)}
+.pv-box .duo{position:absolute;inset:0;opacity:0;transition:opacity .35s var(--soft)}
+.pv-box .duo.on{opacity:1}
+.pv-rest{position:absolute;inset:0;display:grid;align-content:end;padding:16px;font-size:11px;color:var(--voile);transition:opacity .35s var(--soft)}
+.pv.has .pv-rest{opacity:0}
+.pv-cap{display:flex;justify-content:space-between;padding-top:8px;font-size:11px;color:var(--voile);min-height:26px}
+.pv-cap b{font-weight:400;color:var(--encre)}
+.gridv{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;padding:28px 36px 0}
+.card{display:grid;gap:10px;font-size:12px;cursor:pointer}
+.card .duo{aspect-ratio:3/4}
+.card p{margin:0;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card p span{color:var(--voile)}
+.card .ref{position:relative}
+.card .ref::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .45s var(--soft)}
+.card:hover .ref::after,.card:focus-visible .ref::after{transform:scaleX(1)}
+.card .ar{color:var(--grenat)}
+.mini{padding-top:28px;align-items:start}
+.mini .duo{grid-column:1/7;aspect-ratio:3/2}
+.mini .txt{grid-column:8/13;display:grid;gap:16px;align-content:start}
+.mini h3{margin:0;font-weight:300;font-size:40px;line-height:1;letter-spacing:-.03em}
+.mini .refl{color:var(--voile);font-size:12px}
+
+/* ---------- 3 Fiche ---------- */
+.fiche .sub{height:44px;align-items:center;font-size:12px;color:var(--voile)}
+.fiche .sub>:first-child{grid-column:1/4}
+.fiche .sub>:last-child{grid-column:8/13;justify-self:end}
+.top{align-items:start}
+.galw{grid-column:1/8;min-width:0}
+.stack{position:relative;aspect-ratio:3/2;width:100%;background:var(--encre)}
+.stack .duo{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--soft)}
+.stack .duo.on{opacity:1}
+.ctrl{display:flex;align-items:center;gap:20px;padding-top:12px;font-size:12px}
+.thumbs{display:flex;gap:6px}
+.thumbs button{width:52px;aspect-ratio:4/3;position:relative;opacity:.55;transition:opacity .3s var(--soft)}
+.thumbs button .duo{position:absolute;inset:0}
+.thumbs button::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--encre);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--soft)}
+.thumbs button[aria-current="true"]{opacity:1}
+.thumbs button[aria-current="true"]::after{transform:scaleX(1)}
+.thumbs button:hover{opacity:1}
+.ctrl .count{color:var(--voile)}
+.ctrl .sp{flex:1}
+.side{grid-column:9/13;display:grid;gap:22px;align-content:start}
+.side .refl{font-size:12px;color:var(--voile)}
+.side h1{margin:0;font-weight:300;font-size:46px;line-height:1;letter-spacing:-.03em}
+.side .hon{margin:-12px 0 0;font-size:11px;color:var(--voile)}
+.specs{margin:0;display:grid;grid-template-columns:96px minmax(0,1fr);font-size:12px}
+.specs dt,.specs dd{margin:0;padding:6px 0;border-top:1px solid var(--filet)}
+.specs dt{color:var(--voile)}
+.energy{display:grid;gap:8px;font-size:11px}
+.scale{display:flex;align-items:center;gap:2px}
+.scale .lab{width:34px;color:var(--voile)}
+.scale span:not(.lab){width:20px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#1a1a1a}
+.scale span.act{width:auto;height:26px;padding:0 9px;font-size:12px;outline:1px solid var(--encre);outline-offset:2px;margin-inline:4px}
+.scale span.act small{font-weight:400;margin-left:6px;font-size:10px}
+.legal{font-size:10px;color:var(--voile)}
+.bot{padding-top:40px;align-items:start}
+.bot .desc{grid-column:1/6;margin:0;font-size:14px;line-height:1.6}
+.bot .quart{grid-column:6/8;margin:0;font-size:12px;color:var(--voile)}
+.bot .contact{grid-column:9/13;display:grid;gap:12px;font-size:12px}
+.btn{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;height:44px;padding:0 16px;background:var(--grenat);color:var(--creme);font-size:13px;transition:background .3s var(--soft)}
+.btn:hover{background:#5A1420}
+.btn .ar{transition:transform .35s var(--out)}
+.btn:hover .ar{transform:translateX(4px)}
+
+/* ---------- 4 Mobiles ---------- */
+.m .site{inset:0}
+.m-scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-top{position:sticky;top:0;z-index:4;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--blanc);border-bottom:1px solid transparent;font-size:13px}
+.m-top b{font-weight:500}
+.m-top span{color:var(--voile)}
+.m-lede{padding:28px 20px 36px;display:grid;gap:18px}
+.m-lede .big{margin:0;font-weight:300;font-size:30px;line-height:1.06;letter-spacing:-.02em}
+.m-lede p{margin:0;color:var(--voile);font-size:12px}
+.m-list{display:grid;gap:28px;padding:0 20px 36px}
+.m-list a{display:grid;gap:9px;font-size:12px}
+.m-list .duo{aspect-ratio:4/3}
+.m-list p{margin:0;display:flex;justify-content:space-between}
+.m-list p span{color:var(--voile)}
+.m-cab{background:var(--creme);padding:36px 20px;display:grid;gap:16px}
+.m-cab p{margin:0}
+.m-cab .big{font-weight:300;font-size:24px;line-height:1.15;letter-spacing:-.015em}
+.m-cab small{color:var(--voile);font-size:12px}
+.m-foot{background:var(--grenat);color:var(--creme);padding:28px 20px 40px;display:grid;gap:4px;font-size:12px}
+.m-foot span:last-child{opacity:.7}
+.m-stack{position:relative;aspect-ratio:4/5;margin:0 20px;background:var(--encre)}
+.m-stack .duo{position:absolute;inset:0;opacity:0;transition:opacity .5s var(--soft)}
+.m-stack .duo.on{opacity:1}
+.m-ctrl{display:flex;justify-content:space-between;align-items:center;padding:12px 20px 0;font-size:12px}
+.m-ctrl .count{color:var(--voile)}
+.m-ctrl div{display:flex;gap:18px}
+.m-prix{padding:28px 20px 6px;font-weight:300;font-size:34px;letter-spacing:-.03em;line-height:1}
+.m-sub{padding:0 20px 22px;font-size:11px;color:var(--voile)}
+.m .specs{margin:0 20px 22px}
+.m .energy{padding:0 20px 110px}
+.m .scale span:not(.lab){width:18px}
+.m-cta{position:absolute;left:12px;right:12px;bottom:12px;z-index:6;display:flex;gap:8px}
+.m-cta a{flex:1;height:46px;display:grid;place-items:center;font-size:13px;background:var(--grenat);color:var(--creme)}
+.m-cta a+a{flex:0 0 44%;background:var(--blanc);color:var(--grenat);box-shadow:inset 0 0 0 1px var(--grenat)}
+
+/* ---------- 5 Le cabinet + pied ---------- */
+.cab{background:var(--creme);padding-block:64px 64px;align-items:start;grid-template-rows:auto 1fr;position:relative}
+.cab::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .43 0 0 0 0 .1 0 0 0 0 .15 0 0 0 .5 -.18'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E")}
+.cab>*{position:relative}
+.cab .k{grid-column:1/3;font-size:12px;color:var(--voile);padding-top:8px}
+.cab .say{grid-column:3/10;margin:0;font-weight:300;font-size:36px;line-height:1.12;letter-spacing:-.02em;text-wrap:balance}
+.cab .cols{grid-column:3/9;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;padding-top:36px;font-size:12px}
+.cab .cols p{margin:0}
+.cab .cols blockquote{margin:0;display:grid;gap:6px}
+.cab .cols blockquote p{font-size:13px}
+.cab .cols cite{font-style:normal;color:var(--voile);font-size:11px}
+.cab figure{grid-column:10/13;grid-row:1/3;margin:0;display:grid;gap:8px;font-size:11px;color:var(--voile)}
+.cab figure .duo{aspect-ratio:3/4}
+.pied{background:var(--grenat);color:var(--creme);padding-block:44px 28px;row-gap:36px;font-size:12px}
+.pied .b{grid-column:1/4;display:grid;gap:4px}
+.pied .b b{font-weight:500;font-size:13px}
+.pied nav{grid-column:5/7;display:grid;gap:4px;align-content:start}
+.pied .c{grid-column:7/10;display:grid;gap:4px;align-content:start}
+.pied .h{grid-column:10/13;display:grid;gap:4px;align-content:start;justify-items:end;text-align:right}
+.pied .u{color:var(--creme)}
+.pied .dim{color:#D9B9B4}
+.pied .end{grid-column:1/13;display:flex;justify-content:space-between;gap:20px;padding-top:14px;border-top:1px solid rgba(241,230,218,.22);font-size:11px;color:#D9B9B4}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;transition-delay:0ms!important;animation-duration:.01ms!important}
+  html.js .rv .l>span{transform:none}
+  html.js .rv .fade{opacity:1}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="duo" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values=".2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  0 0 0 1 0"/>
+    <feComponentTransfer>
+      <feFuncR type="linear" slope="1.15" intercept="-.06"/>
+      <feFuncG type="linear" slope="1.15" intercept="-.06"/>
+      <feFuncB type="linear" slope="1.15" intercept="-.06"/>
+    </feComponentTransfer>
+    <feComponentTransfer>
+      <feFuncR type="table" tableValues=".18 .43 .79 .955"/>
+      <feFuncG type="table" tableValues=".04 .10 .58 .912"/>
+      <feFuncB type="table" tableValues=".07 .15 .56 .865"/>
+    </feComponentTransfer>
+  </filter>
+  <symbol id="ar" viewBox="0 0 12 10"><path d="M0 5h10.5M6.8 1.3 10.5 5 6.8 8.7" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol>
+</svg>
+
+<main class="board">
+  <header class="intro">
+    <div class="who">
+      <b>Galerie stricte</b>
+      <p>La plus proche de Duotone v2 : même grille, même typographie, même blanc chaud. Les photos restent tirées en grenat et ne bougent plus ; la vraie couleur n'apparaît que dans la fiche, quand le visiteur la demande.</p>
+      <p>La chaleur vient d'un aplat crème pour le cabinet, d'un pied de page grenat comme la devanture et d'une phrase écrite comme on parle au comptoir.</p>
+      <small>Cabinet Rimbault, maquettes de novembre 2026, 3e passe</small>
+    </div>
+    <dl>
+      <dt>Palette</dt>
+      <dd class="sw">
+        <span><i style="background:#FBF8F5"></i>Blanc #FBF8F5</span>
+        <span><i style="background:#F1E6DA"></i>Crème #F1E6DA</span>
+        <span><i style="background:#C9948F"></i>Rose #C9948F</span>
+        <span><i style="background:#6E1A26"></i>Grenat #6E1A26</span>
+        <span><i style="background:#2E0A11"></i>Encre #2E0A11</span>
+      </dd>
+      <dt>Typographie</dt>
+      <dd>Host Grotesk 300, 400, 500, inchangée. Texte en 11 à 13 px, un seul élément agrandi par écran (accroche, prix ou phrase du cabinet, 36 à 46 px en 300).</dd>
+      <dt>Couleur des photos</dt>
+      <dd>Toutes en duotone fixe. Dans la fiche, le bouton « Voir en couleur » fond le tirage grenat vers la photo réelle en 500 ms, et le choix suit le visiteur de photo en photo. Nous n'avons pas mis la première photo en couleur : une seule image en couleur dans une suite grenat ressemble à une erreur de tirage, et la couleur perd sa valeur de geste.</dd>
+      <dt>Animations</dt>
+      <dd><ul class="list">
+        <li>Textes révélés ligne par ligne derrière un masque, au premier affichage seulement (700 ms, 80 ms entre lignes).</li>
+        <li>Soulignés qui se tracent de gauche à droite au survol des liens, des lignes de l'index et des références (450 ms).</li>
+        <li>Flèche qui glisse de 4 px au survol (350 ms).</li>
+        <li>Index : la ligne survolée passe en encre pleine, sa vignette duotone apparaît en fondu dans la colonne de droite, toujours au même endroit (350 ms).</li>
+        <li>Index et grille : bascule en fondu (300 ms sortie, 300 ms entrée).</li>
+        <li>Fiche : photo suivante en fondu enchaîné au clic, puis « Voir en couleur » en fondu enchaîné (500 ms).</li>
+        <li>Transition de page en fondu sobre : la page sort, la suivante entre (300 + 300 ms).</li>
+      </ul></dd>
+      <dt>Retiré de v2</dt>
+      <dd><ul class="list out">
+        <li>La couleur qui se répand sous le curseur, sur toutes les photos.</li>
+        <li>Le halo de couleur qui dérivait seul sur la photo d'accueil.</li>
+        <li>La photo qui flottait sous le curseur et s'inclinait dans l'index, et la démonstration automatique.</li>
+        <li>La galerie qui défilait seule en boucle dans la fiche.</li>
+        <li>La vignette qui grandissait jusqu'à la fiche en se colorant.</li>
+        <li>La coloration au défilement sur mobile.</li>
+        <li>Le zoom de 4 % sur les photos et l'échelle DPE teintée grenat (remplacée par l'échelle officielle).</li>
+      </ul></dd>
+    </dl>
+  </header>
+
+  <!-- 1 Accueil -->
+  <section class="shot" id="s1">
+    <div class="stage"><div class="screen" data-w="1160" data-h="712">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr</span></div>
+      <div class="site home">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2">Biens<sup>5</sup></a></li><li><a href="#s1">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 main rv">
+          <p class="lede"><span class="l"><span style="--i:0">Agent immobilier indépendant</span></span><span class="l"><span style="--i:1">au 117 boulevard Voltaire,</span></span><span class="l"><span style="--i:2">Asnières-sur-Seine, depuis 2009.</span></span></p>
+          <h1 class="big"><span class="l"><span style="--i:3">Cinq biens en vente</span></span><span class="l"><span style="--i:4">à Asnières et Levallois.</span></span></h1>
+          <figure class="ph">
+            <div class="duo" data-src="img/bien-10129-3.jpg" data-alt="Jardin arboré du bien 10.129"></div>
+            <figcaption class="fade"><span>Réf. 10.129, le jardin, quartier des Impressionnistes</span><a class="u" href="#s3">Voir la fiche<svg class="ar"><use href="#ar"/></svg></a></figcaption>
+          </figure>
+        </div>
+        <div class="g12 foot">
+          <span class="muted">117 bd Voltaire, 92600 Asnières</span>
+          <span><span class="num">4,9/5</span> <span class="muted">sur Google, 32 avis</span></span>
+          <span class="muted">Estimation de votre bien sur rendez-vous</span>
+          <a class="u ruled" href="#s2">Voir les cinq biens<svg class="ar"><use href="#ar"/></svg></a>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>1 Accueil.</b> L'accroche se révèle ligne par ligne, une seule fois. La photo du jardin reste tirée en grenat, immobile.</span><button type="button" data-replay="s1">Rejouer</button></div>
+  </section>
+
+  <!-- 2 Biens -->
+  <section class="shot" id="s2">
+    <div class="stage"><div class="screen" data-w="1160" data-h="620">
+      <div class="chrome"><i></i><i></i><i></i><span id="url2">cabinet-rimbault.fr/biens</span></div>
+      <div class="site idx">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s2">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="page" id="page2">
+          <div id="p-list">
+            <div class="g12 bar">
+              <h2>Biens en vente<span class="num">5</span></h2>
+              <div class="toggle"><button type="button" aria-pressed="true" data-view="index">Index</button><button type="button" aria-pressed="false" data-view="grid">Grille</button></div>
+            </div>
+            <div class="view" id="views">
+              <div class="g12 ibody" id="v-index">
+                <div class="ilist">
+                  <div class="sub9 ihead"><span class="c-ref">Réf.</span><span class="c-type">Bien</span><span class="c-ville">Ville</span><span class="c-surf">Surface</span><span class="c-prix">Prix</span></div>
+                  <ul class="rows num" id="rows">
+                    <li class="row sub9" tabindex="0" data-i="0"><span class="c-ref">10.129</span><span class="c-type">5 pièces, 2 terrasses et jardins</span><span class="c-ville">Asnières</span><span class="c-surf">92,2 m²</span><span class="c-prix">644 000 €<svg class="ar"><use href="#ar"/></svg></span></li>
+                    <li class="row sub9" tabindex="0" data-i="1"><span class="c-ref">10.130</span><span class="c-type">3 pièces, terrasse 37,8 m²</span><span class="c-ville">Asnières</span><span class="c-surf">59,5 m²</span><span class="c-prix">375 000 €<svg class="ar"><use href="#ar"/></svg></span></li>
+                    <li class="row sub9" tabindex="0" data-i="2"><span class="c-ref">10.131</span><span class="c-type">2 pièces, terrasse 23,6 m²</span><span class="c-ville">Asnières</span><span class="c-surf">46,6 m²</span><span class="c-prix">300 000 €<svg class="ar"><use href="#ar"/></svg></span></li>
+                    <li class="row sub9" tabindex="0" data-i="3"><span class="c-ref">09.345</span><span class="c-type">2 pièces, dernier étage<em>Exclusivité</em></span><span class="c-ville">Levallois-Perret</span><span class="c-surf">35,65 m²</span><span class="c-prix">280 000 €<svg class="ar"><use href="#ar"/></svg></span></li>
+                    <li class="row sub9" tabindex="0" data-i="4"><span class="c-ref">09.362</span><span class="c-type">Studio, balcon<em>Exclusivité</em></span><span class="c-ville">Asnières</span><span class="c-surf">33,16 m²</span><span class="c-prix">198 000 €<svg class="ar"><use href="#ar"/></svg></span></li>
+                  </ul>
+                </div>
+                <div class="pv" id="pv" aria-hidden="true">
+                  <div class="pv-box" id="pvbox"><span class="pv-rest">Passez sur une ligne pour voir le bien.</span></div>
+                  <div class="pv-cap num" id="pvcap"></div>
+                </div>
+              </div>
+              <div class="gridv num" id="v-grid" hidden></div>
+            </div>
+          </div>
+          <div id="p-mini" class="g12 mini num" hidden></div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>2 Biens.</b> La ligne survolée passe en encre pleine ; sa vignette apparaît toujours au même endroit, à droite. Cliquez une ligne : la page change en fondu.</span><span>Index ou Grille, en haut à droite</span></div>
+  </section>
+
+  <!-- 3 Fiche -->
+  <section class="shot" id="s3">
+    <div class="stage"><div class="screen" data-w="1160" data-h="790">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens/10129</span></div>
+      <div class="site fiche">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s3">Vendre</a></li><li><a href="#s5">Le cabinet</a></li><li><a href="#s5">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 sub"><a class="u" href="#s2">Retour aux biens</a><span class="num">Réf. 10.129, Asnières-sur-Seine, quartier des Impressionnistes</span></div>
+        <div class="g12 top rv">
+          <div class="galw gal" data-gal>
+            <div class="stack" data-stack>
+              <div class="duo main on" data-src="img/bien-10129-1.jpg" data-alt="Bien 10.129, photo 1"></div>
+              <div class="duo main" data-src="img/bien-10129-2.jpg" data-alt="Le séjour"></div>
+              <div class="duo main" data-src="img/bien-10129-3.jpg" data-alt="Le jardin arboré"></div>
+              <div class="duo main" data-src="img/bien-10129-4.jpg" data-alt="Bien 10.129, photo 4"></div>
+            </div>
+            <div class="ctrl num">
+              <div class="thumbs" data-thumbs></div>
+              <span class="count" data-count>1 / 4</span>
+              <span class="sp"></span>
+              <button type="button" class="u" data-color aria-pressed="false">Voir en couleur</button>
+              <button type="button" class="u" data-next>Photo suivante<svg class="ar"><use href="#ar"/></svg></button>
+            </div>
+          </div>
+          <div class="side num">
+            <span class="refl fade">5 pièces, 4 chambres</span>
+            <h1><span class="l"><span style="--i:0">644 000 €</span></span></h1>
+            <p class="hon fade">Honoraires : [à confirmer]</p>
+            <dl class="specs fade">
+              <dt>Surface</dt><dd>92,2 m²</dd>
+              <dt>Pièces</dt><dd>5, dont 4 chambres</dd>
+              <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+              <dt>Quartier</dt><dd>Les Impressionnistes</dd>
+              <dt>Ville</dt><dd>Asnières-sur-Seine</dd>
+            </dl>
+            <div class="energy fade">
+              <div class="scale" role="img" aria-label="DPE classe D, 189 kWh par m² et par an"><span class="lab">DPE</span><span style="background:#009C6D;color:#fff">A</span><span style="background:#52B153;color:#fff">B</span><span style="background:#A5CC74">C</span><span class="act" style="background:#F4E70F">D<small>189 kWh/m²/an</small></span><span style="background:#F0B50F">E</span><span style="background:#EB8235">F</span><span style="background:#D7221F;color:#fff">G</span></div>
+              <div class="scale" role="img" aria-label="GES classe B"><span class="lab">GES</span><span style="background:#F6EDFD">A</span><span class="act" style="background:#E4C7FB">B</span><span style="background:#D4A9F6">C</span><span style="background:#CB95F3">D</span><span style="background:#BA72EF;color:#fff">E</span><span style="background:#A74DEB;color:#fff">F</span><span style="background:#8A19DF;color:#fff">G</span></div>
+              <span class="legal">Échelles officielles du diagnostic de performance énergétique.</span>
+            </div>
+          </div>
+        </div>
+        <div class="g12 bot rv">
+          <p class="desc"><span class="l"><span style="--i:1">Cinq pièces ouvertes sur des jardins arborés,</span></span><span class="l"><span style="--i:2">avec deux terrasses, dans le quartier</span></span><span class="l"><span style="--i:3">des Impressionnistes. Quatre chambres.</span></span></p>
+          <p class="quart fade">Nous faisons visiter nous-mêmes, sur rendez-vous.</p>
+          <div class="contact fade num">
+            <a class="btn" href="#s3">Demander une visite<svg class="ar"><use href="#ar"/></svg></a>
+            <span class="muted">ou appelez le cabinet au <span style="color:var(--encre)">01 73 64 56 10</span></span>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>3 Fiche.</b> Photo suivante en fondu enchaîné au clic. « Voir en couleur » fond le tirage grenat vers la vraie photo ; les vignettes restent en duotone.</span><button type="button" data-replay="s3">Rejouer</button></div>
+  </section>
+
+  <!-- 4 Mobiles -->
+  <section class="shot" id="s4">
+    <div class="mobiles">
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="760">
+          <div class="site"><div class="m-scroll">
+            <div class="m-top"><b>Cabinet Rimbault</b><span>Menu</span></div>
+            <div class="m-lede rv">
+              <h1 class="big"><span class="l"><span style="--i:0">Cinq biens en vente</span></span><span class="l"><span style="--i:1">à Asnières</span></span><span class="l"><span style="--i:2">et Levallois.</span></span></h1>
+              <p class="fade">Agent immobilier indépendant, 117 boulevard Voltaire, depuis 2009.</p>
+            </div>
+            <div class="m-list num">
+              <a href="#s4"><div class="duo" data-src="img/bien-10129-3.jpg" data-alt="Jardin du 10.129"></div><p>5 pièces, 92,2 m²<span>644 000 €</span></p></a>
+              <a href="#s4"><div class="duo" data-src="img/bien-10130-2.jpg" data-alt="Bien 10.130"></div><p>3 pièces, terrasse<span>375 000 €</span></p></a>
+              <a href="#s4"><div class="duo" data-src="img/bien-10131-2.jpg" data-alt="Bien 10.131"></div><p>2 pièces, terrasse<span>300 000 €</span></p></a>
+              <a href="#s4"><div class="duo" data-src="img/bien-09345-1.jpg" data-alt="Façade du 09.345"></div><p>2 pièces, Levallois<span>280 000 €</span></p></a>
+              <a href="#s4"><div class="duo" data-src="img/bien-09362-1.jpg" data-alt="Studio 09.362"></div><p>Studio, balcon<span>198 000 €</span></p></a>
+            </div>
+            <div class="m-cab">
+              <p class="big">Une seule adresse, une porte grenat, et jamais plus d'une dizaine de biens à la fois.</p>
+              <small>117 boulevard Voltaire, 92600 Asnières-sur-Seine</small>
+            </div>
+            <div class="m-foot num"><span>01 73 64 56 10</span><span>Mentions légales, honoraires</span></div>
+          </div></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="760">
+          <div class="site"><div class="m-scroll">
+            <div class="m-top"><b>Retour</b><span class="num">Réf. 10.129</span></div>
+            <div class="gal" data-gal>
+              <div class="m-stack" data-stack>
+                <div class="duo main on" data-src="img/bien-10129-1.jpg" data-alt="Photo 1"></div>
+                <div class="duo main" data-src="img/bien-10129-2.jpg" data-alt="Séjour"></div>
+                <div class="duo main" data-src="img/bien-10129-3.jpg" data-alt="Jardin"></div>
+                <div class="duo main" data-src="img/bien-10129-4.jpg" data-alt="Photo 4"></div>
+              </div>
+              <div class="m-ctrl num"><span class="count" data-count>1 / 4</span><div><button type="button" class="u" data-color aria-pressed="false">Voir en couleur</button><button type="button" class="u" data-next>Suivante<svg class="ar"><use href="#ar"/></svg></button></div></div>
+            </div>
+            <div class="m-prix num">644 000 €</div>
+            <div class="m-sub">5 pièces, 92,2 m², Asnières. Honoraires [à confirmer]</div>
+            <dl class="specs num">
+              <dt>Chambres</dt><dd>4</dd>
+              <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+              <dt>Quartier</dt><dd>Les Impressionnistes</dd>
+            </dl>
+            <div class="energy num">
+              <div class="scale"><span class="lab">DPE</span><span style="background:#009C6D;color:#fff">A</span><span style="background:#52B153;color:#fff">B</span><span style="background:#A5CC74">C</span><span class="act" style="background:#F4E70F">D<small>189</small></span><span style="background:#F0B50F">E</span><span style="background:#EB8235">F</span><span style="background:#D7221F;color:#fff">G</span></div>
+              <div class="scale"><span class="lab">GES</span><span style="background:#F6EDFD">A</span><span class="act" style="background:#E4C7FB">B</span><span style="background:#D4A9F6">C</span><span style="background:#CB95F3">D</span><span style="background:#BA72EF;color:#fff">E</span><span style="background:#A74DEB;color:#fff">F</span><span style="background:#8A19DF;color:#fff">G</span></div>
+            </div>
+          </div>
+          <div class="m-cta"><a href="#s4">Demander une visite</a><a href="#s4" class="num">01 73 64 56 10</a></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="note">
+        <span><b>4 Mobile.</b> Rien ne se colore au défilement : les photos restent grenat, comme sur grand écran.</span>
+        <span>Sur la fiche, « Voir en couleur » et « Suivante » sont deux boutons sous la photo, à portée de pouce. L'appel et la demande de visite restent en bas de l'écran.</span>
+        <span>L'accueil se termine sur l'aplat crème du cabinet puis le pied grenat.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 Le cabinet + pied -->
+  <section class="shot" id="s5">
+    <div class="stage"><div class="screen" data-w="1160" data-h="750">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr, bas de l'accueil</span></div>
+      <div class="site">
+        <div class="g12 cab rv">
+          <span class="k fade">Le cabinet</span>
+          <p class="say"><span class="l"><span style="--i:0">Une seule adresse, une porte grenat</span></span><span class="l"><span style="--i:1">sur le boulevard Voltaire, et jamais</span></span><span class="l"><span style="--i:2">plus d'une dizaine de biens à la fois.</span></span></p>
+          <div class="cols fade">
+            <p>Nous sommes agent immobilier indépendant à Asnières depuis 2009. Peu de biens, c'est le temps de les connaître : la lumière du séjour à 17 h, le bruit de la rue, ce que la copropriété prévoit. Passez nous voir, ou appelez avant pour être sûr de nous trouver.</p>
+            <blockquote>
+              <p>« Des visites préparées, des réponses franches, et un suivi jusqu'à la signature. » [avis exemple]</p>
+              <cite class="num">Note Google 4,9/5, 32 avis</cite>
+            </blockquote>
+          </div>
+          <figure class="fade">
+            <div class="duo" data-src="img/devanture.jpg" data-alt="La devanture grenat du cabinet, boulevard Voltaire"></div>
+            <figcaption>La devanture, 117 boulevard Voltaire. Photo provisoire.</figcaption>
+          </figure>
+        </div>
+        <footer class="g12 pied num">
+          <div class="b"><b>Cabinet Rimbault</b><span>117 boulevard Voltaire</span><span>92600 Asnières-sur-Seine</span></div>
+          <nav aria-label="Pied de page"><a class="u" href="#s2">Biens en vente</a><a class="u" href="#s1">Vendre avec nous</a><a class="u" href="#s5">Le cabinet</a></nav>
+          <div class="c"><span>01 73 64 56 10</span><span class="dim">Sur rendez-vous ou en passant</span><span class="dim">Horaires [à confirmer]</span></div>
+          <div class="h"><a class="u" href="#s5">Nous écrire<svg class="ar"><use href="#ar"/></svg></a><span class="dim">Réponse sous 24 h [à confirmer]</span></div>
+          <div class="end"><span>Mentions légales, barème des honoraires, médiateur de la consommation [à confirmer]</span><span>Agent immobilier indépendant depuis 2009</span></div>
+        </footer>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>5 Le cabinet et pied de page.</b> Un aplat crème au léger grain papier, une phrase dite comme au comptoir, la devanture ; puis le pied de page grenat, texte crème.</span><button type="button" data-replay="s5">Rejouer</button></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const html = document.documentElement;
+  html.classList.add('js');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const wait = ms => new Promise(r => setTimeout(r, reduce ? 0 : ms));
+  const arrow = '<svg class="ar"><use href="#ar"/></svg>';
+  const duoHTML = (src, alt = '') => `<div class="duo" data-src="${src}" data-alt="${alt}"></div>`;
+  const hydrate = (root = document) => $$('.duo[data-src]', root).forEach(f => {
+    if (f.firstChild) return;
+    f.insertAdjacentHTML('afterbegin', `<img class="c" src="${f.dataset.src}" alt="" decoding="async"><img class="d" src="${f.dataset.src}" alt="${f.dataset.alt || ''}" decoding="async">`);
+  });
+
+  const biens = [
+    { ref: '10.129', img: 'img/bien-10129-2.jpg', t: '5 pièces, 4 chambres', prix: '644 000 €', specs: [['Surface', '92,2 m²'], ['Extérieurs', 'Deux terrasses et jardins'], ['Ville', 'Asnières-sur-Seine']] },
+    { ref: '10.130', img: 'img/bien-10130-2.jpg', t: '3 pièces', prix: '375 000 €', specs: [['Surface', '59,5 m²'], ['Terrasse', '37,8 m²'], ['Ville', 'Asnières-sur-Seine']] },
+    { ref: '10.131', img: 'img/bien-10131-2.jpg', t: '2 pièces', prix: '300 000 €', specs: [['Surface', '46,6 m²'], ['Terrasse', '23,6 m²'], ['Ville', 'Asnières-sur-Seine']] },
+    { ref: '09.345', img: 'img/bien-09345-1.jpg', t: '2 pièces, dernier étage', prix: '280 000 €', specs: [['Surface', '35,65 m²'], ['Adresse', 'Rue Collange, Levallois-Perret'], ['Mandat', 'Exclusivité']] },
+    { ref: '09.362', img: 'img/bien-09362-1.jpg', t: 'Studio, balcon', prix: '198 000 €', specs: [['Surface', '33,16 m²'], ['Adresse', 'Gabriel-Péri, Asnières'], ['Mandat', 'Exclusivité']] }
+  ];
+
+  /* vignettes de l'index (une par bien, superposées), grille */
+  $('#pvbox').insertAdjacentHTML('beforeend', biens.map(b => duoHTML(b.img, '')).join(''));
+  $('#v-grid').innerHTML = biens.map((b, i) => `<article class="card" tabindex="0" data-i="${i}">${duoHTML(b.img, 'Bien ' + b.ref)}<p><span class="ref" style="color:var(--encre)">${b.ref}</span><span>${b.prix}</span></p><p><span>${b.t}</span>${arrow}</p></article>`).join('');
+
+  /* galeries de fiche : vignettes */
+  $$('[data-gal]').forEach(g => {
+    const th = $('[data-thumbs]', g);
+    if (th) th.innerHTML = $$('[data-stack] .duo', g).map((d, i) => `<button type="button" aria-label="Photo ${i + 1}" aria-current="${i === 0}">${duoHTML(d.dataset.src)}</button>`).join('');
+  });
+  hydrate();
+
+  /* cadres à l'échelle */
+  const fit = () => $$('.stage').forEach(st => {
+    const sc = st.firstElementChild, w = +sc.dataset.w, h = +sc.dataset.h;
+    const k = Math.min(1, st.clientWidth / w);
+    sc.style.width = w + 'px'; sc.style.height = h + 'px';
+    sc.style.transform = `scale(${k})`; st.style.height = h * k + 'px';
+  });
+  fit(); new ResizeObserver(fit).observe(document.body);
+
+  /* révélation, une fois */
+  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: 0, rootMargin: '0px 0px -10% 0px' });
+  $$('.rv').forEach(el => io.observe(el));
+  /* filet de sécurité : rien ne reste masqué si l'écran n'a pas été atteint */
+  setTimeout(() => $$('.rv:not(.in)').forEach(el => { el.classList.add('in'); io.unobserve(el); }), 3000);
+  $$('[data-replay]').forEach(b => b.addEventListener('click', () => {
+    $$('#' + b.dataset.replay + ' .rv').forEach(el => { el.classList.remove('in'); void el.offsetWidth; requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('in'))); });
+  }));
+
+  /* 2 index : vignette fixe dans la colonne de droite */
+  const pv = $('#pv'), pvd = $$('#pvbox .duo'), cap = $('#pvcap'), rows = $$('.row');
+  const show = i => {
+    pv.classList.toggle('has', i >= 0);
+    pvd.forEach((d, j) => d.classList.toggle('on', j === i));
+    rows.forEach((r, j) => r.classList.toggle('is-on', j === i));
+    cap.innerHTML = i >= 0 ? `<b>Réf. ${biens[i].ref}</b><span>Voir la fiche</span>` : '';
+  };
+  rows.forEach((r, i) => {
+    r.addEventListener('pointerenter', () => show(i));
+    r.addEventListener('focus', () => show(i));
+  });
+  $('#rows').addEventListener('pointerleave', () => show(-1));
+  $('#rows').addEventListener('focusout', e => { if (!$('#rows').contains(e.relatedTarget)) show(-1); });
+  window.__showRow = show;
+
+  /* index / grille en fondu */
+  const views = $('#views');
+  $$('.toggle button').forEach(b => b.addEventListener('click', async () => {
+    if (b.getAttribute('aria-pressed') === 'true') return;
+    const grid = b.dataset.view === 'grid';
+    $$('.toggle button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    views.classList.add('out'); await wait(300);
+    show(-1); $('#v-index').hidden = grid; $('#v-grid').hidden = !grid;
+    views.classList.remove('out');
+  }));
+
+  /* transition de page en fondu */
+  const page = $('#page2'), list = $('#p-list'), mini = $('#p-mini'), url = $('#url2');
+  const go = async (fn) => { page.classList.add('out'); await wait(300); fn(); page.scrollTop = 0; requestAnimationFrame(() => page.classList.remove('out')); };
+  const openMini = i => go(() => {
+    const b = biens[i];
+    mini.innerHTML = `${duoHTML(b.img, 'Bien ' + b.ref)}<div class="txt"><span class="refl">Réf. ${b.ref}, ${b.t}</span><h3>${b.prix}</h3><dl class="specs">${b.specs.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl><button type="button" class="u ruled" id="back2">Retour aux biens</button></div>`;
+    hydrate(mini);
+    list.hidden = true; mini.hidden = false; url.textContent = 'cabinet-rimbault.fr/biens/' + b.ref.replace('.', '');
+    $('#back2').addEventListener('click', () => go(() => { mini.hidden = true; list.hidden = false; url.textContent = 'cabinet-rimbault.fr/biens'; show(-1); }));
+  });
+  rows.forEach((r, i) => { r.addEventListener('click', () => openMini(i)); r.addEventListener('keydown', e => { if (e.key === 'Enter') openMini(i); }); });
+  $('#v-grid').addEventListener('click', e => { const c = e.target.closest('.card'); if (c) openMini(+c.dataset.i); });
+
+  /* 3-4 fiche : photo suivante en fondu, voir en couleur */
+  $$('[data-gal]').forEach(g => {
+    const ph = $$('[data-stack] .duo', g), th = $$('[data-thumbs] button', g), cnt = $('[data-count]', g), col = $('[data-color]', g);
+    let cur = 0;
+    const set = i => {
+      cur = (i + ph.length) % ph.length;
+      ph.forEach((p, j) => p.classList.toggle('on', j === cur));
+      th.forEach((t, j) => t.setAttribute('aria-current', String(j === cur)));
+      cnt.textContent = `${cur + 1} / ${ph.length}`;
+    };
+    th.forEach((t, i) => t.addEventListener('click', () => set(i)));
+    $('[data-next]', g).addEventListener('click', () => set(cur + 1));
+    col.addEventListener('click', () => {
+      const on = g.classList.toggle('color');
+      col.setAttribute('aria-pressed', String(on));
+      col.textContent = on ? 'Revenir au grenat' : 'Voir en couleur';
+    });
+  });
+})();
+</script>

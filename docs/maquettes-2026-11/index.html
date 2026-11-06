@@ -1,0 +1,993 @@
+<title>Quatre vitrines Rimbault</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cormorant:ital,wght@0,300..700;1,300..700&family=Hanken+Grotesk:wght@300..700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=Schibsted+Grotesk:wght@400..800&family=Young+Serif&display=swap">
+<style>
+/* Mise en page : un sélecteur collant en haut, puis une direction à la fois ; chaque direction porte ses propres jetons (.A .B .C .D). */
+:root{
+  --bg:#ece8e4; --fg:#231c1e; --muted:#6c6264; --line:#d6cecb; --chip:#f8f6f4; --accent:#6d1a26;
+  --chrome-font:"Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#1a1617; --fg:#efe8e6; --muted:#a99d9f; --line:#3b3234; --chip:#251f21; --accent:#e0a9b1; color-scheme:dark }
+}
+:root[data-theme="dark"]{ --bg:#1a1617; --fg:#efe8e6; --muted:#a99d9f; --line:#3b3234; --chip:#251f21; --accent:#e0a9b1; color-scheme:dark }
+
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0; background:var(--bg); color:var(--fg); font-family:var(--chrome-font); font-size:15px; line-height:1.5; overflow-x:hidden}
+body::before{content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--bg)}
+img{display:block; max-width:100%}
+a{color:inherit}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid currentColor; outline-offset:3px}
+@media (prefers-reduced-motion: reduce){ *{animation:none!important; transition:none!important; scroll-behavior:auto!important} }
+
+/* ---------- Chrome : sélecteur ---------- */
+.switch{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); border-bottom:1px solid var(--line);
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:10px}
+.switch-in{display:flex; align-items:center; gap:16px; max-width:1440px; margin:0 auto}
+.switch-title{font-weight:600; white-space:nowrap; font-size:14px}
+.switch-title span{color:var(--muted); font-weight:400}
+.tabs{display:flex; gap:6px; overflow-x:auto; min-width:0; scrollbar-width:none; margin-left:auto}
+.tabs button{border:1px solid var(--line); background:var(--chip); border-radius:999px; padding:7px 14px; cursor:pointer; white-space:nowrap; font-size:14px}
+.tabs button b{font-weight:700; margin-right:6px}
+.tabs button[aria-selected="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+@media (max-width:760px){ .switch-title{display:none} .tabs{margin-left:0} .tabs button .long{display:none} }
+
+/* ---------- Chrome : cartel et repères ---------- */
+.cartel{padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:40px 36px}
+.cartel-in{max-width:1440px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1.3fr) minmax(0,1fr); gap:24px 56px}
+.cartel h2{font-size:clamp(28px,4vw,44px); line-height:1.05; margin:0 0 10px; font-weight:600; letter-spacing:-.01em; text-wrap:balance}
+.cartel h2 small{display:block; font-size:15px; font-weight:500; color:var(--muted); letter-spacing:0; margin-bottom:8px}
+.cartel p{margin:0; max-width:60ch; color:var(--fg)}
+.cartel dl{margin:0; display:grid; grid-template-columns:auto 1fr; gap:10px 18px; align-content:start; font-size:14px}
+.cartel dt{color:var(--muted)}
+.cartel dd{margin:0}
+.swatches{display:flex; flex-wrap:wrap; gap:8px}
+.sw{display:inline-flex; align-items:center; gap:6px; font-variant-numeric:tabular-nums; font-size:13px}
+.sw i{width:22px; height:22px; border-radius:50%; border:1px solid rgba(128,128,128,.35); display:inline-block}
+@media (max-width:760px){ .cartel-in{grid-template-columns:1fr} }
+.part{padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:12px; background:var(--bg); color:var(--muted); font-size:13px; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+.part-in{max-width:1440px; margin:0 auto; display:flex; gap:12px; justify-content:space-between; flex-wrap:wrap}
+.part b{color:var(--fg); font-weight:600}
+.phone-wrap{padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); padding-block:40px 64px; background:var(--bg)}
+.phone-wrap-in{max-width:1440px; margin:0 auto; display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap; justify-content:center}
+.phone{width:414px; max-width:100%; border-radius:44px; padding:12px; background:#1b1718; box-shadow:0 30px 60px -30px rgba(0,0,0,.45)}
+.phone-screen{container-type:inline-size; height:780px; overflow-y:auto; overflow-x:hidden; border-radius:34px; scrollbar-width:none; position:relative}
+.phone-note{max-width:34ch; font-size:14px; color:var(--muted); align-self:center}
+.phone-note b{color:var(--fg)}
+
+/* Chaque direction est un conteneur : les requêtes @container servent aussi au cadre mobile. */
+.dir{container-type:inline-size}
+.dir .cartel,.dir .part,.dir .phone-wrap{font-family:var(--chrome-font); color:var(--fg); background:var(--bg)}
+.dir .cartel h2{font-family:var(--disp); font-weight:400; color:var(--fg)}
+.A .cartel h2{font-stretch:75%; font-weight:700; text-transform:uppercase}
+.D .cartel h2{font-weight:300}
+.nw{white-space:nowrap}
+.A .phone-screen{background:var(--g); color:var(--cr); font-family:var(--txt)}
+.B .phone-screen{background:var(--cr); color:var(--ink); font-family:var(--txt)}
+.C .phone-screen{background:var(--pap); color:var(--ink); font-family:var(--txt)}
+.D .phone-screen{background:var(--taupe); color:var(--ink); font-family:var(--txt)}
+.wrap{padding-left:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-left,0px)); padding-right:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-right,0px))}
+.inner{max-width:1296px; margin:0 auto}
+.dpe{display:inline-grid; place-items:center; width:1.9em; height:1.9em; border-radius:4px; font-weight:700; font-family:var(--chrome-font); font-size:13px; color:#1d1a10}
+.dpe.d{background:#f6dd1e} .dpe.e{background:#f2a530} .dpe.g{background:#d6301f; color:#fff}
+.ges.b{background:#dcc3f3} .ges.c{background:#cba1ee}
+.ph{overflow:hidden}
+.ph img{width:100%; height:100%; object-fit:cover}
+
+/* =========================================================
+   A. LA DEVANTURE : grenat en aplat, grotesque condensée
+   ========================================================= */
+.A{--g:#7b1c27; --g2:#5d1420; --cr:#f3e7d3; --pap:#faf4e9; --ink:#2b0e13; --lai:#c9a35e;
+   --disp:"Archivo", "Arial Narrow", Impact, sans-serif; --txt:"Libre Caslon Text", Georgia, serif;
+   background:var(--g); color:var(--cr); font-family:var(--txt)}
+.A .cond{font-family:var(--disp); font-stretch:62.5%; font-weight:800; text-transform:uppercase; letter-spacing:.005em; line-height:.86}
+.a-head{border-bottom:1px solid rgba(243,231,211,.22)}
+.a-head .inner{display:flex; align-items:center; gap:28px; padding-block:18px}
+.a-logo{display:flex; flex-direction:column; text-decoration:none; line-height:1}
+.a-logo b{font-family:var(--disp); font-stretch:75%; font-weight:700; letter-spacing:.06em; font-size:22px}
+.a-logo i{font-size:14px; margin-top:4px; opacity:.85}
+.a-nav{display:flex; gap:26px; margin-left:auto; font-family:var(--disp); font-stretch:87.5%; font-weight:500; font-size:16px; letter-spacing:.02em}
+.a-nav a{text-decoration:none}
+.a-tel{font-family:var(--disp); font-weight:600; font-size:16px; white-space:nowrap}
+.a-btn{display:inline-flex; align-items:center; gap:8px; padding:13px 20px; font-family:var(--disp); font-stretch:87.5%; font-weight:700; font-size:16px; letter-spacing:.02em; text-decoration:none; border:1.5px solid var(--cr); white-space:nowrap}
+.a-btn.solid{background:var(--cr); color:var(--g)}
+.a-menu{display:none; margin-left:auto; font-family:var(--disp); font-weight:600; border:1.5px solid var(--cr); padding:8px 12px; font-size:14px}
+.a-hero .inner{padding-block:clamp(28px,4cqi,56px) clamp(40px,5cqi,80px)}
+.a-word{font-size:12.6cqi; margin:0; white-space:nowrap}
+.a-word span{display:inline}
+.a-hero-row{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr); gap:clamp(24px,5cqi,80px); margin-top:clamp(28px,3.5cqi,52px); align-items:end}
+.a-lede{font-style:italic; font-size:clamp(22px,2.4cqi,34px); line-height:1.25; margin:0 0 18px; max-width:30ch; text-wrap:balance}
+.a-hero p.a-sub{font-size:17px; line-height:1.65; max-width:46ch; margin:0 0 28px; opacity:.92}
+.a-ctas{display:flex; gap:12px; flex-wrap:wrap}
+.a-facts{display:flex; gap:28px; flex-wrap:wrap; margin-top:34px; padding-top:18px; border-top:1px solid rgba(243,231,211,.25); font-size:14px}
+.a-facts b{display:block; font-family:var(--disp); font-stretch:75%; font-weight:700; font-size:26px; line-height:1}
+.a-print{margin:0; justify-self:end; width:min(100%,380px); background:var(--pap); padding:14px 14px 0; box-shadow:0 26px 50px -24px rgba(20,0,5,.7); color:var(--ink)}
+.a-print img{aspect-ratio:4/5; width:100%; object-fit:cover; object-position:60% 40%; filter:saturate(.85) contrast(1.04)}
+.a-print figcaption{font-style:italic; font-size:14px; padding:10px 2px 12px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:2px 12px}
+.a-sec-h{display:flex; align-items:end; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:32px}
+.a-sec-h h2{font-size:clamp(52px,8cqi,112px); margin:0}
+.a-sec-h p{margin:0; max-width:38ch; font-size:17px; line-height:1.6}
+.a-biens .inner{padding-block:clamp(48px,6cqi,96px)}
+.a-grid{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:18px}
+.a-card{background:var(--pap); color:var(--ink); padding:10px 10px 16px; position:relative; text-decoration:none; display:flex; flex-direction:column}
+.a-card .ph{aspect-ratio:4/5; outline:1px solid rgba(43,14,19,.12); outline-offset:-1px}
+.a-card .ph img{filter:saturate(.9) contrast(1.05) sepia(.05)}
+.a-card h3{font-size:17px; font-weight:400; margin:14px 4px 4px; line-height:1.3}
+.a-card .loc{font-style:italic; font-size:14px; margin:0 4px; color:#6b4a4f}
+.a-card .price{font-family:var(--disp); font-stretch:62.5%; font-weight:800; font-size:38px; color:var(--g); margin:12px 4px 0; line-height:1}
+.a-card .ref{font-size:12px; margin:6px 4px 0; color:#7d6267; font-variant-numeric:tabular-nums}
+.a-stamp{z-index:2; position:absolute; top:-12px; right:-10px; width:86px; height:86px; border-radius:50%; background:var(--lai); color:var(--g2); display:grid; place-items:center; text-align:center; font-family:var(--disp); font-stretch:75%; font-weight:800; font-size:13px; line-height:1.05; transform:rotate(-12deg); box-shadow:0 0 0 3px var(--lai), inset 0 0 0 2px var(--g2); letter-spacing:.04em}
+.a-fiche{background:var(--pap); color:var(--ink)}
+.a-fiche .inner{padding-block:clamp(40px,5cqi,72px)}
+.a-crumb{font-size:14px; font-style:italic; margin-bottom:20px; color:#6b4a4f}
+.a-fiche-grid{display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:22px}
+.a-gal{align-content:start; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+.a-gal .main{grid-column:1/-1; aspect-ratio:3/2}
+.a-gal .th{aspect-ratio:4/3}
+.a-gal img{filter:saturate(.9) contrast(1.05)}
+.a-panel{background:var(--g); color:var(--cr); padding:clamp(22px,3cqi,40px); display:flex; flex-direction:column; gap:18px}
+.a-panel .ref{font-size:14px; opacity:.8}
+.a-panel h1{font-size:clamp(46px,5.4cqi,78px); margin:0}
+.a-panel .where{font-style:italic; font-size:18px; margin:0}
+.a-panel .price{font-family:var(--disp); font-stretch:62.5%; font-weight:800; font-size:clamp(64px,7cqi,104px); line-height:.9; margin:6px 0 0}
+.a-panel .fee{font-size:14px; opacity:.85; margin:0}
+.a-keys{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); margin:0; border-top:1px solid rgba(243,231,211,.3)}
+.a-keys div{padding:12px 0; border-bottom:1px solid rgba(243,231,211,.3)}
+.a-keys div:nth-child(odd){padding-right:14px}
+.a-keys dt{font-size:13px; opacity:.75}
+.a-keys dd{margin:2px 0 0; font-family:var(--disp); font-stretch:75%; font-weight:700; font-size:22px; line-height:1.1}
+.a-energy{display:flex; gap:10px; align-items:center; font-size:14px; flex-wrap:wrap}
+.a-panel .a-ctas .a-btn{flex:1 1 auto; justify-content:center}
+.a-small{font-size:13px; line-height:1.55; opacity:.85; margin:0}
+.a-trust{background:var(--g2)}
+.a-trust .inner{padding-block:clamp(56px,7cqi,110px)}
+.a-trust-grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:clamp(32px,5cqi,80px); align-items:start}
+.a-visit{font-size:clamp(64px,10.5cqi,150px); margin:0 0 26px}
+.a-addr{font-size:clamp(22px,2.3cqi,30px); line-height:1.3; margin:0 0 22px}
+.a-hours{display:grid; grid-template-columns:auto 1fr; gap:6px 22px; font-size:16px; margin:0 0 28px}
+.a-hours dd{margin:0}
+.a-rate{display:flex; align-items:baseline; gap:16px; padding-bottom:20px; border-bottom:1px solid rgba(243,231,211,.25); margin-bottom:22px; flex-wrap:wrap}
+.a-rate b{font-family:var(--disp); font-stretch:62.5%; font-weight:800; font-size:96px; line-height:.8}
+.a-stars{color:var(--lai); letter-spacing:3px; font-size:20px}
+.a-quote{background:var(--pap); color:var(--ink); padding:22px 24px; margin:0 0 14px; font-size:17px; line-height:1.6}
+.a-quote footer{font-size:13px; margin-top:10px; color:#7d6267}
+.a-since{display:inline-grid; place-items:center; width:120px; height:120px; border-radius:50%; border:1.5px solid var(--lai); color:var(--lai); text-align:center; font-family:var(--disp); font-stretch:75%; font-weight:700; line-height:1; font-size:15px; letter-spacing:.06em; margin-top:10px}
+.a-since b{display:block; font-size:36px; letter-spacing:0}
+.a-foot{background:var(--g); border-top:1px solid rgba(243,231,211,.18)}
+.a-foot .inner{padding-block:44px 36px; display:grid; grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr)); gap:28px; font-size:14px; line-height:1.7}
+.a-foot h4{font-family:var(--disp); font-stretch:75%; font-weight:700; letter-spacing:.06em; font-size:15px; margin:0 0 8px; text-transform:uppercase}
+.a-foot p{margin:0}
+.a-foot .big{font-size:56px; margin:0 0 6px}
+.a-legal{grid-column:1/-1; border-top:1px solid rgba(243,231,211,.18); padding-top:18px; font-size:12.5px; opacity:.75}
+@container (max-width:1100px){ .a-grid{grid-template-columns:repeat(3,minmax(0,1fr))} .a-nav{display:none} .a-menu{display:inline-block; margin-left:0} .a-head .inner{gap:16px} .a-tel{margin-left:auto} }
+@container (max-width:860px){ .a-hero-row,.a-fiche-grid,.a-trust-grid{grid-template-columns:minmax(0,1fr)} .a-print{justify-self:start} .a-foot .inner{grid-template-columns:1fr 1fr} }
+@container (max-width:640px){
+  .a-word{font-size:22.5cqi; white-space:normal} .a-word span{display:block}
+  .a-print{order:-1} .a-print img{aspect-ratio:4/3; object-position:60% 28%} .a-print figcaption{font-size:13px}
+  .a-grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
+  .a-card .price{font-size:30px} .a-card h3{font-size:15px} .a-stamp{width:62px; height:62px; font-size:10.5px; right:-2px; top:-8px}
+  .a-grid .a-card:first-child{grid-column:1/-1} .a-grid .a-card:first-child .ph{aspect-ratio:4/3}
+  .a-head .a-btn,.a-tel{display:none} .a-menu{margin-left:auto}
+  .a-print{width:100%; transform:none}
+  .a-foot .inner{grid-template-columns:1fr}
+  .a-hero p.a-sub{font-size:16px}
+}
+
+/* =========================================================
+   B. CARNET DE QUARTIER : aplats doux, grenat comme encre
+   ========================================================= */
+.B{--cr:#f7f0e3; --rose:#f2d5ce; --sable:#e8d4b0; --eau:#d0e2d6; --g:#7d1f2d; --ink:#3b2427;
+   --disp:"Young Serif", Georgia, serif; --txt:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+   background:var(--cr); color:var(--ink); font-family:var(--txt)}
+.B h1,.B h2,.B h3{font-family:var(--disp); font-weight:400; color:var(--g); text-wrap:balance}
+.b-head .inner{display:flex; align-items:center; gap:28px; padding-block:22px}
+.b-logo{text-decoration:none; color:var(--g); line-height:1.1}
+.b-logo b{font-family:var(--disp); font-weight:400; font-size:26px; display:block}
+.b-logo small{font-size:13px; color:var(--ink)}
+.b-nav{display:flex; gap:24px; margin-left:auto; font-weight:500; font-size:15px}
+.b-nav a{text-decoration:none}
+.b-pill{display:inline-flex; align-items:center; gap:8px; border:1.5px solid var(--g); color:var(--g); border-radius:999px; padding:10px 18px; font-weight:700; font-size:15px; text-decoration:none; white-space:nowrap}
+.b-pill.solid{background:var(--g); color:var(--cr)}
+.b-menu{display:none}
+.b-hero .inner{padding-block:clamp(28px,4cqi,64px) clamp(56px,6cqi,96px); text-align:center}
+.b-hero h1{font-size:clamp(40px,5.2cqi,76px); line-height:1.04; margin:0 auto 22px; max-width:22ch; letter-spacing:-.01em}
+.b-hero .lede{font-size:clamp(17px,1.6cqi,20px); line-height:1.6; max-width:52ch; margin:0 auto 28px}
+.b-ctas{display:flex; gap:12px; justify-content:center; flex-wrap:wrap}
+.b-arches{max-width:1080px; margin-inline:auto; display:grid; grid-template-columns:1fr 1.25fr 1fr; gap:clamp(14px,2.4cqi,36px); align-items:end; margin-top:clamp(40px,5cqi,72px)}
+.b-arch{margin:0; text-decoration:none}
+.b-arch .ph{aspect-ratio:3/4; border-radius:999px 999px 6px 6px; background:var(--rose)}
+.b-arches .b-arch:nth-child(2) .ph{aspect-ratio:4/5}
+.b-arch figcaption{margin-top:12px; font-weight:700; font-size:15px; color:var(--g)}
+.b-arch figcaption span{display:block; font-weight:400; color:var(--ink); font-size:14px}
+.b-band .inner{padding-block:clamp(48px,6cqi,96px)}
+.b-band.rose{background:var(--rose)} .b-band.sable{background:var(--sable)} .b-band.eau{background:var(--eau)}
+.b-band-h{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px 56px; align-items:end; margin-bottom:36px}
+.b-band-h h2{font-size:clamp(34px,4.4cqi,60px); line-height:1.05; margin:0}
+.b-band-h p{margin:0; font-size:17px; line-height:1.6; max-width:48ch}
+.b-kicker{display:inline-block; font-weight:700; font-size:14px; color:var(--g); margin-bottom:12px}
+.b-cards{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(18px,2.4cqi,32px)}
+.b-card{text-decoration:none; display:flex; flex-direction:column; gap:6px}
+.b-card .ph{aspect-ratio:4/5; border-radius:220px 220px 4px 4px; margin-bottom:10px; position:relative}
+.b-card .ph img{filter:saturate(1.02) brightness(1.03)}
+.b-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:4px}
+.b-tag{font-size:12.5px; font-weight:700; padding:4px 10px; border-radius:999px; border:1.5px solid var(--g); color:var(--g)}
+.b-tag.f{background:var(--g); color:var(--cr)}
+.b-card h3{font-size:26px; line-height:1.1; margin:0}
+.b-card .street{margin:0; font-size:15px}
+.b-card .meta{display:flex; justify-content:space-between; align-items:baseline; border-top:1.5px dotted rgba(125,31,45,.45); padding-top:10px; margin-top:6px; font-size:15px}
+.b-card .meta b{font-size:19px; color:var(--g)}
+.b-split{display:grid; grid-template-columns:1fr 1fr}
+.b-split > div{padding-block:clamp(48px,6cqi,96px)}
+.b-split .left{background:var(--sable); padding-left:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-left,0px)); padding-right:clamp(16px,3cqi,48px)}
+.b-split .right{background:var(--eau); padding-right:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-right,0px)); padding-left:clamp(16px,3cqi,48px)}
+.b-split h2{font-size:clamp(30px,3.4cqi,46px); line-height:1.05; margin:0 0 10px}
+.b-split p.intro{margin:0 0 26px; max-width:40ch; line-height:1.6}
+.b-split .b-card{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-template-rows:1fr auto auto auto; column-gap:24px; row-gap:6px}
+.b-split .b-card .ph{grid-row:1/5; margin-bottom:0}
+.b-split .b-card .b-tags{align-self:end}
+.b-fiche .inner{padding-block:clamp(48px,6cqi,96px)}
+.b-fiche-grid{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:clamp(24px,4cqi,64px); align-items:start}
+.b-gal{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+.b-gal .main{grid-column:1/-1; aspect-ratio:5/4; border-radius:400px 400px 6px 6px}
+.b-gal .th{aspect-ratio:1; border-radius:50%}
+.b-note{background:var(--rose); border-radius:6px; padding:clamp(22px,3cqi,40px)}
+.b-note h1{font-size:clamp(34px,3.8cqi,52px); line-height:1.05; margin:8px 0 8px}
+.b-note .where{margin:0 0 18px; font-size:16px}
+.b-note .price{font-family:var(--disp); color:var(--g); font-size:clamp(40px,4.2cqi,58px); margin:0; line-height:1}
+.b-note .fee{font-size:14px; margin:6px 0 22px}
+.b-dl{margin:0 0 24px; display:grid; gap:0}
+.b-dl div{display:flex; align-items:baseline; gap:8px; padding:9px 0; font-size:15.5px}
+.b-dl dt{white-space:nowrap}
+.b-dl div::after{content:none}
+.b-dl .lead{flex:1; border-bottom:1.5px dotted rgba(125,31,45,.4); transform:translateY(-4px); min-width:12px}
+.b-dl dd{margin:0; font-weight:700; text-align:right}
+.b-note .b-ctas{justify-content:flex-start}
+.b-note small{display:block; margin-top:16px; font-size:13px; line-height:1.55}
+.b-avis .inner{padding-block:clamp(56px,6cqi,100px)}
+.b-avis-h{text-align:center; margin-bottom:40px}
+.b-avis-h h2{font-size:clamp(36px,5cqi,72px); margin:0 0 8px; line-height:1}
+.b-avis-h p{margin:0; font-size:17px}
+.b-quotes{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px}
+.b-quotes blockquote{margin:0; background:var(--cr); border-radius:6px; padding:26px; font-size:16px; line-height:1.6}
+.b-quotes blockquote::before{content:"“"; display:block; font-family:var(--disp); color:var(--g); font-size:56px; line-height:.6; margin-bottom:6px}
+.b-quotes footer{margin-top:12px; font-size:13.5px; font-weight:700; color:var(--g)}
+.b-visit{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1fr); gap:28px; align-items:start}
+.b-visit h2{font-size:clamp(40px,5cqi,72px); line-height:1; margin:0}
+.b-visit p,.b-visit dl{margin:0; font-size:17px; line-height:1.6}
+.b-visit dl{display:grid; grid-template-columns:auto 1fr; gap:4px 18px}
+.b-visit dd{margin:0}
+.b-foot{background:var(--g); color:var(--cr)}
+.b-foot .inner{padding-block:48px 36px; display:grid; grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr)); gap:28px; font-size:14.5px; line-height:1.7}
+.b-foot b.logo{font-family:var(--disp); font-weight:400; font-size:34px; display:block; line-height:1.1; margin-bottom:6px}
+.b-foot h4{margin:0 0 6px; font-size:14px}
+.b-foot p{margin:0}
+.b-legal{grid-column:1/-1; border-top:1px solid rgba(247,240,227,.25); padding-top:16px; font-size:12.5px; opacity:.8}
+@container (max-width:1000px){ .b-nav{display:none} .b-menu{display:inline-flex; margin-left:auto} .b-head .b-pill.tel{display:none} .b-quotes{grid-template-columns:1fr} .b-visit{grid-template-columns:1fr 1fr} }
+@container (max-width:800px){
+  .b-band-h,.b-fiche-grid{grid-template-columns:1fr} .b-cards{grid-template-columns:1fr 1fr}
+  .b-split{grid-template-columns:1fr}
+  .b-split .left,.b-split .right{padding-left:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-left,0px)); padding-right:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-right,0px))}
+  .b-foot .inner{grid-template-columns:1fr 1fr}
+}
+@container (max-width:560px){
+  .b-arches{grid-template-columns:1fr 1fr; gap:12px} .b-arches .b-arch:nth-child(2){grid-column:1/-1; grid-row:1} .b-arches .b-arch:nth-child(2) .ph{aspect-ratio:1}
+  .b-cards{grid-template-columns:1fr} .b-card .ph{aspect-ratio:1} .b-split .b-card{display:flex} .b-visit{grid-template-columns:1fr} .b-foot .inner{grid-template-columns:1fr}
+  .b-hero .inner{text-align:left} .b-hero h1{margin-left:0} .b-hero .lede{margin-left:0} .b-ctas{justify-content:flex-start}
+  .b-head .inner{gap:12px} .b-logo b{font-size:22px}
+}
+
+/* =========================================================
+   C. LA SÉLECTION : revue éditoriale, grenat en touche
+   ========================================================= */
+.C{--pap:#f4f1eb; --blanc:#fdfbf7; --ink:#1f1b19; --pierre:#7a7169; --g:#7a1f2e; --filet:#d8d1c6;
+   --disp:"Bodoni Moda", "Didot", Georgia, serif; --txt:"Newsreader", Georgia, serif;
+   background:var(--pap); color:var(--ink); font-family:var(--txt); font-optical-sizing:auto}
+.C h1,.C h2,.C h3{font-family:var(--disp); font-weight:400; text-wrap:balance}
+.c-cap{font-family:var(--txt); font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--pierre)}
+.c-head .inner{display:grid; grid-template-columns:1fr auto 1fr; align-items:end; gap:20px; padding-block:18px 0}
+.c-head nav{display:flex; gap:28px; font-size:16px; padding-bottom:16px}
+.c-head nav a{text-decoration:none}
+.c-head nav.r{justify-content:flex-end}
+.c-logo{display:flex; flex-direction:column; align-items:center; text-decoration:none; padding:0 18px 12px; line-height:1}
+.c-logo .R{font-family:var(--disp); font-weight:700; font-size:64px; color:var(--g); line-height:.85; font-optical-sizing:auto}
+.c-logo .name{font-family:var(--txt); font-size:20px; letter-spacing:.04em; margin-top:6px}
+.c-rule{height:5px; border-top:1px solid var(--ink); border-bottom:1px solid var(--ink)}
+.c-menu{display:none}
+.c-hero .inner{padding-block:clamp(36px,5cqi,72px) clamp(28px,3cqi,44px); display:grid; grid-template-columns:minmax(0,2.3fr) minmax(0,1fr); gap:24px 56px; align-items:end}
+.c-hero h1{font-size:clamp(38px,5cqi,76px); line-height:1.02; margin:12px 0 0; letter-spacing:-.015em}
+.c-hero h1 em{font-style:italic}
+.c-hero p{margin:0; font-size:18px; line-height:1.6; max-width:38ch}
+.c-une{display:grid; grid-template-columns:minmax(0,2fr) minmax(0,1fr); background:var(--blanc); border-block:1px solid var(--filet)}
+.c-une .ph{aspect-ratio:16/11; min-height:100%}
+.c-une .ph img{filter:saturate(.92) contrast(1.06) brightness(1.02)}
+.c-une-txt{padding:clamp(24px,3.6cqi,56px); padding-right:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-right,0px)); display:flex; flex-direction:column; justify-content:center; gap:16px}
+.c-une-txt h2{font-size:clamp(30px,3.2cqi,46px); line-height:1.08; margin:0}
+.c-une-txt p.story{font-style:italic; font-size:19px; line-height:1.55; margin:0}
+.c-une-txt .facts{display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid var(--filet); padding-top:14px; font-size:16px; gap:12px; flex-wrap:wrap}
+.c-price{font-family:var(--disp); font-size:30px; font-variant-numeric:lining-nums}
+.c-link{color:var(--g); text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; font-size:16px}
+.c-tag{color:var(--g); font-size:12.5px; letter-spacing:.16em; text-transform:uppercase}
+.c-section .inner{padding-block:clamp(48px,6cqi,88px)}
+.c-sec-h{display:flex; justify-content:space-between; align-items:baseline; gap:16px; border-bottom:1px solid var(--ink); padding-bottom:12px; margin-bottom:32px; flex-wrap:wrap}
+.c-sec-h h2{font-size:clamp(30px,3.4cqi,44px); margin:0; font-style:italic}
+.c-pair{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(24px,3.6cqi,56px)}
+.c-item{text-decoration:none; display:flex; flex-direction:column; gap:10px}
+.c-item .ph{aspect-ratio:3/2; margin-bottom:8px}
+.c-item.tall .ph{aspect-ratio:3/2}
+.c-item .ph img{filter:saturate(.92) contrast(1.06) brightness(1.02)}
+.c-item h3{font-size:clamp(26px,2.6cqi,34px); line-height:1.1; margin:0}
+.c-item p.story{margin:0; font-style:italic; font-size:18px; line-height:1.55; max-width:46ch}
+.c-item .facts{display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid var(--filet); padding-top:12px; margin-top:4px; font-size:15.5px; gap:12px; flex-wrap:wrap}
+.c-item .facts .c-price{font-size:26px}
+.c-band{background:var(--g); color:var(--pap)}
+.c-band .inner{padding-block:clamp(56px,7cqi,110px); display:grid; grid-template-columns:auto minmax(0,1fr); gap:clamp(20px,4cqi,60px); align-items:start}
+.c-band .mark{font-family:var(--disp); font-size:clamp(100px,12cqi,180px); line-height:.7; opacity:.9}
+.c-band blockquote{margin:0; font-family:var(--disp); font-style:italic; font-size:clamp(28px,3.4cqi,48px); line-height:1.2; max-width:30ch}
+.c-band footer{margin-top:22px; font-family:var(--txt); font-style:normal; font-size:16px; opacity:.85}
+.c-fiche{background:var(--blanc); border-top:1px solid var(--filet)}
+.c-fiche .inner{padding-block:clamp(44px,6cqi,88px)}
+.c-fiche-h{max-width:900px; margin-bottom:36px}
+.c-fiche-h h1{font-size:clamp(40px,5.4cqi,80px); line-height:1.02; margin:12px 0 16px; letter-spacing:-.015em}
+.c-fiche-h p{font-style:italic; font-size:21px; line-height:1.5; margin:0; max-width:52ch}
+.c-fiche-grid{display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:clamp(24px,4cqi,64px); align-items:start}
+.c-gal{display:grid; grid-template-columns:2fr 1fr; grid-template-rows:1fr 1fr; gap:8px; aspect-ratio:16/10}
+.c-gal .ph:first-child{grid-row:1/3}
+.c-gal-cap{display:flex; justify-content:space-between; font-size:14.5px; font-style:italic; color:var(--pierre); margin-top:10px; gap:12px}
+.c-tech{border-top:1px solid var(--ink)}
+.c-tech .price{font-family:var(--disp); font-size:clamp(40px,4cqi,56px); margin:16px 0 2px; line-height:1}
+.c-tech .fee{margin:0 0 18px; color:var(--pierre); font-size:15px}
+.c-tech table{width:100%; border-collapse:collapse; font-size:16px}
+.c-tech th{font-weight:400; text-align:left; color:var(--pierre); padding:9px 12px 9px 0; border-top:1px solid var(--filet); white-space:nowrap; vertical-align:top}
+.c-tech td{padding:9px 0; border-top:1px solid var(--filet); text-align:right}
+.c-btn{display:block; text-align:center; background:var(--g); color:var(--blanc); text-decoration:none; padding:15px 18px; font-size:17px; margin-top:22px}
+.c-btn.ghost{background:none; color:var(--ink); border:1px solid var(--ink); margin-top:10px}
+.c-colo .inner{padding-block:clamp(56px,6cqi,96px); display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:40px}
+.c-colo h2{font-size:clamp(30px,3cqi,40px); font-style:italic; margin:10px 0 14px; line-height:1.1}
+.c-colo p,.c-colo dl{margin:0; font-size:17px; line-height:1.6}
+.c-colo dl{display:grid; grid-template-columns:auto 1fr; gap:4px 16px}
+.c-colo dd{margin:0}
+.C .c-colo .c-rating{font-family:var(--disp); font-size:64px; line-height:1; margin:6px 0 4px}
+.c-foot{border-top:1px solid var(--ink)}
+.c-foot .inner{padding-block:40px 32px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; font-size:14px; line-height:1.7}
+.c-foot nav{display:flex; gap:24px; flex-wrap:wrap; justify-content:center; font-size:16px}
+.c-foot nav a{text-decoration:none}
+.c-foot .legal{color:var(--pierre); font-size:13px; max-width:90ch}
+@container (max-width:980px){ .c-head nav{display:none} .c-head .inner{grid-template-columns:1fr auto 1fr} .c-menu{display:block; align-self:center; font-size:15px} .c-menu.r{text-align:right} .c-colo .inner{grid-template-columns:1fr 1fr} }
+@container (max-width:780px){
+  .c-hero .inner,.c-une,.c-fiche-grid{grid-template-columns:1fr}
+  .c-une-txt{padding-left:max(clamp(16px,4.5cqi,72px), env(safe-area-inset-left,0px))}
+  .c-pair{grid-template-columns:1fr} .c-band .inner{grid-template-columns:1fr}
+}
+@container (max-width:560px){
+  .c-logo .R{font-size:48px} .c-logo .name{font-size:16px} .c-logo{padding:0 4px 10px}
+  .c-gal{grid-template-columns:1fr 1fr; grid-template-rows:auto; aspect-ratio:auto} .c-gal .ph:first-child{grid-column:1/-1; grid-row:auto; aspect-ratio:4/3} .c-gal .ph{aspect-ratio:1}
+  .c-colo .inner{grid-template-columns:1fr}
+  .c-band .mark{font-size:90px}
+}
+
+/* =========================================================
+   D. MAISON DU NORD : taupe rosé, prune, serif très fine
+   ========================================================= */
+.D{--taupe:#ebe4de; --taupe2:#dfd5cd; --prune:#4a192c; --prune2:#371220; --cr:#f6efe9; --ink:#2f2428; --gris:#857679;
+   --disp:"Cormorant", "Cormorant Garamond", Georgia, serif; --txt:"Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+   background:var(--taupe); color:var(--ink); font-family:var(--txt)}
+.D h1,.D h2,.D h3{font-family:var(--disp); font-weight:300; text-wrap:balance}
+.d-head .inner{display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:20px; padding-block:22px; border-bottom:1px solid rgba(74,25,44,.25)}
+.d-head nav{display:flex; gap:22px; font-size:15px}
+.d-head nav a{text-decoration:none}
+.d-head nav.r{justify-content:flex-end}
+.d-logo{display:flex; flex-direction:column; align-items:center; text-decoration:none; color:var(--prune); line-height:1}
+.d-logo .mono{font-family:var(--disp); font-weight:300; font-size:46px; letter-spacing:-.06em; line-height:.8}
+.d-logo .name{font-family:var(--disp); font-weight:500; font-size:15px; letter-spacing:.32em; margin-top:8px; padding-left:.32em}
+.d-menu{display:none; font-size:15px}
+.d-hero .inner{padding-block:24px 0}
+.d-hero-ph{position:relative; aspect-ratio:16/8.2; overflow:hidden; background:var(--prune)}
+.d-hero-ph img{width:100%; height:100%; object-fit:cover; object-position:50% 60%; filter:sepia(.18) saturate(.82) brightness(.92)}
+.d-hero-ph::after{content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(55,18,32,.18), rgba(55,18,32,.52))}
+.d-hero-txt{position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; color:var(--cr); padding:24px}
+.d-hero-txt::before,.d-hero-txt::after{content:""; width:1px; flex:0 1 90px; background:rgba(246,239,233,.6)}
+.d-hero-txt h1{font-size:clamp(44px,6.6cqi,100px); line-height:1; margin:22px 0 18px; max-width:17ch; letter-spacing:-.01em}
+.d-hero-txt a{color:var(--cr); font-size:15px; text-underline-offset:5px; margin-bottom:22px}
+.d-intro .inner{padding-block:clamp(48px,6cqi,96px); display:grid; grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr); gap:clamp(24px,4cqi,64px)}
+.d-intro .vr{background:rgba(74,25,44,.25)}
+.d-intro h2{font-size:clamp(34px,4.2cqi,60px); line-height:1.05; margin:0; color:var(--prune)}
+.d-intro p{margin:0 0 14px; font-size:17px; line-height:1.7; max-width:48ch}
+.d-intro .who{font-size:14px; color:var(--gris)}
+.d-biens .inner{padding-block:0 clamp(56px,7cqi,110px)}
+.d-sec-h{display:flex; align-items:baseline; justify-content:space-between; border-top:1px solid rgba(74,25,44,.25); padding-top:18px; margin-bottom:28px; gap:16px; flex-wrap:wrap}
+.d-sec-h h2{font-size:clamp(34px,3.6cqi,52px); margin:0; color:var(--prune)}
+.d-grid{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:22px}
+.d-card{grid-column:span 2; text-decoration:none; background:var(--prune); color:var(--cr); display:flex; flex-direction:column}
+.d-card.w{grid-column:span 3}
+.d-card .ph{aspect-ratio:3/2; position:relative}
+.d-card.w .ph{aspect-ratio:16/9}
+.d-card .ph img{filter:sepia(.14) saturate(.85) brightness(.98)}
+.d-flag{position:absolute; top:14px; left:14px; background:var(--taupe); color:var(--prune); font-size:12.5px; font-weight:600; padding:6px 11px; border-radius:2px}
+.d-card .band{padding:18px 20px 20px; display:flex; flex-direction:column; gap:6px}
+.d-card h3{font-size:30px; line-height:1.05; margin:0; color:var(--cr)}
+.d-card .loc{font-size:14px; opacity:.75; margin:0}
+.d-card .row{display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid rgba(246,239,233,.22); margin-top:10px; padding-top:12px; font-size:14.5px; gap:10px}
+.d-card .row b{font-family:var(--disp); font-weight:500; font-size:26px}
+.d-fiche{background:var(--taupe2)}
+.d-fiche .inner{padding-block:clamp(48px,6cqi,96px)}
+.d-strip{display:grid; grid-template-columns:2.2fr 1fr 1fr; gap:10px; height:clamp(260px,38cqi,560px)}
+.d-strip .ph img{filter:sepia(.14) saturate(.85)}
+.d-strip .col{display:grid; grid-template-rows:1fr 1fr; gap:10px}
+.d-fiche-grid{display:grid; grid-template-columns:minmax(0,1.2fr) 1px minmax(0,1fr); gap:clamp(24px,4cqi,64px); margin-top:clamp(28px,3.5cqi,48px)}
+.d-fiche-grid .vr{background:rgba(74,25,44,.25)}
+.d-fiche h1{font-size:clamp(44px,5.4cqi,84px); line-height:1; margin:10px 0 18px; color:var(--prune)}
+.d-fiche .ref{font-size:14px; color:var(--gris)}
+.d-fiche p{font-size:17px; line-height:1.7; margin:0 0 12px; max-width:52ch}
+.D .d-fiche .d-price{font-family:var(--disp); font-weight:400; font-size:clamp(46px,4.6cqi,66px); color:var(--prune); line-height:1; margin:0}
+.d-keys{display:grid; grid-template-columns:1fr 1fr; gap:0 20px; margin:20px 0}
+.d-keys div{padding:10px 0; border-top:1px solid rgba(74,25,44,.2)}
+.d-keys dt{font-size:13px; color:var(--gris)}
+.d-keys dd{margin:0; font-size:16px; font-weight:500}
+.d-contact{background:var(--prune); color:var(--cr); padding:22px; display:flex; flex-direction:column; gap:12px}
+.d-contact .tel{font-family:var(--disp); font-size:34px; font-weight:400; line-height:1}
+.d-btn{display:inline-block; text-align:center; border:1px solid currentColor; padding:13px 18px; text-decoration:none; font-size:15px}
+.d-btn.f{background:var(--cr); color:var(--prune); border-color:var(--cr)}
+.d-visit{background:var(--prune); color:var(--cr)}
+.d-visit .inner{padding-block:clamp(56px,7cqi,110px); display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:clamp(32px,5cqi,88px); align-items:center}
+.d-visit svg{width:100%; height:auto; color:var(--cr)}
+.d-visit h2{font-size:clamp(48px,6.4cqi,96px); line-height:.95; margin:0 0 22px; color:var(--cr)}
+.d-visit p{font-size:18px; line-height:1.6; margin:0 0 20px}
+.d-visit dl{display:grid; grid-template-columns:auto 1fr; gap:6px 22px; margin:0 0 26px; font-size:16px}
+.d-visit dd{margin:0}
+.d-avis .inner{padding-block:clamp(56px,6cqi,96px); display:grid; grid-template-columns:minmax(0,1fr) minmax(0,2fr); gap:clamp(24px,4cqi,64px); align-items:start}
+.d-avis .score{font-family:var(--disp); font-weight:300; font-size:clamp(90px,10cqi,150px); line-height:1; color:var(--prune)}
+.d-avis .score small{font-size:.3em}
+.d-avis blockquote{margin:0 0 26px; font-family:var(--disp); font-style:italic; font-size:clamp(24px,2.5cqi,34px); line-height:1.3; color:var(--prune)}
+.d-avis footer{font-family:var(--txt); font-style:normal; font-size:14px; color:var(--gris); margin-top:8px}
+.d-foot{background:var(--prune2); color:var(--cr)}
+.d-foot .inner{padding-block:44px 32px; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; font-size:14px; line-height:1.7}
+.d-foot h4{margin:0 0 6px; font-family:var(--disp); font-weight:500; font-size:20px}
+.d-foot p{margin:0}
+.d-legal{grid-column:1/-1; border-top:1px solid rgba(246,239,233,.18); padding-top:16px; font-size:12.5px; opacity:.7}
+@container (max-width:980px){ .d-head nav{display:none} .d-menu{display:block} .d-menu.r{text-align:right} .d-grid{grid-template-columns:1fr 1fr} .d-card,.d-card.w{grid-column:span 1} .d-card.w .ph{aspect-ratio:3/2} .d-foot .inner{grid-template-columns:1fr 1fr} }
+@container (max-width:760px){
+  .d-intro .inner,.d-fiche-grid,.d-visit .inner,.d-avis .inner{grid-template-columns:1fr} .d-intro .vr,.d-fiche-grid .vr{display:none}
+  .d-hero-ph{aspect-ratio:3/4}
+  .d-strip{grid-template-columns:1fr 1fr; height:auto} .d-strip > .ph{grid-column:1/-1; aspect-ratio:4/3} .d-strip .col{grid-template-rows:none; grid-template-columns:none} .d-strip .col .ph{aspect-ratio:1}
+}
+@container (max-width:560px){ .d-grid{grid-template-columns:1fr} .d-foot .inner{grid-template-columns:1fr} .d-logo .mono{font-size:38px} .d-logo .name{font-size:12px} .d-hero-txt::before,.d-hero-txt::after{flex-basis:50px} }
+</style>
+
+<!-- ============ SÉLECTEUR ============ -->
+<header class="switch">
+  <div class="switch-in">
+    <div class="switch-title">Cabinet Rimbault <span>quatre directions pour la vitrine, novembre 2026</span></div>
+    <div class="tabs" role="tablist" aria-label="Directions visuelles">
+      <button role="tab" data-tab="a" aria-selected="true"><b>A</b><span class="long">La Devanture</span></button>
+      <button role="tab" data-tab="b" aria-selected="false"><b>B</b><span class="long">Carnet de quartier</span></button>
+      <button role="tab" data-tab="c" aria-selected="false"><b>C</b><span class="long">La Sélection</span></button>
+      <button role="tab" data-tab="d" aria-selected="false"><b>D</b><span class="long">Maison du Nord</span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+<!-- ======================================================
+     DIRECTION A
+     ====================================================== -->
+<section class="dir A" data-dir="a" aria-label="Direction A, La Devanture">
+  <div class="cartel"><div class="cartel-in">
+    <div>
+      <h2><small>Direction A</small>La Devanture</h2>
+      <p>Le site prolonge la façade : on entre dans le grenat comme on pousse la porte du 117 boulevard Voltaire. Le nom du cabinet s'affiche en très grand, comme sur le bandeau, et chaque bien est posé dans la vitrine comme une affichette.</p>
+    </div>
+    <dl>
+      <dt>Références</dt><dd>Hôtel Rochechouart, Artifact Property, Gallimard, Abercrombys</dd>
+      <dt>Palette</dt><dd class="swatches"><span class="sw"><i style="background:#7b1c27"></i>#7b1c27</span><span class="sw"><i style="background:#5d1420"></i>#5d1420</span><span class="sw"><i style="background:#f3e7d3"></i>#f3e7d3</span><span class="sw"><i style="background:#faf4e9"></i>#faf4e9</span><span class="sw"><i style="background:#c9a35e"></i>#c9a35e</span></dd>
+      <dt>Typographies</dt><dd>Archivo très condensée (titres, prix), Libre Caslon Text (texte, italiques du bandeau)</dd>
+      <dt>Photos</dt><dd>Recadrées en 4:5 dans un passe-partout crème, légèrement réchauffées : un iPhone devient une affichette de vitrine.</dd>
+    </dl>
+  </div></div>
+
+  <div class="part"><div class="part-in"><span><b>Ouverture</b> en-tête et accueil</span><span>1440 px</span></div></div>
+  <header class="a-head wrap" id="a-head"><div class="inner">
+    <a class="a-logo" href="#a"><b>CABINET RIMBAULT</b><i>Transactions immobilières</i></a>
+    <nav class="a-nav" aria-label="Navigation A"><a href="#a">Nos biens</a><a href="#a">Vendre</a><a href="#a">Louer</a><a href="#a">Le cabinet</a><a href="#a">Contact</a></nav>
+    <span class="a-tel">01 73 64 56 10</span>
+    <a class="a-btn solid" href="#a">Faire estimer</a>
+    <span class="a-menu">Menu</span>
+  </div></header>
+  <div class="a-hero wrap" id="a-hero"><div class="inner">
+    <h1 class="a-word cond"><span>Cabinet</span> <span>Rimbault</span></h1>
+    <div class="a-hero-row">
+      <div>
+        <p class="a-lede">Transactions immobilières à <span class="nw">Asnières-sur-Seine</span>, depuis 2009.</p>
+        <p class="a-sub">Nous vendons et louons des appartements à Asnières et dans les communes voisines. La personne qui estime votre bien est celle qui le fait visiter, le négocie et vous suit jusqu’à la signature.</p>
+        <div class="a-ctas"><a class="a-btn solid" href="#a">Voir les 5 biens</a><a class="a-btn" href="#a">Faire estimer votre bien</a></div>
+        <div class="a-facts"><span><b>4,9 sur 5</b>32 avis Google</span><span><b>117</b>boulevard Voltaire</span><span><b>2009</b>ouverture du cabinet</span></div>
+      </div>
+      <figure class="a-print">
+        <img src="img/devanture.jpg" alt="La devanture grenat du Cabinet Rimbault, boulevard Voltaire">
+        <figcaption><span>Notre vitrine, boulevard Voltaire</span><span>photo provisoire</span></figcaption>
+      </figure>
+    </div>
+  </div></div>
+
+  <div class="part"><div class="part-in"><span><b>Les biens</b> présentation des 5 biens réels</span><span>affichettes sur grenat</span></div></div>
+  <section class="a-biens wrap"><div class="inner">
+    <div class="a-sec-h"><h2 class="cond">Dans la vitrine</h2><p>Cinq appartements à vendre en ce moment, à <span class="nw">Asnières-sur-Seine</span> et à Levallois-Perret. Tous nos biens tiennent sur ce mur.</p></div>
+    <div class="a-grid">
+      <a class="a-card" href="#a"><div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin du 5 pièces" loading="lazy" style="object-position:55% 50%"></div><h3>5 pièces avec deux jardins, 92,2 m²</h3><p class="loc">Asnières, Impressionnistes</p><p class="price">644&#8239;000&nbsp;€</p><p class="ref">Réf. 10129</p></a>
+      <a class="a-card" href="#a"><div class="ph"><img src="img/bien-10130-2.jpg" alt="Séjour du 3 pièces" loading="lazy" style="object-position:30% 50%"></div><h3>3 pièces et terrasse, 59,5 m²</h3><p class="loc">Asnières, Impressionnistes</p><p class="price">375&#8239;000&nbsp;€</p><p class="ref">Réf. 10.130</p></a>
+      <a class="a-card" href="#a"><div class="ph"><img src="img/bien-10131-2.jpg" alt="Séjour du 2 pièces avec terrasse" loading="lazy" style="object-position:40% 50%"></div><h3>2 pièces et terrasse, 46,6 m²</h3><p class="loc">Asnières, Impressionnistes</p><p class="price">300&#8239;000&nbsp;€</p><p class="ref">Réf. 10.131</p></a>
+      <a class="a-card" href="#a"><span class="a-stamp" aria-label="Exclusivité">EXCLU-<br>SIVITÉ</span><div class="ph"><img src="img/bien-09345-1.jpg" alt="Façade de l'immeuble ancien, rue Collange" loading="lazy" style="object-position:50% 35%"></div><h3>2 pièces au dernier étage, 35,65 m²</h3><p class="loc">Levallois-Perret, rue Collange</p><p class="price">280&#8239;000&nbsp;€</p><p class="ref">Réf. 09.345</p></a>
+      <a class="a-card" href="#a"><span class="a-stamp" aria-label="Exclusivité">EXCLU-<br>SIVITÉ</span><div class="ph"><img src="img/bien-09362-1.jpg" alt="Pièce principale du studio" loading="lazy" style="object-position:65% 50%"></div><h3>Studio avec balcon, 33,16 m²</h3><p class="loc">Asnières, Gabriel-Péri</p><p class="price">198&#8239;000&nbsp;€</p><p class="ref">Réf. 09.362</p></a>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Fiche d'un bien</b> haut de page</span><span>réf. 10129</span></div></div>
+  <section class="a-fiche wrap"><div class="inner">
+    <div class="a-crumb">Nos biens, puis 5 pièces, quartier des Impressionnistes</div>
+    <div class="a-fiche-grid">
+      <div class="a-gal">
+        <div class="ph main"><img src="img/bien-10129-3.jpg" alt="Jardin arboré en jouissance exclusive" loading="lazy"></div>
+        <div class="ph th"><img src="img/bien-10129-2.jpg" alt="Séjour ouvert sur la terrasse" loading="lazy"></div>
+        <div class="ph th"><img src="img/bien-10129-4.jpg" alt="Terrasse et pelouse" loading="lazy"></div>
+        <div class="ph th"><img src="img/bien-10129-1.jpg" alt="Terrasse dallée et jardin" loading="lazy"></div>
+      </div>
+      <div class="a-panel">
+        <span class="ref">Réf. 10129, à vendre</span>
+        <h1 class="cond">5 pièces, deux jardins</h1>
+        <p class="where">Quartier des Impressionnistes, <span class="nw">Asnières-sur-Seine</span></p>
+        <p class="price">644&#8239;000&nbsp;€</p>
+        <p class="fee">Honoraires à la charge du vendeur</p>
+        <dl class="a-keys">
+          <div><dt>Surface</dt><dd>92,2 m²</dd></div>
+          <div><dt>Chambres</dt><dd>4</dd></div>
+          <div><dt>Terrasses et jardins</dt><dd>78,5 et 179,9 m²</dd></div>
+          <div><dt>Niveau</dt><dd>Rez-de-jardin</dd></div>
+          <div><dt>Annexes</dt><dd>Parking et cave</dd></div>
+          <div><dt>Construction</dt><dd>2012</dd></div>
+        </dl>
+        <div class="a-energy"><span class="dpe d">D</span> 189 kWh/m²/an <span class="dpe ges b">B</span> 6 kg CO₂/m²/an</div>
+        <div class="a-ctas"><a class="a-btn solid" href="#a">Appeler le 01 73 64 56 10</a><a class="a-btn" href="#a">Demander une visite</a></div>
+        <p class="a-small">Charges 216,66 € par mois, taxe foncière 1 940 €, copropriété de 44 lots. Coût annuel d’énergie estimé entre 1 150 et 1 600 €.</p>
+      </div>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Confiance</b> avis, adresse, depuis 2009, pied de page</span><span>grenat profond</span></div></div>
+  <section class="a-trust wrap"><div class="inner a-trust-grid">
+    <div>
+      <h2 class="a-visit cond">Passez nous voir</h2>
+      <p class="a-addr">117 boulevard Voltaire<br>92600 <span class="nw">Asnières-sur-Seine</span></p>
+      <dl class="a-hours"><dt>Lundi</dt><dd>sur rendez-vous</dd><dt>Mardi au vendredi</dt><dd>9 h à 19 h</dd><dt>Samedi</dt><dd>9 h à 18 h</dd></dl>
+      <div class="a-ctas"><a class="a-btn solid" href="#a">Itinéraire</a><a class="a-btn" href="#a">01 73 64 56 10</a></div>
+    </div>
+    <div>
+      <div class="a-rate"><b>4,9</b><span><span class="a-stars" aria-hidden="true">★★★★★</span><br>sur 5, 32 avis Google</span></div>
+      <blockquote class="a-quote">[avis exemple] Ici, un avis Google réel du cabinet, cité tel quel.<footer>Prénom de l’auteur, avis Google</footer></blockquote>
+      <blockquote class="a-quote">[avis exemple] Un deuxième avis réel, plutôt court, qui parle d’une vente ou d’une estimation.<footer>Prénom de l’auteur, avis Google</footer></blockquote>
+      <span class="a-since"><span>DEPUIS<b>2009</b>ASNIÈRES</span></span>
+    </div>
+  </div></section>
+  <footer class="a-foot wrap"><div class="inner">
+    <div><p class="big cond">Cabinet Rimbault</p><p><i>Transactions immobilières</i></p></div>
+    <div><h4>Le cabinet</h4><p>117 boulevard Voltaire<br>92600 <span class="nw">Asnières-sur-Seine</span><br>01 73 64 56 10</p></div>
+    <div><h4>Biens</h4><p>Nos biens<br>Vendre<br>Louer<br>Faire estimer</p></div>
+    <div><h4>Informations</h4><p>Le cabinet<br>Honoraires<br>Mentions légales</p></div>
+    <p class="a-legal">Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France. SAS au capital de 4 000 €, RCS Nanterre 511 484 586. Garant financier : LLOYD’S France.</p>
+  </div></footer>
+
+  <div class="part"><div class="part-in"><span><b>Mobile</b> l’ouverture à 390 px</span><span>même code, rendu étroit</span></div></div>
+  <div class="phone-wrap"><div class="phone-wrap-in">
+    <div class="phone"><div class="phone-screen" data-clone="#a-head #a-hero" style="background:#7b1c27"></div></div>
+    <p class="phone-note"><b>Sur téléphone</b>, le nom passe sur deux lignes et occupe tout l’écran ; la photo de la vitrine vient juste après. Faites défiler dans le cadre.</p>
+  </div></div>
+</section>
+
+<!-- ======================================================
+     DIRECTION B
+     ====================================================== -->
+<section class="dir B" data-dir="b" aria-label="Direction B, Carnet de quartier" hidden>
+  <div class="cartel"><div class="cartel-in">
+    <div>
+      <h2><small>Direction B</small>Carnet de quartier</h2>
+      <p>Une agence de voisinage, gaie et cultivée : le grenat devient l'encre des titres, sur des aplats doux qui changent à chaque section. Les biens sont rangés par quartier, et les photos passent dans une fenêtre cintrée, la forme des lucarnes d'Asnières.</p>
+    </div>
+    <dl>
+      <dt>Références</dt><dd>Kvarteret Mäkleri, Modernist Estates, Urban Spaces, Merci</dd>
+      <dt>Palette</dt><dd class="swatches"><span class="sw"><i style="background:#7d1f2d"></i>#7d1f2d</span><span class="sw"><i style="background:#f7f0e3"></i>#f7f0e3</span><span class="sw"><i style="background:#f2d5ce"></i>#f2d5ce</span><span class="sw"><i style="background:#e8d4b0"></i>#e8d4b0</span><span class="sw"><i style="background:#d0e2d6"></i>#d0e2d6</span></dd>
+      <dt>Typographies</dt><dd>Young Serif (titres en grenat), Schibsted Grotesk (texte, étiquettes grasses)</dd>
+      <dt>Photos</dt><dd>Masque en arche : il cache les bords flous et les plafonds, et rend cohérentes des photos prises n'importe comment.</dd>
+    </dl>
+  </div></div>
+
+  <div class="part"><div class="part-in"><span><b>Ouverture</b> en-tête et accueil</span><span>crème</span></div></div>
+  <header class="b-head wrap" id="b-head"><div class="inner">
+    <a class="b-logo" href="#b"><b>Cabinet Rimbault</b><small><span class="nw">Asnières-sur-Seine</span>, depuis 2009</small></a>
+    <nav class="b-nav" aria-label="Navigation B"><a href="#b">Nos biens</a><a href="#b">Nos quartiers</a><a href="#b">Vendre</a><a href="#b">Louer</a><a href="#b">Le cabinet</a></nav>
+    <a class="b-pill tel" href="#b">01 73 64 56 10</a>
+    <span class="b-pill b-menu">Menu</span>
+  </div></header>
+  <div class="b-hero wrap" id="b-hero"><div class="inner">
+    <h1>Nous connaissons Asnières rue par rue.</h1>
+    <p class="lede">Un cabinet indépendant, au 117 boulevard Voltaire depuis 2009. Nous vendons et louons des appartements à <span class="nw">Asnières-sur-Seine</span> et dans les communes voisines.</p>
+    <div class="b-ctas"><a class="b-pill solid" href="#b">Voir nos 5 biens</a><a class="b-pill" href="#b">Faire estimer votre bien</a></div>
+    <div class="b-arches">
+      <a class="b-arch" href="#b"><figure style="margin:0"><div class="ph"><img src="img/bien-09345-1.jpg" alt="Immeuble ancien rue Collange" style="object-position:50% 30%"></div><figcaption>Levallois, rue Collange<span>1 bien</span></figcaption></figure></a>
+      <a class="b-arch" href="#b"><figure style="margin:0"><div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin arboré d'une résidence des Impressionnistes"></div><figcaption>Quartier des Impressionnistes<span>3 biens</span></figcaption></figure></a>
+      <a class="b-arch" href="#b"><figure style="margin:0"><div class="ph"><img src="img/bien-09362-1.jpg" alt="Studio près du métro Gabriel-Péri" style="object-position:70% 50%"></div><figcaption>Autour de Gabriel-Péri<span>1 bien</span></figcaption></figure></a>
+    </div>
+  </div></div>
+
+  <div class="part"><div class="part-in"><span><b>Les biens</b> rangés par quartier, une couleur par quartier</span><span>rose, sable, vert d’eau</span></div></div>
+  <section class="b-band rose wrap"><div class="inner">
+    <div class="b-band-h">
+      <div><span class="b-kicker">3 biens à vendre</span><h2>Quartier des Impressionnistes</h2></div>
+      <p>Trois rez-de-jardin dans la même résidence de 2012, entre la rue de la Comète et la rue des Frères-Chausson, près du métro Gabriel-Péri.</p>
+    </div>
+    <div class="b-cards">
+      <a class="b-card" href="#b"><div class="ph"><img src="img/bien-10129-2.jpg" alt="Séjour lumineux ouvert sur la terrasse" loading="lazy" style="object-position:45% 50%"></div><div class="b-tags"><span class="b-tag">Rez-de-jardin</span></div><h3>5 pièces avec deux jardins</h3><p class="street">92,2 m², 4 chambres, parking et cave</p><div class="meta"><span>Réf. 10129</span><b>644&#8239;000&nbsp;€</b></div></a>
+      <a class="b-card" href="#b"><div class="ph"><img src="img/bien-10130-2.jpg" alt="Séjour et cuisine ouverte" loading="lazy" style="object-position:30% 50%"></div><div class="b-tags"><span class="b-tag">Terrasse de 37,8 m²</span></div><h3>3 pièces et terrasse</h3><p class="street">59,5 m², 2 chambres, parking et cave</p><div class="meta"><span>Réf. 10.130</span><b>375&#8239;000&nbsp;€</b></div></a>
+      <a class="b-card" href="#b"><div class="ph"><img src="img/bien-10131-2.jpg" alt="Séjour avec deux baies vitrées" loading="lazy" style="object-position:40% 50%"></div><div class="b-tags"><span class="b-tag">Terrasse de 23,6 m²</span></div><h3>2 pièces et terrasse</h3><p class="street">46,6 m², 1 chambre, parking et cave</p><div class="meta"><span>Réf. 10.131</span><b>300&#8239;000&nbsp;€</b></div></a>
+    </div>
+  </div></section>
+  <section class="b-split">
+    <div class="left">
+      <span class="b-kicker">1 bien à vendre</span>
+      <h2>Autour de Gabriel-Péri</h2>
+      <p class="intro">Près du métro, des commerces et des parcs.</p>
+      <a class="b-card" href="#b"><div class="ph"><img src="img/bien-09362-1.jpg" alt="Pièce principale du studio" loading="lazy" style="object-position:62% 50%"></div><div class="b-tags"><span class="b-tag f">Exclusivité</span><span class="b-tag">Sud-ouest</span></div><h3>Studio avec balcon</h3><p class="street">33,16 m², 1er étage avec ascenseur</p><div class="meta"><span>Réf. 09.362</span><b>198&#8239;000&nbsp;€</b></div></a>
+    </div>
+    <div class="right">
+      <span class="b-kicker">1 bien à vendre</span>
+      <h2>Levallois, rue Collange</h2>
+      <p class="intro">Un immeuble ancien bien entretenu, près des transports et des commerces.</p>
+      <a class="b-card" href="#b"><div class="ph"><img src="img/bien-09345-2.jpg" alt="Chambre parquetée avec porte-fenêtre sur balcon" loading="lazy" style="object-position:55% 50%"></div><div class="b-tags"><span class="b-tag f">Exclusivité</span><span class="b-tag">Dernier étage</span></div><h3>2 pièces sans vis-à-vis</h3><p class="street">35,65 m², 6e étage avec ascenseur</p><div class="meta"><span>Réf. 09.345</span><b>280&#8239;000&nbsp;€</b></div></a>
+    </div>
+  </section>
+
+  <div class="part"><div class="part-in"><span><b>Fiche d'un bien</b> haut de page</span><span>réf. 10129</span></div></div>
+  <section class="b-fiche wrap"><div class="inner b-fiche-grid">
+    <div class="b-gal">
+      <div class="ph main"><img src="img/bien-10129-3.jpg" alt="Jardin arboré en jouissance exclusive" loading="lazy"></div>
+      <div class="ph th"><img src="img/bien-10129-2.jpg" alt="Séjour" loading="lazy"></div>
+      <div class="ph th"><img src="img/bien-10129-4.jpg" alt="Terrasse et pelouse" loading="lazy"></div>
+      <div class="ph th"><img src="img/bien-10129-1.jpg" alt="Terrasse dallée" loading="lazy"></div>
+    </div>
+    <div class="b-note">
+      <div class="b-tags"><span class="b-tag">Quartier des Impressionnistes</span><span class="b-tag">Réf. 10129</span></div>
+      <h1>5 pièces avec deux terrasses et deux jardins</h1>
+      <p class="where">Rez-de-jardin d’une résidence de 2012, <span class="nw">Asnières-sur-Seine</span></p>
+      <p class="price">644&#8239;000&nbsp;€</p>
+      <p class="fee">Honoraires à la charge du vendeur</p>
+      <dl class="b-dl">
+        <div><dt>Surface</dt><span class="lead"></span><dd>92,2 m²</dd></div>
+        <div><dt>Pièces</dt><span class="lead"></span><dd>5, dont 4 chambres</dd></div>
+        <div><dt>Jardins</dt><span class="lead"></span><dd>78,5 m² et 179,9 m²</dd></div>
+        <div><dt>Annexes</dt><span class="lead"></span><dd>Parking et cave</dd></div>
+        <div><dt>Énergie</dt><span class="lead"></span><dd><span class="dpe d">D</span> <span class="dpe ges b">B</span></dd></div>
+        <div><dt>Charges</dt><span class="lead"></span><dd>216,66 € par mois</dd></div>
+      </dl>
+      <div class="b-ctas"><a class="b-pill solid" href="#b">Appeler le 01 73 64 56 10</a><a class="b-pill" href="#b">Demander une visite</a></div>
+      <small>Taxe foncière 1 940 €. Copropriété de 44 lots, sans procédure. Coût annuel d’énergie estimé entre 1 150 et 1 600 €.</small>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Confiance</b> avis, adresse, depuis 2009, pied de page</span><span>vert d’eau, sable, grenat</span></div></div>
+  <section class="b-band eau wrap b-avis"><div class="inner">
+    <div class="b-avis-h"><h2>4,9 sur 5</h2><p>Note moyenne sur Google, 32 avis.</p></div>
+    <div class="b-quotes">
+      <blockquote>[avis exemple] Ici, un avis Google réel du cabinet, cité tel quel.<footer>Prénom de l’auteur</footer></blockquote>
+      <blockquote>[avis exemple] Un avis réel qui parle d’une vente dans le quartier.<footer>Prénom de l’auteur</footer></blockquote>
+      <blockquote>[avis exemple] Un avis réel qui parle d’une estimation ou d’une location.<footer>Prénom de l’auteur</footer></blockquote>
+    </div>
+  </div></section>
+  <section class="b-band sable wrap"><div class="inner b-visit">
+    <h2>Passez nous voir</h2>
+    <p>117 boulevard Voltaire<br>92600 <span class="nw">Asnières-sur-Seine</span><br>01 73 64 56 10<br><br>Nous sommes installés ici depuis 2009.</p>
+    <div><dl><dt>Lundi</dt><dd>sur rendez-vous</dd><dt>Mardi au vendredi</dt><dd>9 h à 19 h</dd><dt>Samedi</dt><dd>9 h à 18 h</dd></dl><div class="b-ctas" style="justify-content:flex-start; margin-top:22px"><a class="b-pill solid" href="#b">Itinéraire</a></div></div>
+  </div></section>
+  <footer class="b-foot wrap"><div class="inner">
+    <div><b class="logo">Cabinet Rimbault</b><p>Transactions immobilières à <span class="nw">Asnières-sur-Seine</span>, depuis 2009.</p></div>
+    <div><h4>Nous trouver</h4><p>117 boulevard Voltaire<br>92600 <span class="nw">Asnières-sur-Seine</span><br>01 73 64 56 10</p></div>
+    <div><h4>Nos quartiers</h4><p>Impressionnistes<br>Gabriel-Péri<br>Levallois, Collange</p></div>
+    <div><h4>Le cabinet</h4><p>Vendre<br>Louer<br>Honoraires<br>Mentions légales</p></div>
+    <p class="b-legal">Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France. SAS au capital de 4 000 €, RCS Nanterre 511 484 586. Garant financier : LLOYD’S France.</p>
+  </div></footer>
+
+  <div class="part"><div class="part-in"><span><b>Mobile</b> l’ouverture à 390 px</span><span>même code, rendu étroit</span></div></div>
+  <div class="phone-wrap"><div class="phone-wrap-in">
+    <div class="phone"><div class="phone-screen" data-clone="#b-head #b-hero" style="background:#f7f0e3"></div></div>
+    <p class="phone-note"><b>Sur téléphone</b>, la grande arche des Impressionnistes passe en tête, les deux petites en dessous. Faites défiler dans le cadre.</p>
+  </div></div>
+</section>
+
+<!-- ======================================================
+     DIRECTION C
+     ====================================================== -->
+<section class="dir C" data-dir="c" aria-label="Direction C, La Sélection" hidden>
+  <div class="cartel"><div class="cartel-in">
+    <div>
+      <h2><small>Direction C</small>La Sélection</h2>
+      <p>Une petite revue d'architecture domestique : chaque bien est un sujet, présenté avec une phrase plutôt qu'une liste de chiffres. Le grenat est une touche précise, au monogramme, aux étiquettes et dans une bande pleine qui porte un avis.</p>
+    </div>
+    <dl>
+      <dt>Références</dt><dd>Cuvelo, The Modern House, Patrice Besse, Domus Nova</dd>
+      <dt>Palette</dt><dd class="swatches"><span class="sw"><i style="background:#7a1f2e"></i>#7a1f2e</span><span class="sw"><i style="background:#f4f1eb"></i>#f4f1eb</span><span class="sw"><i style="background:#fdfbf7"></i>#fdfbf7</span><span class="sw"><i style="background:#1f1b19"></i>#1f1b19</span><span class="sw"><i style="background:#7a7169"></i>#7a7169</span></dd>
+      <dt>Typographies</dt><dd>Bodoni Moda (titres, monogramme, prix), Newsreader (texte et cartels en italique)</dd>
+      <dt>Photos</dt><dd>Un bien à la une à fond perdu sur les deux tiers, les autres en 3:2 avec un léger relevé de contraste ; la légende fait le travail que la photo ne fait pas.</dd>
+    </dl>
+  </div></div>
+
+  <div class="part"><div class="part-in"><span><b>Ouverture</b> en-tête, titre thématique et bien à la une</span><span>papier</span></div></div>
+  <div id="c-open">
+  <header class="c-head wrap"><div class="inner">
+    <nav aria-label="Navigation C gauche"><a href="#c">Acheter</a><a href="#c">Vendre</a><a href="#c">Louer</a></nav>
+    <span class="c-menu">Menu</span>
+    <a class="c-logo" href="#c"><span class="R">R</span><span class="name">Cabinet Rimbault</span></a>
+    <nav class="r" aria-label="Navigation C droite"><a href="#c">Le cabinet</a><a href="#c">Contact</a><a href="#c">Depuis 2009</a></nav>
+    <span class="c-menu r">Appeler</span>
+  </div></header>
+  <div class="wrap"><div class="inner c-rule"></div></div>
+  <div class="c-hero wrap"><div class="inner">
+    <div><span class="c-cap">La sélection de novembre</span><h1>Trois <span class="nw">rez-de-jardin</span> aux Impressionnistes, <em>et deux adresses en étage.</em></h1></div>
+    <p>Cinq appartements à vendre à <span class="nw">Asnières-sur-Seine</span> et à Levallois-Perret, de 198 000 à 644 000 €. Chaque fiche donne les surfaces, les charges et les diagnostics.</p>
+  </div></div>
+  <a class="c-une" href="#c" style="text-decoration:none">
+    <div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin arboré du 5 pièces"></div>
+    <div class="c-une-txt">
+      <span class="c-tag">À la une, réf. 10129</span>
+      <span class="c-cap"><span class="nw">Asnières-sur-Seine</span>, quartier des Impressionnistes</span>
+      <h2>Cinq pièces de <span class="nw">plain-pied</span>, entre deux jardins</h2>
+      <p class="story">Au rez-de-jardin d’une résidence de 2012, le séjour et une chambre ouvrent chacun sur une terrasse avec jardin, de 78,50 m² et 179,90 m².</p>
+      <div class="facts"><span>92,2 m², 4 chambres</span><span class="c-price">644&#8239;000&nbsp;€</span></div>
+      <span class="c-link">Lire la fiche</span>
+    </div>
+  </a>
+  </div>
+
+  <div class="part"><div class="part-in"><span><b>Les biens</b> deux rangées et une bande grenat</span><span>cartels écrits</span></div></div>
+  <section class="c-section wrap"><div class="inner">
+    <div class="c-sec-h"><h2>De plain-pied, sur terrasse</h2><span class="c-cap">2 biens, même résidence</span></div>
+    <div class="c-pair">
+      <a class="c-item" href="#c"><div class="ph"><img src="img/bien-10130-2.jpg" alt="Séjour et cuisine ouverte sur la terrasse" loading="lazy" style="object-position:40% 55%"></div><span class="c-cap">Asnières, Impressionnistes</span><h3>Trois pièces sur 37 m² de terrasse</h3><p class="story">Une terrasse en jouissance exclusive prolonge le séjour et les deux chambres, au calme, côté jardin.</p><div class="facts"><span>59,5 m², réf. 10.130</span><span class="c-price">375&#8239;000&nbsp;€</span></div></a>
+      <a class="c-item" href="#c"><div class="ph"><img src="img/bien-10131-2.jpg" alt="Séjour avec deux baies vitrées" loading="lazy" style="object-position:40% 55%"></div><span class="c-cap">Asnières, Impressionnistes</span><h3>Deux pièces de plain-pied sur terrasse</h3><p class="story">Le séjour de 23,50 m² s’ouvre sur 23,60 m² de terrasse ; parking et cave au sous-sol.</p><div class="facts"><span>46,6 m², réf. 10.131</span><span class="c-price">300&#8239;000&nbsp;€</span></div></a>
+    </div>
+  </div></section>
+  <section class="c-band wrap"><div class="inner">
+    <span class="mark" aria-hidden="true">“</span>
+    <blockquote>[avis exemple] Ici, un avis Google réel du cabinet, cité en entier et en grand.<footer>Prénom de l’auteur, avis Google. Note moyenne 4,9 sur 5, 32 avis.</footer></blockquote>
+  </div></section>
+  <section class="c-section wrap"><div class="inner">
+    <div class="c-sec-h"><h2>En étage, avec ascenseur</h2><span class="c-cap">2 biens en exclusivité</span></div>
+    <div class="c-pair">
+      <a class="c-item" href="#c"><div class="ph"><img src="img/bien-09345-1.jpg" alt="Façade de l'immeuble ancien" loading="lazy" style="object-position:50% 30%"></div><span class="c-tag">Exclusivité</span><span class="c-cap">Levallois-Perret, rue Collange</span><h3>Deux pièces au dernier étage d’un immeuble ancien</h3><p class="story">Au sixième et dernier étage, sans vis-à-vis, une chambre ouverte sur le balcon et une vue dégagée.</p><div class="facts"><span>35,65 m², réf. 09.345</span><span class="c-price">280&#8239;000&nbsp;€</span></div></a>
+      <a class="c-item" href="#c"><div class="ph"><img src="img/bien-09362-1.jpg" alt="Pièce principale du studio" loading="lazy" style="object-position:60% 55%"></div><span class="c-tag">Exclusivité</span><span class="c-cap">Asnières, Gabriel-Péri</span><h3>Un studio exposé sud-ouest</h3><p class="story">Une pièce de près de 20 m² ouverte sur un balcon, cuisine séparée, avec parking et cave, près du métro.</p><div class="facts"><span>33,16 m², réf. 09.362</span><span class="c-price">198&#8239;000&nbsp;€</span></div></a>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Fiche d'un bien</b> haut de page</span><span>réf. 10129</span></div></div>
+  <section class="c-fiche wrap"><div class="inner">
+    <div class="c-fiche-h">
+      <span class="c-tag">À vendre, réf. 10129</span>
+      <h1>Cinq pièces de <span class="nw">plain-pied</span>, entre deux jardins</h1>
+      <p>Au rez-de-jardin d’une résidence de 2012 du quartier des Impressionnistes, un appartement en double exposition dont le séjour et une chambre ouvrent chacun sur une terrasse avec jardin.</p>
+    </div>
+    <div class="c-fiche-grid">
+      <div>
+        <div class="c-gal">
+          <div class="ph"><img src="img/bien-10129-2.jpg" alt="Séjour ouvert sur la terrasse" loading="lazy"></div>
+          <div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin arboré" loading="lazy"></div>
+          <div class="ph"><img src="img/bien-10129-4.jpg" alt="Terrasse et pelouse" loading="lazy"></div>
+        </div>
+        <div class="c-gal-cap"><span>Le séjour de 33,30 m², et ses deux jardins.</span><span>4 photos</span></div>
+      </div>
+      <aside class="c-tech">
+        <p class="price">644&#8239;000&nbsp;€</p>
+        <p class="fee">Honoraires à la charge du vendeur</p>
+        <table>
+          <tr><th>Surface</th><td>92,2 m²</td></tr>
+          <tr><th>Pièces</th><td>5, dont 4 chambres</td></tr>
+          <tr><th>Extérieurs</th><td>2 terrasses, 2 jardins</td></tr>
+          <tr><th>Niveau</th><td>Rez-de-jardin</td></tr>
+          <tr><th>Annexes</th><td>Parking, cave</td></tr>
+          <tr><th>Chauffage</th><td>Individuel électrique</td></tr>
+          <tr><th>DPE, GES</th><td><span class="dpe d">D</span> <span class="dpe ges b">B</span></td></tr>
+          <tr><th>Charges</th><td>216,66 € par mois</td></tr>
+        </table>
+        <a class="c-btn" href="#c">Demander une visite</a>
+        <a class="c-btn ghost" href="#c">01 73 64 56 10</a>
+      </aside>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Confiance</b> colophon : adresse, avis, depuis 2009, pied de page</span><span>papier</span></div></div>
+  <section class="c-colo wrap"><div class="inner">
+    <div><span class="c-cap">Le cabinet</span><h2>Au 117 boulevard Voltaire depuis 2009</h2><p>Un cabinet indépendant. La personne qui estime votre bien est celle qui le fait visiter, le négocie et vous suit jusqu’à la signature.</p></div>
+    <div><span class="c-cap">Passez nous voir</span><h2>117 boulevard Voltaire, 92600 Asnières</h2><dl><dt>Lundi</dt><dd>sur rendez-vous</dd><dt>Mardi au vendredi</dt><dd>9 h à 19 h</dd><dt>Samedi</dt><dd>9 h à 18 h</dd></dl></div>
+    <div><span class="c-cap">Avis Google</span><p class="c-rating">4,9 <span style="font-size:24px">sur 5</span></p><p>32 avis. <span class="c-link">Lire les avis</span></p></div>
+  </div></section>
+  <footer class="c-foot wrap"><div class="inner">
+    <span class="c-logo" style="padding:0"><span class="R" style="font-size:44px">R</span></span>
+    <nav aria-label="Pied C"><a href="#c">Nos biens</a><a href="#c">Vendre</a><a href="#c">Louer</a><a href="#c">Le cabinet</a><a href="#c">Mentions légales</a></nav>
+    <p>Cabinet Rimbault, 117 boulevard Voltaire, 92600 <span class="nw">Asnières-sur-Seine</span>, 01 73 64 56 10</p>
+    <p class="legal">Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France. SAS au capital de 4 000 €, RCS Nanterre 511 484 586. Garant financier : LLOYD’S France.</p>
+  </div></footer>
+
+  <div class="part"><div class="part-in"><span><b>Mobile</b> l’ouverture à 390 px</span><span>même code, rendu étroit</span></div></div>
+  <div class="phone-wrap"><div class="phone-wrap-in">
+    <div class="phone"><div class="phone-screen" data-clone="#c-open" style="background:#f4f1eb"></div></div>
+    <p class="phone-note"><b>Sur téléphone</b>, le titre thématique reste en tête, puis le bien à la une passe en pleine largeur, sa fiche en dessous. Faites défiler dans le cadre.</p>
+  </div></div>
+</section>
+
+<!-- ======================================================
+     DIRECTION D
+     ====================================================== -->
+<section class="dir D" data-dir="d" aria-label="Direction D, Maison du Nord" hidden>
+  <div class="cartel"><div class="cartel-in">
+    <div>
+      <h2><small>Direction D</small>Maison du Nord</h2>
+      <p>Calme, feutré, très architecturé. Le grenat descend vers une prune sombre qui sert d'encre et de bandeau sous chaque photo, sur un fond taupe rosé. La marque, c'est un dessin au trait de la devanture plutôt qu'un portrait.</p>
+    </div>
+    <dl>
+      <dt>Références</dt><dd>Tinholt, Caso Patrimoine, Historiska Hem, Bouillon Julien</dd>
+      <dt>Palette</dt><dd class="swatches"><span class="sw"><i style="background:#4a192c"></i>#4a192c</span><span class="sw"><i style="background:#371220"></i>#371220</span><span class="sw"><i style="background:#ebe4de"></i>#ebe4de</span><span class="sw"><i style="background:#dfd5cd"></i>#dfd5cd</span><span class="sw"><i style="background:#f6efe9"></i>#f6efe9</span></dd>
+      <dt>Typographies</dt><dd>Cormorant Light (grands titres très fins), Hanken Grotesk (texte)</dd>
+      <dt>Photos</dt><dd>Étalonnage commun légèrement chaud et désaturé, bandeau prune sous chaque photo : les écarts de lumière entre deux iPhone disparaissent.</dd>
+    </dl>
+  </div></div>
+
+  <div class="part"><div class="part-in"><span><b>Ouverture</b> en-tête et accueil</span><span>taupe rosé</span></div></div>
+  <div id="d-open">
+  <header class="d-head wrap"><div class="inner">
+    <nav aria-label="Navigation D gauche"><a href="#d">Nos biens</a><a href="#d">Vendre</a><a href="#d">Faire estimer</a></nav>
+    <span class="d-menu">Menu</span>
+    <a class="d-logo" href="#d"><span class="mono">CR</span><span class="name">RIMBAULT</span></a>
+    <nav class="r" aria-label="Navigation D droite"><a href="#d">Le cabinet</a><a href="#d">Contact</a><a href="#d">01 73 64 56 10</a></nav>
+    <span class="d-menu r">Appeler</span>
+  </div></header>
+  <div class="d-hero wrap"><div class="inner">
+    <div class="d-hero-ph">
+      <img src="img/bien-10129-2.jpg" alt="Séjour lumineux ouvert sur un jardin">
+      <div class="d-hero-txt"><h1>Un cabinet de quartier, à Asnières depuis 2009</h1><a href="#d">Voir les cinq biens à vendre</a></div>
+    </div>
+  </div></div>
+  </div>
+  <section class="d-intro wrap" id="d-intro"><div class="inner">
+    <h2>Cinq appartements à vendre, de 198 000 à 644 000 €.</h2>
+    <div class="vr"></div>
+    <div><p>La personne qui estime votre bien est celle qui le fait visiter, le négocie et vous suit jusqu’à la signature. Pas de transfert de dossier, pas de standard.</p><p class="who"><span class="nw">Asnières-sur-Seine</span> et les communes voisines.</p></div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Les biens</b> bandeau prune sous chaque photo</span><span>3 puis 2</span></div></div>
+  <section class="d-biens wrap"><div class="inner">
+    <div class="d-sec-h"><h2>Nos biens</h2><span>5 appartements</span></div>
+    <div class="d-grid">
+      <a class="d-card" href="#d"><div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin arboré" loading="lazy"><span class="d-flag">Deux jardins</span></div><div class="band"><h3>5 pièces, 92,2 m²</h3><p class="loc">Asnières, Impressionnistes</p><div class="row"><span>4 chambres</span><b>644&#8239;000&nbsp;€</b></div></div></a>
+      <a class="d-card" href="#d"><div class="ph"><img src="img/bien-10130-2.jpg" alt="Séjour et cuisine ouverte" loading="lazy" style="object-position:40% 55%"></div><div class="band"><h3>3 pièces, 59,5 m²</h3><p class="loc">Asnières, Impressionnistes</p><div class="row"><span>Terrasse 37,8 m²</span><b>375&#8239;000&nbsp;€</b></div></div></a>
+      <a class="d-card" href="#d"><div class="ph"><img src="img/bien-10131-2.jpg" alt="Séjour avec baies vitrées" loading="lazy" style="object-position:40% 55%"></div><div class="band"><h3>2 pièces, 46,6 m²</h3><p class="loc">Asnières, Impressionnistes</p><div class="row"><span>Terrasse 23,6 m²</span><b>300&#8239;000&nbsp;€</b></div></div></a>
+      <a class="d-card w" href="#d"><div class="ph"><img src="img/bien-09345-2.jpg" alt="Chambre avec porte-fenêtre sur balcon" loading="lazy" style="object-position:55% 50%"><span class="d-flag">Exclusivité</span></div><div class="band"><h3>2 pièces au dernier étage, 35,65 m²</h3><p class="loc">Levallois-Perret, rue Collange</p><div class="row"><span>Balcon, sans vis-à-vis</span><b>280&#8239;000&nbsp;€</b></div></div></a>
+      <a class="d-card w" href="#d"><div class="ph"><img src="img/bien-09362-1.jpg" alt="Pièce principale du studio" loading="lazy" style="object-position:60% 55%"><span class="d-flag">Exclusivité</span></div><div class="band"><h3>Studio, 33,16 m²</h3><p class="loc">Asnières, Gabriel-Péri</p><div class="row"><span>Balcon, sud-ouest</span><b>198&#8239;000&nbsp;€</b></div></div></a>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Fiche d'un bien</b> haut de page</span><span>réf. 10129</span></div></div>
+  <section class="d-fiche wrap"><div class="inner">
+    <div class="d-strip">
+      <div class="ph"><img src="img/bien-10129-3.jpg" alt="Jardin arboré" loading="lazy"></div>
+      <div class="col"><div class="ph"><img src="img/bien-10129-2.jpg" alt="Séjour" loading="lazy"></div><div class="ph"><img src="img/bien-10129-4.jpg" alt="Terrasse et pelouse" loading="lazy"></div></div>
+      <div class="col"><div class="ph"><img src="img/bien-10129-1.jpg" alt="Terrasse dallée" loading="lazy"></div><div class="ph" style="background:var(--prune); display:grid; place-items:center; color:var(--cr); font-family:var(--disp); font-size:26px">4 photos</div></div>
+    </div>
+    <div class="d-fiche-grid">
+      <div>
+        <span class="ref">Réf. 10129, quartier des Impressionnistes, <span class="nw">Asnières-sur-Seine</span></span>
+        <h1>Cinq pièces, deux jardins</h1>
+        <p>Au rez-de-jardin d’une résidence de 2012, au calme et en double exposition : un séjour de 33,30 m² avec cuisine ouverte, quatre chambres avec rangements, deux terrasses et deux jardins en jouissance exclusive.</p>
+        <p>Proche du métro Gabriel-Péri, des commerces, des écoles et du parc.</p>
+      </div>
+      <div class="vr"></div>
+      <div>
+        <p class="d-price">644&#8239;000&nbsp;€</p>
+        <span class="ref">Honoraires à la charge du vendeur</span>
+        <dl class="d-keys">
+          <div><dt>Surface</dt><dd>92,2 m²</dd></div>
+          <div><dt>Chambres</dt><dd>4</dd></div>
+          <div><dt>Jardins</dt><dd>78,5 et 179,9 m²</dd></div>
+          <div><dt>Annexes</dt><dd>Parking, cave</dd></div>
+          <div><dt>Énergie</dt><dd><span class="dpe d">D</span> <span class="dpe ges b">B</span></dd></div>
+          <div><dt>Charges</dt><dd>216,66 € par mois</dd></div>
+        </dl>
+        <div class="d-contact"><span>Pour visiter, appelez-nous</span><span class="tel">01 73 64 56 10</span><a class="d-btn f" href="#d">Demander une visite</a></div>
+      </div>
+    </div>
+  </div></section>
+
+  <div class="part"><div class="part-in"><span><b>Confiance</b> passez nous voir, avis, depuis 2009, pied de page</span><span>prune</span></div></div>
+  <section class="d-visit wrap"><div class="inner">
+    <svg viewBox="0 0 520 420" fill="none" stroke="currentColor" stroke-width="1.3" role="img" aria-label="Dessin au trait de la devanture du cabinet">
+      <!-- immeuble -->
+      <path d="M40 410V30h440v380"/>
+      <path d="M40 30h440M30 22h460v8H30z"/>
+      <g stroke-width="1">
+        <rect x="80" y="60" width="56" height="74"/><rect x="232" y="60" width="56" height="74"/><rect x="384" y="60" width="56" height="74"/>
+        <path d="M108 60v74M80 92h56M260 60v74M232 92h56M412 60v74M384 92h56"/>
+        <path d="M72 134h72M224 134h72M376 134h72"/>
+        <path d="M72 148h72M224 148h72M376 148h72M72 141h72M224 141h72M376 141h72"/>
+        <path d="M76 134v14M84 134v14M92 134v14M100 134v14M108 134v14M116 134v14M124 134v14M132 134v14M140 134v14"/>
+        <path d="M228 134v14M236 134v14M244 134v14M252 134v14M260 134v14M268 134v14M276 134v14M284 134v14M292 134v14"/>
+        <path d="M380 134v14M388 134v14M396 134v14M404 134v14M412 134v14M420 134v14M428 134v14M436 134v14M444 134v14"/>
+      </g>
+      <path d="M40 176h440"/>
+      <!-- bandeau -->
+      <path d="M52 186h416v52H52z" fill="currentColor" fill-opacity=".1"/>
+      <text x="260" y="220" text-anchor="middle" fill="currentColor" stroke="none" font-family="Cormorant, Georgia, serif" font-size="27" letter-spacing="5">CABINET RIMBAULT</text>
+      <!-- vitrine -->
+      <path d="M52 250h66v160M118 250v160M60 258h50v144"/>
+      <path d="M132 250h336v160H132z"/>
+      <path d="M300 250v160M386 250v160"/>
+      <g stroke-width="1"><rect x="150" y="272" width="30" height="38"/><rect x="190" y="272" width="30" height="38"/><rect x="230" y="272" width="30" height="38"/><rect x="150" y="322" width="30" height="38"/><rect x="190" y="322" width="30" height="38"/><rect x="230" y="322" width="30" height="38"/></g>
+      <path d="M396 290h16M405 284v14"/>
+      <rect x="400" y="320" width="54" height="64" stroke-width="1"/>
+      <path d="M408 336h38M408 348h38M408 360h30" stroke-width="1"/>
+      <path d="M12 410h496"/>
+    </svg>
+    <div>
+      <h2>Passez nous voir</h2>
+      <p>117 boulevard Voltaire, 92600 <span class="nw">Asnières-sur-Seine</span>. Nous y recevons depuis 2009.</p>
+      <dl><dt>Lundi</dt><dd>sur rendez-vous</dd><dt>Mardi au vendredi</dt><dd>9 h à 19 h</dd><dt>Samedi</dt><dd>9 h à 18 h</dd></dl>
+      <a class="d-btn" href="#d">Itinéraire</a>
+    </div>
+  </div></section>
+  <section class="d-avis wrap"><div class="inner">
+    <div><p class="score" style="margin:0">4,9<small> sur 5</small></p><p style="margin:12px 0 0; color:var(--gris)">Note moyenne sur 32 avis Google</p></div>
+    <div>
+      <blockquote>[avis exemple] Ici, un avis Google réel du cabinet, cité tel quel.<footer>Prénom de l’auteur, avis Google</footer></blockquote>
+      <blockquote>[avis exemple] Un deuxième avis réel, court, sur une vente ou une estimation.<footer>Prénom de l’auteur, avis Google</footer></blockquote>
+    </div>
+  </div></section>
+  <footer class="d-foot wrap"><div class="inner">
+    <div><h4>Cabinet Rimbault</h4><p>Transactions immobilières<br><span class="nw">Asnières-sur-Seine</span>, depuis 2009</p></div>
+    <div><h4>Adresse</h4><p>117 boulevard Voltaire<br>92600 <span class="nw">Asnières-sur-Seine</span></p></div>
+    <div><h4>Contact</h4><p>01 73 64 56 10</p></div>
+    <div><h4>Pages</h4><p>Nos biens, Vendre, Le cabinet<br>Honoraires, Mentions légales</p></div>
+    <p class="d-legal">Carte professionnelle CPI 9201 2018 000 024 838, CCI Paris Île-de-France. SAS au capital de 4 000 €, RCS Nanterre 511 484 586. Garant financier : LLOYD’S France.</p>
+  </div></footer>
+
+  <div class="part"><div class="part-in"><span><b>Mobile</b> l’ouverture à 390 px</span><span>même code, rendu étroit</span></div></div>
+  <div class="phone-wrap"><div class="phone-wrap-in">
+    <div class="phone"><div class="phone-screen" data-clone="#d-open #d-intro" style="background:#ebe4de"></div></div>
+    <p class="phone-note"><b>Sur téléphone</b>, la photo passe en portrait et le grand titre fin reste posé dessus, entre ses deux filets. Faites défiler dans le cadre.</p>
+  </div></div>
+</section>
+</main>
+
+<script>
+(function(){
+  var KEY='cr-maquette-2026-11', ids=['a','b','c','d'];
+  // Copie l'en-tête et l'ouverture dans chaque cadre mobile (rendu par requêtes @container).
+  document.querySelectorAll('[data-clone]').forEach(function(screen){
+    screen.getAttribute('data-clone').split(' ').forEach(function(sel){
+      var src=document.querySelector(sel); if(!src) return;
+      var n=src.cloneNode(true); n.removeAttribute('id');
+      n.querySelectorAll('[id]').forEach(function(e){e.removeAttribute('id')});
+      n.querySelectorAll('nav[aria-label]').forEach(function(e){e.setAttribute('aria-label',e.getAttribute('aria-label')+' (mobile)')});
+      screen.appendChild(n);
+    });
+  });
+  var tabs=[].slice.call(document.querySelectorAll('[data-tab]'));
+  function show(id, scroll){
+    document.querySelectorAll('.dir').forEach(function(d){ d.hidden = d.getAttribute('data-dir')!==id; });
+    tabs.forEach(function(t){ t.setAttribute('aria-selected', String(t.getAttribute('data-tab')===id)); });
+    try{ localStorage.setItem(KEY,id); }catch(e){}
+    if(scroll) window.scrollTo(0,0);
+  }
+  var start='a';
+  try{ var s=localStorage.getItem(KEY); if(ids.indexOf(s)>-1) start=s; }catch(e){}
+  var h=(location.hash||'').slice(1); if(ids.indexOf(h)>-1) start=h;
+  show(start,false);
+  tabs.forEach(function(t){ t.addEventListener('click',function(){ show(t.getAttribute('data-tab'),true); }); });
+  // Les liens internes des maquettes ne changent pas d'onglet.
+  document.querySelectorAll('.dir a[href^="#"]').forEach(function(a){ a.addEventListener('click',function(e){ e.preventDefault(); }); });
+})();
+</script>

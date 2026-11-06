@@ -1,0 +1,474 @@
+/* Page Biens : l'accrochage, puis la liste qui ferme la salle.
+   Le motif (accrochage.ts) : grande, décalée, duo en quinconce, centre ;
+   le cycle suivant en miroir. Sur mobile : une colonne, largeurs et côtés
+   qui alternent sur cinq positions. */
+
+.salle {
+  flex: 1 0 auto;
+}
+
+.salleT {
+  padding-top: 72px;
+  align-items: start;
+}
+
+.salleT h1 {
+  grid-column: 1 / 5;
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.salleT h1 small {
+  display: block;
+  font: 400 12px / 1.5 var(--sans);
+  color: var(--gris);
+  margin-top: 8px;
+}
+
+.salleT p {
+  grid-column: 6 / 10;
+  margin: 4px 0 0;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.plan {
+  grid-column: 11 / 13;
+  justify-self: end;
+  margin-top: 4px;
+}
+
+.mur {
+  padding-top: 88px;
+}
+
+.oeuvre {
+  min-width: 0;
+}
+
+.ph {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+}
+
+.cartel {
+  min-width: 0;
+}
+
+/* ---------- Accrochage desktop ---------- */
+@media (min-width: 900px) {
+  .piece + .piece {
+    margin-top: clamp(88px, 8vw, 128px);
+  }
+
+  /* la grande photo et son cartel tiennent ensemble dans l'écran */
+  .grande .ph {
+    max-width: calc(72svh * 4 / 3);
+  }
+
+  .oeuvre {
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: end;
+  }
+
+  .oeuvre > * {
+    grid-row: 1;
+  }
+
+  /* Une photo plafonnée à sa résolution (PhotoMur) reste collée à son cartel. */
+  .ph {
+    justify-self: end;
+  }
+
+  .decalee .ph,
+  .grande[data-miroir] .ph,
+  .centre[data-miroir] .ph,
+  .duo[data-miroir] .ph {
+    justify-self: start;
+  }
+
+  .decalee[data-miroir] .ph {
+    justify-self: end;
+  }
+
+  .seule {
+    grid-column: 1 / -1;
+  }
+
+  /* cartel à gauche de la photo : texte au fer à droite */
+  .grande[data-miroir] .cartel,
+  .decalee .cartel,
+  .centre[data-miroir] .cartel,
+  .duo[data-miroir] .cartel {
+    justify-self: end;
+    text-align: right;
+  }
+
+  /* grande */
+  .grande .ph {
+    grid-column: 1 / 9;
+  }
+
+  .grande .cartel {
+    grid-column: 9 / 12;
+  }
+
+  .grande[data-miroir] .ph {
+    grid-column: 5 / 13;
+  }
+
+  .grande[data-miroir] .cartel {
+    grid-column: 2 / 5;
+  }
+
+  /* décalée à droite, cartel à gauche */
+  .decalee .ph {
+    grid-column: 7 / 12;
+  }
+
+  .decalee .cartel {
+    grid-column: 4 / 7;
+  }
+
+  .decalee[data-miroir] .ph {
+    grid-column: 2 / 7;
+  }
+
+  .decalee[data-miroir] .cartel {
+    grid-column: 7 / 10;
+    justify-self: start;
+    text-align: left;
+  }
+
+  /* duo en quinconce : paysage plus bas, portrait plus haut */
+  .duo {
+    align-items: start;
+  }
+
+  .duoA {
+    grid-column: 1 / 7;
+    padding-top: 120px;
+  }
+
+  .duoA .ph {
+    grid-column: 1 / 5;
+  }
+
+  .duoA .cartel {
+    grid-column: 5 / 7;
+  }
+
+  .duoB {
+    grid-column: 8 / 13;
+  }
+
+  .duoB .ph {
+    grid-column: 1 / 4;
+    aspect-ratio: 3 / 4;
+  }
+
+  .duoB .cartel {
+    grid-column: 4 / 6;
+  }
+
+  .duo[data-miroir] .duoA {
+    grid-column: 7 / 13;
+  }
+
+  .duo[data-miroir] .duoA .ph {
+    grid-column: 3 / 7;
+  }
+
+  .duo[data-miroir] .duoA .cartel {
+    grid-column: 1 / 3;
+  }
+
+  .duo[data-miroir] .duoB {
+    grid-column: 1 / 6;
+  }
+
+  .duo[data-miroir] .duoB .ph {
+    grid-column: 3 / 6;
+  }
+
+  .duo[data-miroir] .duoB .cartel {
+    grid-column: 1 / 3;
+  }
+
+  /* centre */
+  .centre .ph {
+    grid-column: 4 / 10;
+  }
+
+  .centre .cartel {
+    grid-column: 10 / 12;
+  }
+
+  .centre[data-miroir] .cartel {
+    grid-column: 2 / 4;
+  }
+}
+
+/* entre 900 et 1100 px, les cartels étroits prennent une colonne de plus */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .grande .cartel {
+    grid-column: 9 / 13;
+  }
+
+  .centre .ph {
+    grid-column: 3 / 10;
+  }
+
+  .centre .cartel {
+    grid-column: 10 / 13;
+  }
+
+  .duoA .ph {
+    grid-column: 1 / 5;
+  }
+}
+
+/* ---------- Accrochage mobile : une colonne ---------- */
+@media (max-width: 899px) {
+  .salleT {
+    padding-top: 40px;
+    row-gap: 12px;
+  }
+
+  .salleT h1,
+  .salleT p,
+  .plan {
+    grid-column: 1 / -1;
+    justify-self: start;
+    margin: 0;
+  }
+
+  .salleT h1 {
+    font-size: 20px;
+  }
+
+  .mur {
+    padding-top: 56px;
+    display: grid;
+    gap: 64px;
+  }
+
+  .piece {
+    display: contents;
+  }
+
+  .oeuvre {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .cartel {
+    max-width: none;
+  }
+
+  .oeuvre[data-m="1"] .ph,
+  .oeuvre[data-m="3"] .ph {
+    justify-self: end;
+  }
+
+  .oeuvre[data-m="1"] {
+    width: 74%;
+    justify-self: end;
+  }
+
+  .oeuvre[data-m="2"] {
+    width: 72%;
+  }
+
+  .oeuvre[data-m="3"] {
+    width: 68%;
+    justify-self: end;
+  }
+
+  .oeuvre[data-m="3"] .ph {
+    aspect-ratio: 3 / 4;
+  }
+
+  .oeuvre[data-m="4"] {
+    width: 84%;
+  }
+}
+
+/* ---------- Tablette : le cartel revient à côté de la photo ---------- */
+@media (min-width: 600px) and (max-width: 899px) {
+  .oeuvre {
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 30%);
+    align-items: end;
+    column-gap: 20px;
+  }
+
+  .oeuvre[data-m="0"] {
+    width: 100%;
+  }
+
+  .oeuvre[data-m="1"] {
+    width: 88%;
+  }
+
+  .oeuvre[data-m="2"] {
+    width: 82%;
+  }
+
+  .oeuvre[data-m="3"] {
+    width: 66%;
+  }
+
+  .oeuvre[data-m="4"] {
+    width: 92%;
+  }
+
+  /* photo à droite, cartel à gauche, au fer à droite */
+  .oeuvre[data-m="1"],
+  .oeuvre[data-m="3"] {
+    grid-template-columns: minmax(160px, 30%) minmax(0, 1fr);
+  }
+
+  .oeuvre[data-m="1"] .cartel,
+  .oeuvre[data-m="3"] .cartel {
+    grid-row: 1;
+    grid-column: 1;
+    text-align: right;
+    justify-self: end;
+  }
+
+  .oeuvre[data-m="1"] .ph,
+  .oeuvre[data-m="3"] .ph {
+    grid-row: 1;
+    grid-column: 2;
+  }
+}
+
+/* ---------- La liste ferme la salle ---------- */
+.liste {
+  padding-top: 136px;
+  padding-bottom: 96px;
+}
+
+.liste h2 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+  padding-bottom: 12px;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--filet);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: center;
+  min-height: 52px;
+  padding-block: 8px;
+  font-size: 12.5px;
+  border-bottom: 1px solid var(--filet);
+  background:
+    linear-gradient(var(--poudre), var(--poudre)) no-repeat 0 100% / 100% 0%;
+  transition: background-size 0.45s var(--out);
+}
+
+.row:hover,
+.row:focus-visible {
+  background-size: 100% 100%;
+}
+
+.row em {
+  font-style: normal;
+  color: var(--grenat);
+  font-size: 11px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+.cRef {
+  grid-column: 1 / 2;
+  color: var(--gris);
+  padding-left: 8px;
+}
+
+.cType {
+  grid-column: 2 / 7;
+}
+
+.cSurf {
+  grid-column: 7 / 8;
+  white-space: nowrap;
+}
+
+.cVille {
+  grid-column: 8 / 11;
+  color: var(--gris);
+}
+
+.cPrix {
+  grid-column: 11 / 13;
+  justify-self: end;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 16px;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+
+.finSalle {
+  height: 144px;
+}
+
+@media (max-width: 899px) {
+  .liste {
+    padding-top: 96px;
+    padding-bottom: 64px;
+  }
+
+  .row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 12px;
+    row-gap: 2px;
+    padding-block: 12px;
+  }
+
+  .cRef {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    align-self: start;
+    padding-left: 0;
+    padding-top: 1px;
+  }
+
+  .cType {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .cSurf {
+    grid-column: 2;
+    grid-row: 2;
+    color: var(--gris);
+  }
+
+  .cVille {
+    display: none;
+  }
+
+  .cPrix {
+    grid-column: 3;
+    grid-row: 1;
+    padding-right: 0;
+  }
+}

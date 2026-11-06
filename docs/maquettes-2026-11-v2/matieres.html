@@ -1,0 +1,753 @@
+<title>Matières, Cabinet Rimbault</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap">
+<style>
+/* Planche de matériaux : blocs de matière nets posés sur beaucoup de blanc cassé, texte petit et précis, légendes en serif italique. */
+@property --mx { syntax: '<percentage>'; inherits: true; initial-value: 30%; }
+@property --my { syntax: '<percentage>'; inherits: true; initial-value: 22%; }
+:root {
+  color-scheme: light;
+  /* matières */
+  --grenat: #6e1a26;
+  --grenat-deep: #4a0f18;
+  --terre: #9e5434;
+  --sable: #d9c9ab;
+  --olive: #737a55;
+  --lin: #cfc6b2;
+  --pierre: #c4b69c;
+  /* fonds */
+  --craie: #f2f0ea;       /* blanc cassé du site, légèrement gris */
+  --planche: #e3e0d9;     /* fond neutre de la planche */
+  --encre: #2a2224;       /* encre chaude, biaisée grenat */
+  --encre-2: #6c6264;
+  --filet: rgba(42, 34, 36, .14);
+  --blanc: #fbfaf7;
+  /* typo */
+  --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --ease: cubic-bezier(.7, 0, .2, 1);
+  --ease-out: cubic-bezier(.2, .7, .1, 1);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--planche);
+  color: var(--encre);
+  font: 400 14px/1.5 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01";
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--grenat); outline-offset: 3px; }
+
+/* ---------- Matières (textures générées dans le script d'en-tête) ---------- */
+.m-velours {
+  background-color: var(--grenat);
+  background-image:
+    radial-gradient(ellipse 60% 55% at var(--mx) var(--my), rgba(255, 176, 176, .30), rgba(255, 176, 176, 0) 70%),
+    var(--t-fibre), var(--t-crush), var(--t-crush-l), var(--t-grain-soft),
+    linear-gradient(158deg, #842638 0%, #6e1a26 38%, #581422 72%, #3f0c15 100%);
+  transition: --mx 1.1s var(--ease-out), --my 1.1s var(--ease-out);
+}
+.m-tadelakt {
+  background-color: var(--sable);
+  background-image: var(--t-relief), var(--t-mottle-l), var(--t-mottle-d), var(--t-grain);
+  background-blend-mode: soft-light, normal, normal, normal;
+}
+.m-terre {
+  background-color: var(--terre);
+  background-image: var(--t-grain), var(--t-mottle-d), var(--t-mottle-l),
+    linear-gradient(200deg, rgba(255, 200, 160, .18), rgba(0, 0, 0, .10));
+}
+.m-lin {
+  background-color: var(--lin);
+  background-image:
+    var(--t-slub),
+    repeating-linear-gradient(0deg, rgba(60, 48, 30, .07) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .10) 0 1px, transparent 1px 3px),
+    var(--t-grain);
+}
+.m-lin-olive { background-color: var(--olive); }
+.m-lin-olive.m-lin { background-image: var(--t-slub), repeating-linear-gradient(0deg, rgba(20, 24, 10, .14) 0 1px, transparent 1px 3px), repeating-linear-gradient(90deg, rgba(255, 255, 240, .08) 0 1px, transparent 1px 3px), var(--t-grain); }
+.m-pierre { background-color: var(--pierre); background-image: var(--t-relief), var(--t-mottle-d), var(--t-grain); background-blend-mode: soft-light, normal, normal; }
+.m-papier { background-color: var(--blanc); background-image: var(--t-fleck), var(--t-grain-soft); }
+.m-terrazzo { background-color: #ece5d8; background-image: var(--t-terrazzo); background-size: 260px 260px; }
+
+/* grain photographique posé sur les photos */
+.ph { position: relative; overflow: hidden; background: var(--lin); }
+.ph img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.86) contrast(1.05) brightness(1.03); }
+.ph::after { content: ""; position: absolute; inset: 0; background-image: var(--t-grain-soft); opacity: .35; mix-blend-mode: multiply; pointer-events: none; }
+
+/* ---------- Planche ---------- */
+.planche { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 56px 96px; display: grid; gap: 72px; }
+.intro { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px 64px; align-items: start; }
+.intro h1 { font: 400 28px/1.15 var(--sans); letter-spacing: -.01em; margin: 0 0 14px; display: flex; align-items: center; gap: 12px; }
+.intro h1 .chip { width: 22px; height: 22px; border-radius: 2px; }
+.intro p { margin: 0; max-width: 46ch; color: var(--encre-2); font-size: 15px; line-height: 1.6; }
+.intro .kicker { font: italic 500 17px/1.3 var(--serif); color: var(--encre-2); margin-bottom: 8px; }
+.specs { display: grid; gap: 22px; }
+.spec { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; align-items: start; }
+.spec > span:first-child { font: italic 500 16px/1.4 var(--serif); color: var(--encre-2); }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.sw { display: grid; gap: 6px; width: 76px; }
+.sw i { display: block; height: 56px; border-radius: 1px; }
+.sw b { font-weight: 500; font-size: 12px; }
+.sw small { font-size: 11px; color: var(--encre-2); font-variant-numeric: tabular-nums; }
+.fonts { display: grid; gap: 4px; font-size: 13px; color: var(--encre-2); }
+.fonts strong { color: var(--encre); font-weight: 500; font-size: 15px; }
+.fonts em { font: italic 500 18px var(--serif); color: var(--encre); }
+.anims { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; font-size: 13px; color: var(--encre-2); }
+.anims li { display: grid; grid-template-columns: 10px 1fr; gap: 10px; align-items: baseline; }
+.anims li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--grenat); transform: translateY(-1px); }
+
+.piece { display: grid; gap: 14px; }
+.legende { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.legende p { margin: 0; font-size: 13px; color: var(--encre-2); max-width: 80ch; }
+.legende p b { color: var(--encre); font-weight: 500; }
+.legende .ctrl { display: flex; gap: 8px; }
+.btn-mini { border: 1px solid var(--filet); background: var(--blanc); border-radius: 99px; padding: 5px 12px; font-size: 12px; cursor: pointer; transition: background .3s; }
+.btn-mini:hover { background: #fff; }
+
+/* cadres : écran dessiné à taille réelle puis mis à l'échelle */
+.stage { position: relative; width: 100%; }
+.screen { position: absolute; top: 0; left: 0; transform-origin: 0 0; transform: scale(var(--s, 1)); border-radius: 10px; overflow: hidden; background: var(--craie); box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 30px 60px -30px rgba(60, 30, 30, .35), 0 2px 6px rgba(60, 30, 30, .08); }
+.screen.desk { width: 1160px; }
+.screen.mob { width: 375px; border-radius: 34px; border: 8px solid #1f1a1b; }
+.chrome { height: 34px; display: flex; align-items: center; justify-content: center; background: #e9e6df; border-bottom: 1px solid var(--filet); position: relative; }
+.chrome span { font-size: 11px; color: var(--encre-2); background: var(--blanc); padding: 3px 40px; border-radius: 6px; }
+.vp { position: relative; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; }
+
+/* ---------- En-tête du site ---------- */
+.site-h { display: flex; align-items: center; justify-content: space-between; padding: 22px 48px; font-size: 13px; position: relative; z-index: 3; }
+.mark { display: flex; align-items: center; gap: 10px; font-weight: 500; letter-spacing: -.005em; text-decoration: none; }
+.mark i { width: 14px; height: 14px; border-radius: 1px; display: block; }
+.site-h nav { display: flex; gap: 30px; color: var(--encre-2); }
+.site-h nav a { text-decoration: none; position: relative; }
+.site-h nav a[aria-current] { color: var(--encre); }
+.site-h nav a[aria-current]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: var(--grenat); }
+.site-h .tel { font-variant-numeric: tabular-nums; }
+
+/* ---------- 1. Accueil ---------- */
+.board { position: relative; height: 600px; margin: 0 48px; }
+.blk { position: absolute; }
+.cap { position: absolute; font: italic 500 15px/1.25 var(--serif); color: var(--encre-2); white-space: nowrap; }
+.velours-hero { left: 0; top: 18px; width: 330px; height: 480px; color: #f6e9e6; padding: 26px; display: flex; flex-direction: column; justify-content: space-between; }
+.velours-hero .small { font-size: 12px; line-height: 1.55; opacity: .9; }
+.velours-hero .small b { font-weight: 500; display: block; font-size: 13px; opacity: 1; }
+.velours-hero .since { font: italic 500 46px/1 var(--serif); letter-spacing: -.01em; opacity: .92; }
+.hero-ph { left: 362px; top: 74px; width: 404px; height: 303px; }
+.hero-lin { left: 362px; top: 434px; width: 254px; height: 64px; }
+.hero-terre { left: 648px; top: 410px; width: 118px; height: 118px; }
+.hero-tadelakt { left: 798px; top: 18px; width: 266px; height: 236px; }
+.hero-terrazzo { left: 984px; top: 170px; width: 120px; height: 120px; border-radius: 50%; box-shadow: 0 14px 24px -14px rgba(40, 20, 10, .45); }
+.hero-txt { left: 798px; top: 336px; width: 266px; }
+.hero-txt h1 { font: 400 25px/1.2 var(--sans); letter-spacing: -.015em; margin: 0 0 18px; text-wrap: balance; }
+.hero-txt a { font-size: 13px; text-decoration: none; border-bottom: 1px solid var(--grenat); padding-bottom: 3px; }
+.hero-txt .note { margin-top: 26px; font-size: 12px; color: var(--encre-2); display: flex; gap: 8px; align-items: center; }
+.hero-txt .note i { width: 7px; height: 7px; border-radius: 50%; background: var(--olive); }
+
+.home-more { padding: 40px 48px 64px; display: grid; grid-template-columns: 250px 1fr; gap: 32px; border-top: 1px solid var(--filet); margin: 0 48px; padding-inline: 0; }
+.home-more h2 { font: 400 18px/1.25 var(--sans); margin: 0; letter-spacing: -.01em; }
+.home-more .sub { font: italic 500 15px var(--serif); color: var(--encre-2); margin-top: 6px; }
+.mini-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.mini { display: grid; gap: 10px; font-size: 12px; }
+.mini .ph { aspect-ratio: 4 / 3; }
+.mini .l { display: flex; align-items: center; gap: 8px; }
+.mini .l i { width: 10px; height: 10px; border-radius: 50%; }
+.mini .l span:last-child { margin-left: auto; font-variant-numeric: tabular-nums; }
+.home-cab { margin: 0 48px 56px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.home-cab > div { padding: 28px; min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; }
+.home-cab p { margin: 0; max-width: 40ch; font-size: 13px; line-height: 1.6; }
+.home-cab .big { font: 400 34px/1 var(--sans); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+
+/* volets */
+.js .play .volet { animation: volet 1.25s var(--ease) both; animation-delay: var(--d, 0s); }
+.js .play .volet[data-v="h"] { animation-name: volet-h; }
+.js .play .volet[data-v="l"] { animation-name: volet-l; }
+.js .play .volet[data-v="o"] { animation-name: volet-o; }
+.js .play .fade { animation: fade .9s var(--ease-out) both; animation-delay: var(--d, 0s); }
+@keyframes volet { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes volet-h { from { clip-path: inset(0 50% 0 50%); } to { clip-path: inset(0 0 0 0); } }
+@keyframes volet-l { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes volet-o { from { clip-path: circle(0% at 50% 50%); } to { clip-path: circle(71% at 50% 50%); } }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.js .play .hero-ph img { animation: dezoom 1.8s var(--ease-out) both; animation-delay: var(--d, 0s); }
+@keyframes dezoom { from { transform: scale(1.18); } to { transform: scale(1); } }
+
+/* ---------- 2. Liste des biens ---------- */
+.screen.tint { transition: background-color .9s var(--ease); }
+.list-head { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 48px 28px; }
+.list-head h2 { font: 400 22px/1.2 var(--sans); letter-spacing: -.015em; margin: 0; }
+.list-head p { margin: 0; font: italic 500 16px var(--serif); color: var(--encre-2); }
+.grid-biens { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 0 48px 56px; }
+.bien { position: relative; background: var(--blanc); padding: 14px 14px 18px; display: grid; gap: 12px; cursor: pointer; isolation: isolate; color: var(--encre); transition: color .5s var(--ease) .1s; }
+.bien .fill { position: absolute; inset: 0; z-index: -1; clip-path: circle(6px at 21px 24px); transition: clip-path .85s var(--ease); }
+.bien .top { display: flex; align-items: center; gap: 10px; height: 20px; font-size: 12px; }
+.bien .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset; }
+.bien .mname { font: italic 500 16px var(--serif); }
+.bien .ref { margin-left: auto; font-size: 11px; opacity: .7; font-variant-numeric: tabular-nums; }
+.bien .ph { aspect-ratio: 3 / 2; }
+.bien .ph img { transition: transform 1.1s var(--ease); }
+.bien .tx { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: baseline; }
+.bien h3 { margin: 0; font: 400 15px/1.3 var(--sans); letter-spacing: -.005em; }
+.bien .lieu { font-size: 12px; opacity: .72; grid-column: 1; }
+.bien .prix { grid-row: 1; grid-column: 2; font-size: 14px; font-variant-numeric: tabular-nums; }
+.bien .excl { grid-column: 2; font: italic 500 14px var(--serif); text-align: right; }
+.bien:is(:hover, .is-on) .fill { clip-path: circle(150% at 21px 24px); }
+.bien:is(:hover, .is-on) { color: var(--mfg); }
+.bien:is(:hover, .is-on) .ph img { transform: scale(1.045); }
+.bien:is(:hover, .is-on) .dot { box-shadow: 0 0 0 2px var(--mfg); }
+.tile-estim { padding: 14px; display: flex; flex-direction: column; justify-content: flex-end; }
+.tile-estim .lbl { padding: 20px 22px; display: grid; gap: 14px; box-shadow: 0 10px 24px -16px rgba(40, 20, 10, .5); }
+.tile-estim h3 { margin: 0; font: 400 20px/1.25 var(--sans); letter-spacing: -.01em; max-width: 14ch; }
+.tile-estim p { margin: 0; font-size: 12px; line-height: 1.6; opacity: .9; }
+
+/* ---------- 3. Fiche ---------- */
+.fiche { display: grid; grid-template-columns: 1fr 384px; gap: 0; padding: 0 0 0 48px; height: 670px; }
+.fiche-g { padding: 6px 40px 40px 0; display: grid; grid-template-rows: auto 1fr auto; gap: 16px; }
+.crumb { font-size: 12px; color: var(--encre-2); display: flex; gap: 8px; }
+.gal { position: relative; overflow: hidden; }
+.gal .ph { position: absolute; inset: 0; }
+.gal .ph.enter { animation: wipe 1s var(--ease) both; z-index: 2; }
+.gal .ph.enter img { animation: dezoom 1.6s var(--ease-out) both; }
+@keyframes wipe { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0 0 0 0); } }
+.thumbs { display: flex; gap: 14px; align-items: center; }
+.thumb { border: 0; padding: 0; background: none; cursor: pointer; display: grid; gap: 6px; justify-items: start; }
+.thumb .ph { width: 74px; height: 52px; opacity: .55; transition: opacity .4s; }
+.thumb i { display: block; width: 74px; height: 4px; transform: scaleX(.25); transform-origin: left; transition: transform .6s var(--ease); }
+.thumb[aria-current="true"] .ph { opacity: 1; }
+.thumb[aria-current="true"] i { transform: scaleX(1); }
+.gal-cap { margin-left: auto; font: italic 500 16px var(--serif); color: var(--encre-2); }
+.panel { position: relative; padding: 34px 36px; display: flex; flex-direction: column; gap: 26px; color: var(--pfg, var(--encre)); transition: color .8s var(--ease); isolation: isolate; }
+.panel::before { content: ""; position: absolute; inset: 0; z-index: -2; background-color: var(--pbg, var(--sable)); transition: background-color 1s var(--ease); }
+.panel::after { content: ""; position: absolute; inset: 0; z-index: -1; background-image: var(--t-slub), repeating-linear-gradient(0deg, rgba(0,0,0,.06) 0 1px, transparent 1px 3px), var(--t-grain); pointer-events: none; }
+.panel .ref { font-size: 12px; opacity: .75; display: flex; justify-content: space-between; }
+.panel h2 { margin: 0; font: 400 24px/1.2 var(--sans); letter-spacing: -.015em; text-wrap: balance; }
+.panel .lieu { font: italic 500 17px/1.3 var(--serif); margin-top: 8px; opacity: .9; }
+.panel dl { margin: 0; display: grid; grid-template-columns: 1fr auto; font-size: 13px; }
+.panel dt, .panel dd { margin: 0; padding: 9px 0; border-top: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 22%, transparent); }
+.panel dd { text-align: right; font-variant-numeric: tabular-nums; }
+.panel .prix { font: 400 30px/1 var(--sans); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.dpe { display: grid; gap: 8px; font-size: 12px; }
+.dpe .row { display: flex; align-items: center; gap: 10px; }
+.dpe .row > span:first-child { width: 34px; opacity: .75; }
+.scale { display: flex; gap: 3px; }
+.scale b { width: 20px; height: 20px; display: grid; place-items: center; font-size: 10px; font-weight: 500; border: 1px solid color-mix(in srgb, currentColor 30%, transparent); opacity: .55; }
+.scale b.on { opacity: 1; background: var(--pfg, var(--encre)); color: var(--pbg, var(--sable)); border-color: transparent; transform: scale(1.18); }
+.cta { margin-top: auto; display: flex; gap: 10px; align-items: center; }
+.cta .go { flex: 1; text-align: center; padding: 14px; color: #f6e9e6; text-decoration: none; font-size: 13px; letter-spacing: .01em; }
+.cta .tel { font-size: 12px; opacity: .8; font-variant-numeric: tabular-nums; }
+
+/* ---------- 4. Mobile ---------- */
+.row-mob { display: grid; grid-template-columns: 375px minmax(0, 1fr); gap: 56px; align-items: start; }
+.mob-col { display: grid; gap: 14px; }
+.mob .site-h { padding: 16px 20px; position: absolute; top: 0; left: 0; right: 0; color: var(--mfg, var(--encre)); transition: color .8s var(--ease); }
+.mob .site-h .menu { font-size: 12px; }
+.mob-vp { height: 744px; overflow-y: auto; scroll-snap-type: y mandatory; background-color: var(--mbg, var(--craie)); color: var(--mfg, var(--encre)); transition: background-color 1s var(--ease), color .8s var(--ease); scrollbar-width: none; }
+.mob-vp::-webkit-scrollbar { display: none; }
+.mob-grain { position: absolute; inset: 0; pointer-events: none; background-image: var(--t-grain-soft); opacity: .45; z-index: 1; }
+.slide { height: 744px; scroll-snap-align: start; padding: 72px 20px 96px; display: flex; flex-direction: column; gap: 16px; position: relative; z-index: 2; }
+.slide .ph { flex: 1; min-height: 0; }
+.slide .top { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.slide .top i { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 1.5px currentColor; }
+.slide .top em { font: italic 500 17px var(--serif); }
+.slide .top span { margin-left: auto; opacity: .7; }
+.slide h3 { margin: 0; font: 400 19px/1.25 var(--sans); letter-spacing: -.01em; }
+.slide .l2 { display: flex; justify-content: space-between; font-size: 13px; opacity: .85; font-variant-numeric: tabular-nums; }
+.slide-intro { justify-content: flex-end; gap: 22px; }
+.slide-intro .swatch-stack { flex: 1; position: relative; }
+.slide-intro .swatch-stack > div { position: absolute; }
+.slide-intro h1 { margin: 0; font: 400 24px/1.2 var(--sans); letter-spacing: -.015em; }
+.slide-intro p { margin: 0; font: italic 500 16px var(--serif); opacity: .85; }
+.mob-bar { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 4; display: flex; gap: 8px; }
+.mob-bar a { flex: 1; text-align: center; padding: 13px; font-size: 13px; text-decoration: none; color: #f6e9e6; }
+.mob-bar a.alt { background: var(--blanc); color: var(--encre); flex: 0 0 auto; padding-inline: 18px; }
+.mob-dots { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: grid; gap: 6px; z-index: 4; }
+.mob-dots i { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .3; transition: opacity .4s, transform .4s; color: var(--mfg, var(--encre)); }
+.mob-dots i.on { opacity: 1; transform: scale(1.5); }
+
+.nuancier { display: grid; gap: 28px; padding-top: 8px; }
+.nuancier h3 { margin: 0; font: 400 18px/1.3 var(--sans); letter-spacing: -.01em; }
+.nuancier > p { margin: 0; color: var(--encre-2); max-width: 54ch; font-size: 14px; line-height: 1.6; }
+.nu-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.nu { display: grid; gap: 8px; }
+.nu .chipbig { aspect-ratio: 3 / 4; position: relative; overflow: hidden; }
+.nu .chipbig .ph { position: absolute; inset: 0; clip-path: circle(0% at 50% 100%); transition: clip-path .9s var(--ease); }
+.nu:hover .chipbig .ph, .nu:focus-within .chipbig .ph { clip-path: circle(120% at 50% 100%); }
+.nu em { font: italic 500 16px/1.2 var(--serif); }
+.nu small { font-size: 11px; color: var(--encre-2); font-variant-numeric: tabular-nums; line-height: 1.4; }
+
+/* ---------- 5. Pied de page velours ---------- */
+.foot { position: relative; height: 470px; color: #f3e4e1; padding: 56px 48px 36px; display: grid; grid-template-columns: 1.15fr 1fr 1fr; grid-template-rows: 1fr auto; gap: 24px 48px; cursor: crosshair; }
+.foot h2 { margin: 0; font: 400 26px/1.2 var(--sans); letter-spacing: -.015em; max-width: 16ch; }
+.foot .lab { font: italic 500 16px var(--serif); opacity: .75; margin-bottom: 8px; }
+.foot p { margin: 0; font-size: 13px; line-height: 1.65; }
+.foot .num { font-size: 22px; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+.foot .avis { font: italic 500 19px/1.35 var(--serif); max-width: 30ch; }
+.foot .avis small { display: block; font: 400 11px var(--sans); opacity: .65; margin-top: 8px; }
+.foot .bas { grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 11px; opacity: .6; border-top: 1px solid rgba(243, 228, 225, .2); padding-top: 16px; }
+.foot .stars { display: flex; gap: 4px; align-items: center; margin-top: 4px; }
+.foot .stars i { width: 9px; height: 9px; border-radius: 50%; background: #f3e4e1; }
+.foot .stars i.part { background: linear-gradient(90deg, #f3e4e1 90%, rgba(243,228,225,.25) 90%); }
+.foot .hint { position: absolute; right: 48px; top: 22px; font: italic 500 14px var(--serif); opacity: .55; }
+
+@media (max-width: 960px) {
+  .intro { grid-template-columns: minmax(0, 1fr); }
+  .row-mob { grid-template-columns: minmax(0, 1fr); }
+  .mob-col .stage { max-width: 375px; margin-inline: auto; }
+  .nu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 520px) {
+  .planche { gap: 56px; padding-block: 32px 64px; }
+  .spec { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .sw { width: 64px; }
+  .legende .ctrl { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+<script>
+/* Textures : générées une fois avant le premier rendu (SVG feTurbulence + canvas pour le terrazzo). */
+(function () {
+  var root = document.documentElement;
+  root.classList.add('js');
+  function svg(w, h, filt) {
+    var s = "<svg xmlns='http://www.w3.org/2000/svg' width='" + w + "' height='" + h + "'><filter id='f' x='0' y='0' width='100%' height='100%'>" + filt + "</filter><rect width='100%' height='100%' filter='url(#f)'/></svg>";
+    return 'url("data:image/svg+xml,' + encodeURIComponent(s) + '")';
+  }
+  function turb(freq, oct, seed) { return "<feTurbulence type='fractalNoise' baseFrequency='" + freq + "' numOctaves='" + oct + "' seed='" + seed + "' stitchTiles='stitch'/>"; }
+  function alpha(rgb, a, b) { return "<feColorMatrix values='0 0 0 0 " + rgb + " 0 0 0 0 " + rgb + " 0 0 0 0 " + rgb + " " + a + " 0 0 0 " + b + "'/>"; }
+  var v = {
+    '--t-grain': svg(180, 180, turb(.85, 2, 2) + alpha(0, .7, -.24)),
+    '--t-grain-soft': svg(180, 180, turb(.9, 2, 5) + alpha(0, .5, -.18)),
+    '--t-mottle-d': svg(700, 700, turb(.006, 4, 3) + alpha(0, .9, -.4)),
+    '--t-mottle-l': svg(700, 700, turb(.009, 4, 11) + alpha(1, .8, -.38)),
+    '--t-fibre': svg(400, 400, turb('.9 .03', 2, 7) + alpha(0, .55, -.22)),
+    '--t-crush': svg(800, 800, turb(.0035, 3, 21) + alpha(0, .9, -.36)),
+    '--t-crush-l': svg(800, 800, turb(.005, 3, 5) + alpha(1, .5, -.22)),
+    '--t-slub': svg(500, 500, turb('.008 .7', 2, 4) + alpha(.15, 1.2, -.5)),
+    '--t-fleck': svg(400, 400, turb('.06 .5', 1, 9) + alpha(.3, 1.2, -.7)),
+    '--t-relief': svg(600, 600, turb(.012, 5, 8) + "<feDiffuseLighting lighting-color='#fff' surfaceScale='2.4'><feDistantLight azimuth='225' elevation='52'/></feDiffuseLighting>")
+  };
+  for (var k in v) root.style.setProperty(k, v[k]);
+  try {
+    var c = document.createElement('canvas'); c.width = c.height = 520;
+    var x = c.getContext('2d'), seed = 7;
+    function r() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    x.fillStyle = '#ece5d8'; x.fillRect(0, 0, 520, 520);
+    var cols = ['#6e1a26', '#9e5434', '#737a55', '#d9c9ab', '#b9ab92', '#f7f3ea', '#4a0f18', '#c27a56'];
+    for (var i = 0; i < 300; i++) {
+      var cx = r() * 520, cy = r() * 520, s = r() < .08 ? 6 + r() * 7 : 1.2 + r() * 3.6, n = 5 + (r() * 4 | 0);
+      x.fillStyle = cols[(r() * cols.length) | 0]; x.globalAlpha = .55 + r() * .45;
+      x.beginPath();
+      for (var j = 0; j < n; j++) { var a = j / n * Math.PI * 2 + r() * .5, rr = s * (.55 + r() * .6); x[j ? 'lineTo' : 'moveTo'](cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); }
+      x.closePath(); x.fill();
+    }
+    x.globalAlpha = 1;
+    root.style.setProperty('--t-terrazzo', 'url(' + c.toDataURL('image/png') + ')');
+  } catch (e) {}
+})();
+</script>
+
+<main class="planche">
+
+  <!-- ======= En-tête de planche ======= -->
+  <header class="intro">
+    <div>
+      <div class="kicker">Cabinet Rimbault, vitrine, 2e passe, novembre 2026</div>
+      <h1><i class="chip m-velours"></i>Matières</h1>
+      <p>Le site est composé comme une planche d'architecte d'intérieur : quelques aplats de matière posés sur beaucoup de blanc. Le grenat de la devanture devient un velours, et chaque bien porte la matière qu'on trouve dans ses propres photos.</p>
+    </div>
+    <div class="specs">
+      <div class="spec"><span>Palette</span>
+        <div class="swatches">
+          <div class="sw"><i class="m-velours"></i><b>Velours grenat</b><small>#6E1A26</small></div>
+          <div class="sw"><i class="m-terre"></i><b>Terre cuite</b><small>#9E5434</small></div>
+          <div class="sw"><i class="m-tadelakt"></i><b>Tadelakt sable</b><small>#D9C9AB</small></div>
+          <div class="sw"><i class="m-lin m-lin-olive"></i><b>Lin olive</b><small>#737A55</small></div>
+          <div class="sw"><i class="m-papier" style="box-shadow: inset 0 0 0 1px var(--filet)"></i><b>Craie</b><small>#F2F0EA</small></div>
+          <div class="sw"><i style="background: var(--encre)"></i><b>Encre</b><small>#2A2224</small></div>
+        </div>
+      </div>
+      <div class="spec"><span>Typographies</span>
+        <div class="fonts"><strong>Geist, 400 et 500, de 11 à 26 px</strong><span>Grotesque précise pour tout le texte courant, les prix et la navigation.</span><em>Cormorant Garamond italique</em><span>Uniquement pour les légendes de matière, comme les étiquettes d'un nuancier.</span></div>
+      </div>
+      <div class="spec"><span>Animations</span>
+        <ul class="anims">
+          <li>Volets en clip-path : les blocs de matière s'ouvrent l'un après l'autre à l'arrivée.</li>
+          <li>Parallaxe douce des blocs au défilement (dans le cadre et dans la page).</li>
+          <li>Survol d'un bien : sa pastille s'étend en cercle et devient le fond de la carte.</li>
+          <li>Le fond de l'écran prend la teinte du bien survolé.</li>
+          <li>Fiche : volet de galerie, le panneau d'infos glisse vers la matière de chaque photo.</li>
+          <li>Mobile : défilement aimanté, le fond passe d'une matière à l'autre.</li>
+          <li>Velours : le reflet suit le curseur, comme une main sur le tissu.</li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======= 1. Accueil ======= -->
+  <section class="piece" aria-label="Ouverture de l'accueil">
+    <div class="legende"><p><b>Ouverture de l'accueil.</b> Les blocs s'ouvrent en volets, puis glissent à des vitesses différentes quand on fait défiler le cadre.</p><div class="ctrl"><button class="btn-mini" id="replay-home" type="button">Rejouer l'ouverture</button></div></div>
+    <div class="stage" data-w="1160" data-h="760">
+      <div class="screen desk" id="home">
+        <div class="chrome"><span>cabinet-rimbault.fr</span></div>
+        <div class="vp" style="height: 726px" id="home-vp">
+          <div class="site-h">
+            <a class="mark" href="#home"><i class="m-velours"></i>Cabinet Rimbault</a>
+            <nav><a href="#biens" aria-current="page">Biens en vente</a><a href="#biens">Faire estimer</a><a href="#foot">Le cabinet</a><a href="#foot">Contact</a></nav>
+            <span class="tel">01 73 64 56 10</span>
+          </div>
+          <div class="board">
+            <div class="blk velours-hero m-velours volet" data-v="v" data-depth=".04" style="--d: .05s">
+              <span class="since">2009</span>
+              <div class="small"><b>Agent immobilier indépendant</b>117 boulevard Voltaire<br>92600 Asnières-sur-Seine</div>
+            </div>
+            <span class="cap fade" style="left: 0; top: 512px; --d: 1s">Velours grenat, la couleur de notre devanture</span>
+
+            <div class="blk hero-ph ph volet" data-v="h" data-depth=".08" style="--d: .3s"><img src="img/bien-10129-3.jpg" alt="Jardin arboré du 5 pièces réf. 10129 à Asnières"></div>
+            <span class="cap fade" data-depth=".08" style="left: 362px; top: 388px; --d: 1.1s">Sous-bois, jardin du 5 pièces aux Impressionnistes</span>
+
+            <div class="blk hero-lin m-lin m-lin-olive volet" data-v="l" data-depth=".12" style="--d: .55s"></div>
+            <div class="blk hero-terre m-terre volet" data-v="v" data-depth=".16" style="--d: .7s"></div>
+            <span class="cap fade" data-depth=".16" style="left: 648px; top: 538px; --d: 1.3s">Terre cuite</span>
+
+            <div class="blk hero-tadelakt m-tadelakt volet" data-v="v" data-depth=".02" style="--d: .2s"></div>
+            <div class="blk hero-terrazzo m-terrazzo volet" data-v="o" data-depth=".22" style="--d: .85s"></div>
+
+            <div class="blk hero-txt fade" style="--d: 1s">
+              <h1>Une dizaine de biens à Asnières et Levallois, choisis un par un.</h1>
+              <a href="#biens">Voir les 5 biens en vente</a>
+              <div class="note"><i></i>Avis Google 4,9 sur 5, 32 avis</div>
+            </div>
+          </div>
+
+          <div class="home-more">
+            <div><h2>En ce moment</h2><div class="sub">Chaque bien a sa matière</div></div>
+            <div class="mini-row">
+              <div class="mini"><div class="ph"><img src="img/bien-10129-1.jpg" alt=""></div><div class="l"><i class="m-lin m-lin-olive"></i><span>5 pièces, 92,2&nbsp;m²</span><span>644&nbsp;000&nbsp;€</span></div></div>
+              <div class="mini"><div class="ph"><img src="img/bien-09345-1.jpg" alt=""></div><div class="l"><i class="m-pierre"></i><span>2 pièces, Levallois</span><span>280&nbsp;000&nbsp;€</span></div></div>
+              <div class="mini"><div class="ph"><img src="img/bien-09362-1.jpg" alt=""></div><div class="l"><i class="m-velours"></i><span>Studio, 33,16&nbsp;m²</span><span>198&nbsp;000&nbsp;€</span></div></div>
+            </div>
+          </div>
+          <div class="home-cab">
+            <div class="m-papier" style="box-shadow: inset 0 0 0 1px var(--filet)"><span class="big">4,9 / 5</span><p>32 avis Google. Nous travaillons seuls, depuis la même vitrine du boulevard Voltaire, et nous suivons chaque vente du premier appel à la signature.</p></div>
+            <div class="m-terre" style="color:#f7ebe3"><span class="big">Estimer</span><p>Vous vendez à Asnières, Levallois ou Bois-Colombes ? Nous passons voir votre bien et vous donnons un prix argumenté.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 2. Biens ======= -->
+  <section class="piece" id="biens" aria-label="Présentation des biens">
+    <div class="legende"><p><b>Les biens.</b> Survolez une carte : sa pastille s'ouvre en cercle et devient le fond, et l'écran se teinte de la même matière. Sans souris, la démonstration tourne seule.</p></div>
+    <div class="stage" data-w="1160" data-h="880">
+      <div class="screen desk tint" id="list">
+        <div class="chrome"><span>cabinet-rimbault.fr/biens</span></div>
+        <div class="vp" style="height: 846px">
+          <div class="site-h">
+            <a class="mark" href="#home"><i class="m-velours"></i>Cabinet Rimbault</a>
+            <nav><a href="#biens" aria-current="page">Biens en vente</a><a href="#biens">Faire estimer</a><a href="#foot">Le cabinet</a><a href="#foot">Contact</a></nav>
+            <span class="tel">01 73 64 56 10</span>
+          </div>
+          <div class="list-head"><h2>Biens en vente</h2><p>Cinq biens, Asnières-sur-Seine et Levallois-Perret</p></div>
+          <div class="grid-biens" id="grid">
+            <article class="bien" style="--m: #6c7350; --mfg: #f4f1e6">
+              <div class="fill m-lin m-lin-olive" style="background-color: #6c7350"></div>
+              <div class="top"><span class="dot m-lin m-lin-olive"></span><span class="mname">Lin olive</span><span class="ref">Réf. 10129</span></div>
+              <div class="ph"><img src="img/bien-10129-1.jpg" alt="Terrasse et jardin, 5 pièces réf. 10129"></div>
+              <div class="tx"><h3>5 pièces, 92,2&nbsp;m², deux terrasses et jardins</h3><span class="prix">644&nbsp;000&nbsp;€</span><span class="lieu">Asnières, quartier des Impressionnistes</span></div>
+            </article>
+            <article class="bien" style="--m: #9e5434; --mfg: #f8ece4">
+              <div class="fill m-terre"></div>
+              <div class="top"><span class="dot m-terre"></span><span class="mname">Terre cuite</span><span class="ref">Réf. 10.130</span></div>
+              <div class="ph"><img src="img/bien-10130-2.jpg" alt="Séjour du 3 pièces réf. 10.130"></div>
+              <div class="tx"><h3>3 pièces, 59,5&nbsp;m², terrasse de 37,8&nbsp;m²</h3><span class="prix">375&nbsp;000&nbsp;€</span><span class="lieu">Asnières-sur-Seine</span></div>
+            </article>
+            <article class="bien" style="--m: #cfc6b2; --mfg: #2a2224">
+              <div class="fill m-lin"></div>
+              <div class="top"><span class="dot m-lin"></span><span class="mname">Lin brut</span><span class="ref">Réf. 10.131</span></div>
+              <div class="ph"><img src="img/bien-10131-2.jpg" alt="Séjour du 2 pièces réf. 10.131"></div>
+              <div class="tx"><h3>2 pièces, 46,6&nbsp;m², terrasse de 23,6&nbsp;m²</h3><span class="prix">300&nbsp;000&nbsp;€</span><span class="lieu">Asnières-sur-Seine</span></div>
+            </article>
+            <article class="bien" style="--m: #c4b69c; --mfg: #2a2224">
+              <div class="fill m-pierre"></div>
+              <div class="top"><span class="dot m-pierre"></span><span class="mname">Pierre de taille</span><span class="ref">Réf. 09.345</span></div>
+              <div class="ph"><img src="img/bien-09345-1.jpg" alt="Façade haussmannienne, rue Collange" style="object-position: 50% 70%"></div>
+              <div class="tx"><h3>2 pièces au dernier étage, 35,65&nbsp;m²</h3><span class="prix">280&nbsp;000&nbsp;€</span><span class="lieu">Levallois-Perret, rue Collange</span><span class="excl">exclusivité</span></div>
+            </article>
+            <article class="bien" style="--m: #6e1a26; --mfg: #f6e9e6">
+              <div class="fill m-velours"></div>
+              <div class="top"><span class="dot m-velours"></span><span class="mname">Velours grenat</span><span class="ref">Réf. 09.362</span></div>
+              <div class="ph"><img src="img/bien-09362-1.jpg" alt="Studio réf. 09.362 avec fauteuil rouge"></div>
+              <div class="tx"><h3>Studio, 33,16&nbsp;m², balcon</h3><span class="prix">198&nbsp;000&nbsp;€</span><span class="lieu">Asnières, Gabriel-Péri</span><span class="excl">exclusivité</span></div>
+            </article>
+            <div class="tile-estim m-terrazzo">
+              <div class="lbl m-papier">
+                <h3>Vous vendez ? Nous venons estimer votre bien.</h3>
+                <p>Un rendez-vous chez vous, un prix argumenté par écrit.<br><span style="font-variant-numeric: tabular-nums">01 73 64 56 10</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 3. Fiche ======= -->
+  <section class="piece" aria-label="Extrait de fiche bien">
+    <div class="legende"><p><b>La fiche, réf. 10129.</b> La galerie avance en volet ; le panneau d'infos glisse vers la matière tirée de chaque photo (sauge, chêne, sous-bois, tilleul).</p><div class="ctrl"><button class="btn-mini" id="gal-pause" type="button">Mettre en pause</button></div></div>
+    <div class="stage" data-w="1160" data-h="760">
+      <div class="screen desk">
+        <div class="chrome"><span>cabinet-rimbault.fr/biens/10129</span></div>
+        <div class="site-h" style="padding-bottom: 18px">
+          <a class="mark" href="#home"><i class="m-velours"></i>Cabinet Rimbault</a>
+          <nav><a href="#biens" aria-current="page">Biens en vente</a><a href="#biens">Faire estimer</a><a href="#foot">Le cabinet</a><a href="#foot">Contact</a></nav>
+          <span class="tel">01 73 64 56 10</span>
+        </div>
+        <div class="fiche" id="fiche">
+          <div class="fiche-g">
+            <div class="crumb"><span>Biens en vente</span><span>/</span><span style="color: var(--encre)">5 pièces, Asnières</span></div>
+            <div class="gal" id="gal"></div>
+            <div class="thumbs" id="thumbs"><span class="gal-cap" id="gal-cap"></span></div>
+          </div>
+          <aside class="panel" id="panel">
+            <div><div class="ref"><span>Réf. 10129</span><span>À vendre</span></div></div>
+            <div><h2>5 pièces avec deux terrasses et jardins</h2><div class="lieu">Asnières-sur-Seine, quartier des Impressionnistes</div></div>
+            <dl><dt>Surface</dt><dd>92,2&nbsp;m²</dd><dt>Pièces</dt><dd>5, dont 4 chambres</dd><dt>Extérieurs</dt><dd>2 terrasses, jardins</dd><dt>Prix</dt><dd><span class="prix">644&nbsp;000&nbsp;€</span></dd></dl>
+            <div class="dpe">
+              <div class="row"><span>DPE</span><span class="scale"><b>A</b><b>B</b><b>C</b><b class="on">D</b><b>E</b><b>F</b><b>G</b></span><span>189&nbsp;kWh/m²/an</span></div>
+              <div class="row"><span>GES</span><span class="scale"><b>A</b><b class="on">B</b><b>C</b><b>D</b><b>E</b><b>F</b><b>G</b></span></div>
+            </div>
+            <div class="cta"><a class="go m-velours" href="#foot">Demander une visite</a><span class="tel">ou 01 73 64 56 10</span></div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 4. Mobile + nuancier ======= -->
+  <section class="piece" aria-label="Écran mobile et nuancier">
+    <div class="legende"><p><b>Mobile.</b> Un bien par écran, en défilement aimanté : le fond fond d'une matière à l'autre. À droite, le nuancier : survolez une matière pour voir la photo d'où elle vient.</p></div>
+    <div class="row-mob">
+      <div class="mob-col">
+        <div class="stage" data-w="375" data-h="760">
+          <div class="screen mob" id="mob">
+            <div class="mob-grain"></div>
+            <div class="site-h"><a class="mark" href="#home"><i class="m-velours"></i>Cabinet Rimbault</a><span class="menu">Menu</span></div>
+            <div class="mob-vp" id="mob-vp">
+              <div class="slide slide-intro" data-bg="#f2f0ea" data-fg="#2a2224">
+                <div class="swatch-stack">
+                  <div class="m-velours" style="left: 0; top: 26px; width: 150px; height: 230px"></div>
+                  <div class="ph" style="left: 166px; top: 70px; width: 170px; height: 130px"><img src="img/bien-10129-3.jpg" alt=""></div>
+                  <div class="m-terre" style="left: 166px; top: 216px; width: 76px; height: 76px"></div>
+                  <div class="m-terrazzo" style="left: 254px; top: 232px; width: 82px; height: 82px; border-radius: 50%"></div>
+                  <div class="m-lin m-lin-olive" style="left: 0; top: 272px; width: 150px; height: 40px"></div>
+                </div>
+                <h1>Une dizaine de biens à Asnières et Levallois, choisis un par un.</h1>
+                <p>Faites défiler, chaque bien a sa matière</p>
+              </div>
+              <div class="slide" data-bg="#6c7350" data-fg="#f4f1e6">
+                <div class="top"><i class="m-lin m-lin-olive"></i><em>Lin olive</em><span>Réf. 10129</span></div>
+                <div class="ph"><img src="img/bien-10129-4.jpg" alt=""></div>
+                <h3>5 pièces, 92,2&nbsp;m², deux terrasses et jardins</h3><div class="l2"><span>Asnières, Impressionnistes</span><span>644&nbsp;000&nbsp;€</span></div>
+              </div>
+              <div class="slide" data-bg="#9e5434" data-fg="#f8ece4">
+                <div class="top"><i class="m-terre"></i><em>Terre cuite</em><span>Réf. 10.130</span></div>
+                <div class="ph"><img src="img/bien-10130-2.jpg" alt=""></div>
+                <h3>3 pièces, 59,5&nbsp;m², terrasse de 37,8&nbsp;m²</h3><div class="l2"><span>Asnières-sur-Seine</span><span>375&nbsp;000&nbsp;€</span></div>
+              </div>
+              <div class="slide" data-bg="#c4b69c" data-fg="#2a2224">
+                <div class="top"><i class="m-pierre"></i><em>Pierre de taille</em><span>Réf. 09.345</span></div>
+                <div class="ph"><img src="img/bien-09345-1.jpg" alt="" style="object-position: 50% 60%"></div>
+                <h3>2 pièces au dernier étage, exclusivité</h3><div class="l2"><span>Levallois-Perret</span><span>280&nbsp;000&nbsp;€</span></div>
+              </div>
+              <div class="slide" data-bg="#5e1520" data-fg="#f6e9e6">
+                <div class="top"><i class="m-velours"></i><em>Velours grenat</em><span>Réf. 09.362</span></div>
+                <div class="ph"><img src="img/bien-09362-1.jpg" alt=""></div>
+                <h3>Studio, 33,16&nbsp;m², balcon, exclusivité</h3><div class="l2"><span>Asnières, Gabriel-Péri</span><span>198&nbsp;000&nbsp;€</span></div>
+              </div>
+            </div>
+            <div class="mob-dots" id="mob-dots"></div>
+            <div class="mob-bar"><a class="m-velours" href="#foot">Appeler, 01 73 64 56 10</a><a class="alt m-papier" href="#foot">Écrire</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="nuancier">
+        <h3>Le nuancier des biens</h3>
+        <p>Pour chaque bien, nous relevons une teinte dans ses photos et nous l'associons à une matière. Elle sert de pastille dans la liste, de fond au survol, et de couleur à la fiche. Les photos d'iPhone y gagnent un cadre cohérent.</p>
+        <div class="nu-grid">
+          <div class="nu" tabindex="0"><div class="chipbig m-lin m-lin-olive"><div class="ph"><img src="img/bien-10129-1.jpg" alt=""></div></div><em>Lin olive</em><small>#6C7350<br>Réf. 10129, jardin</small></div>
+          <div class="nu" tabindex="0"><div class="chipbig m-terre"><div class="ph"><img src="img/bien-10130-2.jpg" alt=""></div></div><em>Terre cuite</em><small>#9E5434<br>Réf. 10.130, parquet</small></div>
+          <div class="nu" tabindex="0"><div class="chipbig m-lin"><div class="ph"><img src="img/bien-10131-2.jpg" alt=""></div></div><em>Lin brut</em><small>#CFC6B2<br>Réf. 10.131, murs</small></div>
+          <div class="nu" tabindex="0"><div class="chipbig m-pierre"><div class="ph"><img src="img/bien-09345-1.jpg" alt=""></div></div><em>Pierre de taille</em><small>#C4B69C<br>Réf. 09.345, façade</small></div>
+          <div class="nu" tabindex="0"><div class="chipbig m-velours"><div class="ph"><img src="img/bien-09362-1.jpg" alt=""></div></div><em>Velours grenat</em><small>#6E1A26<br>Réf. 09.362, fauteuil</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= 5. Pied de page ======= -->
+  <section class="piece" id="foot" aria-label="Pied de page velours">
+    <div class="legende"><p><b>Détail signature, le pied de page.</b> Un grand aplat de velours grenat, la devanture transposée. Passez le curseur : le reflet suit la main, comme quand on lisse le tissu.</p></div>
+    <div class="stage" data-w="1160" data-h="504">
+      <div class="screen desk">
+        <div class="chrome"><span>cabinet-rimbault.fr</span></div>
+        <footer class="foot m-velours" id="velvet">
+          <span class="hint">Passez la main</span>
+          <div>
+            <h2>Passez nous voir, 117 boulevard Voltaire.</h2>
+          </div>
+          <div style="display: grid; gap: 22px; align-content: start">
+            <div><div class="lab">Adresse</div><p>117 boulevard Voltaire<br>92600 Asnières-sur-Seine</p></div>
+            <div><div class="lab">Téléphone</div><span class="num">01 73 64 56 10</span></div>
+          </div>
+          <div>
+            <div class="lab">Avis Google, 4,9 sur 5, 32 avis</div>
+            <div class="stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="part"></i></div>
+            <p class="avis" style="margin-top: 16px">« Une estimation juste, un suivi régulier, et la vente signée sans surprise. »<small>[avis exemple]</small></p>
+          </div>
+          <div class="bas"><span>Cabinet Rimbault, agent immobilier indépendant depuis 2009</span><span>Mentions légales · Honoraires</span></div>
+        </footer>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- mise à l'échelle des cadres --- */
+  var stages = [].slice.call(document.querySelectorAll('.stage'));
+  function fit() {
+    stages.forEach(function (st) {
+      var w = +st.dataset.w, h = +st.dataset.h, s = Math.min(1, st.clientWidth / w);
+      st.querySelector('.screen').style.setProperty('--s', s);
+      st.style.height = (h * s) + 'px';
+    });
+  }
+  fit();
+  if ('ResizeObserver' in window) { var ro = new ResizeObserver(fit); stages.forEach(function (s) { ro.observe(s); }); }
+  else addEventListener('resize', fit);
+
+  /* --- 1. volets à l'ouverture --- */
+  var home = document.getElementById('home');
+  function play() { home.classList.remove('play'); void home.offsetWidth; home.classList.add('play'); }
+  if (!reduce) play();
+  document.getElementById('replay-home').addEventListener('click', function () { document.getElementById('home-vp').scrollTop = 0; play(); });
+
+  /* --- parallaxe --- */
+  var vp = document.getElementById('home-vp');
+  var layers = [].slice.call(home.querySelectorAll('[data-depth]'));
+  var ticking = false;
+  function para() {
+    ticking = false;
+    var r = home.getBoundingClientRect();
+    var page = (r.top + r.height / 2 - innerHeight / 2);
+    layers.forEach(function (el) {
+      var d = +el.dataset.depth;
+      el.style.translate = '0 ' + (-(vp.scrollTop * d) + Math.max(-300, Math.min(300, page)) * d * .25).toFixed(1) + 'px';
+    });
+  }
+  function req() { if (!ticking) { ticking = true; requestAnimationFrame(para); } }
+  if (!reduce) { vp.addEventListener('scroll', req, { passive: true }); addEventListener('scroll', req, { passive: true }); para(); }
+
+  /* --- 2. liste : survol + teinte de l'écran + démonstration --- */
+  var list = document.getElementById('list'), grid = document.getElementById('grid');
+  var cards = [].slice.call(grid.querySelectorAll('.bien'));
+  function tint(c) { list.style.backgroundColor = c ? 'color-mix(in oklab, ' + c + ' 13%, #f2f0ea)' : ''; }
+  var demoI = 0, demoT = null, userIn = false;
+  cards.forEach(function (c) {
+    c.addEventListener('pointerenter', function () { cards.forEach(function (o) { o.classList.remove('is-on'); }); tint(c.style.getPropertyValue('--m')); });
+    c.addEventListener('pointerleave', function () { tint(null); });
+  });
+  grid.addEventListener('pointerenter', function () { userIn = true; clearInterval(demoT); cards.forEach(function (o) { o.classList.remove('is-on'); }); });
+  grid.addEventListener('pointerleave', function () { userIn = false; startDemo(); });
+  function stepDemo() {
+    cards.forEach(function (o) { o.classList.remove('is-on'); });
+    var c = cards[demoI % cards.length]; c.classList.add('is-on'); tint(c.style.getPropertyValue('--m')); demoI++;
+  }
+  function startDemo() { if (reduce) return; clearInterval(demoT); stepDemo(); demoT = setInterval(function () { if (!userIn) stepDemo(); }, 2600); }
+  startDemo();
+
+  /* --- 3. fiche : galerie en volet + panneau matière --- */
+  var shots = [
+    { src: 'img/bien-10129-3.jpg', cap: 'Sous-bois, le jardin arboré', bg: '#5f6b58', fg: '#eef0e6' },
+    { src: 'img/bien-10129-2.jpg', cap: 'Chêne clair, le séjour', bg: '#a29888', fg: '#2a2224' },
+    { src: 'img/bien-10129-1.jpg', cap: 'Sauge, la terrasse', bg: '#8f9680', fg: '#1f2119' },
+    { src: 'img/bien-10129-4.jpg', cap: 'Tilleul, le second jardin', bg: '#b4b994', fg: '#2a2224' }
+  ];
+  var gal = document.getElementById('gal'), thumbs = document.getElementById('thumbs'), cap = document.getElementById('gal-cap'), panel = document.getElementById('panel');
+  var cur = -1, galT = null, paused = reduce;
+  shots.forEach(function (s, i) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'thumb'; b.setAttribute('aria-label', s.cap);
+    b.innerHTML = '<span class="ph"><img src="' + s.src + '" alt=""></span><i style="background:' + s.bg + '"></i>';
+    b.addEventListener('click', function () { show(i); restart(); });
+    thumbs.insertBefore(b, cap);
+  });
+  var tb = [].slice.call(thumbs.querySelectorAll('.thumb'));
+  function show(i) {
+    if (i === cur) return; cur = i; var s = shots[i];
+    var d = document.createElement('div'); d.className = 'ph' + (gal.children.length ? ' enter' : '');
+    d.innerHTML = '<img src="' + s.src + '" alt="Réf. 10129, ' + s.cap + '">';
+    gal.appendChild(d);
+    setTimeout(function () { while (gal.children.length > 1) gal.removeChild(gal.firstChild); d.classList.remove('enter'); }, 1700);
+    tb.forEach(function (t, k) { t.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+    cap.textContent = s.cap;
+    panel.style.setProperty('--pbg', s.bg); panel.style.setProperty('--pfg', s.fg);
+  }
+  function restart() { clearInterval(galT); if (!paused) galT = setInterval(function () { show((cur + 1) % shots.length); }, 3400); }
+  show(0); restart();
+  var pb = document.getElementById('gal-pause');
+  pb.textContent = paused ? 'Lancer la galerie' : 'Mettre en pause';
+  pb.addEventListener('click', function () { paused = !paused; pb.textContent = paused ? 'Lancer la galerie' : 'Mettre en pause'; restart(); });
+
+  /* --- 4. mobile : fond qui change d'un bien à l'autre --- */
+  var mob = document.getElementById('mob'), mvp = document.getElementById('mob-vp');
+  var slides = [].slice.call(mvp.querySelectorAll('.slide')), dots = document.getElementById('mob-dots');
+  slides.forEach(function () { dots.appendChild(document.createElement('i')); });
+  var di = [].slice.call(dots.children), mi = -1;
+  function setSlide(i) {
+    if (i === mi) return; mi = i; var s = slides[i];
+    mob.style.setProperty('--mbg', s.dataset.bg); mob.style.setProperty('--mfg', s.dataset.fg);
+    di.forEach(function (d, k) { d.classList.toggle('on', k === i); });
+  }
+  mvp.addEventListener('scroll', function () { setSlide(Math.round(mvp.scrollTop / mvp.clientHeight)); }, { passive: true });
+  setSlide(0);
+  var touched = false, mobT;
+  ['pointerdown', 'wheel', 'touchstart'].forEach(function (e) { mvp.addEventListener(e, function () { touched = true; }, { passive: true }); });
+  if (!reduce) mobT = setInterval(function () {
+    if (touched) return clearInterval(mobT);
+    var r = mob.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
+    mvp.scrollTo({ top: ((mi + 1) % slides.length) * mvp.clientHeight, behavior: 'smooth' });
+  }, 3000);
+
+  /* --- 5. velours : le reflet suit le curseur --- */
+  [].slice.call(document.querySelectorAll('.m-velours')).forEach(function (el) {
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect();
+      el.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100).toFixed(1) + '%');
+      el.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100).toFixed(1) + '%');
+    });
+    el.addEventListener('pointerleave', function () { el.style.removeProperty('--mx'); el.style.removeProperty('--my'); });
+  });
+  /* respiration lente du reflet sur le pied de page tant qu'on ne le touche pas */
+  var velvet = document.getElementById('velvet'), vt = 0, vIn = false;
+  velvet.addEventListener('pointerenter', function () { vIn = true; });
+  velvet.addEventListener('pointerleave', function () { vIn = false; });
+  if (!reduce) setInterval(function () {
+    if (vIn) return; vt += 1;
+    velvet.style.setProperty('--mx', (50 + 38 * Math.cos(vt * .7)).toFixed(1) + '%');
+    velvet.style.setProperty('--my', (45 + 30 * Math.sin(vt * 1.1)).toFixed(1) + '%');
+  }, 1200);
+})();
+</script>

@@ -1,0 +1,718 @@
+<title>Rimbault Index et aperçu</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@300;400;500&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap">
+<style>
+/* Salle d'exposition : la liste des biens se lit comme la liste des œuvres d'une salle ; le bien choisi est accroché seul sur un mur de pierre pâle, cartel à côté. Photos en vraie couleur, grenat autour. Alignement à gauche, vide comme matière. */
+:root{
+  color-scheme: light;
+  --blanc:#F8F6F2;      /* sol de la salle : fond des pages */
+  --pierre:#ECE8E1;     /* mur d'accrochage */
+  --grenat:#6E1A26;     /* devanture, seule couleur de marque */
+  --encre:#231B1B;      /* texte */
+  --gris:#7A706C;       /* cartels, texte secondaire */
+  --filet:rgba(35,27,27,.13);
+  --socle:#DEDAD4;      /* fond de la planche */
+  --chrome:#F1EEEA;
+  --font:"Host Grotesk","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --doux:cubic-bezier(.4,0,.2,1);
+  --sortie:cubic-bezier(.2,.7,.1,1);
+  /* étalonnage neutre, identique partout : ±3 %, aucune teinte */
+  --etalon:contrast(.97) brightness(1.01) saturate(.97);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--socle);color:var(--encre);font:400 13px/1.55 var(--font);-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 120px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+:focus-visible{outline:1px solid var(--grenat);outline-offset:3px}
+.num{font-variant-numeric:tabular-nums}
+img{max-width:100%}
+
+/* ---------- Planche ---------- */
+.board{max-width:1240px;margin:0 auto}
+.intro{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:20px;padding-block:64px 72px;border-bottom:1px solid var(--filet)}
+.intro .who{grid-column:1/5;display:flex;flex-direction:column;gap:16px}
+.intro .who b{font-weight:500;font-size:15px}
+.intro .who p{margin:0;max-width:42ch}
+.intro .who small{color:var(--gris);font-size:12px}
+.intro dl{grid-column:6/13;margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px 20px;font-size:12px}
+.intro dt{color:var(--gris)}
+.intro dd{margin:0;min-width:0}
+.sw{display:flex;flex-wrap:wrap;gap:6px 18px}
+.sw span{display:inline-flex;align-items:center;gap:7px}
+.sw i{width:14px;height:14px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(35,27,27,.14)}
+.list{margin:0;padding:0 0 0 1.1em;display:grid;gap:4px}
+.list li::marker{color:var(--gris)}
+.shot{padding-top:88px}
+.cap{display:flex;justify-content:space-between;gap:16px;padding-top:16px;font-size:12px;color:var(--gris)}
+.cap b{font-weight:500;color:var(--encre)}
+.stage{position:relative;width:100%;overflow:hidden}
+.screen{position:absolute;left:0;top:0;transform-origin:0 0;background:var(--blanc);overflow:hidden;
+  box-shadow:0 1px 0 rgba(35,27,27,.06),0 30px 60px -30px rgba(35,27,27,.28)}
+.chrome{height:28px;display:flex;align-items:center;gap:6px;padding:0 12px;background:var(--chrome);border-bottom:1px solid var(--filet);font-size:10px;color:var(--gris)}
+.chrome i{width:7px;height:7px;border-radius:50%;background:var(--filet)}
+.chrome span{margin-left:auto;margin-right:auto;transform:translateX(-14px)}
+.mobiles{display:grid;grid-template-columns:375px 375px minmax(0,1fr);gap:48px;align-items:start}
+.mobiles .note{padding-top:8px;font-size:12px;color:var(--gris);max-width:34ch;display:grid;gap:10px}
+.mobiles .note b{color:var(--encre);font-weight:500}
+@media (max-width:900px){.mobiles{grid-template-columns:minmax(0,375px)}.intro .who,.intro dl{grid-column:1/-1}}
+@media (max-width:520px){.intro dl{grid-template-columns:minmax(0,1fr);gap:4px 0}.intro dd{margin-bottom:10px}.cap{flex-direction:column;gap:4px}}
+
+/* ---------- Site : socle ---------- */
+.site{position:absolute;inset:28px 0 0 0;color:var(--encre);font-size:13px}
+.g12{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding:0 56px}
+.nav{height:76px;align-items:center}
+.nav .brand{grid-column:1/4;font-weight:500}
+.nav ul{grid-column:5/10;display:flex;gap:32px;margin:0;padding:0;list-style:none}
+.nav li a{color:var(--gris);transition:color .3s}
+.nav li a:hover,.nav li a[aria-current]{color:var(--encre)}
+.nav li a sup{font-size:9px;margin-left:2px;color:var(--grenat)}
+.nav .tel{grid-column:10/13;justify-self:end}
+/* souligné qui se trace */
+.link{justify-self:start;position:relative;display:inline-block;padding-bottom:3px;color:var(--grenat)}
+.link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform-origin:right;transform:scaleX(.3);transition:transform .5s var(--doux)}
+.link:hover::after,.link:focus-visible::after{transform:scaleX(1);transform-origin:left}
+
+/* ---------- L'œuvre au mur : photo en vraie couleur ---------- */
+.wall{background:var(--pierre);position:relative}
+.ph{position:relative;overflow:hidden;margin:0;background:#D9D4CC}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;max-width:none;filter:var(--etalon)}
+/* ombre portée très discrète : le tirage est posé contre le mur, rien sur l'image */
+.hung{box-shadow:0 1px 1px rgba(35,27,27,.10),0 22px 34px -22px rgba(35,27,27,.38)}
+
+/* zone d'accrochage : carré --s, l'œuvre garde ses proportions, centrée sur la ligne des yeux */
+.hang{position:relative;width:var(--s);height:var(--s);flex:none}
+.work{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:0;transition:opacity .5s var(--doux)}
+.work.on{opacity:1}
+.work.l{width:var(--s);height:calc(var(--s)*.75)}
+.work.p{width:calc(var(--s)*.75);height:var(--s)}
+
+/* cartel */
+.cartel{display:grid;gap:3px;font-size:12px;line-height:1.5;color:var(--encre);align-content:end}
+.cartel .k{color:var(--gris);font-size:11px}
+.cartel .ref{font-weight:300;font-size:36px;line-height:1;letter-spacing:-.03em;color:var(--grenat);margin:2px 0 14px}
+.cartel .g{color:var(--gris)}
+.cartel .p{margin-top:10px;font-weight:500}
+.cartel .link{margin-top:18px}
+.cartel-txt{display:grid;gap:3px;transition:opacity .2s var(--doux)}
+.cartel-txt.swap{opacity:0}
+/* compteur de référence */
+.odo{display:block;position:relative;height:1.04em;overflow:hidden}
+.odo span{display:block;transition:transform .4s var(--doux),opacity .4s var(--doux)}
+.odo span.out{position:absolute;left:0;top:0}
+
+/* ---------- Index : liste des œuvres ---------- */
+.ix-head,.ix-row{display:grid;grid-template-columns:var(--cols);column-gap:20px;align-items:baseline}
+.ix-head{padding-bottom:14px;font-size:11px;color:var(--gris);border-bottom:1px solid var(--filet)}
+.ix-head .r,.ix-row .r{justify-self:end}
+.ix{position:relative;margin:0;padding:0;list-style:none}
+.ix li{border-bottom:1px solid var(--filet)}
+.ix-row{width:100%;padding-block:var(--py,22px);position:relative}
+.ix-row .ref{color:var(--gris);transition:color .4s var(--doux)}
+.ix-row .ty{transition:transform .45s var(--sortie);display:grid;gap:2px}
+.ix-row .ty small{font-size:12px;color:var(--gris)}
+.ix-row em{font-style:normal;font-size:11px;color:var(--grenat)}
+.ix-row .refc{display:grid;gap:2px}
+.ix-row[aria-current="true"] .ref{color:var(--grenat)}
+.ix-row[aria-current="true"] .ty{transform:translateX(6px)}
+.ix-row:focus-visible{outline-offset:-1px}
+/* filet grenat qui glisse */
+.ix-bar{position:absolute;left:0;right:0;top:0;height:2px;background:var(--grenat);transform:translateY(var(--y,60px));transition:transform .45s var(--doux);pointer-events:none}
+html.js .ix li{opacity:0;transform:translateY(6px);transition:opacity .5s var(--sortie),transform .5s var(--sortie);transition-delay:calc(var(--i,0)*70ms + 150ms)}
+html.js .in .ix li{opacity:1;transform:none}
+
+/* ---------- 1 Accueil ---------- */
+.home-body{position:absolute;left:0;right:0;top:76px;bottom:0;display:grid;grid-template-columns:minmax(0,1fr) 600px}
+.home-left{display:flex;flex-direction:column;padding:64px 56px 60px 56px;min-width:0}
+.lede{margin:0;color:var(--gris);max-width:40ch}
+.lede b{font-weight:400;color:var(--encre)}
+.home-left .ix-wrap{margin:64px 0 56px}
+.voice{margin:auto 0 0;display:grid;gap:10px}
+.voice p{margin:0;font-family:var(--serif);font-style:italic;font-weight:300;font-size:22px;line-height:1.32;max-width:28ch;text-wrap:balance}
+.voice small{font-size:11px;color:var(--gris)}
+.home-wall{display:flex;align-items:center;padding:0 40px 0 60px;gap:32px}
+.home-wall .hang{--s:340px}
+.home-wall .cartel{align-self:center;transform:translateY(calc(340px*.375 - 50%));width:128px;flex:none}
+
+/* ---------- 2 Biens ---------- */
+.biens-wall{height:560px;display:flex;justify-content:center;align-items:center;gap:44px;padding-left:120px}
+.biens-wall .hang{--s:420px}
+.biens-wall .cartel{width:170px;transform:translateY(calc(420px*.375 - 50%))}
+.biens-list{padding-top:52px}
+.biens-list .bar{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px}
+.biens-list .bar span{color:var(--gris);font-size:12px}
+.biens-list .ix-wrap{grid-column:1/-1}
+
+/* ---------- 3 Fiche ---------- */
+.sub{height:44px;align-items:center;font-size:12px;color:var(--gris)}
+.sub>:first-child{grid-column:1/4}
+.sub>:last-child{grid-column:6/13;justify-self:end}
+.f-wall{padding-block:96px 64px}
+.f-wall .in-wall{display:flex;align-items:flex-end;gap:48px;padding-left:96px}
+.f-gal{display:grid;gap:22px}
+.f-big{width:624px;aspect-ratio:4/3;cursor:pointer}
+.f-big img{opacity:0;transition:opacity .5s var(--doux)}
+.f-big img.on{opacity:1}
+.f-row{display:flex;justify-content:space-between;align-items:end}
+.thumbs{display:flex;gap:12px;position:relative;padding-bottom:8px}
+.thumbs button{position:relative;width:60px;aspect-ratio:4/3;overflow:hidden;background:#D9D4CC}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block;opacity:.5;filter:var(--etalon);transition:opacity .35s var(--doux)}
+.thumbs button[aria-current="true"] img,.thumbs button:hover img{opacity:1}
+.thumbs .tbar{position:absolute;left:0;bottom:0;height:1px;background:var(--grenat);width:60px;transform:translateX(calc(var(--t,0) * 72px));transition:transform .45s var(--doux)}
+.f-row .c{font-size:11px;color:var(--gris)}
+.f-cartel{width:240px;padding-bottom:62px}
+.f-cartel .prix{font-weight:300;font-size:40px;line-height:1;letter-spacing:-.03em;margin:22px 0 4px;color:var(--encre)}
+.f-body{padding-block:80px 88px;row-gap:72px;align-items:start}
+.f-desc{grid-column:2/7;display:grid;gap:14px}
+.f-desc h3,.f-body h3{margin:0 0 4px;font-size:11px;font-weight:400;color:var(--gris)}
+.f-desc p{margin:0;max-width:56ch}
+.specs{margin:0;display:grid;grid-template-columns:120px minmax(0,1fr);font-size:12px}
+.specs dt,.specs dd{margin:0;padding:9px 0;border-top:1px solid var(--filet)}
+.specs dt{color:var(--gris)}
+.f-specs{grid-column:8/12}
+.f-energy{grid-column:2/8}
+.f-contact{grid-column:8/12;display:grid;gap:16px;align-content:start}
+.f-contact p{margin:0}
+.btn{display:inline-flex;align-items:center;justify-self:start;height:42px;padding:0 22px;background:var(--grenat);color:#F6EFE8;font-size:12px;transition:background-color .3s var(--doux)}
+.btn:hover{background:#5A1420}
+
+/* DPE / GES : échelle officielle 2021 */
+.energy{display:grid;grid-template-columns:1fr 1fr;gap:40px;font-size:10px}
+.energy h4{margin:0 0 10px;font-size:11px;font-weight:500}
+.energy h4 span{font-weight:400;color:var(--gris)}
+.ladder{display:grid;gap:3px}
+.ladder div{display:flex;align-items:center;gap:8px;height:15px}
+.ladder i{display:block;height:100%;width:calc(var(--w)*1%);color:#fff;font-style:normal;font-weight:500;font-size:9px;line-height:15px;padding-left:6px;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 50%,calc(100% - 7px) 100%,0 100%);transform-origin:left;transition:transform .6s var(--sortie);transition-delay:calc(var(--k,0)*50ms)}
+.ladder i.d{color:var(--encre)}
+html.js .ladder i{transform:scaleX(.1)}
+html.js .in .ladder i{transform:none}
+.ladder .act{height:21px}
+.ladder .act i{height:21px;line-height:21px;font-size:11px}
+.ladder b{font-weight:500;font-size:10px;white-space:nowrap}
+.legal{font-size:10px;color:var(--gris);margin-top:14px}
+
+/* ---------- 4 Le cabinet ---------- */
+.cab-wall{padding-block:104px 96px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding-inline:56px}
+.cab-hang{grid-column:2/8;display:flex;align-items:flex-end;gap:28px}
+.cab-hang .ph{width:288px;aspect-ratio:3/4;flex:none}
+.cab-hang .cartel{width:180px;flex:none}
+.salle{grid-column:8/12;display:grid;gap:22px;align-content:start;padding-top:8px}
+.salle h2{margin:0;font-size:12px;font-weight:400;color:var(--gris)}
+.salle .big{margin:0;font-family:var(--serif);font-style:italic;font-weight:300;font-size:28px;line-height:1.26;text-wrap:balance}
+.salle p{margin:0;max-width:46ch}
+.cab-facts{padding-block:64px 72px;margin:0}
+.cab-facts>div{grid-column:span 3;display:grid;gap:4px;align-content:start}
+.cab-facts>div:first-child{grid-column:2/5}
+.cab-facts>div:last-child{grid-column:8/12}
+.cab-facts dt{color:var(--gris);font-size:11px}
+.cab-facts dd{margin:0}
+.cab-facts blockquote{margin:0;font-size:12px;text-wrap:pretty}
+.cab-facts blockquote footer{color:var(--gris);margin-top:4px}
+.foot{background:var(--grenat);color:#F3EAE2;padding-block:44px 30px;row-gap:34px;font-size:12px}
+.foot .b{grid-column:1/4;font-weight:500}
+.foot .a{grid-column:4/7;color:rgba(243,234,226,.72)}
+.foot ul{grid-column:7/10;margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.foot .tel{grid-column:10/13;justify-self:end;font-size:16px;font-weight:300}
+.foot .legal-line{grid-column:1/-1;display:flex;justify-content:space-between;gap:20px;border-top:1px solid rgba(243,234,226,.2);padding-top:16px;font-size:10px;color:rgba(243,234,226,.62)}
+.foot .link{color:#F3EAE2}
+.foot .link::after{transform:scaleX(0)}
+
+/* ---------- Mobiles ---------- */
+.m .site{inset:0}
+.m-scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;overscroll-behavior:contain}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-top{position:sticky;top:0;z-index:4;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:var(--blanc)}
+.m-top b{font-weight:500}
+.m-top span{color:var(--gris)}
+.m-lede{padding:40px 24px 56px;display:grid;gap:14px}
+.m-lede p{margin:0}
+.m-lede .s{font-family:var(--serif);font-style:italic;font-weight:300;font-size:23px;line-height:1.28;text-wrap:balance}
+.m-lede .muted{font-size:12px;color:var(--gris)}
+.m-works{display:grid;gap:72px;padding:0 24px 80px;margin:0;list-style:none}
+.m-works a{display:grid;gap:16px;font-size:12px}
+.m-works .ph.l{aspect-ratio:4/3}
+.m-works .ph.p{aspect-ratio:3/4;width:72%}
+.m-works .ct{display:grid;grid-template-columns:52px minmax(0,1fr) auto;column-gap:12px}
+.m-works .ct .r{color:var(--grenat)}
+.m-works .ct small{display:block;color:var(--gris);font-size:12px}
+.m-shop{background:var(--pierre);padding:48px 24px;display:grid;gap:16px;font-size:12px}
+.m-shop .ph{width:62%;aspect-ratio:3/4}
+.m-shop p{margin:0}
+.m-shop .g{color:var(--gris)}
+.m-foot{background:var(--grenat);color:#F3EAE2;padding:28px 24px 36px;display:grid;gap:4px;font-size:12px}
+.m-foot span{color:rgba(243,234,226,.72)}
+.m-gal{background:var(--pierre);padding:40px 24px 28px;display:grid;gap:18px}
+.m-gal .f-big{width:100%}
+.m-gal .thumbs button{width:52px}
+.m-gal .thumbs .tbar{width:52px;transform:translateX(calc(var(--t,0) * 64px))}
+.m-gal .f-row .c{padding-bottom:8px}
+.m-ct{padding:32px 24px 8px;display:grid;gap:3px;font-size:12px}
+.m-ct .k{color:var(--gris);font-size:11px}
+.m-ct .prix{font-weight:300;font-size:34px;letter-spacing:-.03em;line-height:1;margin-top:18px}
+.m .specs{margin:24px 24px 36px}
+.m .energy{padding:0 24px 130px;grid-template-columns:1fr;gap:28px}
+.m-cta{position:absolute;left:12px;right:12px;bottom:12px;z-index:6;display:flex;gap:8px}
+.m-cta a{flex:1;height:48px;display:grid;place-items:center;font-size:13px;background:var(--grenat);color:#F6EFE8}
+.m-cta a+a{flex:0 0 44%;background:var(--blanc);color:var(--grenat);box-shadow:inset 0 0 0 1px var(--grenat)}
+
+/* apparition unique */
+html.js .rise{opacity:0;transform:translateY(8px);transition:opacity .7s var(--sortie),transform .7s var(--sortie);transition-delay:var(--d,0ms)}
+html.js .in .rise,html.js .rise.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition-duration:.01ms!important;transition-delay:0ms!important;animation-duration:.01ms!important}
+  html.js .ix li,html.js .rise,html.js .ladder i{opacity:1;transform:none}
+}
+</style>
+
+<main class="board">
+  <header class="intro">
+    <div class="who">
+      <b>Index et aperçu, 4e passe</b>
+      <p>Le site se visite comme une exposition : les biens se lisent comme la liste des œuvres à l'entrée d'une salle, et celui que l'on désigne est accroché seul sur un mur de pierre pâle, son cartel à côté. Les photos sont montrées telles qu'elles sont, en vraie couleur ; le grenat de la devanture reste autour d'elles, dans les filets, les références et le pied de page.</p>
+      <small>Cabinet Rimbault, maquettes de novembre 2026, 4e passe, variante « Index et aperçu »</small>
+    </div>
+    <dl>
+      <dt>Palette</dt>
+      <dd class="sw">
+        <span><i style="background:#F8F6F2"></i>Blanc chaud #F8F6F2</span>
+        <span><i style="background:#ECE8E1"></i>Pierre #ECE8E1</span>
+        <span><i style="background:#6E1A26"></i>Grenat #6E1A26</span>
+        <span><i style="background:#231B1B"></i>Encre #231B1B</span>
+        <span><i style="background:#7A706C"></i>Gris cartel #7A706C</span>
+      </dd>
+      <dt>Typographie</dt>
+      <dd>Host Grotesk 300, 400 et 500, de 11 à 13 px. Un seul élément agrandi par écran : la référence dans le cartel, le prix sur la fiche. Newsreader italique pour la voix du cabinet.</dd>
+      <dt>Photos</dt>
+      <dd>Vraie couleur partout, devanture comprise. Un seul étalonnage neutre, identique pour toutes (contraste −3 %, luminosité +1 %, saturation −3 %). Aucun filtre de couleur, aucun voile, aucun mélange. Chaque photo garde ses proportions : le portrait du 09.345 est accroché en portrait.</dd>
+      <dt>Animations</dt>
+      <dd><ol class="list">
+        <li>Accrochage : au survol, au clic ou au clavier, l'œuvre au mur cède la place à la suivante en fondu enchaîné (500 ms). Elle ne bouge pas.</li>
+        <li>Un filet grenat glisse d'une ligne de la liste à l'autre (450 ms).</li>
+        <li>La référence du cartel défile comme un compteur (400 ms) ; le texte du cartel s'efface et revient (200 ms).</li>
+        <li>Ligne désignée : référence en grenat, désignation décalée de 6 px.</li>
+        <li>Fiche : photo suivante en fondu enchaîné au clic ou aux flèches ; un filet fin glisse sous la vignette.</li>
+        <li>Une seule fois à l'arrivée : les lignes de la liste apparaissent l'une après l'autre (6 px de montée), les barres DPE et GES se remplissent.</li>
+        <li>Soulignés qui se tracent au survol des liens.</li>
+      </ol></dd>
+      <dt>Depuis la 3e passe</dt>
+      <dd><ul class="list">
+        <li>Duotone retiré, ainsi que le grain posé sur les photos : la couleur n'est plus la récompense du clic.</li>
+        <li>L'aplat crème de l'aperçu devient un mur de pierre ; la photo y est accrochée plus petite, au milieu d'un vrai vide, avec une ombre portée à peine visible.</li>
+        <li>Le cartel passe à côté de l'œuvre, aligné sur son bord bas.</li>
+        <li>La liste respire : lignes d'environ 85 px au lieu de 54, deux lignes par bien comme une liste d'œuvres (désignation, puis lieu et surface), trois colonnes au lieu de cinq à l'accueil ; l'exclusivité passe sous la référence.</li>
+        <li>La vignette de la devanture disparaît de l'accueil ; la devanture est accrochée en grand sur la page du cabinet.</li>
+        <li>Page Biens : le mur passe au-dessus, la liste complète en dessous, sur toute la largeur.</li>
+        <li>GES sur l'échelle officielle violette ; barres en flèche comme l'étiquette réglementaire.</li>
+      </ul></dd>
+    </dl>
+  </header>
+
+  <!-- 1 Accueil -->
+  <section class="shot" id="s1">
+    <div class="stage"><div class="screen" data-w="1160" data-h="940">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr</span></div>
+      <div class="site">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s1" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s4">Vendre</a></li><li><a href="#s4">Le cabinet</a></li><li><a href="#s4">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="home-body" data-ix-root>
+          <div class="home-left">
+            <p class="lede rise"><b>Agent immobilier indépendant</b> au 117 boulevard Voltaire, à Asnières-sur-Seine, depuis 2009. Cinq biens en vente en ce moment.</p>
+            <div class="ix-wrap">
+              <div class="ix-head" style="--cols:72px minmax(0,1fr) 88px"><span>Réf.</span><span>Bien</span><span class="r">Prix</span></div>
+              <ol class="ix num" style="--cols:72px minmax(0,1fr) 88px"></ol>
+            </div>
+            <div class="voice rise" style="--d:600ms">
+              <p>« Nous gardons peu de biens à la fois. Nous les avons tous visités, et nous en parlons volontiers. »</p>
+              <small>Le cabinet, 117 boulevard Voltaire</small>
+            </div>
+          </div>
+          <div class="wall home-wall" aria-live="polite">
+            <div class="hang">
+              <figure class="work ph hung"><img alt=""></figure>
+              <figure class="work ph hung"><img alt=""></figure>
+            </div>
+            <div class="cartel num">
+              <span class="k">Réf.</span>
+              <span class="ref"><span class="odo"><span></span></span></span>
+              <div class="cartel-txt"></div>
+              <a class="link" href="#s3">Voir la fiche</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>1 Accueil.</b> La liste est l'accueil. Le bien désigné est accroché seul sur le mur, cartel à côté. Survolez une ligne : fondu enchaîné, filet, compteur.</span><span>Flèches haut et bas au clavier</span></div>
+  </section>
+
+  <!-- 2 Biens -->
+  <section class="shot" id="s2">
+    <div class="stage"><div class="screen" data-w="1160" data-h="1120">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens</span></div>
+      <div class="site" data-ix-root data-start="3" data-mode="full">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s4">Vendre</a></li><li><a href="#s4">Le cabinet</a></li><li><a href="#s4">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="wall biens-wall" aria-live="polite">
+          <div class="hang">
+            <figure class="work ph hung"><img alt=""></figure>
+            <figure class="work ph hung"><img alt=""></figure>
+          </div>
+          <div class="cartel num">
+            <span class="k">Réf.</span>
+            <span class="ref"><span class="odo"><span></span></span></span>
+            <div class="cartel-txt"></div>
+            <a class="link" href="#s3">Voir la fiche</a>
+          </div>
+        </div>
+        <div class="g12 biens-list">
+          <div class="bar"><span style="color:var(--encre);font-size:13px">Biens en vente <span class="num">5</span></span><span>Du plus récent au plus ancien mandat [à confirmer]</span></div>
+          <div class="ix-wrap">
+            <div class="ix-head" style="--cols:80px minmax(0,1.4fr) 100px minmax(0,1fr) minmax(0,1fr) 110px"><span>Réf.</span><span>Bien</span><span>Surface</span><span>Extérieur, étage</span><span>Ville</span><span class="r">Prix</span></div>
+            <ol class="ix num" style="--cols:80px minmax(0,1.4fr) 100px minmax(0,1fr) minmax(0,1fr) 110px;--py:20px" data-cols="full"></ol>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>2 Biens.</b> Le mur au-dessus, la liste complète en dessous. État affiché : survol du 09.345, accroché en portrait.</span><span>Rien ne suit le curseur</span></div>
+  </section>
+
+  <!-- 3 Fiche -->
+  <section class="shot" id="s3">
+    <div class="stage"><div class="screen" data-w="1160" data-h="1430">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/biens/10129</span></div>
+      <div class="site" id="fiche">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s2" aria-current="page">Biens<sup>5</sup></a></li><li><a href="#s4">Vendre</a></li><li><a href="#s4">Le cabinet</a></li><li><a href="#s4">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="g12 sub"><a class="link" href="#s1">Retour à la liste</a><span class="num">Bien 1 sur 5</span></div>
+        <div class="wall f-wall">
+          <div class="in-wall">
+            <div class="f-gal" data-gal>
+              <figure class="ph hung f-big" data-big tabindex="0" aria-label="Photo suivante"><img alt=""><img alt=""></figure>
+              <div class="f-row">
+                <div class="thumbs" role="group" aria-label="Photos du bien"></div>
+                <span class="c num" data-count>1 / 4</span>
+              </div>
+            </div>
+            <div class="cartel f-cartel num">
+              <span class="k">Réf. 10.129</span>
+              <span>5 pièces, 4 chambres, deux terrasses et jardins</span>
+              <span class="g">Asnières-sur-Seine, quartier des Impressionnistes</span>
+              <span class="g">92,2 m²</span>
+              <p class="prix">644 000 €</p>
+              <span class="g">Honoraires [à confirmer]</span>
+              <span class="g" data-alt>Séjour ouvert sur la terrasse</span>
+            </div>
+          </div>
+        </div>
+        <div class="g12 f-body">
+          <div class="f-desc">
+            <h3>Le bien</h3>
+            <p>Cinq pièces ouvertes sur des jardins arborés, avec deux terrasses, dans le quartier des Impressionnistes. Le séjour donne de plain-pied sur l'extérieur.</p>
+            <p class="muted" style="color:var(--gris)">Nous l'avons visité ; nous répondons volontiers à vos questions sur l'exposition, les charges et le voisinage.</p>
+          </div>
+          <dl class="specs f-specs num">
+            <dt>Surface</dt><dd>92,2 m²</dd>
+            <dt>Pièces</dt><dd>5, dont 4 chambres</dd>
+            <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+            <dt>Quartier</dt><dd>Les Impressionnistes, Asnières</dd>
+            <dt>Charges</dt><dd>[à confirmer]</dd>
+          </dl>
+          <div class="f-energy">
+            <h3>Performance énergétique</h3>
+            <div class="energy num" id="energy">
+              <div>
+                <h4>DPE <span>consommation d'énergie</span></h4>
+                <div class="ladder" aria-label="Diagnostic de performance énergétique : classe D, 189 kWh par m² et par an">
+                  <div style="--k:0"><i style="--w:30;background:#009C6D">A</i></div>
+                  <div style="--k:1"><i style="--w:39;background:#52B153">B</i></div>
+                  <div style="--k:2"><i style="--w:48;background:#78BD76">C</i></div>
+                  <div class="act" style="--k:3"><i class="d" style="--w:57;background:#F4E70F">D</i><b>189 kWh/m²/an</b></div>
+                  <div style="--k:4"><i class="d" style="--w:66;background:#F0B50F">E</i></div>
+                  <div style="--k:5"><i style="--w:75;background:#EB8235">F</i></div>
+                  <div style="--k:6"><i style="--w:84;background:#D7221F">G</i></div>
+                </div>
+              </div>
+              <div>
+                <h4>GES <span>émissions de gaz à effet de serre</span></h4>
+                <div class="ladder" aria-label="Émissions de gaz à effet de serre : classe B">
+                  <div style="--k:0"><i class="d" style="--w:30;background:#F6EDFD">A</i></div>
+                  <div class="act" style="--k:1"><i class="d" style="--w:39;background:#E4C7FB">B</i><b>[valeur à confirmer]</b></div>
+                  <div style="--k:2"><i class="d" style="--w:48;background:#D4A9F6">C</i></div>
+                  <div style="--k:3"><i class="d" style="--w:57;background:#CB95F3">D</i></div>
+                  <div style="--k:4"><i style="--w:66;background:#BA72EF">E</i></div>
+                  <div style="--k:5"><i style="--w:75;background:#A74DEB">F</i></div>
+                  <div style="--k:6"><i style="--w:84;background:#8A19DF">G</i></div>
+                </div>
+              </div>
+            </div>
+            <p class="legal">Estimation des coûts annuels d'énergie [à confirmer]. Diagnostic réalisé selon la méthode en vigueur depuis juillet 2021.</p>
+          </div>
+          <div class="f-contact">
+            <h3>Visiter</h3>
+            <p>Nous faisons les visites nous-mêmes, sur rendez-vous.</p>
+            <a class="btn" href="#s3">Demander une visite</a>
+            <span class="num">Ou appelez le 01 73 64 56 10</span>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>3 Fiche.</b> Une grande photo au mur, cartel détaillé à côté, vignettes discrètes. Clic sur la photo, sur une vignette ou flèches du clavier : fondu enchaîné.</span><span>DPE et GES sur l'échelle officielle</span></div>
+  </section>
+
+  <!-- 4 Cabinet et pied de page -->
+  <section class="shot" id="s4">
+    <div class="stage"><div class="screen" data-w="1160" data-h="1060">
+      <div class="chrome"><i></i><i></i><i></i><span>cabinet-rimbault.fr/le-cabinet</span></div>
+      <div class="site">
+        <nav class="g12 nav">
+          <a class="brand" href="#s1">Cabinet Rimbault</a>
+          <ul><li><a href="#s1">Biens<sup>5</sup></a></li><li><a href="#s4">Vendre</a></li><li><a href="#s4" aria-current="page">Le cabinet</a></li><li><a href="#s4">Contact</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+        </nav>
+        <div class="wall cab-wall">
+          <div class="cab-hang">
+            <figure class="ph hung"><img src="img/devanture.jpg" alt="La devanture grenat du Cabinet Rimbault, boulevard Voltaire"></figure>
+            <div class="cartel">
+              <span>La devanture</span>
+              <span class="g">117 boulevard Voltaire, Asnières-sur-Seine</span>
+              <span class="g">Photographie provisoire [à remplacer]</span>
+            </div>
+          </div>
+          <div class="salle">
+            <h2>Le cabinet</h2>
+            <p class="big">Un seul agent, une vitrine sur le boulevard Voltaire, et une dizaine de biens au plus.</p>
+            <p>Nous vendons des appartements et des maisons à Asnières-sur-Seine et alentour depuis 2009. Chaque bien de cette liste, nous l'avons visité avant de le proposer.</p>
+            <p>Pour une estimation, passez au cabinet ou appelez-nous : nous venons voir le bien avant de donner un prix.</p>
+          </div>
+        </div>
+        <dl class="g12 cab-facts num">
+          <div><dt>Adresse</dt><dd>117 boulevard Voltaire<br>92600 Asnières-sur-Seine</dd></div>
+          <div><dt>Téléphone</dt><dd>01 73 64 56 10</dd><dt style="margin-top:14px">Horaires</dt><dd>[à confirmer]</dd></div>
+          <div><dt>Avis Google</dt><dd>4,9/5, 32 avis</dd>
+            <dd style="margin-top:10px"><blockquote>« Réponses rapides, visites bien préparées. » <footer>[avis exemple], Google</footer></blockquote></dd></div>
+        </dl>
+        <footer class="g12 foot">
+          <span class="b">Cabinet Rimbault</span>
+          <span class="a">117 boulevard Voltaire, 92600 Asnières-sur-Seine. Agent immobilier indépendant depuis 2009.</span>
+          <ul><li><a class="link" href="#s1">Biens en vente</a></li><li><a class="link" href="#s4">Faire estimer son bien</a></li></ul>
+          <span class="tel num">01 73 64 56 10</span>
+          <div class="legal-line"><span>Mentions légales, carte professionnelle et médiateur de la consommation [à confirmer]</span><span>Barème des honoraires [à confirmer]</span></div>
+        </footer>
+      </div>
+    </div></div>
+    <div class="cap"><span><b>4 Le cabinet et pied de page.</b> La devanture accrochée en vraie couleur comme une photo d'exposition ; le texte du cabinet se lit comme un texte de salle.</span><span>Aucune animation ici, hors soulignés</span></div>
+  </section>
+
+  <!-- 5 Mobiles -->
+  <section class="shot" id="s5">
+    <div class="mobiles">
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="780">
+          <div class="site"><div class="m-scroll">
+            <div class="m-top"><b>Cabinet Rimbault</b><span>Menu</span></div>
+            <div class="m-lede">
+              <p class="s">« Nous gardons peu de biens à la fois, et nous les avons tous visités. »</p>
+              <p class="muted">Agent immobilier indépendant, 117 boulevard Voltaire, Asnières-sur-Seine, depuis 2009. Cinq biens en vente.</p>
+            </div>
+            <ol class="m-works num" id="mworks"></ol>
+            <div class="m-shop">
+              <figure class="ph hung"><img src="img/devanture.jpg" alt="Devanture du cabinet"></figure>
+              <p>La devanture<br><span class="g">117 boulevard Voltaire, Asnières-sur-Seine</span></p>
+              <p>Passez nous voir, ou appelez le <span class="num">01 73 64 56 10</span>.</p>
+            </div>
+            <div class="m-foot"><b style="font-weight:500">Cabinet Rimbault</b><span>117 bd Voltaire, 92600 Asnières-sur-Seine</span><span class="num">4,9/5 sur Google, 32 avis</span></div>
+          </div></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="stage m"><div class="screen" data-w="375" data-h="780">
+          <div class="site"><div class="m-scroll">
+            <div class="m-top" style="background:var(--pierre)"><b>Retour</b><span class="num">Réf. 10.129</span></div>
+            <div class="m-gal" data-gal>
+              <figure class="ph hung f-big" data-big><img alt=""><img alt=""></figure>
+              <div class="f-row">
+                <div class="thumbs" role="group" aria-label="Photos du bien"></div>
+                <span class="c num" data-count>1 / 4</span>
+              </div>
+            </div>
+            <div class="m-ct num">
+              <span class="k">Réf. 10.129</span>
+              <span>5 pièces, 4 chambres, deux terrasses et jardins</span>
+              <span style="color:var(--gris)">Asnières-sur-Seine, Impressionnistes, 92,2 m²</span>
+              <span class="prix">644 000 €</span>
+            </div>
+            <dl class="specs num">
+              <dt>Extérieurs</dt><dd>Deux terrasses et jardins</dd>
+              <dt>Honoraires</dt><dd>[à confirmer]</dd>
+            </dl>
+            <div class="energy num" id="menergy"></div>
+          </div>
+          <div class="m-cta"><a href="#s5">Demander une visite</a><a href="#s5" class="num">01 73 64 56 10</a></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="note">
+        <span><b>5 Mobile.</b> Sans survol, plus d'aperçu : la liste devient une suite d'œuvres, une photo en vraie couleur et son cartel, 72 px de vide entre chaque bien. Le portrait reste en portrait.</span>
+        <span>Sur la fiche, la photo est accrochée sur le mur de pierre ; on touche une vignette pour changer la grande image, en fondu. La demande de visite et le téléphone restent en bas.</span>
+        <span>Faites défiler les deux écrans.</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const html = document.documentElement;
+  html.classList.add('js');
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  const BIENS = [
+    { ref: '10.129', type: '5 pièces, 4 chambres', lieu: 'Asnières, Impressionnistes', court: 'Asnières', surf: '92,2 m²', ville: 'Asnières', ext: 'Deux terrasses, jardins', prix: '644 000 €', img: 'img/bien-10129-3.jpg', o: 'l', pos: '50% 50%', alt: 'Jardin arboré' },
+    { ref: '10.130', type: '3 pièces', lieu: 'Asnières-sur-Seine', court: 'Asnières', surf: '59,5 m²', ville: 'Asnières', ext: 'Terrasse de 37,8 m²', prix: '375 000 €', img: 'img/bien-10130-2.jpg', o: 'l', pos: '50% 50%', alt: 'Séjour' },
+    { ref: '10.131', type: '2 pièces', lieu: 'Asnières-sur-Seine', court: 'Asnières', surf: '46,6 m²', ville: 'Asnières', ext: 'Terrasse de 23,6 m²', prix: '300 000 €', img: 'img/bien-10131-2.jpg', o: 'l', pos: '50% 50%', alt: 'Séjour' },
+    { ref: '09.345', type: '2 pièces, dernier étage', ex: true, lieu: 'Levallois-Perret, rue Collange', court: 'Levallois-Perret', surf: '35,65 m²', ville: 'Levallois-Perret', ext: 'Dernier étage', prix: '280 000 €', img: 'img/bien-09345-1.jpg', o: 'p', pos: '50% 50%', alt: 'Façade de l\'immeuble' },
+    { ref: '09.362', type: 'Studio', ex: true, lieu: 'Asnières, Gabriel-Péri', court: 'Asnières', surf: '33,16 m²', ville: 'Asnières', ext: 'Balcon', prix: '198 000 €', img: 'img/bien-09362-1.jpg', o: 'l', pos: '50% 50%', alt: 'Pièce principale' }
+  ];
+  const PHOTOS = ['img/bien-10129-2.jpg', 'img/bien-10129-1.jpg', 'img/bien-10129-3.jpg', 'img/bien-10129-4.jpg'];
+  const ALTS = ['Séjour ouvert sur la terrasse', 'Terrasse et jardin', 'Jardin arboré', 'Seconde terrasse'];
+
+  /* cadres à l'échelle de la planche */
+  const fit = () => $$('.stage').forEach(st => {
+    const sc = st.firstElementChild, w = +sc.dataset.w, h = +sc.dataset.h;
+    const k = Math.min(1, st.clientWidth / w);
+    sc.style.width = w + 'px'; sc.style.height = h + 'px';
+    sc.style.transform = `scale(${k})`; st.style.height = h * k + 'px';
+  });
+  fit(); new ResizeObserver(fit).observe(document.body);
+
+  /* apparitions uniques */
+  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { threshold: .15 });
+
+  /* fondu enchaîné : deux calques (images ou œuvres entières) */
+  const swap = (a, b, prep) => {
+    const on = a.classList.contains('on') ? a : (b.classList.contains('on') ? b : null);
+    const off = on === a ? b : a;
+    const im = off.tagName === 'IMG' ? off : $('img', off);
+    if (prep(off, im) === false) return;
+    const show = () => { off.classList.add('on'); on && on.classList.remove('on'); };
+    (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(show);
+  };
+
+  /* compteur de référence */
+  const odo = (el, txt, dir) => {
+    const old = el.firstElementChild;
+    if (old && old.textContent === txt) return;
+    const n = document.createElement('span'); n.textContent = txt;
+    if (!old || !old.textContent) { el.replaceChildren(n); return; }
+    n.style.transform = `translateY(${dir * 100}%)`; n.style.opacity = '0';
+    old.classList.add('out'); el.appendChild(n);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      n.style.transform = ''; n.style.opacity = '';
+      old.style.transform = `translateY(${-dir * 100}%)`; old.style.opacity = '0';
+    }));
+    setTimeout(() => old.remove(), 450);
+  };
+
+  /* liste + accrochage */
+  $$('[data-ix-root]').forEach(root => {
+    const list = $('.ix', root), full = list.dataset.cols === 'full';
+    list.innerHTML = BIENS.map((b, i) => `<li style="--i:${i}"><button type="button" class="ix-row" data-i="${i}" aria-current="false">
+      <span class="refc"><span class="ref">${b.ref}</span>${b.ex ? '<em>Exclusivité</em>' : ''}</span>
+      <span class="ty"><span>${b.type}</span>${full ? '' : `<small>${b.court}, ${b.surf}</small>`}</span>
+      ${full ? `<span>${b.surf}</span><span>${b.ext}</span><span>${b.ville}</span>` : ''}<span class="r">${b.prix}</span></button></li>`).join('')
+      + '<span class="ix-bar" aria-hidden="true"></span>';
+    const rows = $$('.ix-row', list), bar = $('.ix-bar', list);
+    const [w1, w2] = $$('.work', root), ref = $('.odo', root), txt = $('.cartel-txt', root);
+    let cur = -1, t;
+    const fill = b => {
+      txt.innerHTML = `<span>${b.type}</span><span class="g">${b.lieu}</span><span class="g">${b.surf}${full ? ', ' + b.ext.toLowerCase() : ''}</span>${b.ex ? '<span class="g">En exclusivité</span>' : ''}<span class="p">${b.prix}</span>`;
+    };
+    const select = i => {
+      if (i === cur) return;
+      const dir = cur < 0 || i > cur ? 1 : -1, first = cur < 0; cur = i;
+      const b = BIENS[i];
+      rows.forEach((r, j) => r.setAttribute('aria-current', String(j === i)));
+      const li = rows[i].parentElement;
+      bar.style.setProperty('--y', (li.offsetTop + li.offsetHeight - 2) + 'px');
+      swap(w1, w2, (fig, im) => {
+        fig.classList.remove('l', 'p'); fig.classList.add(b.o);
+        im.src = b.img; im.style.objectPosition = b.pos; im.alt = `${b.alt}, bien ${b.ref}`;
+      });
+      odo(ref, b.ref, dir);
+      if (first) { fill(b); return; }
+      txt.classList.add('swap');
+      clearTimeout(t);
+      t = setTimeout(() => { fill(b); txt.classList.remove('swap'); }, 200);
+    };
+    let hoverT;
+    rows.forEach((r, i) => {
+      r.addEventListener('pointerenter', () => { clearTimeout(hoverT); hoverT = setTimeout(() => select(i), 60); });
+      r.addEventListener('pointerleave', () => clearTimeout(hoverT));
+      r.addEventListener('focus', () => select(i));
+      r.addEventListener('click', () => select(i));
+      r.addEventListener('keydown', e => {
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); rows[(i + (e.key === 'ArrowDown' ? 1 : -1) + rows.length) % rows.length].focus(); }
+      });
+    });
+    bar.style.transition = 'none';
+    select(+(root.dataset.start || 0));
+    requestAnimationFrame(() => requestAnimationFrame(() => bar.style.transition = ''));
+    io.observe(root);
+    $$('.rise', root).forEach(el => io.observe(el));
+  });
+
+  /* galeries de fiche (desktop et mobile) */
+  $$('[data-gal]').forEach(gal => {
+    const big = $('[data-big]', gal), th = $('.thumbs', gal), count = $('[data-count]', gal), site = gal.closest('.site'), altEl = $('[data-alt]', site);
+    const [i1, i2] = $$('img', big);
+    th.innerHTML = PHOTOS.map((p, i) => `<button type="button" aria-label="Photo ${i + 1}, ${ALTS[i]}" aria-current="${i === 0}"><img src="${p}" alt=""></button>`).join('') + '<span class="tbar" aria-hidden="true"></span>';
+    const btns = $$('button', th), tbar = $('.tbar', th);
+    let cur = -1;
+    const go = i => {
+      i = (i + PHOTOS.length) % PHOTOS.length; if (i === cur) return; cur = i;
+      swap(i1, i2, (_, im) => { im.src = PHOTOS[i]; im.alt = ALTS[i]; });
+      btns.forEach((b, j) => b.setAttribute('aria-current', String(j === i)));
+      tbar.style.setProperty('--t', i);
+      if (count) count.textContent = `${i + 1} / ${PHOTOS.length}`;
+      if (altEl) altEl.textContent = ALTS[i];
+    };
+    btns.forEach((b, i) => b.addEventListener('click', () => go(i)));
+    big.addEventListener('click', () => go(cur + 1));
+    gal._go = d => go(cur + d);
+    go(0);
+  });
+  /* flèches du clavier : galerie desktop, quand la fiche est à l'écran */
+  const fiche = $('#fiche'), deskGal = $('[data-gal]', fiche);
+  let ficheVisible = false;
+  new IntersectionObserver(es => es.forEach(en => ficheVisible = en.isIntersecting), { threshold: .3 }).observe(fiche);
+  document.addEventListener('keydown', e => {
+    if (!ficheVisible || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
+    if (document.activeElement && document.activeElement.closest('.ix')) return;
+    e.preventDefault(); deskGal._go(e.key === 'ArrowRight' ? 1 : -1);
+  });
+  io.observe($('.f-body', fiche));
+
+  /* mobile : suite d'œuvres */
+  $('#mworks').innerHTML = BIENS.map(b => `<li><a href="#s5">
+    <div class="ph hung ${b.o}"><img src="${b.img}" alt="${b.alt}, bien ${b.ref}" style="object-position:${b.pos}"></div>
+    <span class="ct"><span class="r">${b.ref}</span><span>${b.type}<small>${b.court}, ${b.surf}${b.ex ? ', exclusivité' : ''}</small></span><span>${b.prix}</span></span></a></li>`).join('');
+  const menergy = $('#menergy');
+  menergy.innerHTML = $('#energy').innerHTML;
+  io.observe(menergy);
+})();
+</script>

@@ -1,0 +1,544 @@
+/* Contact : une seule salle sur le mur blanc chaud. En tête, la phrase serif
+   et le numéro en grenat ; dessous, la devanture dans son passe-partout crème
+   (vraie couleur, aucun filtre de teinte) avec son cartel, et le formulaire
+   en lignes fines, comme un registre. Le grenat reste dans la typo et les
+   aplats (bouton, objet choisi), jamais sur la photo. */
+
+.page {
+  flex: 1 0 auto;
+  padding-bottom: 120px;
+}
+
+/* ---------- En-tête de salle ---------- */
+.intro {
+  padding-top: 88px;
+  row-gap: 20px;
+  align-items: end;
+}
+
+.introTexte {
+  grid-column: 1 / 6;
+  display: grid;
+  gap: 14px;
+}
+
+.introTexte h1 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.phrase {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(26px, 2.5vw, 36px);
+  line-height: 1.15;
+  max-width: 20ch;
+  text-wrap: balance;
+}
+
+.introTel {
+  grid-column: 6 / 12;
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+}
+
+.introTel p {
+  margin: 0;
+  color: var(--gris);
+}
+
+.tel {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(28px, 2.7vw, 38px);
+  line-height: 1.1;
+  color: var(--grenat);
+  white-space: nowrap;
+  background:
+    linear-gradient(var(--grenat), var(--grenat)) no-repeat 0 100% / 0% 1px;
+  padding-bottom: 4px;
+  transition: background-size 0.6s var(--io);
+}
+
+.tel:hover,
+.tel:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* ---------- Corps : devanture et formulaire ---------- */
+.corps {
+  padding-top: 72px;
+  align-items: start;
+}
+
+.mur {
+  grid-column: 1 / 5;
+  display: grid;
+  gap: 18px;
+}
+
+.cadre {
+  background: var(--creme);
+  padding: clamp(12px, 1.5vw, 22px);
+}
+
+.photo {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+}
+
+.cartel {
+  max-width: 240px;
+  align-content: start;
+}
+
+.cartel address {
+  font-style: normal;
+}
+
+.heures {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1px 14px;
+  margin: 6px 0 0;
+}
+
+.heures > div {
+  display: contents;
+}
+
+.heures dt {
+  color: var(--encre);
+}
+
+.heures dd {
+  margin: 0;
+}
+
+.itineraire {
+  justify-self: start;
+  margin-top: 8px;
+}
+
+.ecrire {
+  grid-column: 6 / 12;
+  min-width: 0;
+}
+
+/* ---------- Formulaire ---------- */
+.form {
+  position: relative;
+  display: grid;
+  gap: 22px;
+  min-width: 0;
+}
+
+.titreForm {
+  margin: 0;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gris);
+}
+
+.oblig {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.objets {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.objets legend {
+  padding: 0;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.pastilles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pastille {
+  position: relative;
+  cursor: pointer;
+}
+
+.pastille input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.pastille span {
+  display: inline-block;
+  padding: 8px 13px;
+  font-size: 12.5px;
+  border: 1px solid var(--filet);
+  transition:
+    border-color 0.3s,
+    color 0.3s,
+    background-color 0.3s;
+}
+
+.pastille:hover span {
+  border-color: rgba(42, 29, 26, 0.35);
+}
+
+.pastille input:checked + span {
+  border-color: var(--grenat);
+  color: var(--grenat);
+  background: var(--poudre);
+}
+
+.pastille input:focus-visible + span {
+  outline: 1px solid var(--grenat);
+  outline-offset: 3px;
+}
+
+.objets[aria-invalid] .pastille span {
+  border-color: var(--grenat);
+}
+
+.lignes {
+  display: grid;
+}
+
+.ligne {
+  display: grid;
+  gap: 2px;
+  padding: 10px 0 8px;
+  border-top: 1px solid var(--filet);
+  min-width: 0;
+}
+
+.lignes > :last-child,
+.lignes > :last-child .ligne {
+  border-bottom: 1px solid var(--filet);
+}
+
+.ligne:focus-within {
+  border-top-color: var(--encre);
+}
+
+.ligne[data-erreur] {
+  border-top-color: var(--grenat);
+}
+
+.label {
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.facultatif {
+  color: var(--gris);
+  opacity: 0.8;
+}
+
+.champ {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--encre);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+  padding: 4px 0;
+  appearance: none;
+}
+
+.champ:focus,
+.champ:focus-visible {
+  outline: none;
+}
+
+.court {
+  max-width: 200px;
+}
+
+.zone {
+  resize: vertical;
+  min-height: 132px;
+}
+
+.deux {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+}
+
+.aide {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--gris);
+}
+
+.erreur {
+  font-size: 12px;
+  color: var(--grenat);
+  font-weight: 500;
+}
+
+.trop {
+  color: var(--grenat);
+  font-weight: 500;
+}
+
+/* Référence : fermée sauf pour « Un bien en particulier ». */
+.reference {
+  display: none;
+}
+
+.reference.ouverte,
+.form:has(input[name="objet"][value="bien"]:checked) .reference {
+  display: grid;
+}
+
+.accord {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  column-gap: 12px;
+  row-gap: 4px;
+  align-items: start;
+  font-size: 12px;
+  color: var(--gris);
+  max-width: 62ch;
+}
+
+.accord input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0;
+  border: 1px solid var(--encre);
+  border-radius: 0;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.accord input::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--grenat);
+  transform: scale(0);
+  transition: transform 0.2s var(--out);
+}
+
+.accord input:checked::before {
+  transform: scale(1);
+}
+
+.accord input[aria-invalid] {
+  border-color: var(--grenat);
+}
+
+.accord label {
+  cursor: pointer;
+}
+
+.accord .erreur {
+  grid-column: 2;
+}
+
+.resume,
+.alerte {
+  padding: 14px 16px;
+  border: 1px solid var(--grenat);
+  background: var(--poudre);
+  color: var(--encre);
+}
+
+.resume h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--grenat);
+}
+
+.resume ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.resume:focus {
+  outline: none;
+}
+
+.resume:focus-visible {
+  outline: 1px solid var(--grenat);
+  outline-offset: 3px;
+}
+
+.envoyer {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.envoyer[aria-disabled="true"] {
+  cursor: progress;
+  background: var(--grenat-2);
+}
+
+/* Bien cité depuis sa fiche */
+.cite {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 16px;
+  align-items: end;
+  padding: 12px;
+  background: var(--poudre);
+}
+
+.citePhoto {
+  aspect-ratio: 4 / 3;
+  width: 100%;
+}
+
+.citeCartel {
+  max-width: none;
+}
+
+.citeCartel a {
+  justify-self: start;
+}
+
+.citeCartel a:hover {
+  color: var(--grenat);
+}
+
+.citePrix {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 15px;
+  color: var(--encre);
+}
+
+/* Confirmation */
+.merci {
+  display: grid;
+  gap: 14px;
+}
+
+.merci h2 {
+  margin: 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--filet);
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.merci h2:focus {
+  outline: none;
+}
+
+.merci p:last-child {
+  margin: 0;
+  max-width: 46ch;
+  font-size: 14px;
+  color: var(--gris);
+}
+
+/* ---------- Tablette ---------- */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .mur {
+    grid-column: 1 / 5;
+  }
+
+  .ecrire {
+    grid-column: 6 / 13;
+  }
+}
+
+/* ---------- Tablette étroite et mobile : appeler, écrire, puis la devanture ---------- */
+@media (max-width: 899px) {
+  .page {
+    padding-bottom: 72px;
+  }
+
+  .intro {
+    padding-top: 40px;
+  }
+
+  .introTexte,
+  .introTel {
+    grid-column: 1 / -1;
+  }
+
+  .corps {
+    padding-top: 48px;
+    row-gap: 64px;
+  }
+
+  .ecrire {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  .mur {
+    order: 2;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    align-items: end;
+  }
+
+  .cadre {
+    grid-column: 1 / 7;
+  }
+
+  .cartel {
+    grid-column: 7 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .mur {
+    row-gap: 14px;
+  }
+
+  .cadre {
+    grid-column: 1 / 11;
+  }
+
+  .cartel {
+    grid-column: 1 / -1;
+    max-width: none;
+  }
+
+  .deux {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .deux > :last-child {
+    border-bottom: 0;
+  }
+}
