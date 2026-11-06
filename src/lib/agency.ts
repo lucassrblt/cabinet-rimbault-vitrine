@@ -23,18 +23,13 @@ export const agency = {
   // "xrimbault@numericable.fr" (adresse du site de main), ou une adresse sur
   // le domaine (contact@cabinet-rimbault.fr) redirigée vers elle.
   email: null as string | null,
-  /**
-   * Horaires tels que saisis aujourd'hui. Non validés par l'agent (brief §10-7) :
-   * tant que `hoursConfirmed` est faux, ils ne vont ni dans le JSON-LD ni dans
-   * un état « ouvert / fermé » présenté comme certain.
-   */
-  // Proposition issue du site en ligne, à valider par le client : les horaires
-  // ci-dessous sont aussi ceux du site de main (`hoursConfirmed: true`).
-  hoursConfirmed: false,
+  /** Horaires confirmés par l'agent le 06/11/2026. */
+  hoursConfirmed: true,
   hours: [
     { days: "Lundi", time: "sur rendez-vous" },
     { days: "Mardi au vendredi", time: "9 h – 19 h" },
     { days: "Samedi", time: "9 h – 18 h" },
+    { days: "Dimanche", time: "fermé" },
   ],
   /** Communes du secteur (ILL-07, JSON-LD areaServed, note « hors secteur »). À fournir (brief §10-8). */
   sector: null as readonly string[] | null,

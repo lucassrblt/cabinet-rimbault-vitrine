@@ -24,6 +24,7 @@ import { Energie } from "@/variantes/galerie/Energie";
 import f from "@/variantes/galerie/fiche.module.css";
 import { Galerie } from "@/variantes/galerie/Galerie";
 import { type Onglet, Onglets } from "@/variantes/galerie/Onglets";
+import { Revele } from "@/variantes/galerie/Revele";
 
 // Fiche : la grande photo au mur, le cartel détaillé à côté (référence,
 // titre, lieu, prix et honoraires tels que l'API les donne, l'essentiel,
@@ -249,7 +250,9 @@ export default async function FicheGalerie({ params }: Props) {
   });
 
   return (
-    <div className={f.fiche}>
+    // Zone d'apparitions locale : la page est diffusée derrière loading.tsx.
+    <div className={f.fiche} data-rv-local>
+      <Revele />
       <div className={`${s.w} ${s.g} ${f.sub}`}>
         <Link className={s.u} href="/biens">
           Retour aux biens

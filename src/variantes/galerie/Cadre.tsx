@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import s from "./base.module.css";
+import { Defilement } from "./Defilement";
 import { listViews } from "./data";
 import { galerieFonts } from "./fonts";
 import { Mur } from "./Mur";
@@ -13,6 +14,7 @@ export async function Cadre({ children }: { children: ReactNode }) {
   const views = await listViews();
   return (
     <Mur className={`${galerieFonts} ${s.site}`}>
+      <Defilement />
       <Nav count={views?.length ?? null} />
       <main className={s.main}>{children}</main>
       <Pied />

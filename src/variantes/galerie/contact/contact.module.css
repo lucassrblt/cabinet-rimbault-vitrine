@@ -91,6 +91,37 @@
   width: 100%;
 }
 
+/* Enseigne : le grenat de la devanture, le nom en capitales espacées. */
+.enseigne {
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 6px;
+  padding: clamp(18px, 2.2vw, 30px);
+  background: var(--grenat);
+  color: var(--sur-g);
+  box-shadow: inset 0 0 0 1px var(--filet-g);
+}
+
+.enseigneNom {
+  align-self: center;
+  justify-self: center;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(20px, 2.1vw, 30px);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.enseigneRue,
+.enseigneDepuis {
+  justify-self: center;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--sur-g-2);
+}
+
 .cartel {
   max-width: 240px;
   align-content: start;

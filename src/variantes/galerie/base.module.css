@@ -19,7 +19,8 @@
   --serif: var(--galerie-serif), "Iowan Old Style", Georgia, serif;
   --out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --io: cubic-bezier(0.65, 0, 0.35, 1);
-  --marge: clamp(20px, 4.4vw, 72px);
+  --expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --marge: clamp(24px, 7.5vw, 136px);
   --col-gap: 24px;
   /* grain de plâtre neutre : il est dans le mur, les photos passent dessus */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .36 0 0 0 0 .32 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -157,9 +158,10 @@ a:hover > .u::after {
 }
 
 .navList {
-  grid-column: 6 / 11;
+  grid-column: 5 / 11;
   display: flex;
-  gap: 30px;
+  gap: clamp(18px, 2.2vw, 30px);
+  white-space: nowrap;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -228,32 +230,95 @@ a:hover > .u::after {
   background: rgba(42, 29, 26, 0.05);
 }
 
+/* Le reflet des squelettes tant que la photo n'est pas arrivée. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .attente:not([data-loaded])::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(250, 247, 242, 0.55),
+      transparent
+    );
+    animation: reflet 1.6s var(--io) infinite;
+  }
+}
+
 @media (scripting: enabled) {
   .attente:not([data-loaded]) img {
     opacity: 0;
   }
 }
 
+/* ---------- Squelettes (chargement d'une page de biens) ----------
+   Le ton du mur un peu plus sombre, et un reflet lent qui le traverse. Fixe
+   en mouvement réduit. Lus par les lecteurs d'écran comme « Chargement ». */
+.sq {
+  position: relative;
+  overflow: hidden;
+  background: rgba(42, 29, 26, 0.06);
+}
+
+.sq::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(250, 247, 242, 0.55),
+    transparent
+  );
+  animation: reflet 1.6s var(--io) infinite;
+}
+
+.sqL {
+  display: block;
+  height: 0.9em;
+  margin-top: 0.55em;
+  border-radius: 2px;
+}
+
+@keyframes reflet {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sq::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* ---------- Apparitions (une fois, à l'entrée dans l'écran) ----------
-   `data-rv` est posé côté serveur ; `RevealObserver` ajoute `data-in`.
+   `data-rv` est posé côté serveur sur le bloc ; `Mur` observe chaque `.up` et
+   `.fade` du bloc et leur ajoute `data-in` à leur propre entrée à l'écran :
+   un long bloc se dévoile au fil du défilement, pas d'un seul coup. Les
+   photos n'ont qu'un fondu (jamais de mouvement sur une image).
    Sans JavaScript, tout reste visible. */
 [data-rv] .up {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(36px);
   transition:
-    opacity 0.6s var(--out),
-    transform 0.6s var(--out);
-  transition-delay: calc(var(--i, 0) * 80ms);
+    opacity 0.9s var(--out),
+    transform 1.15s var(--expo);
+  transition-delay: calc(var(--i, 0) * 110ms);
 }
 
 [data-rv] .fade {
   opacity: 0;
-  transition: opacity 0.7s var(--out);
-  transition-delay: calc(var(--i, 0) * 80ms);
+  transition: opacity 1.2s var(--out);
+  transition-delay: calc(var(--i, 0) * 110ms);
 }
 
-[data-rv][data-in] .up,
-[data-rv][data-in] .fade {
+[data-rv] .up[data-in],
+[data-rv] .fade[data-in] {
   opacity: 1;
   transform: none;
 }
@@ -263,6 +328,28 @@ a:hover > .u::after {
   [data-rv] .fade {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* Titres de section : légère dérive au fil du défilement (CSS seul, sans
+   effet là où `animation-timeline` n'existe pas). `translate`, et non
+   `transform`, pour se composer avec l'apparition. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .flotte {
+      animation: flotte linear both;
+      animation-timeline: view();
+      animation-range: entry 0% exit 100%;
+    }
+  }
+}
+
+@keyframes flotte {
+  from {
+    translate: 0 28px;
+  }
+  to {
+    translate: 0 -28px;
   }
 }
 

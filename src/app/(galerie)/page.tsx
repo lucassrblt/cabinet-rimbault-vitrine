@@ -136,7 +136,7 @@ export default async function AccueilGalerie() {
       {expo.length > 0 ? (
         <section className={`${s.w} ${a.expo}`} aria-labelledby="expo-t">
           <div className={`${s.g} ${a.tete}`} data-rv>
-            <h2 id="expo-t" className={s.up}>
+            <h2 id="expo-t" className={`${s.up} ${s.flotte}`}>
               Nos biens du moment
               <small className={s.num}>
                 {n} {n > 1 ? "biens en vente" : "bien en vente"},{" "}
@@ -179,7 +179,7 @@ export default async function AccueilGalerie() {
       <section className={`${a.mur} ${a.creme}`} aria-labelledby="vendre-t">
         <div className={`${s.w} ${s.g} ${a.bloc}`} data-rv>
           <div className={a.vendreT}>
-            <h2 id="vendre-t" className={s.up}>
+            <h2 id="vendre-t" className={`${s.up} ${s.flotte}`}>
               Vendre avec nous
             </h2>
             <p className={`${a.phrase} ${s.up}`} style={i(1)}>
@@ -219,7 +219,7 @@ export default async function AccueilGalerie() {
       <section className={`${a.mur} ${a.poudre}`} aria-labelledby="avis-t">
         <div className={`${s.w} ${s.g} ${a.bloc}`} data-rv>
           <div className={a.blocT}>
-            <h2 id="avis-t" className={s.up}>
+            <h2 id="avis-t" className={`${s.up} ${s.flotte}`}>
               Ce que disent nos clients
             </h2>
             <p className={`${a.noteAvis} ${s.num} ${s.up}`} style={i(1)}>
@@ -281,7 +281,7 @@ export default async function AccueilGalerie() {
       {/* 5. Passez nous voir */}
       <section className={a.mur} aria-labelledby="venir-t">
         <div className={`${s.w} ${s.g} ${a.bloc} ${a.venir}`} data-rv>
-          <h2 id="venir-t" className={`${a.blocT} ${s.up}`}>
+          <h2 id="venir-t" className={`${a.blocT} ${s.up} ${s.flotte}`}>
             Passez nous voir
           </h2>
           <address className={`${a.adresse} ${s.up}`} style={i(1)}>

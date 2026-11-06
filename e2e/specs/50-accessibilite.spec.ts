@@ -153,6 +153,8 @@ test.describe("menu mobile au clavier", () => {
 
     // Le premier Tab entre dans la liste.
     await page.keyboard.press("Tab");
+    await expect(nav.getByRole("link", { name: "Accueil" })).toBeFocused();
+    await page.keyboard.press("Tab");
     await expect(nav.getByRole("link", { name: /^Biens/ })).toBeFocused();
     await page.keyboard.press("Tab");
     await expect(nav.getByRole("link", { name: "Vendre" })).toBeFocused();
@@ -164,6 +166,7 @@ test.describe("menu mobile au clavier", () => {
 
     // Rouvert puis suivi d'un lien : le menu se referme à la navigation.
     await page.keyboard.press("Enter");
+    await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Tab");
     await page.keyboard.press("Enter");
