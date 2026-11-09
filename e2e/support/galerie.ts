@@ -25,9 +25,9 @@ export const PAGES: PageGalerie[] = [
   },
   {
     chemin: "/biens",
-    titre:
-      "Nos biens à vendre et à louer à Asnières-sur-Seine | Cabinet Rimbault",
-    h1: /^Biens en vente/,
+    // Fixtures : des ventes seulement, donc ni « louer » ni « location ».
+    titre: "Nos biens à vendre à Asnières-sur-Seine | Cabinet Rimbault",
+    h1: /^Biens en vente\s*\d/,
   },
   {
     chemin: "/biens/10.131",

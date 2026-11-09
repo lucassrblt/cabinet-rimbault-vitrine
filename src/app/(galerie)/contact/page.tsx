@@ -14,8 +14,17 @@ import {
   type BienCite,
   FormulaireContact,
 } from "@/variantes/galerie/contact/FormulaireContact";
-import { isObjet, type Objet } from "@/variantes/galerie/contact/sujets";
-import { ficheHref, serifSpaces } from "@/variantes/galerie/data";
+import {
+  isObjet,
+  OBJETS,
+  type Objet,
+} from "@/variantes/galerie/contact/sujets";
+import {
+  ficheHref,
+  listViews,
+  offreDe,
+  serifSpaces,
+} from "@/variantes/galerie/data";
 
 // Contact : une seule salle. La phrase serif et le numéro en grand (le plus
 // simple est d’appeler), puis l’enseigne du cabinet dans son
@@ -24,8 +33,11 @@ import { ficheHref, serifSpaces } from "@/variantes/galerie/data";
 // Sous 900 px : appeler, écrire, puis l’enseigne.
 // Depuis une fiche (`?ref=10.131`) : l'objet « Un bien en particulier » est
 // choisi, la référence et le message de visite remplis, le bien rappelé en
-// petit au-dessus du formulaire. `?objet=` (bien, vente, location, autre)
+// petit au-dessus du formulaire ; le champ « Référence du bien » est alors
+// remplacé par un champ caché. `?objet=` (bien, vente, location, autre)
 // présélectionne l'objet ; `?bien=` reste accepté comme sur /contact.
+// « Une recherche de location » n'est proposée que si au moins un bien en
+// location est publié ; sinon `?objet=location` ne présélectionne rien.
 
 export const metadata: Metadata = pageMetadata({
   title: "Contacter le Cabinet Rimbault, 117 boulevard Voltaire, Asnières",
@@ -75,13 +87,17 @@ export default async function ContactGalerie({
 }) {
   const params = await searchParams;
   const reference = lireReference(params.ref ?? params.bien);
+  const [view, views] = await Promise.all([bienCite(reference), listViews()]);
+  const objets: readonly Objet[] = offreDe(views).location
+    ? OBJETS
+    : OBJETS.filter((o) => o !== "location");
   const objetParam = typeof params.objet === "string" ? params.objet : "";
-  const objet: Objet | undefined = isObjet(objetParam)
-    ? objetParam
-    : reference
-      ? "bien"
-      : undefined;
-  const view = await bienCite(reference);
+  const objet: Objet | undefined =
+    isObjet(objetParam) && objets.includes(objetParam)
+      ? objetParam
+      : reference
+        ? "bien"
+        : undefined;
 
   const bien: BienCite | null = view
     ? {
@@ -184,6 +200,7 @@ export default async function ContactGalerie({
           <div className={s.up}>
             <FormulaireContact
               key={`${objet ?? ""}|${reference ?? ""}`}
+              objets={objets}
               objet={objet}
               reference={reference}
               message={message}

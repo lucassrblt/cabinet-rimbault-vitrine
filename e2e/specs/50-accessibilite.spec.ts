@@ -177,3 +177,34 @@ test.describe("menu mobile au clavier", () => {
     );
   });
 });
+
+test("bouton d'appel de l'en-tête : mobile seulement, 44 px au moins", async ({
+  page,
+}, info) => {
+  await page.goto("/");
+  // Masqué sur desktop, donc absent de l'arbre d'accessibilité : repéré
+  // d'abord par son attribut, puis par son rôle sur mobile.
+  const brut = page.locator(
+    'header a[aria-label="Appeler le cabinet, 01 73 64 56 10"]',
+  );
+  await expect(brut).toHaveAttribute("href", "tel:+33173645610");
+  if (info.project.name !== "mobile") {
+    await expect(brut).toBeHidden();
+    return;
+  }
+  const appel = page
+    .getByRole("banner")
+    .getByRole("link", { name: "Appeler le cabinet, 01 73 64 56 10" });
+  await expect(appel).toBeVisible();
+  const boite = await appel.boundingBox();
+  expect(boite?.width).toBeGreaterThanOrEqual(44);
+  expect(boite?.height).toBeGreaterThanOrEqual(44);
+  // Entre le nom du cabinet et « Menu ».
+  const nom = await page
+    .getByRole("banner")
+    .getByRole("link", { name: "Cabinet Rimbault" })
+    .boundingBox();
+  const menu = await page.getByRole("button", { name: "Menu" }).boundingBox();
+  expect(boite && nom && boite.x > nom.x + nom.width).toBe(true);
+  expect(boite && menu && boite.x + boite.width <= menu.x).toBe(true);
+});

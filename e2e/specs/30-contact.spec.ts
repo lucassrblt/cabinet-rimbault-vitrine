@@ -95,7 +95,16 @@ test("?ref=10.131 : bien cité, référence et message pré-remplis", async ({
   await expect(
     f.getByRole("radio", { name: "Un bien en particulier" }),
   ).toBeChecked();
-  await expect(f.getByLabel("Référence du bien")).toHaveValue("10.131");
+  // La vignette tient lieu de champ : la référence part en champ caché.
+  await expect(f.getByLabel("Référence du bien")).toHaveCount(0);
+  await expect(f.locator('input[name="propertyReference"]')).toHaveCount(1);
+  await expect(f.locator('input[name="propertyReference"]')).toHaveAttribute(
+    "type",
+    "hidden",
+  );
+  await expect(f.locator('input[name="propertyReference"]')).toHaveValue(
+    "10.131",
+  );
   await expect(f.getByRole("textbox", { name: "Votre message" })).toHaveValue(
     VISITE,
   );
@@ -119,6 +128,48 @@ test("?ref=10.131 : bien cité, référence et message pré-remplis", async ({
   expect(
     (recus[0].body as { contact: { message: string } }).contact.message,
   ).toMatch(VISITE);
+});
+
+test("« Un bien en particulier » sans ?ref : champ référence visible", async ({
+  page,
+}) => {
+  await ouvrir(page);
+  const f = form(page);
+  await expect(f.getByLabel("Référence du bien")).toBeHidden();
+  await f.getByRole("radio", { name: "Un bien en particulier" }).check();
+  await expect(f.getByLabel("Référence du bien")).toBeVisible();
+  await expect(f.getByLabel("Référence du bien")).toHaveValue("");
+  await expect(
+    f.locator('input[type="hidden"][name="propertyReference"]'),
+  ).toHaveCount(0);
+});
+
+test("aucune location publiée : pas d'objet « location », ?objet=location ignoré", async ({
+  page,
+}) => {
+  await ouvrir(page, "/contact?objet=location");
+  const f = form(page);
+  await expect(f.getByRole("radio")).toHaveCount(3);
+  await expect(
+    f.getByRole("radio", { name: "Une recherche de location" }),
+  ).toHaveCount(0);
+  await expect(
+    f.getByRole("radio", { name: "La vente de votre bien" }),
+  ).toBeVisible();
+  for (const radio of await f.getByRole("radio").all())
+    await expect(radio).not.toBeChecked();
+});
+
+test("une location publiée (scénario edge) : objet « location » proposé", async ({
+  page,
+  request,
+}) => {
+  await mock.scenario(request, "edge");
+  await ouvrir(page, "/contact?objet=location");
+  await expect(
+    form(page).getByRole("radio", { name: "Une recherche de location" }),
+  ).toBeChecked();
+  await mock.scenario(request, "default");
 });
 
 test("objet « vente » : renvoi vers Vendre, sujet ESTIMATION", async ({

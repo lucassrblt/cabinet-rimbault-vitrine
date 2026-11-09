@@ -2,6 +2,7 @@
 // l'API (`getProperties`, `toPropertyView`) et d'`agency.ts`. Rien n'est
 // inventé : une valeur absente disparaît de l'affichage.
 import "server-only";
+import { cache } from "react";
 import { agency } from "@/lib/agency";
 import { getProperties } from "@/lib/api/properties";
 import {
@@ -15,14 +16,38 @@ export function ficheHref(reference: string): string {
   return `/biens/${encodeURIComponent(reference)}`;
 }
 
-/** Biens visibles, dans l'ordre de la liste ; `null` si l'API ne répond pas. */
-export async function listViews(): Promise<PropertyView[] | null> {
+/**
+ * Biens visibles, dans l'ordre de la liste ; `null` si l'API ne répond pas.
+ * Mémoïsé pour la requête : les métadonnées et la page lisent la même liste.
+ */
+export const listViews = cache(async (): Promise<PropertyView[] | null> => {
   try {
     return sortForListing((await getProperties()).map(toPropertyView));
   } catch (error) {
     console.error(error);
     return null;
   }
+});
+
+/** Transactions réellement publiées. */
+export type Offre = { vente: boolean; location: boolean };
+
+/**
+ * Offre publiée : la location n'est annoncée que si au moins un bien en
+ * location est en ligne. Sans liste (API muette) ou sans bien, la vente seule,
+ * métier principal du cabinet.
+ */
+export function offreDe(views: readonly PropertyView[] | null): Offre {
+  const location = views?.some((v) => v.transaction === "LOCATION") ?? false;
+  const vente =
+    !location || (views?.some((v) => v.transaction === "VENTE") ?? false);
+  return { vente, location };
+}
+
+/** « à vendre », « à louer », « à vendre et à louer ». */
+export function offreVerbes({ vente, location }: Offre): string {
+  if (vente && location) return "à vendre et à louer";
+  return location ? "à louer" : "à vendre";
 }
 
 const NOMBRES = [

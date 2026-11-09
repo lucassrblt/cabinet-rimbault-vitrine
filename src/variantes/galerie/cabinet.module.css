@@ -43,7 +43,7 @@
 .texte h1 {
   margin: 0;
   font-weight: 400;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--sur-g-2);
 }
 
@@ -66,7 +66,7 @@
   grid-column: span 3;
   border-top: 1px solid var(--filet-g);
   padding-top: 14px;
-  font-size: 12px;
+  font-size: 15px;
   color: var(--sur-g-2);
   display: grid;
   align-content: start;
@@ -121,7 +121,7 @@
 
 .avis figcaption {
   margin-top: 4px;
-  font-size: 11px;
+  font-size: 15px;
 }
 
 @media (min-width: 900px) and (max-width: 1100px) {

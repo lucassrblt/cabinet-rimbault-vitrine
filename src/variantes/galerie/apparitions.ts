@@ -37,8 +37,8 @@ export function observerApparitions(
         }
       }
     },
-    // Un peu au-dessus du bas de l'écran : le mouvement se voit.
-    { threshold: 0.08, rootMargin: "0px 0px -6% 0px" },
+    // Dès que le bloc touche l'écran : rien ne reste masqué en bas de page.
+    { threshold: 0.01, rootMargin: "0px 0px -2% 0px" },
   );
   const scan = () => {
     for (const el of racine.querySelectorAll(RESTANTES)) {

@@ -1,7 +1,8 @@
 "use client";
 
 // En-tête : marque, cinq liens, téléphone. Sur mobile, un bouton « Menu »
-// déplie la liste (fermée à chaque changement de page).
+// déplie la liste (fermée à chaque changement de page) ; un bouton d'appel
+// (icône téléphone) le précède.
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -39,6 +40,28 @@ export function Nav({ count }: { count: number | null }) {
       <Link className={s.brand} href="/">
         {agency.name}
       </Link>
+      {/* Sous 900 px, là où le numéro de l'en-tête est replié : appeler en un geste. */}
+      {/* biome-ignore lint/a11y/useAnchorContent: nom accessible donné par aria-label (Biome ne lit pas une valeur calculée) */}
+      <a
+        className={s.appel}
+        href={agency.phone.href}
+        aria-label={`Appeler le cabinet, ${agency.phone.display}`}
+      >
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M5.5 3.5h3l1.6 4.2-2.1 1.4a11 11 0 0 0 6.9 6.9l1.4-2.1 4.2 1.6v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 3.5 5.7a2 2 0 0 1 2-2.2Z" />
+        </svg>
+      </a>
       <button
         type="button"
         id="galerie-menu-btn"
